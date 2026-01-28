@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ACQelcome — Furious Acid Records</title>
+  <meta name="description" content="Welcome to ACQelcome — a minimal landing page from Furious Acid Records." />
+  <style>
+    :root{
+      --bg:#0b0b0b;
+      --panel:#0f0f0f;
+      --accent:#e6007e;
+      --muted:#9aa2a8;
+      --glass: rgba(255,255,255,0.03);
+      --max-width:900px;
+      color-scheme: dark;
+    }
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background:
+        radial-gradient(1200px 600px at 10% 10%, rgba(230,0,126,0.08), transparent 12%),
+        radial-gradient(900px 400px at 90% 90%, rgba(0,150,255,0.04), transparent 12%),
+        var(--bg);
+      color:#e6edf3;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:32px;
+    }
+    .card{
+      width:100%;
+      max-width:var(--max-width);
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border:1px solid rgba(255,255,255,0.03);
+      box-shadow: 0 10px 30px rgba(2,6,23,0.6);
+      border-radius:14px;
+      padding:36px;
+      backdrop-filter: blur(6px);
+    }
+    header{
+      display:flex;
+      gap:20px;
+      align-items:center;
+      margin-bottom:8px;
+    }
+    .logo{
+      width:64px;
+      height:64px;
+      border-radius:10px;
+      background:linear-gradient(135deg,var(--accent),#4a00ff);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:700;
+      font-family: ui-sans-serif,system-ui,-apple-system, "Segoe UI", Roboto;
+      color:white;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.6), inset 0 -6px 18px rgba(0,0,0,0.15);
+    }
+    h1{
+      margin:0;
+      font-size: clamp(20px, 3.6vw, 34px);
+      letter-spacing: -0.01em;
+    }
+    p.lead{
+      margin:12px 0 20px 0;
+      color:var(--muted);
+      line-height:1.5;
+    }
+    nav{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-top:8px;
+    }
+    a.btn{
+      text-decoration:none;
+      padding:10px 14px;
+      border-radius:10px;
+      background:var(--glass);
+      color:inherit;
+      border:1px solid rgba(255,255,255,0.02);
+      font-weight:600;
+      font-size:14px;
+    }
+    a.primary{
+      background: linear-gradient(90deg,var(--accent),#7a00ff);
+      color:white;
+      border: none;
+      box-shadow: 0 6px 20px rgba(230,0,126,0.12);
+    }
+    footer{
+      margin-top:22px;
+      font-size:13px;
+      color:var(--muted);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+    .badge{
+      font-weight:700;
+      padding:6px 8px;
+      border-radius:8px;
+      background:rgba(255,255,255,0.02);
+      color:var(--muted);
+      font-size:12px;
+    }
+    @media (max-width:520px){
+      .card{padding:20px}
+      .logo{width:56px;height:56px}
+    }
+  </style>
+</head>
+<body>
+  <main class="card" role="main">
+    <header>
+      <div class="logo">AC</div>
+      <div>
+        <h1>ACQelcome</h1>
+        <p class="lead">A small welcome page from Furious Acid Records. Music, releases, and updates — right here.</p>
+      </div>
+    </header>
+
+    <section>
+      <p style="color:var(--muted);margin-top:8px;">
+        This is a lightweight index page created to greet visitors at <code>/acqelcome/</code>. Replace this content with tracks, embeds, or any custom content you want to showcase.
+      </p>
+
+      <nav aria-label="Primary">
+        <a class="btn primary" href="/">Home</a>
+        <a class="btn" href="/releases/">Releases</a>
+        <a class="btn" href="/about/">About</a>
+        <a class="btn" href="https://github.com/furiousacidrecords" target="_blank" rel="noopener">GitHub</a>
+      </nav>
+    </section>
+
+    <footer>
+      <span class="badge">Furious Acid Records</span>
+      <span>Created: 2026-01-28</span>
+    </footer>
+  </main>
+</body>
+</html>
