@@ -22,7 +22,7 @@
     *{box-sizing:border-box}
     body{
       margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
       color:var(--text);
       background:
         radial-gradient(1200px 600px at 20% 15%, rgba(255,43,214,.14), transparent 60%),
@@ -45,16 +45,6 @@
       overflow:hidden;
       position:relative;
     }
-    .card::before{
-      content:"";
-      position:absolute; inset:0;
-      background:
-        radial-gradient(700px 200px at 20% 0%, rgba(255,43,214,.18), transparent 60%),
-        radial-gradient(700px 200px at 80% 0%, rgba(109,40,255,.18), transparent 60%);
-      pointer-events:none;
-      opacity:.8;
-      mix-blend-mode:screen;
-    }
     .inner{position:relative; padding:26px; }
     .top{
       display:flex; gap:16px; align-items:center; justify-content:space-between; flex-wrap:wrap;
@@ -69,27 +59,19 @@
       box-shadow: var(--glow);
       display:grid; place-items:center;
       font-weight:800;
-      letter-spacing:.5px;
     }
     .title h1{
       margin:0;
       font-size:30px;
-      line-height:1.1;
-      letter-spacing:.2px;
     }
     .title p{
       margin:6px 0 0;
       color:var(--muted);
-      max-width:70ch;
     }
     .nav{
-      display:flex; gap:10px; flex-wrap:wrap;
+      display:flex; gap:10px;
     }
     .btn{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      gap:8px;
       padding:10px 14px;
       border-radius:14px;
       border:1px solid var(--line);
@@ -98,10 +80,7 @@
       text-decoration:none;
       font-weight:650;
       font-size:14px;
-      transition: transform .12s ease, background .12s ease, border-color .12s ease;
-      user-select:none;
     }
-    .btn:hover{ transform: translateY(-1px); background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.18); }
     .btn.primary{
       border:none;
       background: linear-gradient(135deg, var(--brand1), var(--brand2));
@@ -109,13 +88,9 @@
     }
     .grid{
       display:grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: repeat(2, 1fr);
       gap:16px;
       margin-top:14px;
-    }
-    @media (max-width: 860px){
-      .grid{ grid-template-columns: 1fr; }
-      .title h1{ font-size:26px; }
     }
     .release{
       display:flex;
@@ -124,15 +99,9 @@
       border-radius:16px;
       border:1px solid rgba(255,255,255,.10);
       background: rgba(0,0,0,.22);
-      text-decoration:none;
-      transition: transform .12s ease, border-color .12s ease, background .12s ease;
       min-height:220px;
       align-items:center;
-    }
-    .release:hover{
-      transform: translateY(-2px);
-      border-color: rgba(255,255,255,.20);
-      background: rgba(255,255,255,.05);
+      text-decoration:none;
     }
     .cover{
       width:150px;
@@ -141,10 +110,6 @@
       overflow:hidden;
       border:1px solid rgba(255,255,255,.12);
       box-shadow: 0 18px 40px rgba(0,0,0,.55);
-      flex:0 0 auto;
-      background: rgba(255,255,255,.03);
-      display:grid;
-      place-items:center;
     }
     .cover img{
       width:100%;
@@ -155,116 +120,64 @@
     .meta h2{
       margin:0;
       font-size:18px;
-      letter-spacing:.2px;
     }
     .meta p{
       margin:8px 0 0;
       color:var(--muted);
-      line-height:1.45;
       font-size:14px;
-    }
-    .pillrow{ margin-top:12px; display:flex; flex-wrap:wrap; gap:8px; }
-    .pill{
-      font-size:12px;
-      padding:6px 10px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.12);
-      color: rgba(243,244,246,.85);
-      background: rgba(0,0,0,.20);
-    }
-    .footer{
-      margin-top:18px;
-      display:flex;
-      justify-content:space-between;
-      gap:10px;
-      flex-wrap:wrap;
-      color: rgba(243,244,246,.55);
-      font-size:12px;
-    }
-    .kbd{
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
-      font-size:12px;
-      padding:3px 8px;
-      border-radius:10px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.30);
-      color: rgba(243,244,246,.75);
     }
   </style>
 </head>
+
 <body>
   <main class="wrap">
-    <section class="card" aria-label="Furious Acid Records">
+    <section class="card">
       <div class="inner">
+
         <div class="top">
           <div class="brand">
             <div class="logo">FA</div>
             <div class="title">
               <h1>Furious Acid Records</h1>
-              <p>Music, releases, and updates — right here. Dark mode only. (Because we’re civilized.)</p>
+              <p>Music, releases, and updates — right here.</p>
             </div>
           </div>
-          <nav class="nav" aria-label="Primary">
+
+          <nav class="nav">
             <a class="btn primary" href="#releases">Releases</a>
             <a class="btn" href="#about">About</a>
-            <a class="btn" href="https://github.com/furiousacidrecords" target="_blank" rel="noopener">GitHub</a>
+            <a class="btn" href="https://github.com/furiousacidrecords">GitHub</a>
           </nav>
         </div>
 
         <div id="releases" class="grid">
-          <!-- Release 1 -->
-          <a class="release" href="https://www.amazon.com/Chemistry-Behind-Medicine-Drug-Discovery/dp/B0GJPYPJTZ" target="_blank" rel="noopener">
+
+          <!-- Book 1 -->
+          <a class="release" href="https://www.amazon.com/Chemistry-Behind-Medicine-Drug-Discovery/dp/B0GJPYPJTZ">
             <div class="cover">
-              <img src="/medicine.jpg" alt="The Chemistry Behind Medicine and Drug Discovery cover" />
+              <img src="medicine.jpg" alt="Medicine Book Cover">
             </div>
             <div class="meta">
-              <h2>The Chemistry Behind Medicine and Drug Discovery</h2>
-              <p>Volume 1. A Furious Acid Publication. Clean cover, bold energy. Click to view.</p>
-              <div class="pillrow">
-                <span class="pill">Book</span>
-                <span class="pill">Volume 1</span>
-                <span class="pill">Amazon</span>
-              </div>
+              <h2>The Chemistry Behind Medicine</h2>
+              <p>Volume 1 — Furious Acid Publication</p>
             </div>
           </a>
 
-          <!-- Release 2 -->
-          <a class="release" href="https://www.amazon.com/Marijuana-Manual-Technical-Notebook-Publication/dp/B0G8VLPS1K" target="_blank" rel="noopener">
+          <!-- Book 2 -->
+          <a class="release" href="https://www.amazon.com/Marijuana-Manual-Technical-Notebook-Publication/dp/B0G8VLPS1K">
             <div class="cover">
-              <img src="/marijuana.jpg" alt="Marijuana Manual: Technical Notebook cover" />
+              <img src="marijuana.jpg" alt="Marijuana Manual Cover">
             </div>
             <div class="meta">
-              <h2>Marijuana Manual: Technical Notebook</h2>
-              <p>Technical Notebook edition. Big “manual” vibes. Click to view.</p>
-              <div class="pillrow">
-                <span class="pill">Book</span>
-                <span class="pill">Technical Notebook</span>
-                <span class="pill">Amazon</span>
-              </div>
+              <h2>Marijuana Manual</h2>
+              <p>Technical Notebook Edition</p>
             </div>
           </a>
+
         </div>
 
-        <section id="about" style="margin-top:16px;">
-          <div style="border:1px solid rgba(255,255,255,.10); background:rgba(0,0,0,.18); border-radius:16px; padding:14px;">
-            <div style="font-weight:700; margin-bottom:6px;">About</div>
-            <div style="color:rgba(243,244,246,.72); line-height:1.5; font-size:14px;">
-              This homepage is your “front desk.” Swap the links, add embeds, add a shop, whatever.
-              Tip: put new covers in <span class="kbd">/assets</span> and duplicate a release card.
-            </div>
-          </div>
-        </section>
-
-        <div class="footer">
-          <div>© <span id="year"></span> Furious Acid Records</div>
-          <div><span class="kbd">/medicine.jpg</span> + <span class="kbd">/marijuana.jpg</span></div>
-        </div>
       </div>
     </section>
   </main>
-
-  <script>
-    document.getElementById("year").textContent = new Date().getFullYear();
-  </script>
 </body>
 </html>
