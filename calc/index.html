@@ -1,0 +1,427 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Furious Acid Records — Reaction Balancer</title>
+  <meta name="description" content="Balance chemical equations in‑browser. Furious Acid Records." />
+  <style>
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:0;line-height:1.5}
+    header,main{max-width:980px;margin:0 auto;padding:18px}
+    h1{margin:8px 0 6px;font-size:32px}
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    input[type="text"]{flex:1;min-width:260px;padding:10px 12px;border:1px solid #ccc;border-radius:10px}
+    button{padding:10px 14px;border:1px solid #222;border-radius:10px;background:#fff;cursor:pointer}
+    .card{border:1px solid #eaeaea;border-radius:14px;padding:14px;margin-top:14px}
+    .muted{opacity:.75}
+    code{background:#f6f6f6;padding:2px 6px;border-radius:6px}
+    .out{font-size:18px}
+  </style>
+</head>
+<body>
+<header>
+  <h1>Equation Balancer</h1>
+  <p class="muted">Supports <code>=</code> or <code>-&gt;</code>, plus signs, parentheses, hydrates (<code>·</code> or <code>.</code>).</p>
+  <div class="row">
+    <input id="rxn" type="text" placeholder="Fe + Cl2 = FeCl3" />
+    <button id="go">Balance</button>
+    <button id="link">Copy link</button>
+    <button id="img">Make formula-smile image</button>
+  </div>
+</header>
+
+<main>
+  <div class="card">
+    <div class="muted">Balanced equation</div>
+    <div id="balanced" class="out">—</div>
+    <div id="details" class="muted" style="margin-top:10px;"></div>
+  </div>
+
+  <div class="card">
+    <div class="muted">Example</div>
+    <div><a href="?reaction=Fe+%2B+Cl2+%3D+FeCl3">/calc/?reaction=Fe+%2B+Cl2+%3D+FeCl3</a></div>
+  </div>
+
+  <!-- Image output card; hidden until a smile image is generated -->
+  <div id="imgwrap" class="card" style="display:none">
+    <div class="muted">Formula-smile image</div>
+    <div id="imgout" style="margin-top:10px;"></div>
+  </div>
+</main>
+
+<script>
+/* ========= BigInt Rational ========= */
+class Rat {
+  constructor(n, d=1n){
+    if (d === 0n) throw new Error("Division by zero");
+    if (d < 0n){ n = -n; d = -d; }
+    const g = gcd(abs(n), d);
+    this.n = n / g;
+    this.d = d / g;
+  }
+  add(o){ return new Rat(this.n*o.d + o.n*this.d, this.d*o.d); }
+  sub(o){ return new Rat(this.n*o.d - o.n*this.d, this.d*o.d); }
+  mul(o){ return new Rat(this.n*o.n, this.d*o.d); }
+  div(o){ return new Rat(this.n*o.d, this.d*o.n); }
+  neg(){ return new Rat(-this.n, this.d); }
+  isZero(){ return this.n === 0n; }
+}
+function abs(x){ return x < 0n ? -x : x; }
+function gcd(a,b){ while (b){ const t=a%b; a=b; b=t; } return a; }
+function lcm(a,b){ return (a/gcd(a,b))*b; }
+
+/* ========= Parse chemistry formula =========
+   - handles parentheses: Al2(SO4)3
+   - handles hydrates: CuSO4·5H2O or CuSO4.5H2O
+   - handles leading stoich in species: 2H2O (optional)
+   - does NOT handle charges like Fe3+ or (aq) state labels
+*/
+function tokenizeFormula(s){
+  // Elements, numbers, parentheses, dot
+  const out = [];
+  let i = 0;
+  while (i < s.length){
+    const ch = s[i];
+    if (ch === ' '){ i++; continue; }
+    if (ch === '(' || ch === ')' || ch === '·' || ch === '.'){
+      out.push(ch); i++; continue;
+    }
+    if (ch >= '0' && ch <= '9'){
+      let j=i; while (j<s.length && s[j]>='0' && s[j]<='9') j++;
+      out.push(s.slice(i,j)); i=j; continue;
+    }
+    // Element symbol
+    if (ch >= 'A' && ch <= 'Z'){
+      let j=i+1;
+      if (j<s.length && s[j]>='a' && s[j]<='z') j++;
+      out.push(s.slice(i,j)); i=j; continue;
+    }
+    throw new Error("Unsupported character in formula: " + ch);
+  }
+  return out;
+}
+
+function mergeCounts(a,b,scale=1){
+  for (const k of Object.keys(b)){
+    a[k] = (a[k]||0) + b[k]*scale;
+  }
+  return a;
+}
+
+function parseFormula(formula){
+  // strip state labels like (s) (l) (g) (aq) if present
+  formula = formula.replace(/\((aq|s|l|g)\)/gi,'');
+  formula = formula.trim();
+  if (!formula) throw new Error("Empty formula");
+
+  // allow leading integer like 5H2O
+  let lead = 1;
+  const m = formula.match(/^(\d+)\s*(.*)$/);
+  if (m){
+    lead = parseInt(m[1],10);
+    formula = m[2];
+  }
+
+  const toks = tokenizeFormula(formula);
+  let idx = 0;
+
+  function parseGroup(){
+    const counts = {};
+    while (idx < toks.length){
+      const t = toks[idx];
+
+      if (t === ')') break;
+      if (t === '·' || t === '.'){
+        // hydrate separator: treat as plus inside the same species (sum counts)
+        idx++;
+        continue;
+      }
+
+      if (t === '('){
+        idx++;
+        const inner = parseGroup();
+        if (toks[idx] !== ')') throw new Error("Missing ')'");
+        idx++;
+        let mult = 1;
+        if (idx < toks.length && /^\d+$/.test(toks[idx])){ mult = parseInt(toks[idx],10); idx++; }
+        mergeCounts(counts, inner, mult);
+        continue;
+      }
+
+      if (/^[A-Z][a-z]?$/.test(t)){
+        idx++;
+        let mult = 1;
+        if (idx < toks.length && /^\d+$/.test(toks[idx])){ mult = parseInt(toks[idx],10); idx++; }
+        counts[t] = (counts[t]||0) + mult;
+        continue;
+      }
+
+      // leading number after hydrate dot like ·5H2O: we allow by letting parseFormula handle it,
+      // but here we can handle numbers by treating them as multiplier for next element/group
+      if (/^\d+$/.test(t)){
+        // multiplier for next token group (common in hydrates): 5H2O
+        const mult = parseInt(t,10);
+        idx++;
+        // parse the next single unit (element or parenthesis group)
+        if (idx >= toks.length) throw new Error("Dangling multiplier");
+        if (toks[idx] === '('){
+          idx++;
+          const inner = parseGroup();
+          if (toks[idx] !== ')') throw new Error("Missing ')'");
+          idx++;
+          let mult2 = 1;
+          if (idx < toks.length && /^\d+$/.test(toks[idx])){ mult2 = parseInt(toks[idx],10); idx++; }
+          mergeCounts(counts, inner, mult*mult2);
+        } else {
+          const el = toks[idx];
+          if (!/^[A-Z][a-z]?$/.test(el)) throw new Error("Bad token after multiplier");
+          idx++;
+          let mult2 = 1;
+          if (idx < toks.length && /^\d+$/.test(toks[idx])){ mult2 = parseInt(toks[idx],10); idx++; }
+          counts[el] = (counts[el]||0) + mult*mult2;
+        }
+        continue;
+      }
+
+      throw new Error("Unexpected token: " + t);
+    }
+    return counts;
+  }
+
+  const counts = parseGroup();
+  if (idx < toks.length && toks[idx] === ')') throw new Error("Unmatched ')'");
+  // apply leading multiplier
+  for (const k of Object.keys(counts)) counts[k] *= lead;
+  return counts;
+}
+
+/* ========= Balance equation ========= */
+function splitEquation(eq){
+  eq = eq.trim();
+  const arrow = eq.includes('->') ? '->' : (eq.includes('=') ? '=' : null);
+  if (!arrow) throw new Error("Use '=' or '->' to separate reactants and products.");
+  const [L,R] = eq.split(arrow).map(s=>s.trim());
+  if (!L || !R) throw new Error("Both sides are required.");
+  const left = L.split('+').map(s=>s.trim()).filter(Boolean);
+  const right = R.split('+').map(s=>s.trim()).filter(Boolean);
+  return { left, right, arrow };
+}
+
+function balanceEquation(eq){
+  const { left, right, arrow } = splitEquation(eq);
+  const species = left.concat(right);
+  const sideSign = species.map((_,i)=> i < left.length ? 1 : -1);
+
+  const countsList = species.map(parseFormula);
+
+  // Collect all elements
+  const elSet = new Set();
+  countsList.forEach(c=>Object.keys(c).forEach(e=>elSet.add(e)));
+  const elements = Array.from(elSet).sort();
+
+  // Build matrix A (m x n): reactants positive, products negative
+  const m = elements.length;
+  const n = species.length;
+  const A = Array.from({length:m}, (_,r)=>
+    Array.from({length:n}, (_,c)=>
+      new Rat(BigInt((countsList[c][elements[r]]||0) * sideSign[c]), 1n)
+    )
+  );
+
+  // Solve A * x = 0, find integer null vector x
+  const x = nullspaceIntegerVector(A);
+  if (!x) throw new Error("Could not balance (unsupported format or under/over-specified).");
+
+  // Format output
+  const L = left.map((sp,i)=> fmtCoeff(x[i]) + sp).join(' + ');
+  const R = right.map((sp,i)=> fmtCoeff(x[i+left.length]) + sp).join(' + ');
+  return { balanced: `${L} ${arrow} ${R}` };
+}
+
+function fmtCoeff(bi){
+  return (bi === 1n) ? "" : (bi.toString() + " ");
+}
+
+/* ========= Nullspace via RREF over rationals, then choose free var = LCM denom ========= */
+function nullspaceIntegerVector(A){
+  // Improved integer nullspace solver
+  const m = A.length;
+  const n = A[0].length;
+  const M = A.map(row => row.map(v => new Rat(v.n, v.d)));
+  // RREF
+  let lead = 0;
+  const pivots = [];
+  for (let r=0; r<m; r++){
+    if (lead >= n) break;
+    let i = r;
+    while (i < m && M[i][lead].isZero()) i++;
+    if (i === m){ lead++; r--; continue; }
+    if (i !== r){ const tmp=M[i]; M[i]=M[r]; M[r]=tmp; }
+    const lv = M[r][lead];
+    for (let j=0; j<n; j++) M[r][j] = M[r][j].div(lv);
+    for (let i2=0; i2<m; i2++){
+      if (i2 === r) continue;
+      const lv2 = M[i2][lead];
+      if (lv2.isZero()) continue;
+      for (let j=0; j<n; j++){
+        M[i2][j] = M[i2][j].sub(lv2.mul(M[r][j]));
+      }
+    }
+    pivots.push({ row:r, col:lead });
+    lead++;
+  }
+  const pivotCols = new Set(pivots.map(p=>p.col));
+  const freeCols = [];
+  for (let c=0; c<n; c++) if (!pivotCols.has(c)) freeCols.push(c);
+  if (freeCols.length === 0) return null;
+  // Build basis vectors for nullspace
+  const basis = [];
+  for (const free of freeCols){
+    const x = Array.from({length:n}, _=> new Rat(0n,1n));
+    x[free] = new Rat(1n,1n);
+    for (const p of pivots){
+      let sum = new Rat(0n,1n);
+      for (let j=0; j<n; j++){
+        if (j === p.col) continue;
+        if (!M[p.row][j].isZero()){
+          sum = sum.add(M[p.row][j].mul(x[j]));
+        }
+      }
+      x[p.col] = sum.neg();
+    }
+    basis.push(toIntVector(x));
+  }
+  // Search small positive combinations of basis vectors
+  const MAX = 8;
+  let best = null;
+  const k = basis.length;
+  const coeffs = Array(k).fill(1);
+  function allPos(v){ return v.every(z => z > 0n); }
+  function score(v){ return v.reduce((acc,z)=> acc + z, 0n); }
+  function combine(cs){
+    const out = Array(n).fill(0n);
+    for (let i=0; i<k; i++){
+      for (let j=0; j<n; j++){
+        out[j] += basis[i][j] * BigInt(cs[i]);
+      }
+    }
+    return reduceIntVector(out);
+  }
+  function dfs(pos){
+    if (pos === k){
+      const v = combine(coeffs);
+      if (allPos(v)){
+        if (!best || score(v) < score(best)) best = v;
+      }
+      return;
+    }
+    for (let c=1; c<=MAX; c++){
+      coeffs[pos] = c;
+      dfs(pos+1);
+      if (best) return;
+    }
+  }
+  dfs(0);
+  return best;
+  // helper to convert rationals to integer vector
+  function toIntVector(rats){
+    let D = 1n;
+    for (const r of rats) D = lcm(D, r.d);
+    const v = rats.map(r => r.n * (D / r.d));
+    return reduceIntVector(v);
+  }
+  function reduceIntVector(v){
+    const firstNZ = v.find(z => z !== 0n);
+    if (!firstNZ) return v;
+    if (firstNZ < 0n) v = v.map(z => -z);
+    let g = 0n;
+    for (const z of v){
+      if (z !== 0n) g = (g===0n) ? abs(z) : gcd(g, abs(z));
+    }
+    if (g > 1n) v = v.map(z => z/g);
+    if (v.some(z=>z<=0n)) return v;
+    return v;
+  }
+}
+
+/* ========= UI ========= */
+function setOutput(text, detail=""){
+  document.getElementById("balanced").textContent = text;
+  document.getElementById("details").textContent = detail;
+}
+
+function run(){
+  const eq = document.getElementById("rxn").value.trim();
+  if (!eq){ setOutput("—"); return; }
+  try{
+    const res = balanceEquation(eq);
+    setOutput(res.balanced, "OK");
+    // update URL
+    const url = new URL(window.location.href);
+    url.searchParams.set("reaction", eq);
+    history.replaceState({}, "", url.toString());
+  }catch(e){
+    setOutput("Error: " + e.message, "Try simple formulas (no charges like Fe3+)." );
+  }
+}
+
+document.getElementById("go").addEventListener("click", run);
+
+document.getElementById("link").addEventListener("click", async () => {
+  const eq = document.getElementById("rxn").value.trim();
+  const url = new URL(window.location.href);
+  if (eq) url.searchParams.set("reaction", eq);
+  try{
+    await navigator.clipboard.writeText(url.toString());
+    setOutput(document.getElementById("balanced").textContent, "Link copied.");
+  }catch{
+    setOutput(document.getElementById("balanced").textContent, "Couldn’t copy—just copy the URL bar.");
+  }
+});
+
+// Autofill from URL param
+const params = new URLSearchParams(window.location.search);
+const reaction = params.get("reaction");
+if (reaction){
+  document.getElementById("rxn").value = reaction;
+  run();
+}
+
+// ====== Formula smile generation ======
+function makeFormulaSmileSVG(text){
+  // measure text width via canvas
+  const c = document.createElement("canvas");
+  const ctx = c.getContext("2d");
+  ctx.font = "20px system-ui, -apple-system, Segoe UI, Roboto, Arial";
+  const w = Math.ceil(ctx.measureText(text).width) + 60;
+  const h = 140;
+  const cx = w/2;
+  const smileY = 105;
+  function escapeXML(s){
+    return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&apos;");
+  }
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+  <rect x="0" y="0" width="${w}" height="${h}" rx="16" fill="white" stroke="#e5e5e5"/>
+  <text x="${cx}" y="55" text-anchor="middle" font-family="system-ui, -apple-system, Segoe UI, Roboto, Arial" font-size="20" fill="#111">${escapeXML(text)}</text>
+  <circle cx="${cx-90}" cy="80" r="4" fill="#111" opacity="0.7"/>
+  <circle cx="${cx+90}" cy="80" r="4" fill="#111" opacity="0.7"/>
+  <path d="M ${cx-70} ${smileY} C ${cx-30} ${smileY+30}, ${cx+30} ${smileY+30}, ${cx+70} ${smileY}" fill="none" stroke="#111" stroke-width="4" stroke-linecap="round" opacity="0.75"/>
+  <text x="${cx}" y="125" text-anchor="middle" font-size="12" fill="#777">Furious Acid Records</text>
+  </svg>`;
+}
+
+document.getElementById("img").addEventListener("click", () => {
+  const eq = document.getElementById("balanced").textContent;
+  if (!eq || eq === "—" || eq.startsWith("Error:")) return;
+  const svg = makeFormulaSmileSVG(eq);
+  const blob = new Blob([svg], {type:"image/svg+xml"});
+  const url = URL.createObjectURL(blob);
+  const wrap = document.getElementById("imgwrap");
+  const out = document.getElementById("imgout");
+  wrap.style.display = "block";
+  out.innerHTML = `<img src="${url}" alt="formula smile" style="max-width:100%;height:auto;border-radius:12px;display:block;margin-bottom:10px;">
+    <a class="btn" href="${url}" download="formula-smile.svg">Download SVG</a>`;
+});
+</script>
+</body>
+</html>
