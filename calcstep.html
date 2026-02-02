@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>CalcStep – Furious Acid Interactive Trainer</title>
+  <style>
+    :root{
+      --bg:#0b0f14; --panel:#121a23; --panel2:#0f1620; --text:#e8f0ff; --muted:#9fb1c8;
+      --accent:#7bdcff; --warn:#ffd27b; --good:#7CFFB2; --line:#203043; --paper:#0a121d;
+    }
+    *{box-sizing:border-box}
+    body{margin:0; background:var(--bg); color:var(--text);
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;}
+    .wrap{max-width:1240px; margin:0 auto; padding:16px;}
+    .hdr{display:flex; gap:12px; flex-wrap:wrap; align-items:stretch;}
+    .hero{flex:1; min-width:320px; padding:14px 16px; border:1px solid var(--line); border-radius:14px;
+      background:linear-gradient(180deg,var(--panel),var(--panel2));}
+    .hero h1{margin:0 0 6px; font-size:18px; letter-spacing:.2px}
+    .hero p{margin:0; color:var(--muted); font-size:13px; line-height:1.35}
+    .cta{width:320px; min-width:280px; padding:14px 16px; border:1px solid var(--line); border-radius:14px;
+      background:linear-gradient(180deg,var(--panel),var(--panel2));}
+    .pill{display:inline-flex; align-items:center; gap:8px; padding:6px 10px; border-radius:999px;
+      background:#0d1420; border:1px solid var(--line); color:var(--muted); font-size:12px;}
+    .btnrow{display:flex; gap:10px; flex-wrap:wrap; margin-top:10px}
+    button{cursor:pointer; border:1px solid var(--line); background:#0d1420; color:var(--text);
+      padding:10px 12px; border-radius:12px; font-weight:900; font-size:13px;}
+    button.primary{border-color:var(--accent); box-shadow:0 0 0 2px rgba(123,220,255,.12) inset;}
+    button:disabled{opacity:.5; cursor:not-allowed}
+    .grid{display:grid; grid-template-columns:.95fr 1.05fr; gap:14px; margin-top:14px;}
+    @media (max-width: 1020px){ .grid{grid-template-columns:1fr;} }
+    .card{padding:14px 16px; border:1px solid var(--line); border-radius:14px;
+      background:linear-gradient(180deg,var(--panel),var(--panel2));}
+    .card h2{margin:0 0 10px; font-size:14px; color:var(--muted); font-weight:900; letter-spacing:.2px}
+    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;}
+    .note{padding:10px 12px; border-radius:12px; border:1px dashed #2a3b52; background:var(--paper);
+      color:var(--muted); font-size:13px; line-height:1.35}
+    .proc{
+      background:#0a111a; border:1px solid var(--line); border-radius:14px; padding:12px;
+      font-family: ui-serif, Georgia, "Times New Roman", Times, serif;
+      line-height:1.38;
+    }
+    .proc h3{margin:0 0 6px; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      font-size:14px; color:var(--text);}
+    .sec{margin-top:10px; font-weight:900; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      color:var(--muted); font-size:12px; text-transform:uppercase; letter-spacing:.12em}
+    .proc p{margin:6px 0; color:#d7e2f7; font-size:14px;}
+    .refs{color:var(--muted); font-size:12px}
+    .layers{display:flex; flex-direction:column; gap:10px}
+    details.layer{border:1px solid var(--line); border-radius:14px; background:#0a111a; overflow:hidden}
+    details.layer[open]{box-shadow:0 0 0 2px rgba(123,220,255,.12) inset;}
+    summary{list-style:none; cursor:pointer; padding:12px 12px; display:flex; align-items:center; justify-content:space-between;
+      font-weight:950;}
+    summary::-webkit-details-marker{display:none}
+    .badge{font-size:12px; color:var(--muted); font-weight:800}
+    .body{padding:12px; border-top:1px solid var(--line)}
+    label{display:block; font-size:12px; color:var(--muted); font-weight:800; margin:6px 0}
+    input, select{
+      width:100%; padding:10px 12px; border-radius:12px; border:1px solid var(--line);
+      background:#071018; color:var(--text); font-size:14px; outline:none;
+    }
+    .two{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+    @media (max-width: 720px){ .two{grid-template-columns:1fr;} }
+    .chalk{background:#071018; border:1px solid #1b2a3d; border-radius:14px; padding:12px; margin-top:10px;}
+    .chalk pre{margin:0; white-space:pre-wrap; line-height:1.35; font-size:13px;}
+    .ptable{display:grid; grid-template-columns:repeat(18, minmax(20px, 1fr)); gap:4px; margin-top:10px}
+    .el{padding:6px 6px; border:1px solid var(--line); border-radius:10px; background:#0d1420; min-height:44px}
+    .el .sym{font-weight:950; font-size:13px}
+    .el .meta{color:var(--muted); font-size:10px; margin-top:2px}
+    .el.dim{opacity:.30}
+    .el.on{border-color:var(--accent); background:#0b1b2a}
+    .kpi{display:flex; gap:10px; flex-wrap:wrap; margin-top:10px}
+    .kpi .box{flex:1; min-width:220px; border:1px solid var(--line); background:#071018; border-radius:14px; padding:12px}
+    .kpi .t{color:var(--muted); font-size:12px}
+    .kpi .v{font-size:16px; font-weight:950; margin-top:4px}
+    .star{display:flex; gap:10px; align-items:flex-start; padding:10px 12px; border-radius:12px; border:1px solid rgba(255,210,123,.55);
+      background:linear-gradient(180deg, rgba(255,210,123,.12), rgba(255,210,123,.03)); color:#ffe6b5; font-size:13px; line-height:1.35;}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hdr">
+    <div class="hero">
+      <h1>CalcStep – Furious Acid Interactive Trainer</h1>
+      <p>
+        A modular chemistry trainer to balance equations, compute molar masses and design solutions. Each layer builds on the last: <span class="mono">Balance → Table → Target → Prep → Protocol</span>.
+        <span class="pill" style="margin-left:8px;">beta</span>
+      </p>
+    </div>
+    <div class="cta">
+      <div class="pill">Layered flow</div>
+      <div class="btnrow">
+        <button class="primary" id="btnNext">Next layer →</button>
+        <button id="btnPeek">Peek full output</button>
+        <button id="btnReset">Reset</button>
+      </div>
+      <div class="note" style="margin-top:10px">
+        Edit inputs in each layer and watch all calculations update. When ready, deploy by copying this file into your GitHub Pages repo (FuriousAcid.com/calcstep).
+      </div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <!-- Left side: protocol and chalkboard -->
+    <div class="card">
+      <h2>Protocol preview</h2>
+      <div class="proc">
+        <h3 id="pTitle">Preparation of 0.100 mol/L LiCl (aq)</h3>
+        <div class="sec">Procedure</div>
+        <p id="pBody">—</p>
+        <div class="sec">Inputs</div>
+        <p class="refs mono" id="pInputs">—</p>
+        <div class="sec">Notes</div>
+        <p class="refs" id="pNotes">Balance the equation → derive molar masses → set desired molarity & volume → choose prep method → follow steps below.</p>
+      </div>
+      <div class="chalk">
+        <pre id="chalk" class="mono">—</pre>
+      </div>
+    </div>
+
+    <!-- Right side: layered trainer -->
+    <div class="card">
+      <h2>Trainer layers</h2>
+      <div class="star">
+        ★ <div><b>Everything below is live.</b> Change the reaction, target values or method. Layers unlock progressively.</div>
+      </div>
+      <div class="layers">
+        <!-- Layer 1: Balance -->
+        <details class="layer" id="L1" open>
+          <summary>
+            <span>1) Balance equation</span>
+            <span class="badge" id="b1">unlocked</span>
+          </summary>
+          <div class="body">
+            <label>Reaction (unbalanced)</label>
+            <input id="rxn" value="LiOH + HCl → LiCl + H₂O">
+            <div class="two">
+              <div>
+                <label>Show coefficient 1s</label>
+                <select id="show1">
+                  <option value="0">Hide 1s</option>
+                  <option value="1" selected>Show 1s</option>
+                </select>
+              </div>
+              <div>
+                <label>Solute to prepare</label>
+                <select id="solute"></select>
+              </div>
+            </div>
+            <div class="kpi">
+              <div class="box">
+                <div class="t">Balanced equation</div>
+                <div class="v mono" id="balView">—</div>
+              </div>
+            </div>
+            <div class="note" style="margin-top:10px">
+              The app attempts to balance the equation automatically. Coefficients correspond to moles. Edit the reaction to suit your needs.
+            </div>
+          </div>
+        </details>
+
+        <!-- Layer 2: Periodic table & molar mass -->
+        <details class="layer" id="L2">
+          <summary>
+            <span>2) Periodic table → molar mass</span>
+            <span class="badge" id="b2">locked</span>
+          </summary>
+          <div class="body">
+            <div class="note">Full table (simplified) on left; collapsed to relevant elements on right.</div>
+            <div class="two">
+              <div>
+                <div class="pill">Full table</div>
+                <div id="ptableFull"></div>
+              </div>
+              <div>
+                <div class="pill">In play</div>
+                <div id="ptableColl"></div>
+              </div>
+            </div>
+            <div class="kpi">
+              <div class="box">
+                <div class="t">Molar mass of selected solute</div>
+                <div class="v mono" id="mmOut">—</div>
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <!-- Layer 3: Target solution -->
+        <details class="layer" id="L3">
+          <summary>
+            <span>3) Target solution (M & V)</span>
+            <span class="badge" id="b3">locked</span>
+          </summary>
+          <div class="body">
+            <div class="two">
+              <div>
+                <label>Target molarity M (mol/L)</label>
+                <input id="tM" inputmode="decimal" value="0.10">
+              </div>
+              <div>
+                <label>Final volume V (L)</label>
+                <input id="tV" inputmode="decimal" value="1.00">
+              </div>
+            </div>
+            <div class="kpi">
+              <div class="box">
+                <div class="t">Moles of solute needed</div>
+                <div class="v mono" id="nNeed">—</div>
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <!-- Layer 4: Prepare -->
+        <details class="layer" id="L4">
+          <summary>
+            <span>4) Prepare solution (solid/dilution)</span>
+            <span class="badge" id="b4">locked</span>
+          </summary>
+          <div class="body">
+            <div class="two">
+              <div>
+                <label>Method</label>
+                <select id="method">
+                  <option value="grams" selected>Weigh solid</option>
+                  <option value="dilution">Dilution of stock</option>
+                </select>
+              </div>
+              <div id="stockBox" style="display:none;">
+                <label>Stock concentration M₁ (mol/L)</label>
+                <input id="M1" inputmode="decimal" value="1.00">
+              </div>
+            </div>
+            <div class="kpi">
+              <div class="box">
+                <div class="t">Amount to measure</div>
+                <div class="v mono" id="prepOut">—</div>
+              </div>
+            </div>
+            <div class="note" style="margin-top:10px" id="prepNote"></div>
+          </div>
+        </details>
+
+        <!-- Layer 5: Protocol -->
+        <details class="layer" id="L5">
+          <summary>
+            <span>5) Protocol text</span>
+            <span class="badge" id="b5">locked</span>
+          </summary>
+          <div class="body">
+            <div class="note">Copy this text into your report or lab log. It updates with your inputs.</div>
+            <div class="btnrow">
+              <button id="btnCopy" class="primary">Copy protocol</button>
+            </div>
+          </div>
+        </details>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Atomic numbers and atomic masses for common elements (first 36)
+const periodicData = {
+  H:{z:1,mass:1.008}, He:{z:2,mass:4.0026},
+  Li:{z:3,mass:6.94}, Be:{z:4,mass:9.0122}, B:{z:5,mass:10.81}, C:{z:6,mass:12.011}, N:{z:7,mass:14.007}, O:{z:8,mass:15.999}, F:{z:9,mass:18.998}, Ne:{z:10,mass:20.180},
+  Na:{z:11,mass:22.990}, Mg:{z:12,mass:24.305}, Al:{z:13,mass:26.982}, Si:{z:14,mass:28.085}, P:{z:15,mass:30.974}, S:{z:16,mass:32.06}, Cl:{z:17,mass:35.45}, Ar:{z:18,mass:39.948},
+  K:{z:19,mass:39.098}, Ca:{z:20,mass:40.078}, Sc:{z:21,mass:44.956}, Ti:{z:22,mass:47.867}, V:{z:23,mass:50.942}, Cr:{z:24,mass:51.996}, Mn:{z:25,mass:54.938}, Fe:{z:26,mass:55.845},
+  Co:{z:27,mass:58.933}, Ni:{z:28,mass:58.693}, Cu:{z:29,mass:63.546}, Zn:{z:30,mass:65.38}, Ga:{z:31,mass:69.723}, Ge:{z:32,mass:72.63}, As:{z:33,mass:74.922}, Se:{z:34,mass:78.971},
+  Br:{z:35,mass:79.904}, Kr:{z:36,mass:83.798}
+};
+// Map positions in periodic table grid (rows 1-4, columns 1-18)
+const tablePos = {
+  H:{r:1,c:1}, He:{r:1,c:18},
+  Li:{r:2,c:1}, Be:{r:2,c:2}, B:{r:2,c:13}, C:{r:2,c:14}, N:{r:2,c:15}, O:{r:2,c:16}, F:{r:2,c:17}, Ne:{r:2,c:18},
+  Na:{r:3,c:1}, Mg:{r:3,c:2}, Al:{r:3,c:13}, Si:{r:3,c:14}, P:{r:3,c:15}, S:{r:3,c:16}, Cl:{r:3,c:17}, Ar:{r:3,c:18},
+  K:{r:4,c:1}, Ca:{r:4,c:2}, Sc:{r:4,c:3}, Ti:{r:4,c:4}, V:{r:4,c:5}, Cr:{r:4,c:6}, Mn:{r:4,c:7}, Fe:{r:4,c:8},
+  Co:{r:4,c:9}, Ni:{r:4,c:10}, Cu:{r:4,c:11}, Zn:{r:4,c:12}, Ga:{r:4,c:13}, Ge:{r:4,c:14}, As:{r:4,c:15}, Se:{r:4,c:16}, Br:{r:4,c:17}, Kr:{r:4,c:18}
+};
+
+// Helper gcd and lcm
+function gcd(a,b){ a=Math.abs(a); b=Math.abs(b); while(b){ const t=b; b=a%b; a=t; } return a; }
+function lcm(a,b){ return a/gcd(a,b)*b; }
+
+// Convert float to fraction
+function toFraction(x){
+  const tolerance = 1e-8;
+  let h1=1, h2=0, k1=0, k2=1;
+  let b = x;
+  while(true){
+    const a = Math.floor(b);
+    const temp = h1; h1 = a*h1 + h2; h2 = temp;
+    const temp2 = k1; k1 = a*k1 + k2; k2 = temp2;
+    const frac = h1/k1;
+    if(Math.abs(frac - x) < tolerance || !isFinite(b)) break;
+    b = 1/(b - a);
+  }
+  return {num:h1, den:k1};
+}
+
+// Parse formula into element counts
+function parseFormula(formula){
+  formula = formula.replace(/[₀₁₂₃₄₅₆₇₈₉]/g, ch=>"0123456789"["₀₁₂₃₄₅₆₇₈₉".indexOf(ch)]);
+  const stack = [{}];
+  let elem = ""; let numStr = "";
+  for(let i=0;i<formula.length;i++){
+    const ch = formula[i];
+    if(ch === '(' || ch === '['){
+      stack.unshift({});
+    } else if(ch === ')' || ch === ']'){
+      // parse multiplier
+      let j=i+1; let mulStr="";
+      while(j < formula.length && /[0-9]/.test(formula[j])){ mulStr += formula[j]; j++; }
+      const mul = mulStr ? parseInt(mulStr,10) : 1;
+      const group = stack.shift();
+      for(const el in group){
+        stack[0][el] = (stack[0][el]||0) + group[el]*mul;
+      }
+      i = j-1;
+    } else if(/[A-Z]/.test(ch)){
+      if(elem){
+        const count = numStr ? parseInt(numStr,10) : 1;
+        stack[0][elem] = (stack[0][elem]||0) + count;
+      }
+      elem = ch;
+      numStr="";
+    } else if(/[a-z]/.test(ch)){
+      elem += ch;
+    } else if(/[0-9]/.test(ch)){
+      numStr += ch;
+    } else {
+      // ignore spaces, charges, state
+    }
+  }
+  if(elem){
+    const count = numStr ? parseInt(numStr,10) : 1;
+    stack[0][elem] = (stack[0][elem]||0) + count;
+  }
+  return stack[0];
+}
+
+// Parse equation into lists of reactants and products
+function parseEquation(eqn){
+  const parts = eqn.split(/→|->|=>|=/);
+  if(parts.length !== 2){
+    throw new Error("Equation must separate reactants and products with an arrow.");
+  }
+  const reactants = parts[0].split('+').map(s=>s.trim()).filter(Boolean);
+  const products = parts[1].split('+').map(s=>s.trim()).filter(Boolean);
+  return {reactants, products};
+}
+
+// Solve for stoichiometric coefficients (matrix*coeffs=0)
+function solveStoichiometry(matrix){
+  const m = matrix.length;
+  const n = matrix[0].length;
+  const A = matrix.map(r=>r.slice());
+  let rank=0;
+  const pivotCols=[];
+  for(let col=0; col<n; col++){
+    // find pivot
+    let pRow=-1;
+    for(let r=rank; r<m; r++){
+      if(Math.abs(A[r][col])>1e-9){ pRow=r; break; }
+    }
+    if(pRow<0) continue;
+    // swap
+    [A[rank], A[pRow]] = [A[pRow], A[rank]];
+    const pivot = A[rank][col];
+    for(let c=col;c<n;c++){ A[rank][c] /= pivot; }
+    for(let r=0;r<m;r++){
+      if(r===rank) continue;
+      const factor=A[r][col];
+      for(let c=col;c<n;c++){
+        A[r][c] -= factor*A[rank][c];
+      }
+    }
+    pivotCols.push(col);
+    rank++;
+    if(rank===m) break;
+  }
+  // find free vars
+  const freeVars=[];
+  for(let c=0;c<n;c++){
+    if(!pivotCols.includes(c)) freeVars.push(c);
+  }
+  if(freeVars.length===0){
+    return Array(n).fill(1);
+  }
+  const sol = Array(n).fill(0);
+  const free=freeVars[0];
+  sol[free]=1;
+  for(let i=pivotCols.length-1;i>=0;i--){
+    const col=pivotCols[i];
+    let sum=0;
+    for(const fv of freeVars){
+      sum += A[i][fv]*sol[fv];
+    }
+    sol[col] = -sum;
+  }
+  // convert to integers
+  const fracs = sol.map(toFraction);
+  let denomLCM=1;
+  fracs.forEach(fr=>{ denomLCM = lcm(denomLCM, fr.den); });
+  const ints = fracs.map(fr => fr.num*(denomLCM/fr.den));
+  // make positive
+  let sgn=0;
+  for(const v of ints){ if(v!==0){ sgn = v>0 ? 1 : -1; break; } }
+  if(sgn<0){
+    for(let i=0;i<ints.length;i++){ ints[i] = -ints[i]; }
+  }
+  ints.forEach((v,i)=>{ if(v===0) ints[i]=1; });
+  return ints;
+}
+
+// Generate periodic table HTML
+function ptableHTML(elementsInPlay, highlightOnly=false){
+  const rows=4; const cols=18;
+  const grid= Array.from({length: rows}, () => Array(cols).fill(null));
+  for(const sym in tablePos){
+    const pos = tablePos[sym];
+    if(pos.r<=rows && pos.c<=cols){
+      grid[pos.r-1][pos.c-1] = sym;
+    }
+  }
+  let html = '<div class="ptable">';
+  for(let r=0;r<rows;r++){
+    for(let c=0;c<cols;c++){
+      const sym = grid[r][c];
+      if(sym){
+        const on = elementsInPlay.includes(sym);
+        const dim = highlightOnly && !on;
+        const cls = "el"+(on?" on":"")+(dim?" dim":"");
+        let meta = "&nbsp;";
+        if(on && periodicData[sym]){
+          const z = periodicData[sym].z;
+          const mass = periodicData[sym].mass;
+          meta = `Z=${z} • ${mass.toFixed(2)} g/mol`;
+        }
+        html += `<div class="${cls}"><div class="sym">${sym}</div><div class="meta">${meta}</div></div>`;
+      } else {
+        html += '<div class="el dim" style="background:transparent;border-color:transparent;"></div>';
+      }
+    }
+  }
+  html += '</div>';
+  return html;
+}
+
+// Application state and helpers
+let unlocked = 1;
+
+function refreshLocks(){
+  for(let i=1;i<=5;i++){
+    const det = document.getElementById("L"+i);
+    const badge = document.getElementById("b"+i);
+    const isUnlocked = i<=unlocked;
+    det.style.opacity = isUnlocked ? "1" : ".5";
+    det.style.pointerEvents = isUnlocked ? "auto" : "none";
+    badge.textContent = isUnlocked ? (i===unlocked?"unlocked":"done") : "locked";
+    if(!isUnlocked) det.removeAttribute("open");
+  }
+  // open current layer
+  document.getElementById("L"+unlocked).setAttribute("open","open");
+}
+
+function updateAll(){
+  const eqnInput = document.getElementById("rxn").value.trim();
+  const show1 = document.getElementById("show1").value === "1";
+  // parse equation and update balanced view and solute options
+  let react=[], prod=[], coeffs=[];
+  try{
+    const {reactants, products} = parseEquation(eqnInput);
+    react = reactants; prod = products;
+    // compute element counts
+    const allElements = new Set();
+    const counts = [];
+    // columns: reactants + products
+    const formulas = react.concat(prod);
+    const formulasCounts = formulas.map(f => parseFormula(f));
+    formulasCounts.forEach(ct => { for(const el in ct){ allElements.add(el); } });
+    // create matrix rows per element
+    for(const el of allElements){
+      const row = [];
+      formulasCounts.forEach((ct, idx) => {
+        const count = ct[el] || 0;
+        // reactants positive, products negative
+        row.push(idx < react.length ? count : -count);
+      });
+      counts.push(row);
+    }
+    coeffs = solveStoichiometry(counts);
+    // update balanced equation string
+    let viewParts=[];
+    for(let i=0;i<react.length;i++){
+      const coef = coeffs[i];
+      const prefix = (show1 || coef!==1) ? coef+" " : "";
+      viewParts.push(prefix + react[i]);
+    }
+    viewParts.push("→");
+    for(let j=0;j<prod.length;j++){
+      const coef = coeffs[react.length + j];
+      const prefix = (show1 || coef!==1) ? coef+" " : "";
+      viewParts.push(prefix + prod[j]);
+    }
+    document.getElementById("balView").textContent = viewParts.join(" + ");
+    // update solute select options based on formulas
+    const soluteSelect = document.getElementById("solute");
+    const prevVal = soluteSelect.value;
+    soluteSelect.innerHTML="";
+    formulas.forEach(f=>{
+      const option = document.createElement("option");
+      option.value = f;
+      option.textContent = f;
+      soluteSelect.appendChild(option);
+    });
+    if(prevVal && formulas.includes(prevVal)){
+      soluteSelect.value = prevVal;
+    } else if(prod.length>0){
+      soluteSelect.value = prod[0];
+    }
+    // update periodic table
+    const elementsInPlay = [];
+    formulasCounts.forEach(ct=>{ for(const el in ct){ elementsInPlay.push(el); } });
+    document.getElementById("ptableFull").innerHTML = ptableHTML(elementsInPlay,false);
+    document.getElementById("ptableColl").innerHTML = ptableHTML(elementsInPlay,true);
+    // update molar mass
+    const solute = soluteSelect.value;
+    let mass=0;
+    const formulaCounts = parseFormula(solute);
+    for(const el in formulaCounts){
+      if(!periodicData[el]) throw new Error("Unknown element "+el);
+      mass += periodicData[el].mass * formulaCounts[el];
+    }
+    document.getElementById("mmOut").textContent = mass.toFixed(3)+" g/mol";
+    // update target moles
+    let M = parseFloat(document.getElementById("tM").value);
+    if(isNaN(M) || M<=0) M = 0.1;
+    let V = parseFloat(document.getElementById("tV").value);
+    if(isNaN(V) || V<=0) V = 1.0;
+    const n = M * V;
+    document.getElementById("nNeed").textContent = n.toFixed(4)+" mol";
+    // update prep
+    const method = document.getElementById("method").value;
+    const M1 = parseFloat(document.getElementById("M1").value);
+    const stockBox = document.getElementById("stockBox");
+    const prepOut = document.getElementById("prepOut");
+    const prepNote = document.getElementById("prepNote");
+    if(method === "grams"){
+      stockBox.style.display = "none";
+      const grams = n * mass;
+      prepOut.textContent = grams.toFixed(4)+" g "+ solute;
+      prepNote.textContent = `Weigh ${grams.toFixed(4)} g of ${solute}. Dissolve in roughly 70% of the final volume, then dilute to ${V.toFixed(2)} L.`;
+    } else {
+      stockBox.style.display = "block";
+      const Mstock = (!isNaN(M1) && M1>0) ? M1 : 1.0;
+      const V1 = (M * V) / Mstock;
+      prepOut.textContent = (V1*1000).toFixed(2)+" mL stock";
+      prepNote.textContent = `Measure ${(V1*1000).toFixed(2)} mL of ${Mstock.toFixed(3)} M stock. Transfer to a volumetric flask and dilute to ${V.toFixed(2)} L (M₁V₁=M₂V₂).`;
+    }
+    // update protocol
+    document.getElementById("pTitle").textContent = `Preparation of ${M.toFixed(3)} mol/L ${solute} (aq)`;
+    const procedure = (method==="grams")
+      ? `A ${V.toFixed(2)} L volumetric flask (or equivalent container) is prepared. ${ (n*mass).toFixed(4) } g of ${solute} is weighed and transferred quantitatively into the flask. Approximately 60–80% of the final volume of deionized water is added and swirled until completely dissolved. The solution is then diluted to the mark with deionized water and mixed thoroughly.`
+      : `A ${V.toFixed(2)} L volumetric flask (or equivalent container) is prepared. Using a volumetric pipette, ${( (M*V)/((!isNaN(M1) && M1>0)?M1:1.0)*1000 ).toFixed(2)} mL of ${M1.toFixed(3)} mol/L ${solute} stock solution is transferred into the flask. The solution is then diluted to the mark with deionized water and mixed thoroughly (M₁V₁=M₂V₂).`;
+    document.getElementById("pBody").textContent = procedure;
+    document.getElementById("pInputs").textContent = `Equation: ${eqnInput} | Solute: ${solute} | Target: ${M.toFixed(3)} M, ${V.toFixed(2)} L | Method: ${method}`;
+    // update chalkboard
+    const chalkLines = [];
+    chalkLines.push("Bagaxtrix chalk steps:");
+    chalkLines.push("");
+    chalkLines.push("Balanced: "+ document.getElementById("balView").textContent);
+    chalkLines.push("");
+    chalkLines.push(`Molar mass: M(${solute}) = ${mass.toFixed(3)} g/mol`);
+    chalkLines.push(`Target: M = ${M.toFixed(3)} mol/L, V = ${V.toFixed(2)} L`);
+    chalkLines.push(`Moles needed: n = M × V = ${M.toFixed(3)} × ${V.toFixed(2)} = ${n.toFixed(4)} mol`);
+    if(method==="grams"){
+      chalkLines.push(`Mass needed: m = n × MM = ${n.toFixed(4)} × ${mass.toFixed(3)} = ${(n*mass).toFixed(4)} g`);
+    } else {
+      const Mstock = (!isNaN(M1) && M1>0) ? M1 : 1.0;
+      const V1 = (M*V)/Mstock;
+      chalkLines.push("Dilution: M₁V₁ = M₂V₂");
+      chalkLines.push(`V₁ = (M₂×V₂)/M₁ = (${M.toFixed(3)}×${V.toFixed(2)}) / ${Mstock.toFixed(3)} = ${(V1*1000).toFixed(2)} mL`);
+    }
+    document.getElementById("chalk").textContent = chalkLines.join("\n");
+  } catch(err){
+    document.getElementById("balView").textContent = "⚠️ Unable to parse or balance equation";
+    document.getElementById("ptableFull").innerHTML = "";
+    document.getElementById("ptableColl").innerHTML = "";
+    document.getElementById("mmOut").textContent = "—";
+    document.getElementById("nNeed").textContent = "—";
+    document.getElementById("prepOut").textContent = "—";
+    document.getElementById("prepNote").textContent = err.message;
+    document.getElementById("pBody").textContent = "—";
+    document.getElementById("pInputs").textContent = "—";
+    document.getElementById("chalk").textContent = "—";
+  }
+}
+
+// event listeners
+function init(){
+  refreshLocks();
+  updateAll();
+  const inputs = ["rxn","show1","tM","tV","solute","method","M1"];
+  inputs.forEach(id=>{
+    const el = document.getElementById(id);
+    if(el){
+      el.addEventListener("input", updateAll);
+      el.addEventListener("change", updateAll);
+    }
+  });
+  // buttons
+  document.getElementById("btnNext").addEventListener("click", ()=>{
+    unlocked = Math.min(5, unlocked+1);
+    refreshLocks();
+  });
+  document.getElementById("btnPeek").addEventListener("click", ()=>{
+    unlocked = 5;
+    refreshLocks();
+    window.scrollTo({top:0, behavior:"smooth"});
+  });
+  document.getElementById("btnReset").addEventListener("click", ()=>{
+    unlocked = 1;
+    refreshLocks();
+  });
+  document.getElementById("btnCopy").addEventListener("click", async ()=>{
+    const title = document.getElementById("pTitle").textContent;
+    const body = document.getElementById("pBody").textContent;
+    const inputs = document.getElementById("pInputs").textContent;
+    const notes = document.getElementById("pNotes").textContent;
+    const text = `${title}\n\nProcedure:\n${body}\n\nInputs:\n${inputs}\n\nNotes:\n${notes}`;
+    try {
+      await navigator.clipboard.writeText(text);
+      alert("Protocol copied to clipboard.");
+    } catch(e) {
+      alert("Copy failed. You may need to allow clipboard access.");
+    }
+  });
+}
+document.addEventListener("DOMContentLoaded", init);
+</script>
+</body>
+</html>
