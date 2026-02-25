@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>About | Furious Acid</title>
+  <style>
+    :root{
+      --bg:#07070a;
+      --panel:rgba(255,255,255,.06);
+      --panel2:rgba(255,255,255,.04);
+      --text:#f3f4f6;
+      --muted:rgba(243,244,246,.72);
+      --line:rgba(255,255,255,.10);
+      --shadow: 0 30px 70px rgba(0,0,0,.55);
+      --glow: 0 0 0 1px rgba(255,255,255,.08), 0 0 40px rgba(210,40,255,.10);
+      --brand1:#ff2bd6;
+      --brand2:#6d28ff;
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+      color:var(--text); background: var(--bg);
+      min-height:100vh; display:flex; align-items:center; justify-content:center; padding:28px 16px;
+    }
+    .wrap{width:min(900px,100%);}
+    .card{
+      background:linear-gradient(180deg, var(--panel), var(--panel2));
+      border:1px solid var(--line); border-radius:var(--radius); padding:36px;
+    }
+    .top{display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--line); padding-bottom:20px; margin-bottom:30px;}
+    .nav{display:flex; gap:10px;}
+    .btn{padding:10px 14px; border-radius:14px; border:1px solid var(--line); background:rgba(0,0,0,.25); text-decoration:none; font-size:14px;}
+    .content{line-height:1.7; color:var(--muted);}
+    h3{color:var(--brand1); margin-top:30px;}
+    strong{color:var(--text);}
+    .book-list{background:rgba(0,0,0,.2); border:1px solid var(--line); border-radius:12px; padding:20px; margin-top:20px;}
+    .book-item{margin-bottom:20px; padding-bottom:20px; border-bottom:1px solid rgba(255,255,255,.05);}
+    .book-item:last-child{border:none; margin:0; padding:0;}
+    .book-title{display:block; color:var(--text); font-weight:bold; margin-bottom:5px;}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="card">
+      <div class="top">
+        <div>
+          <h1 style="margin:0; font-size:26px;">The Architect</h1>
+          <p style="margin:4px 0 0; color:var(--brand1); text-transform:uppercase; font-size:12px; letter-spacing:1px;">Furious Acid Research</p>
+        </div>
+        <nav class="nav">
+          <a class="btn" href="index.html">← Home</a>
+        </nav>
+      </div>
+
+      <div class="content">
+        <h3>The Origin</h3>
+        <p>Born from a theoretical physics concept, <strong>Furious Acid</strong> was a hypothetical superacid designed to protonate any known element. This concept of dissolving all barriers became the voice of the <strong>Purple Rabbit</strong> on TikTok in 2020. The project went viral for its "How It’s Made" clarity on chemical procedures—specifically a three-step CBD to THC conversion—which ultimately led to the original channel being banned for being <em>too</em> direct.</p>
+
+        <h3>The Scientist</h3>
+        <p>Beyond the animation is a <strong>Material Science Research Chemist</strong> specializing in nanotechnology, nanocrystals, and graphene oxide. With experience spanning hundreds of experiments and government contracts, my work focuses on the intersection of materials and medicinal chemistry. <em>Furious Acid</em> grows through zero paid promotion; it is a 100% organic community of those seeking unfiltered technical truth.</p>
+
+        <h3>The Library</h3>
+        <div class="book-list">
+          <div class="book-item">
+            <span class="book-title">Book I: The Marijuana Manual</span>
+            An IKEA-style visual guide that stripped away jargon to teach advanced technical mechanics through intuition.
+          </div>
+          <div class="book-item">
+            <span class="book-title">Book II: Hidden Passages</span>
+            The master key. It provides the technical links and theoretical "blanks" that had to be left out of video content due to platform censorship.
+          </div>
+          <div class="book-item">
+            <span class="book-title">Book III: Indoor Cultivation - Coca, Khat & Kratom</span>
+            A theoretical blueprint applying research on 22/2 light cycles and environmental stressor modeling. Using <strong>bootstrap analysis</strong>, I demonstrated that secondary metabolites remain dormant until specific stressors (mimicking monsoons or UV shifts) are introduced.
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
