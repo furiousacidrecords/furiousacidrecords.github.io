@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Sample - Indoor Cultivation: Coca, Khat and Kratom</title>
+  <style>
+    :root{
+      --bg:#07070a; --panel:rgba(255,255,255,.06); --panel2:rgba(255,255,255,.04);
+      --text:#f3f4f6; --muted:rgba(243,244,246,.72); --line:rgba(255,255,255,.10);
+      --brand1:#ff2bd6; --brand2:#6d28ff; --radius:18px;
+    }
+    body{
+      margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      color:var(--text); background: var(--bg);
+      display:flex; justify-content:center; padding: 40px 16px;
+    }
+    .reading-wrap {
+      width: min(900px, 100%);
+      background: linear-gradient(180deg, var(--panel), var(--panel2));
+      border: 1px solid var(--line); border-radius: var(--radius);
+      padding: 40px; box-shadow: 0 30px 70px rgba(0,0,0,.55);
+    }
+    .back-btn {
+      display: inline-block; margin-bottom: 30px; padding: 10px 15px;
+      background: rgba(0,0,0,0.3); border: 1px solid var(--line);
+      border-radius: 8px; color: var(--text); text-decoration: none;
+      transition: background 0.2s;
+    }
+    .back-btn:hover { background: rgba(255,255,255,0.1); }
+    h1 { margin-top: 0; font-size: 28px; border-bottom: 1px solid var(--line); padding-bottom: 15px; }
+    
+    .page-gallery {
+      display: flex; flex-direction: column; align-items: center;
+      gap: 30px; margin-bottom: 40px; margin-top: 30px;
+    }
+    .page-image {
+      width: 100%; max-width: 600px; border-radius: 8px;
+      border: 1px solid var(--line); box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      transition: transform 0.3s ease, box-shadow 0.3s ease; background-color: #fff; 
+    }
+    .page-image:hover {
+      transform: scale(1.1); 
+      box-shadow: 0 0 0 2px rgba(255,255,255,.2), 0 0 50px rgba(210,40,255,.3); 
+      z-index: 10; position: relative;
+    }
+    .copyright {
+      font-size: 12px; color: var(--muted); text-align: center; margin-top: 50px;
+      border-top: 1px solid var(--line); padding-top: 20px;
+    }
+    .buy-box { text-align: center; margin-top: 40px; }
+    .btn-buy {
+      display: inline-block; padding: 15px 30px; border-radius: 14px;
+      background: linear-gradient(135deg, var(--brand1), var(--brand2));
+      color: white; text-decoration: none; font-weight: bold; font-size: 18px;
+      transition: transform 0.2s;
+    }
+    .btn-buy:hover { transform: scale(1.05); }
+
+    @media (max-width: 560px) {
+        .reading-wrap { padding: 20px; }
+        .page-image:hover { transform: none; } 
+    }
+  </style>
+</head>
+<body>
+
+  <div class="reading-wrap">
+    <a href="index.html" class="back-btn">← Back to Home</a>
+    
+    <h1>Indoor Cultivation: Coca, Khat and Kratom - Preview</h1>
+    
+    <div class="page-gallery">
+      <img src="coca-page1.png" alt="Page 1" class="page-image">
+      <img src="coca-page2.png" alt="Page 2" class="page-image">
+      <img src="coca-page3.png" alt="Page 3" class="page-image">
+    </div>
+
+    <div class="buy-box">
+      <a href="https://www.amazon.com/Indoor-Cultivation-Coca-Khat-Kratom-ebook/dp/B0GPHFQKCV" class="btn-buy">Buy the Full Book on Amazon</a>
+    </div>
+
+    <div class="copyright">
+      &copy; 2026 Furious Acid Publication. All rights reserved. Do not copy or distribute without permission.
+    </div>
+  </div>
+
+</body>
+</html>
