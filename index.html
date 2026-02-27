@@ -7,6 +7,7 @@
   <meta name="description" content="Furious Acid Page" />
 
   <style>
+    /* --- YOUR NEON THEME COLORS --- */
     :root{
       --bg:#07070a;
       --panel:rgba(255,255,255,.06);
@@ -33,15 +34,63 @@
         radial-gradient(900px 700px at 50% 90%, rgba(255,255,255,.06), transparent 60%),
         var(--bg);
       min-height:100vh;
+      
+      /* Column layout to stack the banner, carousel, and content */
       display:flex;
+      flex-direction: column;
       align-items:center;
-      justify-content:center;
-      padding:28px 16px;
+      justify-content: flex-start;
+      padding-bottom: 40px;
     }
 
-    a{color:inherit}
+    a{color:inherit; text-decoration:none;}
 
-    .wrap{width:min(980px,100%);}
+    /* --- 1. THE BANNER (White to match your rabbit) --- */
+    .banner {
+      width: 100%;
+      height: 160px; 
+      background-color: #ffffff; /* Makes the rabbit image blend perfectly */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-bottom: 4px solid var(--brand2); 
+      padding: 10px;
+    }
+    .banner img {
+      max-height: 100%;
+      max-width: 100%;
+      object-fit: contain;
+    }
+
+    /* --- 2. THE CAROUSEL (3 Books) --- */
+    .carousel-container {
+      position: relative;
+      width: 100%;
+      max-width: 1400px;
+      margin: 0 auto;
+      overflow: hidden;
+      background-color: #000;
+      border-bottom: 2px solid var(--line);
+    }
+    .carousel-slide {
+      display: flex;
+      width: 300%;
+      transition: transform 0.6s ease-in-out;
+    }
+    .carousel-slide img {
+      width: 33.3333%;
+      height: 500px; 
+      object-fit: contain; /* Keeps the whole book cover visible */
+      background-color: #111; /* Dark background behind books */
+      padding: 20px;
+    }
+
+    /* --- 3. YOUR MAIN CONTENT & FORUM LOGIN AREA --- */
+    .wrap{
+      width:min(980px,100%);
+      margin-top: 40px; 
+      padding: 0 16px;
+    }
 
     .card{
       background:linear-gradient(180deg, var(--panel), var(--panel2));
@@ -49,132 +98,111 @@
       border-radius:var(--radius);
       box-shadow:var(--shadow);
       overflow:hidden;
+      margin-bottom: 30px;
     }
 
+    /* The Forum Login / Sign-up Section */
+    .forum-section {
+      text-align: center;
+      padding: 50px 20px;
+      background: rgba(0,0,0,0.4);
+      border-bottom: 1px solid var(--line);
+    }
+    .forum-section h2 { margin-top: 0; font-size: 32px; letter-spacing: 1px; }
+    .forum-section p { color: var(--muted); margin-bottom: 30px; font-size: 16px; }
+    
+    .btn-massive {
+      display: inline-block;
+      padding: 20px 50px;
+      border-radius: var(--radius);
+      background: linear-gradient(135deg, var(--brand1), var(--brand2));
+      box-shadow: var(--glow);
+      font-weight: 800;
+      font-size: 22px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #fff;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-massive:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 0 1px rgba(255,255,255,.15), 0 0 60px rgba(210,40,255,.30);
+    }
+
+    /* Original Inner Layout */
     .inner{padding:26px;}
-
     .top{
-      display:flex;
-      gap:16px;
-      align-items:center;
-      justify-content:space-between;
-      flex-wrap:wrap;
-      margin-bottom:18px;
+      display:flex; gap:16px; align-items:center;
+      justify-content:space-between; flex-wrap:wrap; margin-bottom:18px;
     }
-
-    .brand{
-      display:flex;
-      gap:14px;
-      align-items:center;
-    }
-
+    .brand{ display:flex; gap:14px; align-items:center; }
     .logo{
-      width:54px;
-      height:54px;
-      border-radius:16px;
+      width:54px; height:54px; border-radius:16px;
       background: linear-gradient(135deg, var(--brand1), var(--brand2));
-      box-shadow: var(--glow);
-      display:grid;
-      place-items:center;
-      font-weight:800;
+      box-shadow: var(--glow); display:grid; place-items:center; font-weight:800;
     }
-
-    .title h1{
-      margin:0;
-      font-size:30px;
-    }
-
-    .title p{
-      margin:6px 0 0;
-      color:var(--muted);
-    }
-
-    .nav{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-    }
-
+    .title h1{ margin:0; font-size:30px; }
+    .title p{ margin:6px 0 0; color:var(--muted); }
+    
+    .nav{ display:flex; gap:10px; flex-wrap:wrap; }
     .btn{
-      padding:10px 14px;
-      border-radius:14px;
-      border:1px solid var(--line);
-      background: rgba(0,0,0,.25);
-      text-decoration:none;
-      font-weight:650;
-      font-size:14px;
+      padding:10px 14px; border-radius:14px; border:1px solid var(--line);
+      background: rgba(0,0,0,.25); font-weight:650; font-size:14px;
     }
-
     .btn.primary{
-      border:none;
-      background: linear-gradient(135deg, var(--brand1), var(--brand2));
+      border:none; background: linear-gradient(135deg, var(--brand1), var(--brand2));
       box-shadow: var(--glow);
     }
 
-    .list{
-      display:flex;
-      flex-direction:column;
-      gap:14px;
-      margin-top:14px;
-    }
-
+    /* Original Book List */
+    .list{ display:flex; flex-direction:column; gap:14px; margin-top:14px; }
     .release{
-      display:flex;
-      gap:16px;
-      padding:14px;
-      border-radius:16px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(0,0,0,.22);
-      align-items:center;
-      text-decoration:none;
-      transition:.12s;
+      display:flex; gap:16px; padding:14px; border-radius:16px;
+      border:1px solid rgba(255,255,255,.10); background: rgba(0,0,0,.22);
+      align-items:center; transition:.12s;
     }
-
-    .release:hover{
-      transform: translateY(-2px);
-      border-color: rgba(255,255,255,.18);
-    }
-
+    .release:hover{ transform: translateY(-2px); border-color: rgba(255,255,255,.18); }
     .cover{
-      width:140px;
-      aspect-ratio: 2 / 3;
-      border-radius:14px;
-      overflow:hidden;
-      border:1px solid rgba(255,255,255,.12);
-      box-shadow: 0 18px 40px rgba(0,0,0,.55);
+      width:140px; aspect-ratio: 2 / 3; border-radius:14px; overflow:hidden;
+      border:1px solid rgba(255,255,255,.12); box-shadow: 0 18px 40px rgba(0,0,0,.55);
       flex:0 0 auto;
     }
-
-    .cover img{
-      width:100%;
-      height:100%;
-      object-fit:cover;
-      display:block;
-    }
-
-    .meta h2{
-      margin:0;
-      font-size:18px;
-    }
-
-    .meta p{
-      margin:8px 0 0;
-      color:var(--muted);
-      font-size:14px;
-    }
+    .cover img{ width:100%; height:100%; object-fit:cover; display:block; }
+    .meta h2{ margin:0; font-size:18px; }
+    .meta p{ margin:8px 0 0; color:var(--muted); font-size:14px; }
 
     @media (max-width: 560px){
       .release{flex-direction:column; align-items:flex-start;}
       .cover{width:100%; max-width:340px;}
+      .btn-massive { width: 100%; padding: 15px 20px; font-size: 18px;}
     }
   </style>
 </head>
 
 <body>
+
+  <header class="banner">
+    <img src="banner.png" alt="Furious Acid Records">
+  </header>
+
+  <section class="carousel-container">
+    <div class="carousel-slide" id="carouselSlide">
+      <img src="medicine.jpg" alt="The Chemistry Behind Medicine">
+      <img src="marijuana.jpg" alt="Marijuana Manual">
+      <img src="coca.jpg" alt="Indoor Cultivation: Coca">
+    </div>
+  </section>
+
   <main class="wrap">
     <section class="card">
-      <div class="inner">
+      
+      <div class="forum-section">
+        <h2>Enter The Hub</h2>
+        <p>Login or sign up to access the official Furious Acid Chat Hub.</p>
+        <a href="https://acid-chat-hub.lovable.app/forum" class="btn-massive">Log In / Register</a>
+      </div>
 
+      <div class="inner">
         <div class="top">
           <div class="brand">
             <div class="logo">FA</div>
@@ -187,17 +215,13 @@
           <nav class="nav">
             <a class="btn primary" href="#releases">Releases</a>
             <a class="btn" href="aboutme.html">About Me</a>
-            <a class="btn" href="https://acid-chat-hub.lovable.app">Furious Acid Forum</a>
-            <a class="btn" href="https://furiousacid.com/calc">Calc</a>
+            <a class="btn" href="calcstep.html">Calc</a>
           </nav>
         </div>
 
         <div id="releases" class="list">
-
           <a class="release" href="https://www.amazon.com/Chemistry-Behind-Medicine-Drug-Discovery/dp/B0GJPYPJTZ">
-            <div class="cover">
-              <img src="medicine.jpg">
-            </div>
+            <div class="cover"><img src="medicine.jpg" alt="Medicine Book Cover"></div>
             <div class="meta">
               <h2>The Chemistry Behind Medicine</h2>
               <p>Volume 1</p>
@@ -205,9 +229,7 @@
           </a>
 
           <a class="release" href="https://www.amazon.com/Marijuana-Manual-Technical-Notebook-Publication/dp/B0G8VLPS1K">
-            <div class="cover">
-              <img src="marijuana.jpg">
-            </div>
+            <div class="cover"><img src="marijuana.jpg" alt="Marijuana Book Cover"></div>
             <div class="meta">
               <h2>Marijuana Manual</h2>
               <p>Technical Notebook Edition</p>
@@ -215,19 +237,31 @@
           </a>
 
           <a class="release" href="https://www.amazon.com/Indoor-Cultivation-Coca-Khat-Kratom-ebook/dp/B0GPHFQKCV">
-            <div class="cover">
-              <img src="coca.jpg">
-            </div>
+            <div class="cover"><img src="coca.jpg" alt="Coca Book Cover"></div>
             <div class="meta">
               <h2>Indoor Cultivation: Coca, Khat and Kratom</h2>
               <p>Furious Acid Publication</p>
             </div>
           </a>
-
         </div>
-
       </div>
+
     </section>
   </main>
+
+  <script>
+    const slide = document.getElementById('carouselSlide');
+    let counter = 0;
+    const totalImages = 3;
+
+    setInterval(() => {
+        counter++;
+        if (counter >= totalImages) {
+            counter = 0;
+        }
+        slide.style.transform = `translateX(${-counter * 33.3333}%)`;
+    }, 4500); // Slides every 4.5 seconds
+  </script>
+
 </body>
 </html>
