@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jurema Crocodile Ultra | Furious Acid</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap');
+        :root {
+            --brand1: #ff2bd6;
+            --brand2: #6d28ff;
+            --tech-green: #00ff9d;
+        }
+        body { background-color: #020406; color: var(--tech-green); font-family: 'JetBrains+Mono', monospace; overflow: hidden; height: 100vh; margin: 0; }
+        .crocodile-frame {
+            background: rgba(0, 15, 10, 0.85); backdrop-filter: blur(10px);
+            border: 2px solid rgba(0, 255, 157, 0.3);
+            box-shadow: 0 0 40px rgba(0,0,0,0.9), inset 0 0 30px rgba(0, 255, 157, 0.1);
+            clip-path: polygon(20px 0, calc(100% - 20px) 0, 100% 20px, 100% calc(100% - 20px), calc(100% - 20px) 100%, 20px 100%, 0 calc(100% - 20px), 0 20px);
+        }
+        .scene-layer {
+            position: absolute; inset: 0; opacity: 0.5;
+            transition: all 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+            filter: saturate(0.8) contrast(1.2); z-index: 0;
+        }
+        @keyframes cinematic-shift {
+            0% { transform: scale(1.1) translate(0, 0); }
+            50% { transform: scale(1.2) translate(-2%, 1%); }
+            100% { transform: scale(1.1) translate(0, 0); }
+        }
+        .panning { animation: cinematic-shift 30s linear infinite; }
+        .scanlines {
+            position: absolute; inset: 0; pointer-events: none; z-index: 50;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%);
+            background-size: 100% 4px;
+        }
+    </style>
+</head>
+<body>
+    <div id="root" class="w-full h-full flex items-center justify-center p-6"></div>
+    <script type="text/babel">
+        const { useState, useEffect, useMemo } = React;
+        const PROTOCOLS = {
+            PANAMA: { id: 'PANAMA', label: 'Panama Basin', image: 'file-5QksKEvoM0TlF6d7u66UTcuP-3d0b2321-c548-483b-b922-4e9957e8cc8f.webp', temp: 29, hum: 74, ppfd: 420 },
+            ARID: { id: 'ARID', label: 'Arid Scrub', image: 'file-oMNcvE9SiKnFqwLlEY3qNRjv-e0b724c7-9e6e-43de-81d6-03a29d711bc8.webp', temp: 33, hum: 32, ppfd: 900 },
+            LAB: { id: 'LAB', label: 'FA Research Lab', image: 'file-UVwQ7Wkh8qAhAkgKKjdF2Y-96929395-f941-4401-a7fb-18b7d357607c.webp', temp: 26, hum: 62, ppfd: 650 }
+        };
+
+        const App = () => {
+            const [active, setActive] = useState(PROTOCOLS.LAB);
+            const [clock, setClock] = useState(0);
+
+            useEffect(() => {
+                const timer = setInterval(() => setClock(c => c + 1), 1000);
+                return () => clearInterval(timer);
+            }, []);
+
+            useEffect(() => { lucide.createIcons(); }, [active]);
+
+            return (
+                <div className="relative w-full h-full max-w-[1400px] max-h-[800px] crocodile-frame overflow-hidden">
+                    <div className="scanlines"></div>
+                    <div className="absolute inset-0 z-0 bg-black">
+                        <img key={active.image} src={active.image} className="scene-layer panning object-cover w-full h-full" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black opacity-60"></div>
+                    </div>
+
+                    <div className="relative z-10 h-full flex flex-col p-8">
+                        <div className="flex justify-between items-start mb-8">
+                            <div className="flex items-center gap-4">
+                                <div className="w-12 h-12 bg-[#00ff9d]/20 rounded border border-[#00ff9d] flex items-center justify-center font-bold">FA</div>
+                                <div>
+                                    <h1 className="text-2xl font-black italic tracking-tighter">JUREMA_CROCODILE</h1>
+                                    <p className="text-[10px] tracking-[0.3em] opacity-60 uppercase">Greenhouse Preload Active</p>
+                                </div>
+                            </div>
+                            <div className="flex gap-2">
+                                {Object.values(PROTOCOLS).map(p => (
+                                    <button key={p.id} onClick={() => setActive(p)} className={`px-4 py-2 text-[10px] font-bold border transition-all ${active.id === p.id ? 'bg-[#00ff9d] text-black border-[#00ff9d]' : 'bg-black/40 text-[#00ff9d] border-[#00ff9d]/30'}`}>
+                                        LOAD_{p.id}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="flex-1 grid grid-cols-12 gap-8 items-center">
+                            <div className="col-span-3 space-y-6">
+                                <Stat label="TEMP" value={active.temp} unit="°C" />
+                                <Stat label="HUMIDITY" value={active.hum} unit="%" />
+                                <div className="p-4 bg-[#00ff9d]/5 border-l-4 border-[#00ff9d]">
+                                    <span className="text-[9px] opacity-40 uppercase">VPD_PRESSURE</span>
+                                    <div className="text-3xl font-black">1.24 <span className="text-xs">kPa</span></div>
+                                </div>
+                            </div>
+
+                            <div className="col-span-6 flex justify-center items-end h-full pb-10">
+                                <svg viewBox="0 0 200 200" className="w-full max-h-[450px] drop-shadow-[0_0_30px_#00ff9d33]">
+                                    <path d="M 100 200 Q 105 150 100 80" stroke="#00ff9d" strokeWidth="4" fill="none" />
+                                    {[...Array(6)].map((_, i) => (
+                                        <g key={i} transform={`translate(100, ${180 - i*20})`}>
+                                            <path d={`M 0 0 Q ${25*(i%2?1:-1)} -10 ${50*(i%2?1:-1)} 0`} stroke="#00ff9d" strokeWidth="1.5" fill="none" />
+                                            {[...Array(8)].map((_, j) => (
+                                                <ellipse key={j} cx={j*6*(i%2?1:-1)} cy={0} rx="1.5" ry="4" fill="#00ff9d" opacity="0.8" />
+                                            ))}
+                                        </g>
+                                    ))}
+                                </svg>
+                            </div>
+
+                            <div className="col-span-3 space-y-6">
+                                <Stat label="PPFD" value={active.ppfd} unit="µmol" />
+                                <div className="h-32 bg-black/80 rounded-xl border border-[#00ff9d]/20 overflow-hidden">
+                                    <img src="20250206_1456_Dynamic Fluorescence Visuals_simple_compose_01jkedbx5ne59scrbdqkj4eh77.gif" className="w-full h-full object-cover mix-blend-screen opacity-70" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="mt-8 flex justify-between items-end border-t border-[#00ff9d]/20 pt-6">
+                            <span className="text-[10px] opacity-40 uppercase font-mono">System Clock: {clock}s // Ref: {active.label}</span>
+                            <div className="text-right">
+                                <span className="block text-[9px] opacity-40 uppercase">Botanical Target</span>
+                                <span className="text-lg font-black italic">MIMOSA_TENUIFLORA</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const Stat = ({ label, value, unit }) => (
+            <div>
+                <span className="text-[9px] font-bold opacity-40 uppercase tracking-widest block mb-1">{label}</span>
+                <div className="text-4xl font-black">{value}<span className="text-xs ml-1 opacity-50">{unit}</span></div>
+            </div>
+        );
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
