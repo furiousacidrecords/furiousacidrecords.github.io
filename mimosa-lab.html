@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jurema Crocodile Ultra | Furious Acid</title>
+    <title>Photoperiod & Diffusion Engine | Furious Acid</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -11,133 +11,337 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap');
+        
         :root {
-            --brand1: #ff2bd6;
-            --brand2: #6d28ff;
             --tech-green: #00ff9d;
+            --tech-purple: #8b5cf6;
+            --tech-amber: #f59e0b;
         }
-        body { background-color: #020406; color: var(--tech-green); font-family: 'JetBrains+Mono', monospace; overflow: hidden; height: 100vh; margin: 0; }
+
+        body { 
+            background-color: #030508; 
+            color: var(--tech-green); 
+            font-family: 'JetBrains+Mono', monospace; 
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+        }
+
         .crocodile-frame {
-            background: rgba(0, 15, 10, 0.85); backdrop-filter: blur(10px);
-            border: 2px solid rgba(0, 255, 157, 0.3);
-            box-shadow: 0 0 40px rgba(0,0,0,0.9), inset 0 0 30px rgba(0, 255, 157, 0.1);
-            clip-path: polygon(20px 0, calc(100% - 20px) 0, 100% 20px, 100% calc(100% - 20px), calc(100% - 20px) 100%, 20px 100%, 0 calc(100% - 20px), 0 20px);
+            background: rgba(5, 10, 15, 0.85);
+            backdrop-filter: blur(12px);
+            border: 2px solid rgba(0, 255, 157, 0.2);
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.9), inset 0 0 30px rgba(0, 255, 157, 0.05);
+            clip-path: polygon(
+                30px 0, calc(100% - 30px) 0, 100% 30px, 
+                100% calc(100% - 30px), calc(100% - 30px) 100%, 
+                30px 100%, 0 calc(100% - 30px), 0 30px
+            );
         }
-        .scene-layer {
-            position: absolute; inset: 0; opacity: 0.5;
-            transition: all 1.5s cubic-bezier(0.4, 0, 0.2, 1);
-            filter: saturate(0.8) contrast(1.2); z-index: 0;
-        }
-        @keyframes cinematic-shift {
-            0% { transform: scale(1.1) translate(0, 0); }
-            50% { transform: scale(1.2) translate(-2%, 1%); }
-            100% { transform: scale(1.1) translate(0, 0); }
-        }
-        .panning { animation: cinematic-shift 30s linear infinite; }
+
         .scanlines {
             position: absolute; inset: 0; pointer-events: none; z-index: 50;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%);
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
             background-size: 100% 4px;
         }
+
+        .btn-tech {
+            background: rgba(0, 255, 157, 0.05);
+            border: 1px solid rgba(0, 255, 157, 0.2);
+            transition: all 0.3s;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 10px 16px;
+            clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .btn-tech:hover { background: rgba(0, 255, 157, 0.15); border-color: var(--tech-green); }
+        .btn-tech.active-veg { background: rgba(0, 255, 157, 0.3); border-color: var(--tech-green); color: #fff; box-shadow: 0 0 15px rgba(0,255,157,0.4); }
+        .btn-tech.active-flower { background: rgba(245, 158, 11, 0.3); border-color: var(--tech-amber); color: #fff; box-shadow: 0 0 15px rgba(245,158,11,0.4); text-shadow: 0 0 5px var(--tech-amber); }
+        .btn-tech.active-reveg { background: rgba(139, 92, 246, 0.3); border-color: var(--tech-purple); color: #fff; box-shadow: 0 0 15px rgba(139,92,246,0.4); text-shadow: 0 0 5px var(--tech-purple); }
+
+        .glitch { text-shadow: 0 0 10px currentColor; }
     </style>
 </head>
 <body>
-    <div id="root" class="w-full h-full flex items-center justify-center p-6"></div>
+    <div id="root" class="w-full h-full p-4 md:p-8 flex items-center justify-center"></div>
+
     <script type="text/babel">
         const { useState, useEffect, useMemo } = React;
-        const PROTOCOLS = {
-            PANAMA: { id: 'PANAMA', label: 'Panama Basin', image: 'file-5QksKEvoM0TlF6d7u66UTcuP-3d0b2321-c548-483b-b922-4e9957e8cc8f.webp', temp: 29, hum: 74, ppfd: 420 },
-            ARID: { id: 'ARID', label: 'Arid Scrub', image: 'file-oMNcvE9SiKnFqwLlEY3qNRjv-e0b724c7-9e6e-43de-81d6-03a29d711bc8.webp', temp: 33, hum: 32, ppfd: 900 },
-            LAB: { id: 'LAB', label: 'FA Research Lab', image: 'file-UVwQ7Wkh8qAhAkgKKjdF2Y-96929395-f941-4401-a7fb-18b7d357607c.webp', temp: 26, hum: 62, ppfd: 650 }
+
+        const PHASES = {
+            VEG: { id: 'VEG', name: '20/4 VEGETATIVE', dli: 45, spectrum: 'cyan' },
+            FLOWER: { id: 'FLOWER', name: '12/12 FLOWER FLIP', dli: 30, spectrum: 'amber' },
+            REVEG: { id: 'REVEG', name: 'RE-VEG PROTOCOL', dli: 45, spectrum: 'purple' }
         };
 
         const App = () => {
-            const [active, setActive] = useState(PROTOCOLS.LAB);
-            const [clock, setClock] = useState(0);
+            const [phase, setPhase] = useState(PHASES.VEG);
+            const [daysInPhase, setDaysInPhase] = useState(0);
+            const [totalDays, setTotalDays] = useState(0);
+            
+            // Plant Memory (To remember how big it got before flipping)
+            const [vegSize, setVegSize] = useState(0);
+            const [flowerSize, setFlowerSize] = useState(0);
 
+            // Time Engine
             useEffect(() => {
-                const timer = setInterval(() => setClock(c => c + 1), 1000);
+                const timer = setInterval(() => {
+                    setDaysInPhase(d => Math.min(d + 0.5, 100)); // Cap phase visually at 100 days
+                    setTotalDays(t => t + 0.5);
+                }, 100); // Fast simulation
                 return () => clearInterval(timer);
             }, []);
 
-            useEffect(() => { lucide.createIcons(); }, [active]);
+            // Record size states when changing phases
+            const handlePhaseChange = (newPhase) => {
+                if (phase.id === 'VEG') setVegSize(daysInPhase);
+                if (phase.id === 'FLOWER') setFlowerSize(daysInPhase);
+                setPhase(newPhase);
+                setDaysInPhase(0);
+            };
+
+            // Hormonal Logic Simulation
+            const florigen = useMemo(() => {
+                if (phase.id === 'FLOWER') return Math.min(100, daysInPhase * 3);
+                if (phase.id === 'REVEG') return Math.max(0, 100 - (daysInPhase * 2));
+                return 0;
+            }, [phase, daysInPhase]);
+
+            const auxin = useMemo(() => {
+                if (phase.id === 'VEG') return Math.min(100, 20 + daysInPhase);
+                if (phase.id === 'REVEG') return Math.min(100, daysInPhase * 4);
+                return Math.max(20, 100 - daysInPhase);
+            }, [phase, daysInPhase]);
+
+            useEffect(() => { if (window.lucide) window.lucide.createIcons(); }, [phase]);
+
+            // Procedural Visual Math
+            const currentVegNodes = Math.min(6, Math.floor((phase.id === 'VEG' ? daysInPhase : vegSize) / 5) + 1);
+            const budSize = (phase.id === 'FLOWER' ? daysInPhase : flowerSize) * 0.8;
+            const revegLength = phase.id === 'REVEG' ? daysInPhase * 1.5 : 0;
+
+            const lightColor = phase.id === 'VEG' ? '#00f2ea' : phase.id === 'FLOWER' ? '#f59e0b' : '#8b5cf6';
 
             return (
-                <div className="relative w-full h-full max-w-[1400px] max-h-[800px] crocodile-frame overflow-hidden">
+                <div className="relative w-full h-full max-w-[1500px] max-h-[850px] crocodile-frame overflow-hidden border-2 border-[#00ff9d]/30">
                     <div className="scanlines"></div>
-                    <div className="absolute inset-0 z-0 bg-black">
-                        <img key={active.image} src={active.image} className="scene-layer panning object-cover w-full h-full" />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black opacity-60"></div>
-                    </div>
 
-                    <div className="relative z-10 h-full flex flex-col p-8">
-                        <div className="flex justify-between items-start mb-8">
-                            <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 bg-[#00ff9d]/20 rounded border border-[#00ff9d] flex items-center justify-center font-bold">FA</div>
-                                <div>
-                                    <h1 className="text-2xl font-black italic tracking-tighter">JUREMA_CROCODILE</h1>
-                                    <p className="text-[10px] tracking-[0.3em] opacity-60 uppercase">Greenhouse Preload Active</p>
-                                </div>
+                    {/* HUD Content */}
+                    <div className="relative z-10 h-full flex flex-col p-6 lg:p-10">
+                        
+                        {/* Header Controls */}
+                        <div className="flex justify-between items-start mb-6 border-b border-[#00ff9d]/30 pb-6">
+                            <div>
+                                <h1 className="text-3xl font-black italic tracking-tighter text-white glitch">PHOTOPERIOD_ENGINE</h1>
+                                <p className="text-[10px] opacity-70 tracking-[0.4em] uppercase text-[#00ff9d] mt-1">Light Diffusion & Morphology Simulator</p>
                             </div>
-                            <div className="flex gap-2">
-                                {Object.values(PROTOCOLS).map(p => (
-                                    <button key={p.id} onClick={() => setActive(p)} className={`px-4 py-2 text-[10px] font-bold border transition-all ${active.id === p.id ? 'bg-[#00ff9d] text-black border-[#00ff9d]' : 'bg-black/40 text-[#00ff9d] border-[#00ff9d]/30'}`}>
-                                        LOAD_{p.id}
-                                    </button>
-                                ))}
+                            <div className="flex gap-3">
+                                <button 
+                                    onClick={() => handlePhaseChange(PHASES.VEG)} 
+                                    className={`btn-tech ${phase.id === 'VEG' ? 'active-veg' : 'text-[#00ff9d]'}`}
+                                >
+                                    [20/4] VEGETATIVE
+                                </button>
+                                <button 
+                                    onClick={() => handlePhaseChange(PHASES.FLOWER)} 
+                                    className={`btn-tech ${phase.id === 'FLOWER' ? 'active-flower' : 'text-[#f59e0b]'}`}
+                                    style={{ borderColor: phase.id !== 'FLOWER' ? 'rgba(245,158,11,0.2)' : '' }}
+                                >
+                                    [12/12] FLIP FLOWER
+                                </button>
+                                <button 
+                                    onClick={() => handlePhaseChange(PHASES.REVEG)} 
+                                    className={`btn-tech ${phase.id === 'REVEG' ? 'active-reveg' : 'text-[#8b5cf6]'}`}
+                                    style={{ borderColor: phase.id !== 'REVEG' ? 'rgba(139,92,246,0.2)' : '' }}
+                                >
+                                    [20/4] RE-VEG MUTATION
+                                </button>
                             </div>
                         </div>
 
-                        <div className="flex-1 grid grid-cols-12 gap-8 items-center">
-                            <div className="col-span-3 space-y-6">
-                                <Stat label="TEMP" value={active.temp} unit="°C" />
-                                <Stat label="HUMIDITY" value={active.hum} unit="%" />
-                                <div className="p-4 bg-[#00ff9d]/5 border-l-4 border-[#00ff9d]">
-                                    <span className="text-[9px] opacity-40 uppercase">VPD_PRESSURE</span>
-                                    <div className="text-3xl font-black">1.24 <span className="text-xs">kPa</span></div>
+                        {/* Main Interaction Area */}
+                        <div className="flex-1 grid grid-cols-12 gap-8 h-full">
+                            
+                            {/* Left Data Stack: Internal Biology */}
+                            <div className="col-span-3 flex flex-col justify-center space-y-6">
+                                <div className="p-5 bg-black/60 border-l-4 border-[#00ff9d]">
+                                    <span className="text-[9px] opacity-50 uppercase tracking-widest block mb-1">Total_Biomass_Age</span>
+                                    <div className="text-4xl font-black text-white">{Math.floor(totalDays)} <span className="text-xs text-[#00ff9d]">Days</span></div>
+                                    <div className="text-[10px] mt-2 opacity-60">Phase duration: {Math.floor(daysInPhase)}d</div>
+                                </div>
+
+                                <div className="space-y-4 p-5 bg-[#00ff9d]/5 border border-[#00ff9d]/20 rounded-xl">
+                                    <span className="text-[9px] opacity-50 uppercase tracking-widest block font-bold">Endocrine_Response</span>
+                                    
+                                    {/* Auxin Gauge */}
+                                    <div>
+                                        <div className="flex justify-between text-[10px] mb-1">
+                                            <span className="text-[#00ff9d]">Auxin (Veg Growth)</span>
+                                            <span>{Math.floor(auxin)}%</span>
+                                        </div>
+                                        <div className="h-1.5 w-full bg-black rounded-full overflow-hidden">
+                                            <div className="h-full bg-[#00ff9d] transition-all duration-500" style={{width: `${auxin}%`}}></div>
+                                        </div>
+                                    </div>
+
+                                    {/* Florigen Gauge */}
+                                    <div className="pt-2">
+                                        <div className="flex justify-between text-[10px] mb-1">
+                                            <span className="text-[#f59e0b]">Florigen (Bloom)</span>
+                                            <span>{Math.floor(florigen)}%</span>
+                                        </div>
+                                        <div className="h-1.5 w-full bg-black rounded-full overflow-hidden">
+                                            <div className="h-full bg-[#f59e0b] shadow-[0_0_10px_#f59e0b] transition-all duration-500" style={{width: `${florigen}%`}}></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="p-4 border border-dashed border-[#00ff9d]/30 text-[9px] font-mono leading-relaxed opacity-70 bg-black/80">
+                                    <span className="text-white font-bold">SYSTEM LOG:</span><br/>
+                                    {phase.id === 'VEG' && "> Photoperiod 20/4. Rapid stem elongation. High DLI."}
+                                    {phase.id === 'FLOWER' && <span className="text-[#f59e0b]">> Photoperiod 12/12. Phytochrome triggers florigen. Calyx formation active.</span>}
+                                    {phase.id === 'REVEG' && <span className="text-[#8b5cf6]">> Photoperiod interrupted. Reverting to vegetative. Severe morphological mutation (Monster Cropping) detected.</span>}
                                 </div>
                             </div>
 
-                            <div className="col-span-6 flex justify-center items-end h-full pb-10">
-                                <svg viewBox="0 0 200 200" className="w-full max-h-[450px] drop-shadow-[0_0_30px_#00ff9d33]">
-                                    <path d="M 100 200 Q 105 150 100 80" stroke="#00ff9d" strokeWidth="4" fill="none" />
-                                    {[...Array(6)].map((_, i) => (
-                                        <g key={i} transform={`translate(100, ${180 - i*20})`}>
-                                            <path d={`M 0 0 Q ${25*(i%2?1:-1)} -10 ${50*(i%2?1:-1)} 0`} stroke="#00ff9d" strokeWidth="1.5" fill="none" />
-                                            {[...Array(8)].map((_, j) => (
-                                                <ellipse key={j} cx={j*6*(i%2?1:-1)} cy={0} rx="1.5" ry="4" fill="#00ff9d" opacity="0.8" />
-                                            ))}
-                                        </g>
-                                    ))}
+                            {/* Center: The Light Diffusion Engine & Plant SVG */}
+                            <div className="col-span-6 relative flex flex-col items-center justify-end border-x border-[#00ff9d]/10 bg-gradient-to-b from-black/80 to-transparent">
+                                
+                                <div className="absolute top-4 w-full px-8 flex justify-between text-[9px] font-mono opacity-50">
+                                    <span>[OPTICAL_DOME_ACTIVE]</span>
+                                    <span>REFRACT_INDEX: 1.45</span>
+                                </div>
+
+                                {/* Mathematical Light Diffusion SVG */}
+                                <svg viewBox="0 0 200 250" className="absolute top-0 w-full h-full z-0 pointer-events-none">
+                                    <defs>
+                                        <linearGradient id="beamGrad" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="0%" stopColor={lightColor} stopOpacity="0.6"/>
+                                            <stop offset="100%" stopColor={lightColor} stopOpacity="0.0"/>
+                                        </linearGradient>
+                                        <radialGradient id="bulbGlow" cx="50%" cy="50%" r="50%">
+                                            <stop offset="0%" stopColor="#ffffff" stopOpacity="1"/>
+                                            <stop offset="100%" stopColor={lightColor} stopOpacity="0"/>
+                                        </radialGradient>
+                                    </defs>
+                                    
+                                    {/* Central Bulb */}
+                                    <circle cx="100" cy="30" r="10" fill="url(#bulbGlow)" />
+                                    
+                                    {/* Glass Diffusion Dome (From reference image) */}
+                                    <path d="M 50 30 Q 100 -10 150 30 Z" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.4)" strokeWidth="0.5"/>
+                                    <line x1="50" y1="30" x2="150" y2="30" stroke="rgba(255,255,255,0.4)" strokeWidth="0.5" strokeDasharray="2,2"/>
+                                    
+                                    {/* Divergence Zone Beams */}
+                                    <polygon points="100,30 20,250 180,250" fill="url(#beamGrad)" className="transition-all duration-1000"/>
+                                    <line x1="100" y1="30" x2="60" y2="120" stroke={lightColor} strokeWidth="0.5" opacity="0.5"/>
+                                    <line x1="100" y1="30" x2="140" y2="120" stroke={lightColor} strokeWidth="0.5" opacity="0.5"/>
+                                    
+                                    {/* Text Labels matching the diagram */}
+                                    <text x="30" y="25" fill="rgba(255,255,255,0.5)" fontSize="5" fontFamily="monospace">Glass Dome</text>
+                                    <text x="25" y="100" fill="rgba(255,255,255,0.5)" fontSize="5" fontFamily="monospace">Divergence Zone</text>
+                                </svg>
+
+                                {/* Procedural Plant Morphology SVG */}
+                                <svg viewBox="0 0 200 200" className="w-full max-h-[450px] z-10 drop-shadow-[0_0_20px_rgba(0,255,157,0.3)]">
+                                    {/* Base Stem */}
+                                    <path d="M 100 200 L 100 40" stroke="#00ff9d" strokeWidth="3" fill="none" />
+                                    
+                                    {/* Generate Nodes recursively based on Veg Size */}
+                                    {[...Array(currentVegNodes)].map((_, i) => {
+                                        const y = 180 - (i * 25); // Node height
+                                        const scale = 1 - (i * 0.1); // Leaves get smaller at top
+                                        
+                                        return (
+                                            <g key={`node-${i}`} transform={`translate(100, ${y}) scale(${scale})`}>
+                                                
+                                                {/* 1. Vegetative Leaves (Always present if grown) */}
+                                                <g>
+                                                    <path d="M 0 0 Q -25 -10 -40 -5 Q -25 0 0 0" fill="#00ff9d" opacity="0.7"/>
+                                                    <path d="M 0 0 Q 25 -10 40 -5 Q 25 0 0 0" fill="#00ff9d" opacity="0.7"/>
+                                                    {/* Serrated fingers */}
+                                                    <path d="M 0 0 Q -15 -20 -25 -25 Q -10 -15 0 0" fill="#00ff9d" opacity="0.6"/>
+                                                    <path d="M 0 0 Q 15 -20 25 -25 Q 10 -15 0 0" fill="#00ff9d" opacity="0.6"/>
+                                                </g>
+
+                                                {/* 2. Flowering Buds (Appears during FLOWER or REVEG) */}
+                                                {(phase.id === 'FLOWER' || phase.id === 'REVEG') && budSize > 0 && (
+                                                    <g className="transition-all duration-1000">
+                                                        {/* Dense Calyx Clusters */}
+                                                        <circle cx="-10" cy="-5" r={Math.min(12, budSize)} fill="#f59e0b" opacity="0.8" filter="blur(1px)"/>
+                                                        <circle cx="10" cy="-5" r={Math.min(12, budSize)} fill="#f59e0b" opacity="0.8" filter="blur(1px)"/>
+                                                        <circle cx="0" cy="-10" r={Math.min(15, budSize * 1.2)} fill="#f59e0b" opacity="0.9"/>
+                                                        {/* Pistils (Hairs) */}
+                                                        {budSize > 5 && (
+                                                            <>
+                                                                <path d="M 0 -10 Q -10 -25 -5 -30" stroke="#ef4444" strokeWidth="0.8" fill="none"/>
+                                                                <path d="M 0 -10 Q 10 -25 5 -30" stroke="#ef4444" strokeWidth="0.8" fill="none"/>
+                                                            </>
+                                                        )}
+                                                    </g>
+                                                )}
+
+                                                {/* 3. Re-Veg Mutation (Weird single leaves shooting out of buds) */}
+                                                {(phase.id === 'REVEG' && revegLength > 0) && (
+                                                    <g className="transition-all duration-1000">
+                                                        <path d={`M 0 -15 Q -10 -${20 + revegLength} -${30 + revegLength} -${10 + revegLength}`} stroke="#8b5cf6" strokeWidth="2" fill="none" strokeLinecap="round"/>
+                                                        <path d={`M 0 -15 Q 10 -${20 + revegLength} ${30 + revegLength} -${10 + revegLength}`} stroke="#8b5cf6" strokeWidth="2" fill="none" strokeLinecap="round"/>
+                                                        <path d={`M -10 -5 Q -${20 + revegLength} 0 -${30 + revegLength} 10`} stroke="#8b5cf6" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
+                                                        <path d={`M 10 -5 Q ${20 + revegLength} 0 ${30 + revegLength} 10`} stroke="#8b5cf6" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
+                                                    </g>
+                                                )}
+
+                                            </g>
+                                        );
+                                    })}
                                 </svg>
                             </div>
 
-                            <div className="col-span-3 space-y-6">
-                                <Stat label="PPFD" value={active.ppfd} unit="µmol" />
-                                <div className="h-32 bg-black/80 rounded-xl border border-[#00ff9d]/20 overflow-hidden">
-                                    <img src="20250206_1456_Dynamic Fluorescence Visuals_simple_compose_01jkedbx5ne59scrbdqkj4eh77.gif" className="w-full h-full object-cover mix-blend-screen opacity-70" />
+                            {/* Right Data Stack: Light Physics */}
+                            <div className="col-span-3 flex flex-col justify-center space-y-6">
+                                <div className="p-5 bg-black/60 border-l-4" style={{ borderColor: lightColor }}>
+                                    <span className="text-[9px] opacity-50 uppercase tracking-widest block mb-1">Daily_Light_Integral (DLI)</span>
+                                    <div className="text-4xl font-black text-white" style={{ textShadow: `0 0 10px ${lightColor}88` }}>
+                                        {phase.dli} <span className="text-xs opacity-50 font-mono" style={{ color: lightColor }}>mol/m²/d</span>
+                                    </div>
+                                    <div className="text-[10px] mt-2 opacity-60">Photon Saturation Target</div>
+                                </div>
+
+                                <div className="p-5 bg-[#00ff9d]/5 border border-[#00ff9d]/20 rounded-xl relative overflow-hidden">
+                                    <span className="text-[9px] opacity-50 uppercase tracking-widest block font-bold mb-4">Spectral_Emission</span>
+                                    
+                                    {/* Spectral Bar Chart */}
+                                    <div className="flex items-end h-20 gap-2 border-b border-[#00ff9d]/20 pb-1">
+                                        <div className="flex-1 bg-blue-500 rounded-t-sm transition-all duration-700" style={{height: phase.id === 'VEG' ? '90%' : '30%', boxShadow: '0 0 10px rgba(59,130,246,0.5)'}}></div>
+                                        <div className="flex-1 bg-green-500 rounded-t-sm transition-all duration-700" style={{height: '20%'}}></div>
+                                        <div className="flex-1 bg-red-500 rounded-t-sm transition-all duration-700" style={{height: phase.id === 'FLOWER' ? '95%' : phase.id === 'REVEG' ? '60%' : '40%', boxShadow: '0 0 10px rgba(239,68,68,0.5)'}}></div>
+                                        <div className="flex-1 bg-orange-700 rounded-t-sm transition-all duration-700" style={{height: phase.id === 'FLOWER' ? '70%' : '10%'}}></div>
+                                    </div>
+                                    <div className="flex justify-between text-[8px] font-mono opacity-50 mt-1">
+                                        <span>450nm</span>
+                                        <span>660nm</span>
+                                        <span>730nm</span>
+                                    </div>
+                                </div>
+
+                                <div className="flex justify-between items-center text-[10px] font-mono opacity-40 border-t border-[#00ff9d]/20 pt-4">
+                                    <span>LUMEN_DROP: {phase.id === 'FLOWER' ? 'ACTIVE' : 'NOMINAL'}</span>
+                                    <span>V_3.1.0</span>
                                 </div>
                             </div>
-                        </div>
 
-                        <div className="mt-8 flex justify-between items-end border-t border-[#00ff9d]/20 pt-6">
-                            <span className="text-[10px] opacity-40 uppercase font-mono">System Clock: {clock}s // Ref: {active.label}</span>
-                            <div className="text-right">
-                                <span className="block text-[9px] opacity-40 uppercase">Botanical Target</span>
-                                <span className="text-lg font-black italic">MIMOSA_TENUIFLORA</span>
-                            </div>
                         </div>
                     </div>
                 </div>
             );
         };
-
-        const Stat = ({ label, value, unit }) => (
-            <div>
-                <span className="text-[9px] font-bold opacity-40 uppercase tracking-widest block mb-1">{label}</span>
-                <div className="text-4xl font-black">{value}<span className="text-xs ml-1 opacity-50">{unit}</span></div>
-            </div>
-        );
 
         const root = ReactDOM.createRoot(document.getElementById('root'));
         root.render(<App />);
