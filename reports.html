@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Reports | Furious Acid</title>
+  <style>
+    :root{
+      --bg:#07070a;
+      --panel:rgba(255,255,255,.06);
+      --panel2:rgba(255,255,255,.04);
+      --text:#f3f4f6;
+      --muted:rgba(243,244,246,.72);
+      --line:rgba(255,255,255,.10);
+      --shadow: 0 30px 70px rgba(0,0,0,.55);
+      --glow: 0 0 0 1px rgba(255,255,255,.08), 0 0 40px rgba(210,40,255,.10);
+      --brand1:#ff2bd6;
+      --brand2:#6d28ff;
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+      color:var(--text); background: var(--bg);
+      min-height:100vh; display:flex; align-items:center; justify-content:center; padding:28px 16px;
+    }
+    .wrap{width:min(900px,100%);}
+    .card{
+      background:linear-gradient(180deg, var(--panel), var(--panel2));
+      border:1px solid var(--line); border-radius:var(--radius); padding:36px;
+    }
+    .top{display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--line); padding-bottom:20px; margin-bottom:30px;}
+    .nav{display:flex; gap:10px;}
+    .btn{padding:10px 14px; border-radius:14px; border:1px solid var(--line); background:rgba(0,0,0,.25); text-decoration:none; font-size:14px;}
+    .btn:hover{background:rgba(255,255,255,.05);}
+    
+    .content{line-height:1.7; color:var(--muted);}
+    h3{color:var(--brand1); margin-top:30px; letter-spacing: 1px;}
+    strong{color:var(--text);}
+    
+    .book-list{background:rgba(0,0,0,.2); border:1px solid var(--line); border-radius:12px; padding:20px; margin-top:20px;}
+    .book-item{margin-bottom:30px; padding-bottom:30px; border-bottom:1px solid rgba(255,255,255,.05);}
+    .book-item:last-child{border:none; margin:0; padding:0;}
+    .book-title{display:block; color:var(--text); font-size: 20px; font-weight:bold; margin-bottom:10px;}
+    
+    /* --- NEW CSS FOR AUTOSIZING AND CENTERING IMAGES --- */
+    .report-img {
+      display: block;
+      max-width: 100%; /* Prevents image from breaking out of the box */
+      height: auto;    /* Keeps the image proportions correct */
+      margin: 20px auto; /* Centers the image with space on top and bottom */
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="card">
+      <div class="top">
+        <div>
+          <h1 style="margin:0; font-size:26px;">The Archives</h1>
+          <p style="margin:4px 0 0; color:var(--brand1); text-transform:uppercase; font-size:12px; letter-spacing:1px;">Furious Acid Reports</p>
+        </div>
+        <nav class="nav">
+          <a class="btn" href="index.html">← Back to Home</a>
+        </nav>
+      </div>
+
+      <div class="content">
+        <p>Welcome to the official Furious Acid research and publication archives.</p>
+
+        <img src="recordsimage1.png" alt="Main Archive Image" class="report-img">
+
+        <h3>Full Lab Reports</h3>
+        <div class="book-list">
+          
+          <div class="book-item">
+            <span class="book-title">Report 1: Synthesis and Analysis</span>
+            <p>Full detailed report data goes here. You can write as many paragraphs as you need to explain the methodology and results.</p>
+            <img src="recordsimage1.png" alt="Report 1 Data" class="report-img">
+          </div>
+          
+          <div class="book-item">
+            <span class="book-title">Report 2: Cultivation Metrics</span>
+            <p>Details regarding temperature, humidity, and growth tracking over the 8-week cycle.</p>
+            <img src="recordsimage2.png" alt="Report 2 Data" class="report-img">
+          </div>
+          
+          <div class="book-item">
+            <span class="book-title">Report 3: Molecular Structures</span>
+            <p>Final conclusions and structural breakdowns.</p>
+            <img src="recordsimage3.png" alt="Report 3 Data" class="report-img">
+          </div>
+
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
