@@ -134,6 +134,50 @@
       box-shadow: -2px 0 0 #00f2ea, 2px 0 0 #ff0050;
     }
 
+    /* --- NEW SEARCH BAR CSS --- */
+    .search-container {
+      width: 100%;
+      margin-bottom: 25px;
+      padding-bottom: 25px;
+      border-bottom: 1px solid var(--line);
+    }
+    .search-form {
+      display: flex;
+      gap: 12px;
+      width: 100%;
+    }
+    .search-input {
+      flex: 1;
+      background: rgba(0,0,0,0.4);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px 18px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 16px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .search-input:focus {
+      border-color: var(--brand2);
+      box-shadow: 0 0 0 1px rgba(109,40,255,.3);
+    }
+    .search-btn {
+      background: linear-gradient(135deg, var(--brand1), var(--brand2));
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 0 24px;
+      font-weight: bold;
+      font-size: 15px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .search-btn:hover {
+      transform: scale(1.05);
+      box-shadow: var(--glow);
+    }
+
     .list{ display:flex; flex-direction:column; gap:14px; margin-top:14px; }
     
     .release{
@@ -160,6 +204,8 @@
       .btn-massive { width: 100%; padding: 15px 20px; font-size: 18px;}
       .book-links { width: 100%; }
       .book-links .btn { flex: 1; }
+      .search-form { flex-direction: column; }
+      .search-btn { padding: 12px; }
     }
   </style>
 </head>
@@ -188,6 +234,7 @@
       </div>
 
       <div class="inner">
+        
         <div class="top">
           <div class="brand">
             <div class="logo">FA</div>
@@ -205,6 +252,14 @@
             <a class="btn" href="aboutme.html">About Me</a>
             <a class="btn" href="calcstep.html">Calc</a>
           </nav>
+        </div>
+
+        <div class="search-container">
+          <form action="https://www.google.com/search" method="get" target="_blank" class="search-form">
+            <input type="hidden" name="as_sitesearch" value="furiousacid.com">
+            <input type="text" name="q" placeholder="Search Furious Acid reports, books, and labs..." class="search-input" required>
+            <button type="submit" class="search-btn">Search</button>
+          </form>
         </div>
 
         <div id="releases" class="list">
