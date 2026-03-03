@@ -134,7 +134,7 @@
       box-shadow: -2px 0 0 #00f2ea, 2px 0 0 #ff0050;
     }
 
-    /* --- NEW SEARCH BAR CSS --- */
+    /* --- SEARCH BAR CSS --- */
     .search-container {
       width: 100%;
       margin-bottom: 25px;
@@ -305,16 +305,19 @@
       </div>
     </section>
 
-    <section class="card">
-      <div class="inner" id="dynamic-reports-container">
-        <p style="text-align: center; color: var(--muted);">Loading latest reports...</p>
-      </div>
+    <section style="width: 100%; margin-top: 20px; border-radius: var(--radius); overflow: hidden; background: transparent;">
+      <iframe 
+        id="reports-iframe" 
+        src="reports.html" 
+        scrolling="no" 
+        style="width: 100%; border: none; min-height: 100vh; display: block;">
+      </iframe>
     </section>
 
   </main>
 
   <script>
-    // --- Existing Carousel Code ---
+    // --- Carousel Script ---
     const slide = document.getElementById('carouselSlide');
     let counter = 0;
     const totalImages = 3;
@@ -327,30 +330,28 @@
         slide.style.transform = `translateX(${-counter * 33.3333}%)`;
     }, 4500); 
 
-    // --- NEW: Fetch Reports Code ---
-    document.addEventListener("DOMContentLoaded", function() {
-      fetch('reports.html')
-        .then(response => {
-          if (!response.ok) throw new Error('Could not load reports.');
-          return response.text();
-        })
-        .then(html => {
-          // Parse the fetched HTML so we don't accidentally inject duplicate <head> or <body> tags
-          const parser = new DOMParser();
-          const doc = parser.parseFromString(html, 'text/html');
-          
-          // Grab everything inside the <body> of reports.html
-          const reportsBody = doc.body.innerHTML;
-          
-          // Inject it into our placeholder container
-          document.getElementById('dynamic-reports-container').innerHTML = reportsBody;
-        })
-        .catch(error => {
-          console.error('Error fetching reports:', error);
-          document.getElementById('dynamic-reports-container').innerHTML = 
-            '<p style="text-align: center; color: var(--brand1);">Check out our <a href="reports.html" style="text-decoration: underline; color: white;">Reports page</a>!</p>';
-        });
-    });
+    // --- Smart Iframe Resizer Script ---
+    // This talks to the iframe and tells it to stretch so nothing gets cut off on mobile.
+    const iframe = document.getElementById('reports-iframe');
+    if (iframe) {
+      iframe.addEventListener('load', function() {
+        const adjustHeight = () => {
+          try {
+            // Find out exactly how tall the reports page is
+            const internalHeight = iframe.contentWindow.document.documentElement.scrollHeight;
+            // Stretch the box to match
+            iframe.style.height = internalHeight + 'px';
+          } catch(e) {
+            console.error("Could not resize iframe:", e);
+          }
+        };
+
+        // Run the resize immediately
+        adjustHeight();
+        // Run it again 1 second later just in case the flowchart took a second to draw
+        setTimeout(adjustHeight, 1000);
+      });
+    }
   </script>
 
 </body>
