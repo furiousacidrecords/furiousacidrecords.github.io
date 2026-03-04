@@ -29,11 +29,12 @@
     .logo span { color: var(--neon); }
     
     .nav-actions { display: flex; align-items: center; gap: 15px; }
-    .login-link { color: var(--text-main); text-decoration: none; font-weight: 600; font-size: 15px; cursor: pointer; }
-    .signup-btn { background: var(--neon); color: black; font-weight: 700; border: none; padding: 10px 18px; border-radius: 8px; font-size: 15px; cursor: pointer; }
+    .connect-btn { background: var(--neon); color: black; font-weight: 700; border: none; padding: 10px 18px; border-radius: 8px; font-size: 15px; cursor: pointer; transition: transform 0.2s; }
+    .connect-btn:hover { transform: scale(1.05); }
     
-    /* User Profile (Hidden by default) */
     .user-profile { display: none; align-items: center; gap: 10px; font-weight: bold; color: var(--neon); }
+    .logout-link { color: var(--text-muted); font-size: 13px; cursor: pointer; text-decoration: none; transition: color 0.2s; }
+    .logout-link:hover { color: #ef4444; }
 
     /* --- MAIN CONTENT --- */
     .container { max-width: 800px; margin: 0 auto; padding: 20px; }
@@ -41,14 +42,26 @@
     .header-row { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; margin-bottom: 24px; }
     .header-row h1 { font-size: 24px; font-weight: 700; }
     
-    /* Post Buttons */
-    .login-to-post-btn { background: #1f1f22; border: 1px solid var(--border); color: var(--text-main); padding: 10px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; }
-    .create-post-btn { background: var(--neon); color: black; border: none; padding: 10px 16px; border-radius: 8px; font-weight: 700; cursor: pointer; display: none; }
+    .login-to-post-btn { background: #1f1f22; border: 1px solid var(--border); color: var(--text-main); padding: 10px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+    .login-to-post-btn:hover { background: #27272a; }
+    .create-post-btn { background: var(--neon); color: black; border: none; padding: 10px 16px; border-radius: 8px; font-weight: 700; cursor: pointer; display: none; transition: transform 0.2s; }
+    .create-post-btn:hover { transform: scale(1.05); }
 
-    /* Empty State */
-    .empty-state { text-align: center; padding: 60px 20px; border: 1px dashed var(--border); border-radius: 12px; margin-top: 20px; color: var(--text-muted); }
+    /* Discussion Cards */
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 18px; margin-bottom: 12px; display: flex; justify-content: space-between; cursor: pointer; transition: border-color 0.2s; }
+    .card:hover { border-color: #3f3f46; }
+    .card-title { font-size: 16px; font-weight: 600; margin-bottom: 12px; }
+    .card-meta { display: flex; align-items: center; gap: 12px; font-size: 14px; width: 100%; flex-wrap: wrap;}
+    
+    .tag { background: #1f291e; color: #86efac; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; }
+    .author { color: var(--neon); font-weight: 500; }
+    .time { color: var(--text-muted); }
+    
+    /* Delete Button (For your own posts) */
+    .delete-btn { margin-left: auto; background: transparent; border: none; color: #ef4444; font-size: 13px; font-weight: bold; cursor: pointer; padding: 4px 8px; border-radius: 6px; }
+    .delete-btn:hover { background: rgba(239, 68, 68, 0.1); }
 
-    /* --- OVERLAYS (Login/Register/Reset/Posting) --- */
+    /* --- OVERLAYS --- */
     .modal-overlay {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(0,0,0,0.8); backdrop-filter: blur(5px);
@@ -58,20 +71,22 @@
       background: var(--card); border: 1px solid var(--border); border-radius: 16px;
       padding: 30px; width: 90%; max-width: 420px; box-shadow: 0 25px 50px rgba(0,0,0,0.5);
     }
-    .modal-box.large { max-width: 600px; } /* Larger box for creating posts */
-    .modal-box h2 { font-size: 24px; margin-bottom: 10px; color: white; }
-    .modal-box p { color: var(--text-muted); font-size: 14px; margin-bottom: 20px; line-height: 1.5; }
+    .modal-box.large { max-width: 600px; } 
+    .modal-box h2 { font-size: 24px; margin-bottom: 10px; color: white; text-align: center; }
+    .modal-box p { color: var(--text-muted); font-size: 14px; margin-bottom: 25px; line-height: 1.5; text-align: center; }
     
     .input-field { width: 100%; background: #000; border: 1px solid var(--border); color: white; padding: 12px 15px; border-radius: 8px; font-size: 15px; margin-bottom: 15px; outline: none; }
     .input-field:focus { border-color: var(--neon); }
-    
     textarea.input-field { resize: vertical; min-height: 120px; }
 
     .modal-btn { width: 100%; background: var(--neon); color: black; font-weight: bold; border: none; padding: 14px; border-radius: 8px; font-size: 16px; cursor: pointer; margin-bottom: 15px; }
+    .modal-btn.secondary { background: #1f1f22; color: var(--text-main); border: 1px solid var(--border); }
+    .modal-btn.secondary:hover { background: #27272a; }
+    
     .modal-link { color: var(--text-muted); font-size: 13px; text-decoration: none; cursor: pointer; display: block; text-align: center; margin-top: 10px; }
     .modal-link:hover { color: white; }
 
-    /* --- DRAG AND DROP ZONE --- */
+    /* Drag and Drop Zone */
     .drop-zone {
       width: 100%; padding: 30px; border: 2px dashed var(--border); border-radius: 8px;
       text-align: center; color: var(--text-muted); background: #000; cursor: pointer;
@@ -87,64 +102,75 @@
     <div class="logo">Furious<span>Acid</span></div>
     
     <div class="nav-actions" id="logged-out-nav">
-      <span class="login-link" onclick="openModal('login-modal')">Log in</span>
-      <button class="signup-btn" onclick="openModal('register-modal')">Sign up</button>
+      <button class="connect-btn" onclick="openModal('choice-modal')">Connect</button>
     </div>
 
     <div class="user-profile" id="logged-in-nav">
       <span id="display-handle">@User</span>
-      <span class="login-link" style="font-size: 13px; margin-left: 15px;" onclick="logOut()">[ Log out ]</span>
+      <span class="logout-link" onclick="logOut()">[ Disconnect ]</span>
     </div>
   </nav>
 
-  <div class="container">
+  <div class="container" id="forum-list">
     <div class="header-row">
       <h1>All Discussions</h1>
-      
-      <button class="login-to-post-btn" id="btn-login-post" onclick="openModal('login-modal')">Log in to post</button>
+      <button class="login-to-post-btn" id="btn-login-post" onclick="openModal('choice-modal')">Connect to post</button>
       <button class="create-post-btn" id="btn-create-post" onclick="openModal('create-post-modal')">+ New Discussion</button>
     </div>
 
-    <div class="empty-state">
+    <div id="empty-state" style="text-align: center; padding: 60px 20px; border: 1px dashed var(--border); border-radius: 12px; margin-top: 20px; color: var(--text-muted);">
       <h3 style="color: white; margin-bottom: 10px;">The Archives are open.</h3>
-      <p>Anyone can read the research. You must be logged in to contribute.</p>
+      <p>Connect or Proceed as Guest to start the first discussion.</p>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="choice-modal">
+    <div class="modal-box">
+      <h2>Identity Required</h2>
+      <p>Choose how you want to connect to the hub.</p>
+      <button class="modal-btn secondary" onclick="openModal('login-modal')">I have a @Nickname</button>
+      <button class="modal-btn secondary" onclick="openModal('register-modal')">Register a new @Nickname</button>
+      <div style="margin: 25px 0; border-bottom: 1px solid var(--border); position: relative;">
+        <span style="position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: var(--card); padding: 0 10px; color: var(--text-muted); font-size: 13px;">OR</span>
+      </div>
+      <button class="modal-btn" onclick="enterGuestMode()">Proceed as Guest</button>
+      <span class="modal-link" style="margin-top: 25px;" onclick="closeModals()">[ Cancel ]</span>
     </div>
   </div>
 
   <div class="modal-overlay" id="login-modal">
     <div class="modal-box">
-      <h2>Log in</h2>
-      <p>Welcome back to the hub.</p>
-      <input type="email" class="input-field" placeholder="Email Address">
+      <h2>Authenticate</h2>
+      <p>Enter your @Nickname or your recovery email.</p>
+      <input type="text" id="login-id" class="input-field" placeholder="@Nickname or Email">
       <input type="password" class="input-field" placeholder="Password">
       <button class="modal-btn" onclick="simulateLogin()">Log in</button>
       <div style="display: flex; justify-content: space-between; margin-top: 15px;">
-        <span class="modal-link" onclick="openModal('register-modal')">Create an account</span>
+        <span class="modal-link" onclick="openModal('choice-modal')">← Back</span>
         <span class="modal-link" onclick="openModal('reset-modal')">Forgot password?</span>
       </div>
-      <span class="modal-link" style="margin-top: 25px;" onclick="closeModals()">[ Cancel ]</span>
     </div>
   </div>
 
   <div class="modal-overlay" id="register-modal">
     <div class="modal-box">
-      <h2>Sign up</h2>
-      <p>Join the independent research network. A valid email is required for password resets.</p>
-      <input type="email" class="input-field" placeholder="Email Address">
-      <input type="text" class="input-field" id="new-handle" placeholder="Choose a Handle (e.g. AcidBurn)">
+      <h2>Register</h2>
+      <p>Pick a @Nickname and password. Provide an email just in case you ever get locked out.</p>
+      <input type="text" class="input-field" id="new-handle" placeholder="Choose a @Nickname">
       <input type="password" class="input-field" placeholder="Create Password">
+      <input type="email" class="input-field" placeholder="Recovery Email (Private)">
       <button class="modal-btn" onclick="simulateLogin(true)">Create Account</button>
-      <span class="modal-link" style="margin-top: 25px;" onclick="closeModals()">[ Cancel ]</span>
+      <span class="modal-link" style="margin-top: 25px;" onclick="openModal('choice-modal')">← Back</span>
     </div>
   </div>
 
   <div class="modal-overlay" id="reset-modal">
     <div class="modal-box">
       <h2>Reset Password</h2>
-      <p>Enter the email address associated with your handle to receive a secure reset link.</p>
+      <p>Enter your recovery email. If it matches a @Nickname on file, we will send a reset link.</p>
       <input type="email" class="input-field" placeholder="Email Address">
-      <button class="modal-btn" onclick="alert('In a live environment, a reset link would be emailed to you.'); closeModals();">Send Reset Link</button>
-      <span class="modal-link" style="margin-top: 25px;" onclick="closeModals()">[ Cancel ]</span>
+      <button class="modal-btn" onclick="alert('Reset link sent to your email.'); closeModals();">Send Reset Link</button>
+      <span class="modal-link" style="margin-top: 25px;" onclick="openModal('login-modal')">← Back</span>
     </div>
   </div>
 
@@ -152,16 +178,13 @@
     <div class="modal-box large">
       <h2>Create Discussion</h2>
       <p>Share your reports, diagrams, or questions.</p>
-      
-      <input type="text" class="input-field" placeholder="Title of your post">
+      <input type="text" id="post-title" class="input-field" placeholder="Title of your post">
       <textarea class="input-field" placeholder="Type your research or findings here..."></textarea>
-      
       <div class="drop-zone" id="drop-zone" onclick="document.getElementById('file-input').click()">
         Drag & Drop images/files here, or click to browse.
       </div>
       <input type="file" id="file-input" class="file-input" multiple>
-
-      <button class="modal-btn" onclick="alert('In a live environment, this would upload your files and publish your post to the database!'); closeModals();">Publish Post</button>
+      <button class="modal-btn" onclick="publishPost()">Publish Post</button>
       <span class="modal-link" style="margin-top: 15px;" onclick="closeModals()">[ Cancel ]</span>
     </div>
   </div>
@@ -176,23 +199,34 @@
       document.getElementById(modalId).style.display = 'flex';
     }
 
-    // This simulates the UI changes when someone successfully logs in
-    function simulateLogin(isNewUser = false) {
+    function enterGuestMode() {
+      let currentGuestCount = localStorage.getItem('fa_guest_number') || 1;
+      let guestHandle = "@furiousacid_" + currentGuestCount;
+      localStorage.setItem('fa_guest_number', parseInt(currentGuestCount) + 1);
+      simulateLogin(false, guestHandle);
+    }
+
+    function simulateLogin(isNewUser = false, customHandle = null) {
       closeModals();
       
-      // Swap out the navigation buttons for the User Profile
       document.getElementById('logged-out-nav').style.display = 'none';
       document.getElementById('logged-in-nav').style.display = 'flex';
       
-      // If they just registered, grab the handle they typed in for display
-      if(isNewUser) {
-        let handle = document.getElementById('new-handle').value || "NewUser";
-        document.getElementById('display-handle').innerText = "@" + handle;
-      } else {
-        document.getElementById('display-handle').innerText = "@FuriousResearcher";
+      let handle = ""; 
+
+      if(customHandle) {
+        handle = customHandle;
+      } 
+      else if(isNewUser) {
+        let inputHandle = document.getElementById('new-handle').value;
+        handle = inputHandle ? (inputHandle.startsWith('@') ? inputHandle : '@' + inputHandle) : "@NewUser";
+      } 
+      else {
+        let loginId = document.getElementById('login-id').value.trim();
+        handle = loginId ? (loginId.startsWith('@') ? loginId : '@' + loginId) : "@User";
       }
 
-      // Hide the "Log in to post" button and reveal the real "New Discussion" button
+      document.getElementById('display-handle').innerText = handle;
       document.getElementById('btn-login-post').style.display = 'none';
       document.getElementById('btn-create-post').style.display = 'inline-block';
     }
@@ -200,42 +234,56 @@
     function logOut() {
       document.getElementById('logged-in-nav').style.display = 'none';
       document.getElementById('logged-out-nav').style.display = 'flex';
-      
       document.getElementById('btn-create-post').style.display = 'none';
       document.getElementById('btn-login-post').style.display = 'inline-block';
     }
 
-    // --- Drag and Drop Visual Feedback Scripts ---
+    function publishPost() {
+      const title = document.getElementById('post-title').value || "Untitled Research Log";
+      const handle = document.getElementById('display-handle').innerText;
+      const container = document.getElementById('forum-list');
+      
+      const emptyState = document.getElementById('empty-state');
+      if (emptyState) {
+        emptyState.remove();
+      }
+
+      const newCard = document.createElement('div');
+      newCard.className = 'card';
+      
+      newCard.innerHTML = `
+        <div style="width: 100%;">
+          <div class="card-title">${title}</div>
+          <div class="card-meta">
+            <span class="tag" style="background: var(--neon); color: black;">New</span>
+            <span class="author">${handle}</span>
+            <span class="time">Just now</span>
+            <button class="delete-btn" onclick="this.closest('.card').remove()">Delete</button>
+          </div>
+        </div>
+      `;
+      
+      container.insertBefore(newCard, container.children[1]); 
+      
+      document.getElementById('post-title').value = '';
+      closeModals();
+    }
+
+    // Drag and Drop Logic
     const dropZone = document.getElementById('drop-zone');
-    
-    dropZone.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      dropZone.classList.add('dragover');
-      dropZone.innerText = "Drop files to attach...";
-    });
-
-    dropZone.addEventListener('dragleave', () => {
-      dropZone.classList.remove('dragover');
-      dropZone.innerText = "Drag & Drop images/files here, or click to browse.";
-    });
-
+    dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('dragover'); dropZone.innerText = "Drop files to attach..."; });
+    dropZone.addEventListener('dragleave', () => { dropZone.classList.remove('dragover'); dropZone.innerText = "Drag & Drop images/files here, or click to browse."; });
     dropZone.addEventListener('drop', (e) => {
-      e.preventDefault();
-      dropZone.classList.remove('dragover');
-      const files = e.dataTransfer.files;
-      if(files.length > 0) {
-        dropZone.innerText = files.length + " file(s) attached ready for upload.";
-        dropZone.style.borderColor = "var(--neon)";
-        dropZone.style.color = "white";
+      e.preventDefault(); dropZone.classList.remove('dragover');
+      if(e.dataTransfer.files.length > 0) {
+        dropZone.innerText = e.dataTransfer.files.length + " file(s) attached ready for upload.";
+        dropZone.style.borderColor = "var(--neon)"; dropZone.style.color = "white";
       }
     });
-
-    // Handle normal clicking to upload
     document.getElementById('file-input').addEventListener('change', function() {
       if(this.files.length > 0) {
         dropZone.innerText = this.files.length + " file(s) attached ready for upload.";
-        dropZone.style.borderColor = "var(--neon)";
-        dropZone.style.color = "white";
+        dropZone.style.borderColor = "var(--neon)"; dropZone.style.color = "white";
       }
     });
   </script>
