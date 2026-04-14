@@ -3,214 +3,338 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Furious Acid | Discussions</title>
-
+  <title>Furious Acid | Social Hub Prototype</title>
   <style>
-    /* Exact Lovable Color Palette */
     :root {
-      --bg: #09090b;          /* Ultra dark background */
-      --card: #18181b;        /* Dark grey for discussion cards */
-      --border: #27272a;      /* Subtle borders */
-      --neon: #d9f95f;        /* The toxic green/yellow from your screenshot */
-      --text-main: #f4f4f5;
-      --text-muted: #a1a1aa;
-      --tag-bg: #1f291e;
-      --tag-text: #86efac;
+      --bg:#09090b;
+      --card:#18181b;
+      --soft:#222226;
+      --line:#2f2f35;
+      --neon:#d9f95f;
+      --text:#f4f4f5;
+      --muted:#a1a1aa;
+      --danger:#ef4444;
     }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-
-    body { background-color: var(--bg); color: var(--text-main); line-height: 1.5; padding-bottom: 50px; }
-
-    /* --- TOP NAVIGATION --- */
-    .navbar {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 16px 20px; border-bottom: 1px solid var(--border);
+    * { box-sizing:border-box; margin:0; padding:0; font-family:Inter,Segoe UI,Roboto,sans-serif; }
+    body { background:var(--bg); color:var(--text); min-height:100vh; }
+    .topbar {
+      display:flex; justify-content:space-between; align-items:center; gap:12px;
+      padding:14px 18px; border-bottom:1px solid var(--line); position:sticky; top:0; background:rgba(9,9,11,.95);
+      backdrop-filter: blur(4px); z-index:5;
     }
-    .logo { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
-    .logo span { color: var(--neon); }
-    
-    .nav-actions { display: flex; align-items: center; gap: 15px; }
-    .search-btn { background: #1f1f22; border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; color: var(--text-muted); font-size: 14px; display: flex; gap: 8px; align-items: center; }
-    .login-link { color: var(--text-main); text-decoration: none; font-weight: 600; font-size: 15px; cursor: pointer; }
-    .signup-btn { background: var(--neon); color: black; font-weight: 700; border: none; padding: 10px 18px; border-radius: 8px; font-size: 15px; cursor: pointer; }
+    .logo { font-size:22px; font-weight:800; }
+    .logo span { color:var(--neon); }
+    .nav-actions { display:flex; gap:10px; align-items:center; }
+    .btn { border:1px solid var(--line); background:var(--soft); color:var(--text); padding:10px 14px; border-radius:10px; cursor:pointer; font-weight:600; }
+    .btn.neon { background:var(--neon); color:#000; border:none; }
 
-    /* --- MAIN CONTENT --- */
-    .container { max-width: 800px; margin: 0 auto; padding: 20px; }
-    
-    .header-row { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; margin-bottom: 24px; }
-    .header-row h1 { font-size: 24px; font-weight: 700; }
-    .post-btn { background: #1f1f22; border: 1px solid var(--border); color: var(--text-main); padding: 10px 16px; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; }
+    .app { max-width:1300px; margin:0 auto; padding:18px; display:grid; grid-template-columns:280px 1fr 320px; gap:14px; }
+    .panel { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px; }
+    .panel h2 { font-size:18px; margin-bottom:10px; }
 
-    /* --- DISCUSSION CARDS --- */
-    .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 18px; margin-bottom: 12px; display: flex; justify-content: space-between; cursor: pointer; transition: border-color 0.2s; }
-    .card:hover { border-color: #3f3f46; }
-    
-    .card-title { font-size: 16px; font-weight: 600; margin-bottom: 12px; }
-    .card-meta { display: flex; align-items: center; gap: 12px; font-size: 14px; }
-    
-    .tag { background: var(--tag-bg); color: var(--tag-text); padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; }
-    .author { color: var(--neon); font-weight: 500; }
-    .time { color: var(--text-muted); }
-    
-    .comments { color: var(--text-muted); font-size: 14px; display: flex; gap: 6px; align-items: center; }
-
-    /* --- OVERLAYS (Login/Register/Reset) --- */
-    .modal-overlay {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.8); backdrop-filter: blur(5px);
-      display: none; justify-content: center; align-items: center; z-index: 1000;
+    .profile-top { display:flex; flex-direction:column; align-items:center; gap:10px; margin-bottom:14px; }
+    .avatar {
+      width:96px; height:96px; border-radius:50%; border:2px solid var(--neon); object-fit:cover; background:#0f0f12;
     }
-    .modal-box {
-      background: var(--card); border: 1px solid var(--border); border-radius: 16px;
-      padding: 30px; width: 90%; max-width: 400px; box-shadow: 0 25px 50px rgba(0,0,0,0.5);
-    }
-    .modal-box h2 { font-size: 24px; margin-bottom: 10px; color: white; }
-    .modal-box p { color: var(--text-muted); font-size: 14px; margin-bottom: 20px; line-height: 1.5; }
-    
-    .input-field { width: 100%; background: #000; border: 1px solid var(--border); color: white; padding: 12px 15px; border-radius: 8px; font-size: 15px; margin-bottom: 15px; outline: none; }
-    .input-field:focus { border-color: var(--neon); }
-    
-    .modal-btn { width: 100%; background: var(--neon); color: black; font-weight: bold; border: none; padding: 14px; border-radius: 8px; font-size: 16px; cursor: pointer; margin-bottom: 15px; }
-    .modal-link { color: var(--text-muted); font-size: 13px; text-decoration: none; cursor: pointer; display: block; text-align: center; margin-top: 10px; }
-    .modal-link:hover { color: white; }
+    .small { color:var(--muted); font-size:13px; }
+    .field { width:100%; background:#0f0f12; border:1px solid var(--line); color:var(--text); border-radius:10px; padding:10px 12px; margin-bottom:10px; }
+    textarea.field { min-height:90px; resize:vertical; }
 
-    .recovery-box { background: #000; border: 1px dashed var(--neon); padding: 15px; border-radius: 8px; margin-bottom: 20px; font-family: monospace; font-size: 16px; color: var(--neon); letter-spacing: 1px; text-align: center; }
+    .composer { display:grid; gap:10px; margin-bottom:12px; }
+    .post { border:1px solid var(--line); border-radius:12px; padding:12px; margin-bottom:10px; background:#101014; }
+    .post-head { display:flex; justify-content:space-between; gap:10px; margin-bottom:8px; }
+    .handle { color:var(--neon); font-weight:700; }
+    .post img { margin-top:10px; width:100%; max-height:340px; object-fit:cover; border-radius:10px; border:1px solid var(--line); }
+
+    .chat-log { height:430px; overflow:auto; border:1px solid var(--line); border-radius:10px; padding:10px; background:#101014; margin-bottom:10px; }
+    .chat-item { margin-bottom:8px; font-size:14px; }
+    .chat-item .who { color:var(--neon); font-weight:700; margin-right:6px; }
+    .status { font-size:12px; color:var(--muted); margin-bottom:8px; }
+
+    .modal-wrap { position:fixed; inset:0; background:rgba(0,0,0,.75); display:none; align-items:center; justify-content:center; z-index:20; }
+    .modal { width:min(420px,92vw); background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px; }
+    .modal h3 { margin-bottom:10px; }
+    .modal-row { display:flex; gap:8px; justify-content:flex-end; }
+    .link { color:var(--muted); font-size:13px; cursor:pointer; text-decoration:underline; }
+    .danger { color:var(--danger); }
+
+    @media (max-width:1060px){ .app{ grid-template-columns:1fr; } .chat-log{ height:220px; } }
   </style>
 </head>
 <body>
-
-  <nav class="navbar">
-    <div class="logo">Furious<span>Acid</span></div>
-    <div class="nav-actions">
-      <div class="search-btn">🔍 S</div>
-      <span class="login-link" id="nav-login" onclick="openModal('login-modal')">Log in</span>
-      <button class="signup-btn" id="nav-signup" onclick="openModal('register-modal')">Sign up</button>
+  <header class="topbar">
+    <div class="logo">Furious<span>Acid</span> Hub</div>
+    <div class="nav-actions" id="auth-actions">
+      <button class="btn" onclick="openModal('login')">Log in</button>
+      <button class="btn neon" onclick="openModal('register')">Sign up</button>
     </div>
-  </nav>
-
-  <div class="container">
-    <div class="header-row">
-      <h1>All Discussions</h1>
-      <button class="post-btn" onclick="openModal('login-modal')">Log in to post</button>
+    <div class="nav-actions" id="user-actions" style="display:none;">
+      <span id="whoami" class="small"></span>
+      <button class="btn" onclick="openModal('reset')">Reset Password</button>
+      <button class="btn" onclick="logout()">Log out</button>
     </div>
+  </header>
 
-    <div class="card">
-      <div>
-        <div class="card-title">Mimosa Tenuiflora Indoor Cultivatio...</div>
-        <div class="card-meta">
-          <span class="tag">Tools</span>
-          <span class="author">@furious_acid</span>
-          <span class="time">3 days ago</span>
-        </div>
+  <main class="app">
+    <aside class="panel">
+      <h2>Profile</h2>
+      <div class="profile-top">
+        <img id="avatarPreview" class="avatar" alt="Profile image" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Crect width='100%25' height='100%25' fill='%2318181b'/%3E%3Ctext x='50%25' y='50%25' fill='%23d9f95f' text-anchor='middle' dominant-baseline='middle' font-family='Arial' font-size='64'%3E%40%3C/text%3E%3C/svg%3E">
+        <input id="avatarInput" class="field" type="file" accept="image/*" />
       </div>
-      <div class="comments">💬 0</div>
-    </div>
+      <input id="profileHandle" class="field" placeholder="@handle" />
+      <input id="profileEmail" class="field" placeholder="email@example.com" />
+      <textarea id="profileBio" class="field" placeholder="About me..."></textarea>
+      <button class="btn neon" style="width:100%;" onclick="saveProfile()">Save Profile</button>
+      <p class="small" style="margin-top:8px;">You can change your handle, email, avatar, and bio anytime.</p>
+    </aside>
 
-    <div class="card">
-      <div>
-        <div class="card-title">CONTACTING ME</div>
-        <div class="card-meta">
-          <span class="tag" style="background: #27272a; color: #d4d4d8;">Off-topic</span>
-          <span class="author">@furious_acid</span>
-          <span class="time">3 days ago</span>
-        </div>
+    <section class="panel">
+      <h2>Stream Wall</h2>
+      <div class="composer">
+        <textarea id="postText" class="field" placeholder="What's happening in the lab?"></textarea>
+        <input id="postImage" class="field" type="file" accept="image/*" />
+        <button class="btn neon" onclick="createPost()">Post to Stream</button>
       </div>
-      <div class="comments">💬 0</div>
-    </div>
+      <div id="stream"></div>
+    </section>
 
-    <div class="card">
-      <div>
-        <div class="card-title">Anyone know where to get mhrb</div>
-        <div class="card-meta">
-          <span class="tag">Projects</span>
-          <span class="author">@Mindset</span>
-          <span class="time">26 days ago</span>
-        </div>
-      </div>
-      <div class="comments">💬 0</div>
-    </div>
+    <section class="panel">
+      <h2>Live Chat Room</h2>
+      <p class="status" id="chatStatus">Idle chat connected. Say hi.</p>
+      <div id="chatLog" class="chat-log"></div>
+      <input id="chatInput" class="field" placeholder="Type message and press Enter" />
+      <button class="btn" style="width:100%;" onclick="sendChat()">Send Message</button>
+    </section>
+  </main>
 
-    <div class="card">
-      <div>
-        <div class="card-title">Any substances that i could make at...</div>
-        <div class="card-meta">
-          <span class="tag">General</span>
-          <span class="author">@Chjw719</span>
-          <span class="time">27 days ago</span>
-        </div>
+  <div class="modal-wrap" id="modal-login">
+    <div class="modal">
+      <h3>Log in</h3>
+      <input id="loginId" class="field" placeholder="@handle or email" />
+      <input id="loginPassword" class="field" type="password" placeholder="Password" />
+      <p class="link" onclick="swapModal('login','reset')">Forgot password?</p>
+      <div class="modal-row">
+        <button class="btn" onclick="closeModals()">Cancel</button>
+        <button class="btn neon" onclick="login()">Log in</button>
       </div>
-      <div class="comments">💬 1</div>
     </div>
   </div>
 
-  <div class="modal-overlay" id="login-modal">
-    <div class="modal-box">
-      <h2>Log in</h2>
-      <p>Enter your handle and password.</p>
-      <input type="text" class="input-field" placeholder="Handle (e.g. AcidBurn)">
-      <input type="password" class="input-field" placeholder="Password">
-      <button class="modal-btn" onclick="closeModals()">Log in</button>
-      <div style="display: flex; justify-content: space-between; margin-top: 15px;">
-        <span class="modal-link" onclick="openModal('register-modal')">Create an account</span>
-        <span class="modal-link" onclick="openModal('reset-modal')">Forgot password?</span>
+  <div class="modal-wrap" id="modal-register">
+    <div class="modal">
+      <h3>Create account</h3>
+      <input id="regHandle" class="field" placeholder="@handle" />
+      <input id="regEmail" class="field" type="email" placeholder="Email" />
+      <input id="regPassword" class="field" type="password" placeholder="Password" />
+      <div class="modal-row">
+        <button class="btn" onclick="closeModals()">Cancel</button>
+        <button class="btn neon" onclick="register()">Create</button>
       </div>
-      <span class="modal-link" style="margin-top: 25px;" onclick="closeModals()">[ Cancel ]</span>
     </div>
   </div>
 
-  <div class="modal-overlay" id="register-modal">
-    <div class="modal-box">
-      <h2>Sign up</h2>
-      <p id="reg-text">We don't ask for emails. Pick a handle and a password.</p>
-      
-      <div id="reg-form">
-        <input type="text" class="input-field" placeholder="Choose a Handle">
-        <input type="password" class="input-field" placeholder="Create Password">
-        <input type="password" class="input-field" placeholder="Confirm Password">
-        <button class="modal-btn" onclick="showRecovery()">Create Account</button>
+  <div class="modal-wrap" id="modal-reset">
+    <div class="modal">
+      <h3>Password reset</h3>
+      <input id="resetEmail" class="field" type="email" placeholder="Account email" />
+      <input id="resetPassword" class="field" type="password" placeholder="New password" />
+      <p class="small">Demo behavior: simulates sending/using a reset flow.</p>
+      <div class="modal-row">
+        <button class="btn" onclick="closeModals()">Cancel</button>
+        <button class="btn neon" onclick="resetPassword()">Reset password</button>
       </div>
-
-      <div id="reg-recovery" style="display: none;">
-        <p style="color: var(--neon); font-weight: bold;">Write this down. It is the ONLY way to reset your password if you lose it.</p>
-        <div class="recovery-box">neon glass acid root phantom cipher</div>
-        <button class="modal-btn" onclick="closeModals()">I Saved It - Enter Hub</button>
-      </div>
-
-      <span class="modal-link" style="margin-top: 25px;" onclick="closeModals()">[ Cancel ]</span>
-    </div>
-  </div>
-
-  <div class="modal-overlay" id="reset-modal">
-    <div class="modal-box">
-      <h2>Reset Password</h2>
-      <p>Enter your handle and your secret 12-word recovery phrase.</p>
-      <input type="text" class="input-field" placeholder="Handle">
-      <input type="text" class="input-field" placeholder="Secret Recovery Phrase">
-      <input type="password" class="input-field" placeholder="New Password">
-      <button class="modal-btn" onclick="alert('Password Reset! You can now log in.'); closeModals();">Reset Password</button>
-      <span class="modal-link" style="margin-top: 25px;" onclick="closeModals()">[ Cancel ]</span>
     </div>
   </div>
 
   <script>
-    function closeModals() {
-      document.getElementById('login-modal').style.display = 'none';
-      document.getElementById('register-modal').style.display = 'none';
-      document.getElementById('reset-modal').style.display = 'none';
+    const state = {
+      user: null,
+      users: JSON.parse(localStorage.getItem('fa_users_v2') || '[]'),
+      posts: JSON.parse(localStorage.getItem('fa_posts_v2') || '[]'),
+      chat: JSON.parse(localStorage.getItem('fa_chat_v2') || '[]')
+    };
+
+    function persist(){
+      localStorage.setItem('fa_users_v2', JSON.stringify(state.users));
+      localStorage.setItem('fa_posts_v2', JSON.stringify(state.posts));
+      localStorage.setItem('fa_chat_v2', JSON.stringify(state.chat));
     }
 
-    function openModal(modalId) {
-      closeModals(); // Close any open ones first
-      document.getElementById(modalId).style.display = 'flex';
+    function escapeHtml(text) {
+      const d = document.createElement('div');
+      d.textContent = text;
+      return d.innerHTML;
     }
 
-    function showRecovery() {
-      document.getElementById('reg-form').style.display = 'none';
-      document.getElementById('reg-text').style.display = 'none';
-      document.getElementById('reg-recovery').style.display = 'block';
+    function closeModals(){ document.querySelectorAll('.modal-wrap').forEach(m => m.style.display = 'none'); }
+    function openModal(name){ closeModals(); document.getElementById('modal-' + name).style.display = 'flex'; }
+    function swapModal(from,to){ document.getElementById('modal-' + from).style.display = 'none'; openModal(to); }
+
+    function applyAuthUI(){
+      const out = document.getElementById('auth-actions');
+      const inside = document.getElementById('user-actions');
+      if(state.user){
+        out.style.display = 'none';
+        inside.style.display = 'flex';
+        document.getElementById('whoami').textContent = state.user.handle + ' · ' + state.user.email;
+        loadProfileFields();
+      } else {
+        out.style.display = 'flex';
+        inside.style.display = 'none';
+      }
     }
+
+    function register(){
+      const handleRaw = document.getElementById('regHandle').value.trim();
+      const email = document.getElementById('regEmail').value.trim().toLowerCase();
+      const password = document.getElementById('regPassword').value;
+      if(!handleRaw || !email || !password) return alert('Fill all sign-up fields.');
+      const handle = handleRaw.startsWith('@') ? handleRaw : '@' + handleRaw;
+      if(state.users.some(u => u.handle.toLowerCase() === handle.toLowerCase() || u.email === email)) return alert('Handle or email already exists.');
+      const user = { handle, email, password, bio:'', avatar:'' };
+      state.users.push(user);
+      state.user = user;
+      persist();
+      closeModals();
+      applyAuthUI();
+      alert('Account created. You are now signed in.');
+    }
+
+    function login(){
+      const id = document.getElementById('loginId').value.trim().toLowerCase();
+      const password = document.getElementById('loginPassword').value;
+      const user = state.users.find(u => u.password === password && (u.handle.toLowerCase() === id || u.email === id));
+      if(!user) return alert('Invalid credentials.');
+      state.user = user;
+      closeModals();
+      applyAuthUI();
+      alert('Welcome back ' + user.handle);
+    }
+
+    function resetPassword(){
+      const email = document.getElementById('resetEmail').value.trim().toLowerCase();
+      const newPass = document.getElementById('resetPassword').value;
+      if(!email || !newPass) return alert('Enter email and new password.');
+      const user = state.users.find(u => u.email === email);
+      if(!user) return alert('No account found for that email.');
+      user.password = newPass;
+      persist();
+      closeModals();
+      alert('Password reset successful. You can now log in with the new password.');
+    }
+
+    function logout(){ state.user = null; applyAuthUI(); }
+
+    function loadProfileFields(){
+      if(!state.user) return;
+      document.getElementById('profileHandle').value = state.user.handle;
+      document.getElementById('profileEmail').value = state.user.email;
+      document.getElementById('profileBio').value = state.user.bio || '';
+      if(state.user.avatar){ document.getElementById('avatarPreview').src = state.user.avatar; }
+    }
+
+    function saveProfile(){
+      if(!state.user) return alert('Log in first.');
+      const handleRaw = document.getElementById('profileHandle').value.trim();
+      const email = document.getElementById('profileEmail').value.trim().toLowerCase();
+      if(!handleRaw || !email) return alert('Handle and email are required.');
+      const handle = handleRaw.startsWith('@') ? handleRaw : '@' + handleRaw;
+      const collision = state.users.some(u => u !== state.user && (u.handle.toLowerCase() === handle.toLowerCase() || u.email === email));
+      if(collision) return alert('That handle/email is already used by another account.');
+      state.user.handle = handle;
+      state.user.email = email;
+      state.user.bio = document.getElementById('profileBio').value.trim();
+      persist();
+      applyAuthUI();
+      renderPosts();
+      alert('Profile updated.');
+    }
+
+    function createPost(){
+      if(!state.user) return alert('Log in to post to the stream wall.');
+      const text = document.getElementById('postText').value.trim();
+      const file = document.getElementById('postImage').files[0];
+      if(!text && !file) return alert('Write something or add an image.');
+      const makePost = (imageData = '') => {
+        state.posts.unshift({
+          id: Date.now(),
+          handle: state.user.handle,
+          text,
+          image:imageData,
+          time:new Date().toLocaleString()
+        });
+        persist();
+        document.getElementById('postText').value = '';
+        document.getElementById('postImage').value = '';
+        renderPosts();
+      };
+      if(file){
+        const reader = new FileReader();
+        reader.onload = e => makePost(e.target.result);
+        reader.readAsDataURL(file);
+      } else {
+        makePost();
+      }
+    }
+
+    function renderPosts(){
+      const stream = document.getElementById('stream');
+      if(!state.posts.length){
+        stream.innerHTML = '<p class="small">No posts yet. Start the stream wall.</p>';
+        return;
+      }
+      stream.innerHTML = state.posts.map(p => `
+        <article class="post">
+          <div class="post-head">
+            <span class="handle">${escapeHtml(p.handle)}</span>
+            <span class="small">${escapeHtml(p.time)}</span>
+          </div>
+          ${p.text ? `<p>${escapeHtml(p.text)}</p>` : ''}
+          ${p.image ? `<img src="${p.image}" alt="Post upload">` : ''}
+        </article>
+      `).join('');
+    }
+
+    function sendChat(){
+      if(!state.user) return alert('Log in to chat.');
+      const input = document.getElementById('chatInput');
+      const message = input.value.trim();
+      if(!message) return;
+      state.chat.push({ who: state.user.handle, message, ts:new Date().toLocaleTimeString() });
+      if(state.chat.length > 120) state.chat.shift();
+      persist();
+      input.value = '';
+      renderChat();
+    }
+
+    function renderChat(){
+      const box = document.getElementById('chatLog');
+      box.innerHTML = state.chat.map(item => `<div class="chat-item"><span class="who">${escapeHtml(item.who)}</span>${escapeHtml(item.message)} <span class="small">(${escapeHtml(item.ts)})</span></div>`).join('');
+      box.scrollTop = box.scrollHeight;
+    }
+
+    document.getElementById('chatInput').addEventListener('keydown', (e) => {
+      if(e.key === 'Enter'){ e.preventDefault(); sendChat(); }
+    });
+
+    document.getElementById('avatarInput').addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if(!file) return;
+      const reader = new FileReader();
+      reader.onload = ev => {
+        document.getElementById('avatarPreview').src = ev.target.result;
+        if(state.user){
+          state.user.avatar = ev.target.result;
+          persist();
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+
+    renderPosts();
+    renderChat();
+    applyAuthUI();
   </script>
-
 </body>
 </html>
