@@ -134,7 +134,6 @@
       box-shadow: -2px 0 0 #00f2ea, 2px 0 0 #ff0050;
     }
 
-    /* --- SEARCH BAR CSS --- */
     .search-container {
       width: 100%;
       margin-bottom: 25px;
@@ -191,6 +190,12 @@
       flex:0 0 auto;
     }
     .cover img{ width:100%; height:100%; object-fit:cover; display:block; }
+    .cover-placeholder{
+      width:100%; height:100%; padding:14px; display:flex; flex-direction:column;
+      justify-content:center; text-align:center; background:linear-gradient(145deg,#191020,#09080d);
+      border:2px solid var(--brand2); font-size:13px; font-weight:800; line-height:1.25;
+    }
+    .cover-placeholder small{display:block; margin-top:12px; color:var(--muted); font-size:10px; letter-spacing:.08em;}
     .meta h2{ margin:0; font-size:18px; }
     .meta p{ margin:8px 0 0; color:var(--muted); font-size:14px; }
     
@@ -260,6 +265,22 @@
         </div>
 
         <div id="releases" class="list">
+
+          <div class="release">
+            <div class="cover">
+              <div class="cover-placeholder">
+                Drug Synthesis
+                <small>4,5,6-TM-DMT<br>4-(2-Ethoxyhexyl)amphetamine<br>4-HO-Isoprenylamphetamine</small>
+              </div>
+            </div>
+            <div class="meta">
+              <h2>Drug Synthesis: 4,5,6-TM-DMT; 4-(2-Ethoxyhexyl)amphetamine, and 4-HO-Isoprenylamphetamine</h2>
+              <p>Novel Synthesis Contribution · Furious Acid Publication</p>
+              <div class="book-links">
+                <a href="https://www.amazon.com/dp/B0H6LXN9L7" class="btn primary" target="_blank" rel="noopener noreferrer">Buy on Amazon</a>
+              </div>
+            </div>
+          </div>
           
           <div class="release">
             <div class="cover"><img src="medicine.jpg" alt="Medicine Book Cover"></div>
@@ -313,7 +334,6 @@
   </main>
 
   <script>
-    // --- Carousel Script ---
     const slide = document.getElementById('carouselSlide');
     let counter = 0;
     const totalImages = 3;
@@ -326,25 +346,19 @@
         slide.style.transform = `translateX(${-counter * 33.3333}%)`;
     }, 4500); 
 
-    // --- Smart Iframe Resizer Script ---
-    // This talks to the iframe and tells it to stretch so nothing gets cut off on mobile.
     const iframe = document.getElementById('reports-iframe');
     if (iframe) {
       iframe.addEventListener('load', function() {
         const adjustHeight = () => {
           try {
-            // Find out exactly how tall the reports page is
             const internalHeight = iframe.contentWindow.document.documentElement.scrollHeight;
-            // Stretch the box to match
             iframe.style.height = internalHeight + 'px';
           } catch(e) {
             console.error("Could not resize iframe:", e);
           }
         };
 
-        // Run the resize immediately
         adjustHeight();
-        // Run it again 1 second later just in case the flowchart took a second to draw
         setTimeout(adjustHeight, 1000);
       });
     }
