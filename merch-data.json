@@ -1,0 +1,27 @@
+{
+  "source": "https://furiousacid.printify.me/products",
+  "updatedAt": "2026-07-11T23:00:00.000Z",
+  "products": [
+    {
+      "id": "27290193",
+      "title": "Furiousacid Logo Sticker — Kiss-Cut Vinyl Decal",
+      "price": "$3.99",
+      "image": "https://images-api.printify.com/mockup/69b1aefe9ea0c8eb7b032ac7/45750/16655/furiousacid-logo-sticker-kiss-cut-vinyl-decal.jpg?camera_label=front&revision=1773252632584",
+      "url": "https://furiousacid.printify.me/product/27290193"
+    },
+    {
+      "id": "27254447",
+      "title": "Furious Acid Purple Rabbit Velveteen Plush Blanket",
+      "price": "$55.00",
+      "image": "https://images-api.printify.com/mockup/69af358318fd5f7c2200ff3f/68324/9077/furious-acid-purple-rabbit-velveteen-plush-blanket.jpg?camera_label=front&revision=1773090286176",
+      "url": "https://furiousacid.printify.me/product/27254447"
+    },
+    {
+      "id": "27252308",
+      "title": "Furious Acid Rabbit Hoodie | Offical Graphic Pullover, Edgy Streetwear",
+      "price": "$46.53",
+      "image": "https://pfy-prod-products-mockup-media.s3.us-east-2.amazonaws.com/files/2026/03/20260309190456-1f11bead-cd69-681a-9889-923038f244cd.png?revision=1773083157646",
+      "url": "https://furiousacid.printify.me/product/27252308"
+    }
+  ]
+}
