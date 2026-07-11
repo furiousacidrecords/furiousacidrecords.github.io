@@ -1,368 +1,713 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  
-  <title>Furious Acid | Independent Publisher & Research</title>
-  <meta name="title" content="Furious Acid | Independent Publisher & Research" />
-  <meta name="description" content="Official home of Furious Acid. Explore our publications on chemistry, indoor cultivation, and our interactive botanical research labs." />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <link rel="icon" type="image/png" href="favicon.png" />
-  <link rel="apple-touch-icon" href="favicon.png" />
+  <title>Furious Acid | Independent Publisher &amp; Research</title>
+  <meta name="title" content="Furious Acid | Independent Publisher &amp; Research">
+  <meta name="description" content="The official home of Furious Acid publications, merch, research, and the upcoming Chemical Map.">
 
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://furiousacid.com/" />
-  <meta property="og:title" content="Furious Acid | Independent Publisher" />
-  <meta property="og:description" content="Explore our publications on chemistry, indoor cultivation, and interactive botanical labs." />
-  <meta property="og:image" content="https://furiousacid.com/banner.png" />
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="apple-touch-icon" href="favicon.png">
 
-  <meta property="twitter:card" content="summary_large_image" />
-  <meta property="twitter:url" content="https://furiousacid.com/" />
-  <meta property="twitter:title" content="Furious Acid | Independent Publisher" />
-  <meta property="twitter:description" content="Explore our publications on chemistry, indoor cultivation, and interactive botanical labs." />
-  <meta property="twitter:image" content="https://furiousacid.com/banner.png" />
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://furiousacid.com/">
+  <meta property="og:title" content="Furious Acid | Independent Publisher">
+  <meta property="og:description" content="Explore Furious Acid books, merch, research, and the upcoming Chemical Map.">
+  <meta property="og:image" content="https://furiousacid.com/banner.png">
 
   <style>
-    :root{
-      --bg:#07070a;
-      --panel:rgba(255,255,255,.06);
-      --panel2:rgba(255,255,255,.04);
-      --text:#f3f4f6;
-      --muted:rgba(243,244,246,.72);
-      --line:rgba(255,255,255,.10);
-      --shadow: 0 30px 70px rgba(0,0,0,.55);
-      --glow: 0 0 0 1px rgba(255,255,255,.08), 0 0 40px rgba(210,40,255,.10);
-      --brand1:#ff2bd6;
-      --brand2:#6d28ff;
-      --radius:18px;
+    :root {
+      --ink: #17131d;
+      --muted: #625d68;
+      --paper: #ffffff;
+      --page: #f3f2f5;
+      --line: #dedbe3;
+      --purple: #6f00ff;
+      --purple-dark: #4b00ad;
+      --yellow: #fdf200;
+      --black: #0b0a0e;
+      --shadow: 0 12px 35px rgba(25, 18, 40, .08);
+      --radius: 18px;
     }
 
-    *{box-sizing:border-box}
+    * { box-sizing: border-box; }
 
-    body{
-      margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-      color:var(--text);
-      background:
-        radial-gradient(1200px 600px at 20% 15%, rgba(255,43,214,.14), transparent 60%),
-        radial-gradient(900px 500px at 80% 25%, rgba(109,40,255,.16), transparent 55%),
-        radial-gradient(900px 700px at 50% 90%, rgba(255,255,255,.06), transparent 60%),
-        var(--bg);
-      min-height:100vh;
-      display:flex;
-      flex-direction: column;
-      align-items:center;
-      justify-content: flex-start;
-      padding-bottom: 40px;
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--page);
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.5;
     }
 
-    a{color:inherit; text-decoration:none;}
+    a { color: inherit; text-decoration: none; }
+
+    img { max-width: 100%; }
 
     .banner {
-      width: 100%; height: 160px; background-color: #ffffff; 
-      display: flex; justify-content: center; align-items: center;
-      border-bottom: 4px solid var(--brand2); padding: 10px;
-    }
-    .banner img { max-height: 100%; max-width: 100%; object-fit: contain; }
-
-    .carousel-container {
-      position: relative; width: 100%; max-width: 1400px; margin: 0 auto;
-      overflow: hidden; background-color: #000; border-bottom: 2px solid var(--line);
-    }
-    .carousel-slide { display: flex; width: 300%; transition: transform 0.6s ease-in-out; }
-    .carousel-slide img {
-      width: 33.3333%; height: 500px; object-fit: contain; 
-      background-color: #111; padding: 20px;
-    }
-
-    .wrap{ width:min(980px,100%); margin-top: 40px; padding: 0 16px; }
-
-    .card{
-      background:linear-gradient(180deg, var(--panel), var(--panel2));
-      border:1px solid var(--line); border-radius:var(--radius);
-      box-shadow:var(--shadow); overflow:hidden; margin-bottom: 30px;
-    }
-
-    .forum-section {
-      text-align: center; padding: 50px 20px; background: rgba(0,0,0,0.4);
+      width: 100%;
+      min-height: 112px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 20px;
+      background: var(--paper);
       border-bottom: 1px solid var(--line);
     }
-    .forum-section h2 { margin-top: 0; font-size: 32px; letter-spacing: 1px; }
-    .forum-section p { color: var(--muted); margin-bottom: 30px; font-size: 16px; }
-    
-    .btn-massive {
-      display: inline-block; padding: 20px 50px; border-radius: var(--radius);
-      background: linear-gradient(135deg, var(--brand1), var(--brand2));
-      box-shadow: var(--glow); font-weight: 800; font-size: 22px;
-      text-transform: uppercase; letter-spacing: 2px; color: #fff;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-    .btn-massive:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 0 1px rgba(255,255,255,.15), 0 0 60px rgba(210,40,255,.30);
+
+    .banner img {
+      width: min(560px, 100%);
+      max-height: 88px;
+      object-fit: contain;
     }
 
-    .inner{padding:26px;}
-    .top{
-      display:flex; gap:16px; align-items:center;
-      justify-content:space-between; flex-wrap:wrap; margin-bottom:18px;
+    .page {
+      width: min(1160px, 100%);
+      margin: 0 auto;
+      padding: 22px 18px 48px;
     }
-    .brand{ display:flex; gap:14px; align-items:center; }
-    .logo{
-      width:54px; height:54px; border-radius:16px;
-      background: linear-gradient(135deg, var(--brand1), var(--brand2));
-      box-shadow: var(--glow); display:grid; place-items:center; font-weight:800;
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 18px 20px;
+      color: #fff;
+      background: var(--black);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
     }
-    .title h1{ margin:0; font-size:30px; }
-    .title p{ margin:6px 0 0; color:var(--muted); }
-    
-    .nav{ display:flex; gap:10px; flex-wrap:wrap; }
-    .btn{
-      padding:10px 14px; border-radius:14px; border:1px solid var(--line);
-      background: rgba(0,0,0,.25); font-weight:650; font-size:14px; display: inline-block;
-      text-align: center; transition: background 0.2s;
+
+    .identity {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 190px;
     }
-    .btn:hover { background: rgba(255,255,255,.05); }
-    .btn.primary{
-      border:none; background: linear-gradient(135deg, var(--brand1), var(--brand2));
-      box-shadow: var(--glow);
+
+    .logo {
+      display: grid;
+      width: 48px;
+      height: 48px;
+      place-items: center;
+      color: var(--black);
+      background: var(--yellow);
+      border-radius: 14px;
+      font-size: 16px;
+      font-weight: 900;
+      letter-spacing: -.08em;
     }
-    .btn.tiktok {
+
+    .identity h1 {
+      margin: 0;
+      font-size: 21px;
+      line-height: 1.1;
+    }
+
+    .identity p {
+      margin: 4px 0 0;
+      color: #c9c4d1;
+      font-size: 12px;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .nav a,
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 40px;
+      padding: 9px 13px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      font-size: 13px;
+      font-weight: 750;
+      transition: transform .18s ease, background .18s ease, border-color .18s ease;
+    }
+
+    .nav a:hover,
+    .button:hover { transform: translateY(-1px); }
+
+    .nav a { border-color: rgba(255,255,255,.2); }
+    .nav a:hover { background: rgba(255,255,255,.1); }
+
+    .nav .primary,
+    .button.primary {
+      color: #fff;
+      background: var(--purple);
+      border-color: var(--purple);
+    }
+
+    .nav .accent,
+    .button.accent {
+      color: var(--black);
+      background: var(--yellow);
+      border-color: var(--yellow);
+    }
+
+    .nav .tiktok {
       background: #000;
-      border: 1px solid #ff0050;
+      border-color: #ff0050;
       box-shadow: -2px 0 0 #00f2ea, 2px 0 0 #ff0050;
     }
 
-    .search-container {
-      width: 100%;
-      margin-bottom: 25px;
-      padding-bottom: 25px;
-      border-bottom: 1px solid var(--line);
-    }
-    .search-form {
-      display: flex;
-      gap: 12px;
-      width: 100%;
-    }
-    .search-input {
-      flex: 1;
-      background: rgba(0,0,0,0.4);
+    .panel {
+      margin-top: 20px;
+      padding: 28px;
+      background: var(--paper);
       border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 12px 18px;
-      color: var(--text);
-      font-family: inherit;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .update-panel {
+      text-align: center;
+      border-top: 5px solid var(--purple);
+    }
+
+    .eyebrow {
+      margin: 0 0 7px;
+      color: var(--purple-dark);
+      font-size: 12px;
+      font-weight: 850;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+    }
+
+    .update-panel h2 {
+      margin: 0;
+      font-size: clamp(25px, 4vw, 36px);
+      letter-spacing: -.03em;
+    }
+
+    .update-date {
+      margin: 8px 0 14px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .update-copy {
+      max-width: 690px;
+      margin: 0 auto;
+      color: var(--muted);
       font-size: 16px;
+    }
+
+    .search-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 21px;
+    }
+
+    .search-row input {
+      flex: 1;
+      min-width: 0;
+      padding: 12px 14px;
+      color: var(--ink);
+      background: #faf9fb;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      font: inherit;
       outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
     }
-    .search-input:focus {
-      border-color: var(--brand2);
-      box-shadow: 0 0 0 1px rgba(109,40,255,.3);
+
+    .search-row input:focus {
+      border-color: var(--purple);
+      box-shadow: 0 0 0 3px rgba(111,0,255,.12);
     }
-    .search-btn {
-      background: linear-gradient(135deg, var(--brand1), var(--brand2));
+
+    .search-row button {
+      padding: 0 18px;
       color: #fff;
-      border: none;
-      border-radius: 12px;
-      padding: 0 24px;
-      font-weight: bold;
-      font-size: 15px;
+      background: var(--black);
+      border: 0;
+      border-radius: 11px;
+      font: inherit;
+      font-weight: 800;
       cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-    .search-btn:hover {
-      transform: scale(1.05);
-      box-shadow: var(--glow);
     }
 
-    .list{ display:flex; flex-direction:column; gap:14px; margin-top:14px; }
-    
-    .release{
-      display:flex; gap:16px; padding:14px; border-radius:16px;
-      border:1px solid rgba(255,255,255,.10); background: rgba(0,0,0,.22);
-      align-items:center;
-    }
-    .cover{
-      width:140px; aspect-ratio: 2 / 3; border-radius:14px; overflow:hidden;
-      border:1px solid rgba(255,255,255,.12); box-shadow: 0 18px 40px rgba(0,0,0,.55);
-      flex:0 0 auto;
-    }
-    .cover img{ width:100%; height:100%; object-fit:cover; display:block; }
-    .cover-placeholder{
-      width:100%; height:100%; padding:14px; display:flex; flex-direction:column;
-      justify-content:center; text-align:center; background:linear-gradient(145deg,#191020,#09080d);
-      border:2px solid var(--brand2); font-size:13px; font-weight:800; line-height:1.25;
-    }
-    .cover-placeholder small{display:block; margin-top:12px; color:var(--muted); font-size:10px; letter-spacing:.08em;}
-    .meta h2{ margin:0; font-size:18px; }
-    .meta p{ margin:8px 0 0; color:var(--muted); font-size:14px; }
-    
-    .book-links {
-      display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;
+    .section-heading {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 19px;
     }
 
-    @media (max-width: 560px){
-      .release{flex-direction:column; align-items:flex-start;}
-      .cover{width:100%; max-width:340px;}
-      .btn-massive { width: 100%; padding: 15px 20px; font-size: 18px;}
-      .book-links { width: 100%; }
-      .book-links .btn { flex: 1; }
-      .search-form { flex-direction: column; }
-      .search-btn { padding: 12px; }
+    .section-heading h2 {
+      margin: 0;
+      font-size: clamp(24px, 4vw, 32px);
+      letter-spacing: -.035em;
+    }
+
+    .section-heading p {
+      max-width: 430px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      text-align: right;
+    }
+
+    .featured-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .featured-card,
+    .book-tile {
+      overflow: hidden;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 15px;
+    }
+
+    .featured-cover {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      aspect-ratio: 3 / 4;
+      padding: 12px;
+      background: #eceaf0;
+    }
+
+    .featured-cover img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 8px;
+    }
+
+    .featured-body { padding: 18px; }
+
+    .featured-body h3,
+    .book-tile h3 {
+      margin: 0;
+      color: var(--ink);
+      font-size: 18px;
+      line-height: 1.2;
+    }
+
+    .featured-body p,
+    .book-tile p {
+      min-height: 42px;
+      margin: 9px 0 15px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .book-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .button {
+      color: var(--ink);
+      background: #fff;
+      border-color: var(--line);
+      font-size: 12px;
+    }
+
+    .button:hover { border-color: var(--purple); }
+
+    .button.amazon {
+      color: #fff;
+      background: var(--black);
+      border-color: var(--black);
+    }
+
+    .collection-title {
+      margin: 34px 0 14px;
+      color: var(--muted);
+      font-size: 15px;
+      font-weight: 850;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .collection-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .tile-cover {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      aspect-ratio: 2 / 3;
+      padding: 8px;
+      background: #eceaf0;
+    }
+
+    .tile-cover img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 5px;
+    }
+
+    .tile-placeholder {
+      display: grid;
+      width: 100%;
+      height: 100%;
+      padding: 12px;
+      place-items: center;
+      color: #fff;
+      background: linear-gradient(150deg, var(--black), var(--purple-dark));
+      border-radius: 5px;
+      font-size: 13px;
+      font-weight: 900;
+      text-align: center;
+    }
+
+    .book-tile-body { padding: 13px; }
+
+    .book-tile h3 { font-size: 15px; }
+    .book-tile p { min-height: 0; margin: 7px 0 12px; font-size: 12px; }
+    .book-tile .book-actions { display: block; }
+    .book-tile .button { width: 100%; margin-top: 6px; }
+
+    .store-intro {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 16px;
+      padding: 16px;
+      color: #fff;
+      background: var(--black);
+      border-radius: 13px;
+    }
+
+    .store-intro p { margin: 0; color: #d4cfda; font-size: 14px; }
+
+    .store-frame {
+      width: 100%;
+      min-height: 700px;
+      display: block;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+    }
+
+    .embed-note {
+      margin: 12px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      text-align: center;
+    }
+
+    .map-card {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(250px, .8fr);
+      gap: 24px;
+      align-items: center;
+    }
+
+    .map-preview {
+      position: relative;
+      min-height: 265px;
+      overflow: hidden;
+      display: grid;
+      place-items: center;
+      padding: 30px;
+      color: #fff;
+      background:
+        linear-gradient(rgba(111,0,255,.1), rgba(111,0,255,.1)),
+        repeating-linear-gradient(0deg, transparent 0 27px, rgba(253,242,0,.23) 28px),
+        repeating-linear-gradient(90deg, transparent 0 39px, rgba(255,255,255,.17) 40px),
+        linear-gradient(135deg, #100b1c, #4b00ad);
+      border-radius: 15px;
+      text-align: center;
+    }
+
+    .map-preview::before,
+    .map-preview::after {
+      position: absolute;
+      content: "";
+      width: 150px;
+      height: 150px;
+      border: 2px solid rgba(253,242,0,.75);
+      transform: rotate(24deg);
+    }
+
+    .map-preview::before { top: -64px; left: -40px; }
+    .map-preview::after { right: -40px; bottom: -64px; }
+
+    .map-preview-content { position: relative; z-index: 1; }
+
+    .map-preview h3 {
+      margin: 0;
+      color: #fff;
+      font-size: clamp(24px, 4vw, 38px);
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    .map-preview p {
+      margin: 14px 0 0;
+      color: #f7f2ff;
+      font-weight: 700;
+    }
+
+    .map-copy h3 { margin: 0 0 9px; font-size: 24px; }
+    .map-copy p { margin: 0 0 18px; color: var(--muted); }
+
+    .forum-panel {
+      color: #fff;
+      background: var(--black);
+      text-align: center;
+    }
+
+    .forum-panel .eyebrow { color: var(--yellow); }
+    .forum-panel h2 { margin: 0; font-size: clamp(26px, 4vw, 36px); }
+    .forum-panel p { max-width: 620px; margin: 10px auto 20px; color: #d4cfda; }
+
+    footer {
+      padding: 28px 4px 0;
+      color: var(--muted);
+      font-size: 12px;
+      text-align: center;
+    }
+
+    footer a { color: var(--purple-dark); font-weight: 750; }
+
+    @media (max-width: 980px) {
+      .topbar { align-items: flex-start; flex-direction: column; }
+      .nav { justify-content: flex-start; }
+      .collection-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 700px) {
+      .page { padding: 12px 10px 32px; }
+      .panel { padding: 20px; }
+      .section-heading { align-items: flex-start; flex-direction: column; }
+      .section-heading p { text-align: left; }
+      .featured-grid,
+      .map-card { grid-template-columns: 1fr; }
+      .collection-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .store-intro { align-items: flex-start; flex-direction: column; }
+      .store-frame { min-height: 600px; }
+    }
+
+    @media (max-width: 440px) {
+      .search-row { flex-direction: column; }
+      .search-row button { min-height: 44px; }
+      .collection-grid { grid-template-columns: 1fr; }
+      .nav a { flex: 1 1 auto; }
     }
   </style>
 </head>
 
 <body>
-
   <header class="banner">
     <img src="banner.png" alt="Furious Acid Records">
   </header>
 
-  <section class="carousel-container">
-    <div class="carousel-slide" id="carouselSlide">
-      <img src="medicine.jpg" alt="The Chemistry Behind Medicine">
-      <img src="marijuana.jpg" alt="Marijuana Manual">
-      <img src="coca.jpg" alt="Indoor Cultivation: Coca">
-    </div>
-  </section>
-
-  <main class="wrap">
-    <section class="card">
-      
-      <div class="forum-section">
+  <main class="page">
+    <header class="topbar">
+      <div class="identity">
+        <div class="logo" aria-hidden="true">FA</div>
+        <div>
+          <h1>Furious Acid</h1>
+          <p>Furious Acid Publication</p>
+        </div>
       </div>
 
-      <div class="inner">
-        
-        <div class="top">
-          <div class="brand">
-            <div class="logo">FA</div>
-            <div class="title">
-              <h1>Furious Acid</h1>
-              <p>Furious Acid Publication</p>
-            </div>
-          </div>
+      <nav class="nav" aria-label="Main navigation">
+        <a class="primary" href="#books">Books</a>
+        <a class="accent" href="#merch">Merch</a>
+        <a href="#forum">Forum</a>
+        <a class="tiktok" href="https://www.tiktok.com/@furiousacid" target="_blank" rel="noopener noreferrer">TikTok</a>
+        <a href="https://furiousacid.com/list-chem.html" target="_blank" rel="noopener noreferrer">OTC Chemical List</a>
+        <a href="aboutme.html">About Me</a>
+      </nav>
+    </header>
 
-          <nav class="nav">
-            <a class="btn primary" href="#releases">Releases</a>
-            <a class="btn" href="https://furiousacid.printify.me/products" target="_blank">MERCH</a>
-            <a class="btn FORUM" href="https://acid-chat-hub.lovable.app/forum" target="_blank">FORUM</a>
-            <a class="btn tiktok" href="https://www.tiktok.com/@furiousacid" target="_blank">TikTok</a>
-            <a class="btn OTC-CHEMICAL-LIST" href="https://furiousacid.com/list-chem.html" target="_blank">OTC-CHEMICAL-LIST</a>
-            <a class="btn" href="aboutme.html">About Me</a>
-          </nav>
+    <section class="panel update-panel" aria-labelledby="update-title">
+      <!-- Update this date and paragraph whenever you want to post the next What's New note. -->
+      <p class="eyebrow">What's new</p>
+      <h2 id="update-title">Furious Acid Update</h2>
+      <p class="update-date">As of <time datetime="2026-07-11">July 11, 2026</time></p>
+      <p class="update-copy"><strong>Books and merch are now the front-page priority.</strong> The live Printify store is below, and the Furious Acid Chemical Map is marked as the next merch project.</p>
+
+      <form class="search-row" action="https://www.google.com/search" method="get" target="_blank">
+        <input type="hidden" name="as_sitesearch" value="furiousacid.com">
+        <input type="search" name="q" placeholder="Search Furious Acid books, labs, and updates..." aria-label="Search Furious Acid" required>
+        <button type="submit">Search</button>
+      </form>
+    </section>
+
+    <section id="books" class="panel" aria-labelledby="books-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Start here</p>
+          <h2 id="books-title">Books</h2>
         </div>
+        <p>The three featured books are first, followed by the complete five-book shelf.</p>
+      </div>
 
-        <div class="search-container">
-          <form action="https://www.google.com/search" method="get" target="_blank" class="search-form">
-            <input type="hidden" name="as_sitesearch" value="furiousacid.com">
-            <input type="text" name="q" placeholder="Search Furious Acid reports, books, and labs..." class="search-input" required>
-            <button type="submit" class="search-btn">Search</button>
-          </form>
+      <div class="featured-grid">
+        <article class="featured-card">
+          <div class="featured-cover"><img src="medicine.jpg" alt="The Chemistry Behind Medicine book cover" loading="lazy"></div>
+          <div class="featured-body">
+            <h3>The Chemistry Behind Medicine</h3>
+            <p>Hidden Passages · Volume 1</p>
+            <div class="book-actions">
+              <a class="button" href="excerpt-medicine.html">Read sample</a>
+              <a class="button amazon" href="https://www.amazon.com/Chemistry-Behind-Medicine-Drug-Discovery/dp/B0GJPYPJTZ" target="_blank" rel="noopener noreferrer">Check out on Amazon ↗</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="featured-card">
+          <div class="featured-cover"><img src="marijuana.jpg" alt="Marijuana Manual book cover" loading="lazy"></div>
+          <div class="featured-body">
+            <h3>Marijuana Manual</h3>
+            <p>Technical Notebook Edition</p>
+            <div class="book-actions">
+              <a class="button" href="excerpt-marijuana.html">Read sample</a>
+              <a class="button amazon" href="https://www.amazon.com/Marijuana-Manual-Technical-Notebook-Publication/dp/B0G8VLPS1K" target="_blank" rel="noopener noreferrer">Check out on Amazon ↗</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="featured-card">
+          <div class="featured-cover"><img src="coca.jpg" alt="Indoor Cultivation: Coca, Khat and Kratom book cover" loading="lazy"></div>
+          <div class="featured-body">
+            <h3>Indoor Cultivation: Coca, Khat and Kratom</h3>
+            <p>Furious Acid Publication</p>
+            <div class="book-actions">
+              <a class="button" href="excerpt-coca.html">Read sample</a>
+              <a class="button amazon" href="https://www.amazon.com/Indoor-Cultivation-Coca-Khat-Kratom/dp/B0GPL18WSK" target="_blank" rel="noopener noreferrer">Check out on Amazon ↗</a>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <h3 class="collection-title">All five books</h3>
+      <div class="collection-grid">
+        <article class="book-tile">
+          <div class="tile-cover"><img src="https://m.media-amazon.com/images/I/61ga9ZS+0kL._SY342_.jpg" alt="Drug Synthesis book cover" loading="lazy"></div>
+          <div class="book-tile-body">
+            <h3>Drug Synthesis</h3>
+            <p>Novel Synthesis Contribution</p>
+            <div class="book-actions"><a class="button amazon" href="https://www.amazon.com/dp/B0H6LXN9L7" target="_blank" rel="noopener noreferrer">Check out on Amazon ↗</a></div>
+          </div>
+        </article>
+
+        <article class="book-tile">
+          <div class="tile-cover"><img src="medicine.jpg" alt="The Chemistry Behind Medicine book cover" loading="lazy"></div>
+          <div class="book-tile-body">
+            <h3>The Chemistry Behind Medicine</h3>
+            <p>Hidden Passages · Volume 1</p>
+            <div class="book-actions"><a class="button amazon" href="https://www.amazon.com/Chemistry-Behind-Medicine-Drug-Discovery/dp/B0GJPYPJTZ" target="_blank" rel="noopener noreferrer">Check out on Amazon ↗</a></div>
+          </div>
+        </article>
+
+        <article class="book-tile">
+          <div class="tile-cover"><img src="marijuana.jpg" alt="Marijuana Manual book cover" loading="lazy"></div>
+          <div class="book-tile-body">
+            <h3>Marijuana Manual</h3>
+            <p>Technical Notebook Edition</p>
+            <div class="book-actions"><a class="button amazon" href="https://www.amazon.com/Marijuana-Manual-Technical-Notebook-Publication/dp/B0G8VLPS1K" target="_blank" rel="noopener noreferrer">Check out on Amazon ↗</a></div>
+          </div>
+        </article>
+
+        <article class="book-tile">
+          <div class="tile-cover"><img src="coca.jpg" alt="Indoor Cultivation: Coca, Khat and Kratom book cover" loading="lazy"></div>
+          <div class="book-tile-body">
+            <h3>Indoor Cultivation: Coca, Khat and Kratom</h3>
+            <p>Furious Acid Publication</p>
+            <div class="book-actions"><a class="button amazon" href="https://www.amazon.com/Indoor-Cultivation-Coca-Khat-Kratom/dp/B0GPL18WSK" target="_blank" rel="noopener noreferrer">Check out on Amazon ↗</a></div>
+          </div>
+        </article>
+
+        <article class="book-tile">
+          <div class="tile-cover"><div class="tile-placeholder">Furious Acid<br>Coloring Book</div></div>
+          <div class="book-tile-body">
+            <h3>Furious Acid Coloring Book</h3>
+            <p>Coloring book edition</p>
+            <div class="book-actions"><a class="button amazon" href="https://www.amazon.com/Furious-Acid-Coloring-Book/dp/B0GW9BRT6X" target="_blank" rel="noopener noreferrer">Check out on Amazon ↗</a></div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="merch" class="panel" aria-labelledby="merch-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Shop</p>
+          <h2 id="merch-title">Merch</h2>
         </div>
+        <p>The live storefront is connected to the existing Furious Acid Printify shop.</p>
+      </div>
 
-        <div id="releases" class="list">
+      <div class="store-intro">
+        <p>Products published in Printify remain the source of truth for this store panel.</p>
+        <a class="button accent" href="https://furiousacid.printify.me/products" target="_blank" rel="noopener noreferrer">Open full merch store ↗</a>
+      </div>
 
-          <div class="release">
-            <div class="cover">
-              <div class="cover"><img src="https://m.media-amazon.com/images/I/61ga9ZS+0kL._SY342_.jpg" alt="Drug Synthesis Book Cover"></div>
-                Drug Synthesis
-                <small>4,5,6-TM-DMT<br>4-(2-Ethoxyhexyl)amphetamine<br>4-HO-Isoprenylamphetamine</small>
-              </div>
-            </div>
-            <div class="meta">
-              <h2>Drug Synthesis: 4,5,6-TM-DMT; 4-(2-Ethoxyhexyl)amphetamine, and 4-HO-Isoprenylamphetamine</h2>
-              <p>Novel Synthesis Contribution · Furious Acid Publication</p>
-              <div class="book-links">
-                <a href="https://www.amazon.com/dp/B0H6LXN9L7" class="btn primary" target="_blank" rel="noopener noreferrer">Buy on Amazon</a>
-              </div>
-            </div>
+      <iframe class="store-frame" src="https://furiousacid.printify.me/products" title="Furious Acid live merch store" loading="lazy"></iframe>
+      <p class="embed-note">If your browser does not display the embedded store, use “Open full merch store.”</p>
+    </section>
+
+    <section class="panel" aria-labelledby="coming-soon-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Coming soon</p>
+          <h2 id="coming-soon-title">The Chemical Map</h2>
+        </div>
+        <p>A future Furious Acid merch item built around the reference-map project.</p>
+      </div>
+
+      <div class="map-card">
+        <div class="map-preview" role="img" aria-label="Stylized preview of the Furious Acid Chemical Map">
+          <div class="map-preview-content">
+            <h3>Furious Acid<br>Chemical Map</h3>
+            <p>REFERENCE MAP · MERCH EDITION</p>
           </div>
-          
-          <div class="release">
-            <div class="cover"><img src="medicine.jpg" alt="Medicine Book Cover"></div>
-            <div class="meta">
-              <h2>The Chemistry Behind Medicine</h2>
-              <p>Volume 1</p>
-              <div class="book-links">
-                <a href="excerpt-medicine.html" class="btn">Read Sample</a>
-                <a href="https://www.amazon.com/Chemistry-Behind-Medicine-Drug-Discovery/dp/B0GJPYPJTZ" class="btn primary">Buy on Amazon</a>
-              </div>
-            </div>
-          </div>
-
-          <div class="release">
-            <div class="cover"><img src="marijuana.jpg" alt="Marijuana Book Cover"></div>
-            <div class="meta">
-              <h2>Marijuana Manual</h2>
-              <p>Technical Notebook Edition</p>
-              <div class="book-links">
-                <a href="excerpt-marijuana.html" class="btn">Read Sample</a>
-                <a href="https://www.amazon.com/Marijuana-Manual-Technical-Notebook-Publication/dp/B0G8VLPS1K" class="btn primary">Buy on Amazon</a>
-              </div>
-            </div>
-          </div>
-
-          <div class="release">
-            <div class="cover"><img src="coca.jpg" alt="Coca Book Cover"></div>
-            <div class="meta">
-              <h2>Indoor Cultivation: Coca, Khat and Kratom</h2>
-              <p>Furious Acid Publication</p>
-              <div class="book-links">
-                <a href="excerpt-coca.html" class="btn">Read Sample</a>
-                <a href="https://www.amazon.com/Indoor-Cultivation-Coca-Khat-Kratom-ebook/dp/B0GPHFQKCV" class="btn primary">Buy on Amazon</a>
-              </div>
-            </div>
-          </div>
-
+        </div>
+        <div class="map-copy">
+          <h3>Coming soon to merch</h3>
+          <p>The map is still being assembled. This spot will become the home for the finished poster or map edition when it is ready.</p>
+          <a class="button primary" href="https://furiousacid.com/list-chem.html" target="_blank" rel="noopener noreferrer">Explore the chemical list ↗</a>
         </div>
       </div>
     </section>
 
-    <section style="width: 100%; margin-top: 20px; border-radius: var(--radius); overflow: hidden; background: transparent;">
-      <iframe 
-        id="reports-iframe" 
-        src="reports.html" 
-        scrolling="no" 
-        style="width: 100%; border: none; min-height: 100vh; display: block;">
-      </iframe>
+    <section id="forum" class="panel forum-panel" aria-labelledby="forum-title">
+      <p class="eyebrow">Community</p>
+      <h2 id="forum-title">Furious Acid Forum</h2>
+      <p>The community space is now gathered here, below the books, merch, and Chemical Map sections.</p>
+      <a class="button accent" href="https://acid-chat-hub.lovable.app/forum" target="_blank" rel="noopener noreferrer">Enter the forum ↗</a>
     </section>
 
+    <footer>
+      <p>
+        <a href="https://www.tiktok.com/@furiousacid" target="_blank" rel="noopener noreferrer">TikTok</a>
+        · <a href="https://furiousacid.printify.me/products" target="_blank" rel="noopener noreferrer">Merch</a>
+        · <a href="aboutme.html">About Me</a>
+        · <a href="https://furiousacid.com/list-chem.html" target="_blank" rel="noopener noreferrer">OTC Chemical List</a>
+      </p>
+      <p>© 2026 Furious Acid Publication.</p>
+    </footer>
   </main>
-
-  <script>
-    const slide = document.getElementById('carouselSlide');
-    let counter = 0;
-    const totalImages = 3;
-
-    setInterval(() => {
-        counter++;
-        if (counter >= totalImages) {
-            counter = 0;
-        }
-        slide.style.transform = `translateX(${-counter * 33.3333}%)`;
-    }, 4500); 
-
-    const iframe = document.getElementById('reports-iframe');
-    if (iframe) {
-      iframe.addEventListener('load', function() {
-        const adjustHeight = () => {
-          try {
-            const internalHeight = iframe.contentWindow.document.documentElement.scrollHeight;
-            iframe.style.height = internalHeight + 'px';
-          } catch(e) {
-            console.error("Could not resize iframe:", e);
-          }
-        };
-
-        adjustHeight();
-        setTimeout(adjustHeight, 1000);
-      });
-    }
-  </script>
-
 </body>
 </html>
