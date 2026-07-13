@@ -1,7 +1,14 @@
 {
   "source": "https://furiousacid.printify.me/products",
-  "updatedAt": "2026-07-13T04:05:36.366Z",
+  "updatedAt": "2026-07-13T07:22:08.089Z",
   "products": [
+    {
+      "id": "29990468",
+      "title": "Furious Acid Chemical Reference Poster — Uncoated Educational Wall Chart",
+      "price": "$17.99",
+      "image": "https://images-api.printify.com/mockup/6a5489080d98cb90b70445c9/80787/54992/furious-acid-chemical-reference-poster-uncoated-educational-wall-chart.jpg?camera_label=front&revision=1783926838170",
+      "url": "https://furiousacid.printify.me/product/29990468"
+    },
     {
       "id": "27290193",
       "title": "Furiousacid Logo Sticker — Kiss-Cut Vinyl Decal",
