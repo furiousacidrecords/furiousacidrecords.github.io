@@ -1,7 +1,14 @@
 {
   "source": "https://furiousacid.printify.me/products",
-  "updatedAt": "2026-07-16T16:45:52.430Z",
+  "updatedAt": "2026-07-16T20:14:35.839Z",
   "products": [
+    {
+      "id": "30094626",
+      "title": "Anime Romance Poster — Steamy Kiss Couple Rolled Art Print",
+      "price": "$19.99",
+      "image": "https://images-api.printify.com/mockup/6a591f1e772b54fd93083919/101885/126923/anime-romance-poster-steamy-kiss-couple-rolled-art-print.jpg?camera_label=front&revision=1784226247764",
+      "url": "https://furiousacid.printify.me/product/30094626"
+    },
     {
       "id": "29990468",
       "title": "Furious Acid Chemical Map",
