@@ -1,36 +1,42 @@
-name: Sync Printify merch
+name: One-time Merch link update
 
 on:
-  schedule:
-    - cron: "23 * * * *"
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
-  sync:
+  update:
     runs-on: ubuntu-latest
     steps:
       - name: Check out site
         uses: actions/checkout@v4
-
-      - name: Set up Node
-        uses: actions/setup-node@v4
         with:
-          node-version: 20
+          fetch-depth: 2
 
-      - name: Refresh Printify products
-        run: node scripts/sync-printify.mjs
-
-      - name: Publish changed merch data
+      - name: Update only the top Merch link
         run: |
-          if git diff --quiet -- merch-data.json; then
-            echo "Printify products are already current."
-            exit 0
-          fi
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path("index.html")
+          old = '        <a href="#merch">Merch</a>'
+          new = '        <a href="https://furiousacid.printify.me/products" target="_blank" rel="noopener noreferrer">Merch</a>'
+          text = path.read_text(encoding="utf-8")
+          if text.count(old) != 1:
+              raise SystemExit("Expected exactly one unchanged top Merch link")
+          path.write_text(text.replace(old, new), encoding="utf-8")
+          PY
+
+      - name: Restore normal workflow and publish link change
+        run: |
+          git show HEAD^:.github/workflows/sync-printify.yml > .github/workflows/sync-printify.yml
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add merch-data.json
-          git commit -m "Sync Printify merch"
+          git add index.html .github/workflows/sync-printify.yml
+          git commit -m "Link top Merch button to Printify products"
           git push
