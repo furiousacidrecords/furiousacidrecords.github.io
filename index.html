@@ -388,6 +388,169 @@
       .shop-row { padding: 10px; }
       .forum-panel .button { width: 100%; }
     }
+
+
+    .anime-archive {
+      margin-top: 8px;
+      padding: 22px;
+      color: #f4ebda;
+      background:
+        radial-gradient(circle at 78% 0%, rgba(111, 0, 255, .34), transparent 34%),
+        radial-gradient(circle at 0% 82%, rgba(255, 0, 145, .18), transparent 30%),
+        #110b18;
+      border: 1px solid #33213f;
+      border-radius: var(--radius);
+      box-shadow: 0 16px 38px rgba(25, 18, 40, .12);
+      overflow: hidden;
+    }
+
+    .anime-archive-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 4px 2px 18px;
+      border-bottom: 1px solid rgba(244, 235, 218, .18);
+    }
+
+    .anime-kicker {
+      color: #d9ff36;
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+
+    .anime-archive h2 {
+      margin: 8px 0 4px;
+      color: #f4ebda;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(28px, 4vw, 48px);
+      font-weight: 900;
+      letter-spacing: -.045em;
+      line-height: .95;
+      text-transform: uppercase;
+    }
+
+    .anime-archive-header p {
+      max-width: 520px;
+      margin: 0;
+      color: #bcb0cb;
+      font-size: 13px;
+    }
+
+    .anime-index {
+      color: #ff54c8;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .12em;
+      white-space: nowrap;
+    }
+
+    .anime-display {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(230px, .65fr);
+      gap: 18px;
+      padding-top: 20px;
+    }
+
+    .anime-panel {
+      margin: 0;
+      overflow: hidden;
+      background: #fff;
+      border: 7px solid #f4ebda;
+      box-shadow: 7px 8px 0 #6f00ff;
+    }
+
+    .anime-panel img {
+      width: 100%;
+      height: auto;
+    }
+
+    .anime-panel figcaption {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 11px 9px;
+      color: #17131d;
+      background: #f4ebda;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    .anime-panel figcaption span:last-child {
+      color: #6f00ff;
+      white-space: nowrap;
+    }
+
+    .anime-side {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .anime-side .anime-panel {
+      border-width: 5px;
+      box-shadow: 6px 6px 0 #ff54c8;
+    }
+
+    .anime-side .anime-panel figcaption {
+      display: block;
+      padding: 9px 10px 8px;
+      font-size: 10px;
+    }
+
+    .anime-side .anime-panel figcaption span:last-child {
+      display: block;
+      margin-top: 3px;
+      color: #69636f;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0;
+      text-transform: none;
+    }
+
+    .anime-note {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 170px;
+      padding: 18px;
+      background: #21152d;
+      border: 1px solid rgba(244, 235, 218, .2);
+    }
+
+    .anime-note-mark {
+      color: #d9ff36;
+      font-family: Georgia, serif;
+      font-size: 32px;
+      line-height: 1;
+    }
+
+    .anime-note p {
+      margin: 20px 0 0;
+      color: #f4ebda;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 1.12;
+      text-transform: uppercase;
+    }
+
+    @media (max-width: 760px) {
+      .anime-archive { padding: 14px; }
+      .anime-archive-header { align-items: flex-start; flex-direction: column; gap: 10px; }
+      .anime-display { grid-template-columns: 1fr; }
+      .anime-side { display: grid; grid-template-columns: minmax(0, 1fr) minmax(150px, .7fr); align-items: stretch; }
+      .anime-note { min-height: 0; }
+    }
+
+    @media (max-width: 480px) {
+      .anime-side { display: flex; }
+    }
   </style>
 </head>
 
@@ -544,6 +707,36 @@
         <p>Community discussion, questions, and updates continue here.</p>
       </div>
       <a class="button" href="https://acid-chat-hub.lovable.app/forum" target="_blank" rel="noopener noreferrer">Enter the forum ↗</a>
+    </section>
+
+
+    <section id="anime-archive" class="anime-archive" aria-labelledby="anime-archive-title">
+      <header class="anime-archive-header">
+        <div>
+          <div class="anime-kicker">Furious Acid · visual transmission</div>
+          <h2 id="anime-archive-title">Keep scrolling.</h2>
+          <p>The comic lives down here now — a little night pocket for doors, machines, and ideas that refuse to stay still.</p>
+        </div>
+        <span class="anime-index">01 / 02</span>
+      </header>
+
+      <div class="anime-display">
+        <figure class="anime-panel anime-panel-main">
+          <img src="https://furious-acid-anime.stxgrjnzcwhedtpg.chatgpt.site/images/furious-acid-comic.jpeg" alt="Furious Acid anime comic page about a woman discovering a hidden comic studio" loading="lazy">
+          <figcaption><span>She tried the door anyway.</span><span>Furious Acid Comics</span></figcaption>
+        </figure>
+
+        <div class="anime-side">
+          <figure class="anime-panel">
+            <img src="https://furious-acid-anime.stxgrjnzcwhedtpg.chatgpt.site/images/bicycle-to-miter-saw.jpeg" alt="Surreal cartoon sequence transforming a bicycle into a yellow miter saw" loading="lazy">
+            <figcaption><span>Bicycle → ???</span><span>the object is thinking</span></figcaption>
+          </figure>
+          <div class="anime-note">
+            <div class="anime-note-mark" aria-hidden="true">✦</div>
+            <p>Nothing stays the same.</p>
+          </div>
+        </div>
+      </div>
     </section>
 
     <footer>
