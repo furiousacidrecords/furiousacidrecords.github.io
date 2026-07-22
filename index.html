@@ -551,6 +551,49 @@
     @media (max-width: 480px) {
       .anime-side { display: flex; }
     }
+
+
+    .cursor-ripple {
+      position: fixed;
+      z-index: 100;
+      width: 18px;
+      height: 18px;
+      pointer-events: none;
+      border: 2px solid #d9ff36;
+      border-radius: 999px;
+      box-shadow: 0 0 0 4px rgba(111, 0, 255, .22), 0 0 22px rgba(217, 255, 54, .7);
+      transform: translate(-50%, -50%) scale(.2);
+      animation: furious-ripple .78s cubic-bezier(.16, .82, .25, 1) forwards;
+    }
+
+    .cursor-ripple::after {
+      content: "";
+      position: absolute;
+      inset: 4px;
+      border: 1px solid #ff0050;
+      border-radius: inherit;
+      box-shadow: 0 0 12px rgba(255, 0, 80, .72);
+    }
+
+    .cursor-ripple.trail {
+      width: 10px;
+      height: 10px;
+      opacity: .62;
+      border-width: 1px;
+      animation-duration: .92s;
+    }
+
+    .cursor-ripple.trail::after { inset: 2px; }
+
+    @keyframes furious-ripple {
+      0% { opacity: .94; transform: translate(-50%, -50%) scale(.2); }
+      68% { opacity: .5; transform: translate(-50%, -50%) scale(2.15); }
+      100% { opacity: 0; transform: translate(-50%, -50%) scale(3.9); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .cursor-ripple { display: none; }
+    }
   </style>
 </head>
 
@@ -800,6 +843,33 @@
       .catch(() => {
         // The three current products in the HTML remain as a reliable fallback.
       });
+
+
+    const rippleLast = { value: 0 };
+
+    function createCursorRipple(x, y, trail = false) {
+      if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      const ripple = document.createElement('span');
+      ripple.className = trail ? 'cursor-ripple trail' : 'cursor-ripple';
+      ripple.style.left = x + 'px';
+      ripple.style.top = y + 'px';
+      ripple.setAttribute('aria-hidden', 'true');
+      document.body.appendChild(ripple);
+      ripple.addEventListener('animationend', () => ripple.remove(), { once: true });
+    }
+
+    document.addEventListener('pointermove', (event) => {
+      if (event.pointerType !== 'mouse') return;
+      const now = Date.now();
+      if (now - rippleLast.value < 90) return;
+      rippleLast.value = now;
+      createCursorRipple(event.clientX, event.clientY, true);
+    }, { passive: true });
+
+    document.addEventListener('pointerdown', (event) => {
+      if (!event.isPrimary) return;
+      createCursorRipple(event.clientX, event.clientY);
+    }, { passive: true });
   </script>
 </body>
 </html>
