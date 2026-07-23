@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Drug Report Example — Furious Acid</title>
+  <meta name="description" content="A Furious Acid custom chemistry report example: precise, visual, and built around a real question.">
+  <style>
+    :root{--ink:#141118;--paper:#f6f4ef;--muted:#6e6975;--line:#d8d2ca;--acid:#edf900;--violet:#6f00ff;--orange:#ff6b32;--blue:#9de9ff;--white:#fffefa}
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:var(--paper);color:var(--ink);font-family:Arial,Helvetica,sans-serif}
+    a{color:inherit;text-decoration:none}
+    .wrap{width:min(1180px,100%);margin:0 auto;padding:0 24px}
+    .top{display:flex;justify-content:space-between;gap:18px;padding:8px 24px;background:var(--acid);font-size:9px;font-weight:900;letter-spacing:.14em;text-transform:uppercase}
+    .nav{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:24px 0}
+    .brand{display:flex;align-items:center;gap:10px;font-size:12px;font-weight:900;letter-spacing:.12em}
+    .mark{display:grid;place-items:center;width:38px;height:38px;background:var(--violet);color:white;font-family:Impact,"Arial Black",sans-serif;font-size:14px;transform:rotate(-5deg)}
+    .brand small{display:block;margin-top:5px;color:var(--muted);font-size:8px;letter-spacing:.18em}
+    .nav-links{display:flex;gap:20px;font-size:10px;font-weight:900;text-transform:uppercase}
+    .nav-links a:hover{color:var(--violet)}
+    .back{padding:10px 13px;border:1px solid var(--ink);font-size:9px;font-weight:900;letter-spacing:.1em;text-transform:uppercase}
+    .rule{display:flex;gap:6px}.rule i{display:block;height:4px}.rule i:nth-child(1){width:18%;background:var(--violet)}.rule i:nth-child(2){width:4%;background:var(--orange)}.rule i:nth-child(3){width:31%;background:var(--ink)}.rule i:nth-child(4){width:14%;background:var(--violet)}.rule i:nth-child(5){flex:1;background:var(--acid)}
+    .hero{display:grid;grid-template-columns:.82fr 1.18fr;gap:7%;align-items:center;padding:86px 0 100px}
+    .eyebrow,.index{margin:0 0 19px;color:var(--violet);font-size:10px;font-weight:900;letter-spacing:.16em;text-transform:uppercase}
+    h1,h2,h3{margin:0;font-family:Impact,"Arial Black",sans-serif;line-height:.88;letter-spacing:-.04em;text-transform:uppercase}
+    h1{font-size:clamp(65px,8vw,116px)}
+    h1 span,h2 span{color:var(--violet)}
+    .lede{max-width:500px;margin:27px 0;color:var(--muted);font-size:16px;line-height:1.65}
+    .actions{display:flex;flex-wrap:wrap;align-items:center;gap:18px}
+    .button{display:inline-flex;align-items:center;gap:20px;min-height:44px;padding:0 16px;font-size:10px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}
+    .dark{background:var(--ink);color:white}.yellow{background:var(--acid);color:var(--ink)}
+    .button:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--violet)}
+    .text-link{font-size:10px;font-weight:900;text-decoration:underline;text-underline-offset:4px}
+    .hero-note{display:flex;flex-wrap:wrap;gap:13px;margin-top:48px;color:var(--muted);font-size:9px;font-weight:900;letter-spacing:.1em;text-transform:uppercase}.hero-note span+span:before{content:"/";margin-right:13px;color:var(--orange)}
+    .specimen{position:relative;margin:0;padding:12px;background:var(--ink);box-shadow:12px 12px 0 var(--acid);transform:rotate(1.5deg)}
+    .specimen img{display:block;width:100%;height:auto}
+    .specimen figcaption{position:absolute;left:28px;bottom:25px;padding:8px 10px;background:var(--acid);font-size:9px;font-weight:900;letter-spacing:.13em;text-transform:uppercase}
+    .note{padding:18px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);color:var(--muted);font-size:11px;line-height:1.5}
+    .note strong{color:var(--ink);font-size:10px;letter-spacing:.1em;text-transform:uppercase}
+    section{padding:92px 0}
+    .heading{display:flex;align-items:end;justify-content:space-between;gap:28px;margin-bottom:42px}.heading h2{font-size:clamp(48px,6vw,78px)}.aside{max-width:420px;margin:0;color:var(--muted);font-size:14px;line-height:1.6}
+    .deliverables{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    .deliverable{min-height:205px;padding:22px;background:var(--white);border-top:4px solid var(--ink)}.deliverable:nth-child(2){border-color:var(--violet)}.deliverable:nth-child(3){border-color:var(--orange)}.deliverable:nth-child(4){border-color:var(--blue)}.deliverable:nth-child(5){border-color:var(--acid)}.deliverable:nth-child(6){border-color:var(--violet)}
+    .deliverable b{color:var(--violet);font-size:10px;letter-spacing:.12em}.deliverable h3{margin:28px 0 10px;font-size:30px}.deliverable p{margin:0;color:var(--muted);font-size:12px;line-height:1.5}
+    .dark-section{background:var(--ink);color:white}.dark-section .index{color:var(--acid)}.dark-section h2 span{color:var(--acid)}.dark-section .aside{color:#bdb6c7}
+    .reading-grid{display:grid;grid-template-columns:1fr 1fr;gap:11%}
+    .reading-list{border-top:1px solid #ffffff44}.reading-item{display:grid;grid-template-columns:42px 1fr;gap:16px;padding:20px 0;border-bottom:1px solid #ffffff44}.reading-item b{color:var(--orange);font-size:10px}.reading-item strong{font-size:12px}.reading-item p{margin:6px 0 0;color:#aaa1b3;font-size:11px;line-height:1.5}
+    .readout{padding:28px;background:var(--acid);color:var(--ink);box-shadow:10px 10px 0 var(--orange)}.readout small{color:var(--violet);font-size:9px;font-weight:900;letter-spacing:.15em}.readout h3{margin:34px 0 22px;font-size:44px}.readout p{margin:0;font-size:13px;line-height:1.55}
+    .scope{display:grid;grid-template-columns:1fr 1fr;gap:9%;align-items:start;background:#e5e0d9}.scope h2{font-size:clamp(45px,5vw,70px)}.scope-copy{max-width:520px;color:var(--muted);font-size:14px;line-height:1.65}.scope-copy strong{color:var(--ink)}
+    .cta{display:flex;align-items:center;justify-content:space-between;gap:30px;padding:38px 0;border-top:1px solid var(--line)}.cta h2{font-size:clamp(38px,4.5vw,62px)}
+    footer{display:flex;justify-content:space-between;gap:20px;padding:33px 0 40px;border-top:1px solid var(--line);color:var(--muted);font-size:10px;line-height:1.5}.footer-links{display:flex;gap:18px;font-weight:900;text-transform:uppercase}.footer-links a:hover{color:var(--violet)}
+    @media(max-width:900px){.hero{grid-template-columns:1fr;gap:45px}.hero-copy{max-width:650px}.specimen{max-width:760px}.reading-grid,.scope{grid-template-columns:1fr;gap:42px}.deliverables{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:650px){.top{padding:7px 13px;font-size:8px}.top span:nth-child(2){display:none}.wrap{padding:0 17px}.nav{align-items:flex-start;flex-direction:column;padding:17px 0}.nav-links{display:none}.back{width:100%;text-align:center}.hero{padding:60px 0 72px}h1{font-size:68px}.hero-note{display:grid;gap:8px}.hero-note span+span:before{display:none}.specimen{box-shadow:7px 7px 0 var(--acid)}.heading{display:block}.aside{margin-top:20px}.deliverables{grid-template-columns:1fr}.deliverable{min-height:0}.cta{display:block}.cta .button{margin-top:25px}footer{display:block}.footer-links{margin-top:20px;flex-wrap:wrap}}
+  </style>
+</head>
+<body>
+  <div class="top"><span>FURIOUS ACID / REPORT EXAMPLE</span><span>CHEMISTRY / INFORMATION, ORGANIZED</span><span>EXAMPLE EDITION</span></div>
+  <div class="wrap">
+    <nav class="nav">
+      <a class="brand" href="index.html"><span class="mark">FA</span><span>FURIOUS ACID<small>REPORT EXAMPLE</small></span></a>
+      <div class="nav-links"><a href="#specimen">Specimen</a><a href="#deliverables">Deliverables</a><a href="#scope">Scope</a></div>
+      <a class="back" href="custom-studio.html">← Custom Studio</a>
+    </nav>
+    <div class="rule" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+
+    <main>
+      <section class="hero" id="specimen">
+        <div class="hero-copy">
+          <p class="eyebrow">Custom chemistry report / specimen page</p>
+          <h1>A report<br><span>with a point.</span></h1>
+          <p class="lede">This is what a Furious Acid drug-report example looks like when the question becomes a serious, readable artifact: a clear brief, organized evidence, visual analysis, and a conclusion that tells the reader what matters.</p>
+          <div class="actions"><a class="button dark" href="#deliverables">Read the structure <span aria-hidden="true">↓</span></a><a class="text-link" href="custom-studio.html#beta">Contact me for more info on pricing ↗</a></div>
+          <p class="hero-note"><span>Visual report</span><span>Custom scope</span><span>Presentation-ready</span></p>
+        </div>
+        <figure class="specimen"><img src="report-studio-banner.jpeg" alt="Furious Acid custom chemistry report specimen with laboratory glassware and analytical report pages"><figcaption>FA / CUSTOM CHEMISTRY REPORT</figcaption></figure>
+      </section>
+
+      <div class="note"><div class="wrap"><strong>Example presentation</strong> — The image above demonstrates the visual language and organization of a custom report. It is not a laboratory protocol or a step-by-step synthesis guide.</div></div>
+
+      <section id="deliverables">
+        <div class="wrap">
+          <div class="heading"><div><p class="index">[ 01 — THE REPORT BODY ]</p><h2>What the reader<br><span>gets back.</span></h2></div><p class="aside">A report is more than pages. It is a way to turn scattered material into a decision, presentation, reference, or next move.</p></div>
+          <div class="deliverables">
+            <article class="deliverable"><b>01 / EXECUTIVE READ</b><h3>What matters first.</h3><p>A short, direct summary of the question, the finding, and the practical meaning.</p></article>
+            <article class="deliverable"><b>02 / METHODS</b><h3>How it was framed.</h3><p>Source boundaries, assumptions, analytical categories, and the logic of the investigation.</p></article>
+            <article class="deliverable"><b>03 / RESULTS</b><h3>The evidence.</h3><p>Tables, figures, observations, comparisons, and visual readouts arranged for clarity.</p></article>
+            <article class="deliverable"><b>04 / ANALYSIS</b><h3>What it means.</h3><p>Interpretation that connects the evidence back to the original question without losing the reader.</p></article>
+            <article class="deliverable"><b>05 / CONCLUSIONS</b><h3>The clean answer.</h3><p>A conclusion written so it can stand alone in a meeting, presentation, or private reference file.</p></article>
+            <article class="deliverable"><b>06 / APPENDIX</b><h3>What supports it.</h3><p>References, supporting notes, and additional context for a reader who wants to go deeper.</p></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="dark-section">
+        <div class="wrap reading-grid">
+          <div><p class="index">[ 02 — HOW IT READS ]</p><h2>Question.<br><span>Evidence.</span><br>Direction.</h2><div class="reading-list"><div class="reading-item"><b>01</b><span><strong>Start with the question</strong><p>What should become clearer, comparable, or easier to act on?</p></span></div><div class="reading-item"><b>02</b><span><strong>Make the evidence legible</strong><p>Organize the useful material so the reader can see the pattern.</p></span></div><div class="reading-item"><b>03</b><span><strong>End with a direction</strong><p>State what the report supports, what it cannot claim, and what comes next.</p></span></div></div></div>
+          <div class="readout"><small>REPORT READOUT / EXAMPLE</small><h3>Precise.<br>Visual.<br>Actionable.</h3><p>Built for a reader who needs the whole picture without having to excavate it from a pile of notes.</p></div>
+        </div>
+      </section>
+
+      <section class="scope" id="scope">
+        <div class="wrap"><p class="index">[ 03 — THE BOUNDARY ]</p><h2>Real report.<br><span>Clear limits.</span></h2></div>
+        <div class="wrap scope-copy"><p><strong>This page is a presentation example.</strong> It shows how a custom report can look and read. Specific projects are scoped around the client's legitimate research, educational, analytical, or documentation needs.</p><p>It intentionally does not publish operational quantities, conditions, procedural steps, or other instructions for producing controlled substances.</p></div>
+      </section>
+
+      <section>
+        <div class="wrap cta"><h2>Need a report<br><span>like this?</span></h2><a class="button yellow" href="custom-studio.html#beta">Open Custom Studio <span aria-hidden="true">↗</span></a></div>
+      </section>
+    </main>
+
+    <footer><p>Furious Acid custom reports — visual summaries, analysis, references, and actionable next moves.</p><div class="footer-links"><a href="custom-studio.html">Custom Studio</a><a href="index.html">Furious Acid home</a></div></footer>
+  </div>
+</body>
+</html>
