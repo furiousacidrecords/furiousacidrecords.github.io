@@ -104,9 +104,36 @@
     @media(max-width:900px){.cr-intro,.cr-builder-grid,.cr-inquiry{grid-template-columns:1fr;gap:25px}.cr-art img{height:auto;max-height:360px}.cr-inquiry-copy{max-width:650px}}
     @media(max-width:650px){.cr-section{padding:65px 0}.cr-intro h2{font-size:58px}.cr-panel,.cr-form{padding:18px}.cr-footer-note{display:block}.cr-footer-note span+span{display:block;margin-top:8px}}
 
+  
+    body.under-construction{min-height:100vh;background:#131118}
+    body.under-construction .wrap{display:none}
+    .construction-screen{display:grid;place-items:center;min-height:100vh;padding:32px 24px;background:#131118;color:#fff;overflow:hidden}
+    .construction-card{position:relative;width:min(760px,100%);padding:clamp(34px,7vw,78px);border:1px solid #ffffff55;background:linear-gradient(135deg,#1b1722,#131118 68%);box-shadow:14px 14px 0 var(--violet);isolation:isolate}
+    .construction-card:before{content:"";position:absolute;inset:16px;border:1px solid #edf90066;pointer-events:none}
+    .construction-grid{position:absolute;inset:0;z-index:-1;opacity:.22;background-image:linear-gradient(#ffffff18 1px,transparent 1px),linear-gradient(90deg,#ffffff18 1px,transparent 1px);background-size:42px 42px}
+    .construction-kicker{margin:0 0 34px;color:var(--acid);font-size:10px;font-weight:900;letter-spacing:.18em;text-transform:uppercase}
+    .construction-screen h1{margin:0;font-family:Impact,"Arial Black",sans-serif;font-size:clamp(76px,14vw,160px);letter-spacing:-.05em;line-height:.78;text-transform:uppercase}
+    .construction-screen h1 span{color:var(--acid);text-shadow:5px 5px 0 var(--orange)}
+    .construction-copy{max-width:510px;margin:36px 0 30px;color:#c8c1d0;font-size:16px;line-height:1.65}
+    .construction-button{display:inline-flex;align-items:center;gap:18px;padding:14px 18px;background:var(--acid);color:var(--ink);font-size:10px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}
+    .construction-button:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--orange)}
+    .construction-footer{display:flex;justify-content:space-between;gap:20px;margin-top:62px;padding-top:16px;border-top:1px solid #ffffff44;color:#93899e;font-size:9px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}
+    @media(max-width:650px){.construction-screen{padding:18px}.construction-card{padding:34px 25px;box-shadow:8px 8px 0 var(--violet)}.construction-screen h1{font-size:76px}.construction-copy{font-size:14px}.construction-footer{display:block;line-height:1.7}.construction-footer span+span{display:block;margin-top:8px}}
+
   </style>
 </head>
-<body>
+<body class="under-construction">
+
+  <main class="construction-screen" aria-labelledby="construction-title">
+    <div class="construction-card">
+      <div class="construction-grid" aria-hidden="true"></div>
+      <p class="construction-kicker">FURIOUS ACID / CUSTOM STUDIO</p>
+      <h1 id="construction-title">Under<br><span>construction.</span></h1>
+      <p class="construction-copy">Custom Studio is being tuned behind the scenes. The reports, private inquiry tools, and strange little artifacts will be back when the work is ready.</p>
+      <a class="construction-button" href="index.html">← Back to Furious Acid</a>
+      <div class="construction-footer"><span>PRIVATE STUDIO / TEMPORARILY CLOSED</span><span>FA—BUILD—IN PROGRESS</span></div>
+    </div>
+  </main>
   <div class="top"><span>FURIOUS ACID CUSTOM STUDIO</span><span>BETA TESTING OPEN / 12 CREATIVE SLOTS</span><span>OHIO → EVERYWHERE</span></div>
   <div class="wrap">
     <nav class="nav">
