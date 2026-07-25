@@ -594,6 +594,90 @@
     @media (prefers-reduced-motion: reduce) {
       .cursor-ripple { display: none; }
     }
+  
+    .nav .share-trigger {
+      appearance: none;
+      color: #fff;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .nav .share-trigger:hover {
+      border-color: var(--yellow);
+    }
+
+    .share-panel {
+      margin-top: 8px;
+      padding: 12px 14px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .share-panel[hidden] { display: none; }
+
+    .share-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .share-heading h2 {
+      margin: 0;
+      color: var(--ink);
+      font-size: 17px;
+    }
+
+    .share-heading p {
+      margin: 3px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .share-close {
+      width: auto;
+      min-width: 68px;
+      cursor: pointer;
+    }
+
+    .share-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(118px, 1fr));
+      gap: 7px;
+      margin-top: 10px;
+    }
+
+    .share-button {
+      width: auto;
+      min-height: 34px;
+      padding: 6px 8px;
+      cursor: pointer;
+      font-size: 11px;
+    }
+
+    .share-button.native-share,
+    .share-button.site-share {
+      color: var(--black);
+      background: var(--yellow);
+      border-color: #d9cf00;
+    }
+
+    .share-status {
+      min-height: 16px;
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 750;
+    }
+
+    @media (max-width: 620px) {
+      .share-heading { align-items: flex-start; flex-direction: column; }
+      .share-close { width: 100%; }
+      .share-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
   </style>
 </head>
 
@@ -613,6 +697,7 @@
         <a class="tiktok" href="https://www.tiktok.com/@furiousacid" target="_blank" rel="noopener noreferrer">TikTok</a>
         <a href="https://furiousacid.com/list-chem.html" target="_blank" rel="noopener noreferrer">OTC Chemical List</a>
         <a href="custom-studio.html">Custom Studio</a>\n        <a href="aboutme.html">About Me</a>
+              <button class="share-trigger" type="button" id="share-trigger" aria-controls="share-panel" aria-expanded="false">Share</button>
       </nav>
     </header>
 
@@ -621,6 +706,45 @@
       <p class="update-copy">New releases, merch drops, and Chemical Map updates will appear here.</p>
       <time class="update-date" datetime="2026-07-11">July 11, 2026</time>
     </aside>
+
+    
+    <section id="share-panel" class="share-panel" aria-labelledby="share-title" hidden>
+      <header class="share-heading">
+        <div>
+          <h2 id="share-title">Share Furious Acid</h2>
+          <p>Send this site to your friends, followers, and every app on your device.</p>
+        </div>
+        <button id="share-close" class="button share-close" type="button">Close</button>
+      </header>
+
+      <div class="share-grid" aria-label="Share destinations">
+        <button class="button share-button native-share" type="button" id="native-share">More apps / phone share</button>
+        <button class="button share-button platform-share" type="button" data-platform="TikTok" data-platform-url="https://www.tiktok.com/">TikTok</button>
+        <a class="button share-button" id="share-facebook" href="#" target="_blank" rel="noopener noreferrer">Facebook</a>
+        <a class="button share-button" id="share-x" href="#" target="_blank" rel="noopener noreferrer">X</a>
+        <button class="button share-button platform-share" type="button" data-platform="Instagram" data-platform-url="https://www.instagram.com/">Instagram</button>
+        <button class="button share-button platform-share" type="button" data-platform="Snapchat" data-platform-url="https://www.snapchat.com/">Snapchat</button>
+        <button class="button share-button platform-share" type="button" data-platform="Lemon8" data-platform-url="https://www.lemon8-app.com/">Lemon8</button>
+        <button class="button share-button platform-share" type="button" data-platform="Bluesky" data-platform-url="https://bsky.app/">Bluesky</button>
+        <button class="button share-button platform-share" type="button" data-platform="Threads" data-platform-url="https://www.threads.net/">Threads</button>
+        <a class="button share-button" id="share-reddit" href="#" target="_blank" rel="noopener noreferrer">Reddit</a>
+        <a class="button share-button" id="share-whatsapp" href="#" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+        <a class="button share-button" id="share-telegram" href="#" target="_blank" rel="noopener noreferrer">Telegram</a>
+        <button class="button share-button platform-share" type="button" data-platform="Signal" data-platform-url="https://signal.org/">Signal</button>
+        <button class="button share-button platform-share" type="button" data-platform="Discord" data-platform-url="https://discord.com/">Discord</button>
+        <button class="button share-button platform-share" type="button" data-platform="Messenger" data-platform-url="https://www.messenger.com/">Messenger</button>
+        <a class="button share-button" id="share-linkedin" href="#" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+        <a class="button share-button" id="share-pinterest" href="#" target="_blank" rel="noopener noreferrer">Pinterest</a>
+        <button class="button share-button platform-share" type="button" data-platform="Mastodon" data-platform-url="https://joinmastodon.org/">Mastodon</button>
+        <a class="button share-button" id="share-email" href="#">Email</a>
+        <a class="button share-button" id="share-sms" href="#">Text message</a>
+        <button class="button share-button" type="button" id="copy-share-link">Copy link</button>
+        <a class="button share-button site-share" href="https://furiousacid.com/" target="_blank" rel="noopener noreferrer">FuriousAcid.com</a>
+      </div>
+
+      <p id="share-status" class="share-status" aria-live="polite"></p>
+    </section>
+
 
     <section id="shop" class="shop-panel" aria-labelledby="shop-title">
       <header class="shop-heading">
@@ -870,6 +994,82 @@
       if (!event.isPrimary) return;
       createCursorRipple(event.clientX, event.clientY);
     }, { passive: true });
+  
+    const sharePanel = document.getElementById('share-panel');
+    const shareTrigger = document.getElementById('share-trigger');
+    const shareClose = document.getElementById('share-close');
+    const shareStatus = document.getElementById('share-status');
+    const shareUrl = window.location.href.split('#')[0];
+    const shareTitle = document.title || 'Furious Acid';
+    const shareText = 'Check out Furious Acid: ' + shareUrl;
+
+    function setShareStatus(message) {
+      if (shareStatus) shareStatus.textContent = message;
+    }
+
+    function openSharePanel() {
+      sharePanel.hidden = false;
+      shareTrigger.setAttribute('aria-expanded', 'true');
+      sharePanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function closeSharePanel() {
+      sharePanel.hidden = true;
+      shareTrigger.setAttribute('aria-expanded', 'false');
+    }
+
+    async function copyShareLink() {
+      try {
+        await navigator.clipboard.writeText(shareUrl);
+        setShareStatus('Link copied. Paste it anywhere.');
+      } catch (error) {
+        setShareStatus('Copy failed. Select and copy this page address: ' + shareUrl);
+      }
+    }
+
+    function useNativeShare(platform) {
+      if (navigator.share) {
+        navigator.share({
+          title: shareTitle,
+          text: platform ? 'Share Furious Acid on ' + platform : 'Check out Furious Acid',
+          url: shareUrl
+        }).then(() => {
+          setShareStatus('Share sheet opened.');
+        }).catch((error) => {
+          if (error && error.name !== 'AbortError') setShareStatus('Sharing was not completed.');
+        });
+        return;
+      }
+
+      copyShareLink().then(() => {
+        setShareStatus('Link copied. Paste it into ' + (platform || 'your app') + '.');
+        const platformButton = document.querySelector('[data-platform="' + platform + '"]');
+        const platformUrl = platformButton && platformButton.dataset.platformUrl;
+        if (platformUrl) window.open(platformUrl, '_blank', 'noopener,noreferrer');
+      });
+    }
+
+    const encodedUrl = encodeURIComponent(shareUrl);
+    const encodedTitle = encodeURIComponent(shareTitle);
+    const encodedText = encodeURIComponent('Check out Furious Acid');
+    document.getElementById('share-facebook').href = 'https://www.facebook.com/sharer/sharer.php?u=' + encodedUrl;
+    document.getElementById('share-x').href = 'https://x.com/intent/post?text=' + encodedText + '&url=' + encodedUrl;
+    document.getElementById('share-reddit').href = 'https://www.reddit.com/submit?url=' + encodedUrl + '&title=' + encodedTitle;
+    document.getElementById('share-whatsapp').href = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(shareText);
+    document.getElementById('share-telegram').href = 'https://t.me/share/url?url=' + encodedUrl + '&text=' + encodedText;
+    document.getElementById('share-linkedin').href = 'https://www.linkedin.com/sharing/share-offsite/?url=' + encodedUrl;
+    document.getElementById('share-pinterest').href = 'https://www.pinterest.com/pin/create/button/?url=' + encodedUrl + '&description=' + encodedText;
+    document.getElementById('share-email').href = 'mailto:?subject=' + encodedTitle + '&body=' + encodeURIComponent(shareText);
+    document.getElementById('share-sms').href = 'sms:?&body=' + encodeURIComponent(shareText);
+
+    shareTrigger.addEventListener('click', openSharePanel);
+    shareClose.addEventListener('click', closeSharePanel);
+    document.getElementById('native-share').addEventListener('click', () => useNativeShare());
+    document.getElementById('copy-share-link').addEventListener('click', copyShareLink);
+    document.querySelectorAll('.platform-share').forEach((button) => {
+      button.addEventListener('click', () => useNativeShare(button.dataset.platform));
+    });
+
   </script>
 </body>
 </html>
