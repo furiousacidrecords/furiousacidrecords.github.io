@@ -1,0 +1,632 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Furious Acid | Mind Map Test</title>
+  <meta name="description" content="A Furious Acid test page for turning threads, comments, and replies into a visual mind map.">
+  <style>
+    :root {
+      --bg: #0b0a0e;
+      --surface: #15101c;
+      --surface-soft: #21172b;
+      --line: #3a2947;
+      --text: #fffaf1;
+      --muted: #c5b8ce;
+      --purple: #8a36ff;
+      --purple-bright: #b26cff;
+      --yellow: #fdf200;
+      --pink: #ff4da7;
+      --green: #d9ff36;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { color-scheme: dark; }
+
+    body {
+      margin: 0;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 82% 5%, rgba(138, 54, 255, .28), transparent 28rem),
+        radial-gradient(circle at 8% 70%, rgba(255, 77, 167, .14), transparent 24rem),
+        var(--bg);
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.45;
+    }
+
+    button,
+    input,
+    select { font: inherit; }
+
+    button,
+    a { -webkit-tap-highlight-color: transparent; }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .page {
+      width: min(1180px, 100%);
+      margin: 0 auto;
+      padding: 20px 16px 40px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+
+    .back-link {
+      color: var(--yellow);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .eyebrow,
+    .section-kicker {
+      color: var(--green);
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2,
+    p { margin-top: 0; }
+
+    h1 {
+      max-width: 720px;
+      margin-bottom: 8px;
+      font-size: clamp(32px, 6vw, 64px);
+      letter-spacing: -.06em;
+      line-height: .98;
+    }
+
+    .intro {
+      max-width: 660px;
+      margin-bottom: 20px;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .map-shell {
+      position: relative;
+      height: 620px;
+      overflow: hidden;
+      background:
+        linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px),
+        var(--surface);
+      background-size: 32px 32px;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      box-shadow: 0 22px 60px rgba(0, 0, 0, .3);
+    }
+
+    .map-shell::before {
+      position: absolute;
+      top: 16px;
+      left: 18px;
+      z-index: 3;
+      color: rgba(255,250,241,.55);
+      content: "THREAD / COMMENT / BRANCH";
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: .14em;
+    }
+
+    .map-lines,
+    .map-stage {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .map-lines {
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .map-edge {
+      stroke: rgba(178,108,255,.7);
+      stroke-width: 2;
+      vector-effect: non-scaling-stroke;
+    }
+
+    .map-edge-dot {
+      fill: var(--pink);
+    }
+
+    .map-stage { z-index: 2; }
+
+    .map-node {
+      position: absolute;
+      width: clamp(118px, 16vw, 184px);
+      transform: translate(-50%, -50%);
+    }
+
+    .node-button {
+      display: flex;
+      width: 100%;
+      min-height: 68px;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      padding: 10px 12px;
+      color: var(--text);
+      background: rgba(33, 23, 43, .96);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      box-shadow: 0 8px 20px rgba(0,0,0,.22);
+      cursor: pointer;
+      text-align: left;
+      transition: transform .16s ease, border-color .16s ease, background .16s ease;
+    }
+
+    .node-button:hover,
+    .node-button:focus-visible {
+      background: #2c1d3a;
+      border-color: var(--purple-bright);
+      outline: none;
+      transform: translateY(-2px);
+    }
+
+    .map-node.is-selected .node-button {
+      color: #17131d;
+      background: var(--yellow);
+      border-color: var(--yellow);
+    }
+
+    .node-type {
+      color: var(--green);
+      font-size: 9px;
+      font-weight: 900;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .map-node.is-selected .node-type { color: #5a00ba; }
+
+    .node-title {
+      display: block;
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1.2;
+      overflow-wrap: anywhere;
+    }
+
+    .map-node[data-level="0"] {
+      width: clamp(150px, 23vw, 240px);
+    }
+
+    .map-node[data-level="0"] .node-button {
+      min-height: 92px;
+      color: #17131d;
+      background: var(--yellow);
+      border-color: var(--yellow);
+    }
+
+    .map-node[data-level="0"] .node-type { color: #5a00ba; }
+
+    .detail {
+      display: grid;
+      grid-template-columns: minmax(150px, .38fr) minmax(0, 1fr);
+      gap: 16px;
+      margin-top: 12px;
+      padding: 16px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+    }
+
+    .detail h2 {
+      margin-bottom: 5px;
+      font-size: 20px;
+      letter-spacing: -.03em;
+    }
+
+    .detail-type,
+    .detail-meta {
+      margin-bottom: 0;
+      color: var(--green);
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+
+    .detail-copy {
+      margin-bottom: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .branch-form {
+      margin-top: 12px;
+      padding: 16px;
+      background: var(--surface-soft);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+    }
+
+    .branch-form h2 { margin-bottom: 12px; font-size: 20px; }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: .55fr 1.45fr auto;
+      align-items: end;
+      gap: 10px;
+    }
+
+    .form-label {
+      display: grid;
+      gap: 5px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .form-control {
+      width: 100%;
+      min-height: 40px;
+      padding: 8px 10px;
+      color: var(--text);
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 9px;
+    }
+
+    .form-control:focus-visible {
+      border-color: var(--yellow);
+      outline: 2px solid rgba(253,242,0,.25);
+      outline-offset: 2px;
+    }
+
+    .submit-button {
+      min-height: 40px;
+      padding: 8px 14px;
+      color: #17131d;
+      background: var(--yellow);
+      border: 1px solid var(--yellow);
+      border-radius: 9px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .submit-button:hover { background: var(--green); border-color: var(--green); }
+
+    .branch-status {
+      min-height: 18px;
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    footer {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    footer a { color: var(--yellow); font-weight: 800; }
+
+    @media (max-width: 760px) {
+      .page { padding: 14px 10px 28px; }
+      .topbar { margin-bottom: 20px; }
+      .map-shell { height: 680px; border-radius: 16px; }
+      .map-node { width: 112px; }
+      .map-node[data-level="0"] { width: 156px; }
+      .node-button { min-height: 62px; padding: 8px 9px; }
+      .node-title { font-size: 11px; }
+      .detail { grid-template-columns: 1fr; gap: 8px; }
+      .form-row { grid-template-columns: 1fr; align-items: stretch; }
+      .submit-button { width: 100%; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after { scroll-behavior: auto !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="topbar">
+      <a class="back-link" href="/">← FuriousAcid.com</a>
+      <span class="eyebrow">Experiment / 01</span>
+    </header>
+
+    <div class="eyebrow">Visual thread system</div>
+    <h1>Mind Map Test</h1>
+    <p class="intro">A thread becomes a living map: the original idea is the center, comments branch outward, and replies keep branching. Click a node, then submit a test branch below.</p>
+
+    <section class="map-shell" aria-label="Interactive thread mind map">
+      <svg id="map-lines" class="map-lines" viewBox="0 0 1000 600" preserveAspectRatio="none" role="img" aria-label="Lines connecting the thread, comments, and replies">
+        <g id="map-edges"></g>
+      </svg>
+      <div id="map-stage" class="map-stage"></div>
+    </section>
+
+    <section class="detail" aria-live="polite" aria-labelledby="detail-title">
+      <div>
+        <p id="detail-type" class="detail-type">Thread</p>
+        <h2 id="detail-title">The idea: turn conversations into maps</h2>
+        <p id="detail-meta" class="detail-meta">4 branches</p>
+      </div>
+      <p id="detail-copy" class="detail-copy">Instead of reading a wall of text, people can see how an idea spreads, where the strongest branches form, and which comments deserve a closer look.</p>
+    </section>
+
+    <section class="branch-form" aria-labelledby="branch-form-title">
+      <div class="section-kicker">Test submission</div>
+      <h2 id="branch-form-title">Submit a branch</h2>
+      <form id="branch-form">
+        <div class="form-row">
+          <label class="form-label" for="branch-parent">Attach to
+            <select id="branch-parent" class="form-control"></select>
+          </label>
+          <label class="form-label" for="branch-text">Your comment or idea
+            <input id="branch-text" class="form-control" type="text" maxlength="140" placeholder="Add a new branch to the map" required>
+          </label>
+          <button class="submit-button" type="submit">Submit branch</button>
+        </div>
+      </form>
+      <p id="branch-status" class="branch-status" aria-live="polite">New test branches appear on the map immediately.</p>
+    </section>
+
+    <footer>
+      <a href="/">Return to FuriousAcid.com</a>
+    </footer>
+  </main>
+
+  <script>
+    const nodes = [
+      {
+        id: 'root',
+        parent: null,
+        level: 0,
+        x: 50,
+        y: 50,
+        type: 'Thread',
+        title: 'The idea: turn conversations into maps',
+        body: 'The original thread becomes the center of a visual conversation.'
+      },
+      {
+        id: 'visual',
+        parent: 'root',
+        level: 1,
+        x: 78,
+        y: 22,
+        type: 'Comment',
+        title: 'You can see the whole idea at once',
+        body: 'A visual branch makes the relationships easier to scan than a long wall of text.'
+      },
+      {
+        id: 'popular',
+        parent: 'root',
+        level: 1,
+        x: 83,
+        y: 78,
+        type: 'Comment',
+        title: 'Popular branches could rise to the top',
+        body: 'The most discussed or most shared branches can become the beginning of a Popular page.'
+      },
+      {
+        id: 'community',
+        parent: 'root',
+        level: 1,
+        x: 17,
+        y: 78,
+        type: 'Comment',
+        title: 'People can build on one another',
+        body: 'Every reply becomes another visible path instead of disappearing below the fold.'
+      },
+      {
+        id: 'share',
+        parent: 'root',
+        level: 1,
+        x: 22,
+        y: 22,
+        type: 'Comment',
+        title: 'Share one branch or the whole map',
+        body: 'The map can carry a direct link back to the exact thread or branch that someone shared.'
+      },
+      {
+        id: 'share-reply',
+        parent: 'share',
+        level: 2,
+        x: 8,
+        y: 8,
+        type: 'Reply',
+        title: 'A map is more inviting than a list',
+        body: 'The visual shape gives people a reason to explore.'
+      },
+      {
+        id: 'visual-reply',
+        parent: 'visual',
+        level: 2,
+        x: 92,
+        y: 8,
+        type: 'Reply',
+        title: 'Click a node to open the exact comment',
+        body: 'The map is the overview; the original discussion remains the source.'
+      },
+      {
+        id: 'popular-reply',
+        parent: 'popular',
+        level: 2,
+        x: 94,
+        y: 92,
+        type: 'Reply',
+        title: 'Most-branched topics become destinations',
+        body: 'A future Popular page can surface the maps that people keep extending.'
+      },
+      {
+        id: 'community-reply',
+        parent: 'community',
+        level: 2,
+        x: 6,
+        y: 92,
+        type: 'Reply',
+        title: 'Submit and watch the branch appear',
+        body: 'This test form adds a new node without changing the original thread.'
+      }
+    ];
+
+    const mapStage = document.getElementById('map-stage');
+    const mapEdges = document.getElementById('map-edges');
+    const detailTitle = document.getElementById('detail-title');
+    const detailType = document.getElementById('detail-type');
+    const detailMeta = document.getElementById('detail-meta');
+    const detailCopy = document.getElementById('detail-copy');
+    const parentSelect = document.getElementById('branch-parent');
+    const branchForm = document.getElementById('branch-form');
+    const branchText = document.getElementById('branch-text');
+    const branchStatus = document.getElementById('branch-status');
+
+    function getNode(id) {
+      return nodes.find((node) => node.id === id);
+    }
+
+    function getChildren(id) {
+      return nodes.filter((node) => node.parent === id);
+    }
+
+    function selectNode(id) {
+      const node = getNode(id);
+      if (!node) return;
+
+      document.querySelectorAll('.map-node').forEach((element) => {
+        element.classList.toggle('is-selected', element.dataset.nodeId === id);
+      });
+
+      detailTitle.textContent = node.title;
+      detailType.textContent = node.type;
+      detailMeta.textContent = getChildren(id).length + ' branches';
+      detailCopy.textContent = node.body;
+      parentSelect.value = id;
+    }
+
+    function makeNodeElement(node) {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'map-node';
+      wrapper.dataset.nodeId = node.id;
+      wrapper.dataset.level = String(node.level);
+      wrapper.style.left = node.x + '%';
+      wrapper.style.top = node.y + '%';
+
+      const button = document.createElement('button');
+      button.className = 'node-button';
+      button.type = 'button';
+      button.setAttribute('aria-label', node.type + ': ' + node.title);
+
+      const type = document.createElement('span');
+      type.className = 'node-type';
+      type.textContent = node.type;
+
+      const title = document.createElement('span');
+      title.className = 'node-title';
+      title.textContent = node.title;
+
+      button.append(type, title);
+      button.addEventListener('click', () => selectNode(node.id));
+      wrapper.append(button);
+      return wrapper;
+    }
+
+    function makeEdgeElement(parent, child) {
+      const edge = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      edge.classList.add('map-edge');
+      edge.setAttribute('x1', String(parent.x * 10));
+      edge.setAttribute('y1', String(parent.y * 6));
+      edge.setAttribute('x2', String(child.x * 10));
+      edge.setAttribute('y2', String(child.y * 6));
+      return edge;
+    }
+
+    function renderEdges() {
+      mapEdges.replaceChildren();
+      nodes.forEach((node) => {
+        if (!node.parent) return;
+        const parent = getNode(node.parent);
+        if (parent) mapEdges.append(makeEdgeElement(parent, node));
+      });
+    }
+
+    function renderParentOptions() {
+      const current = parentSelect.value;
+      parentSelect.replaceChildren();
+
+      nodes.forEach((node) => {
+        const option = document.createElement('option');
+        option.value = node.id;
+        option.textContent = node.type + ': ' + node.title;
+        parentSelect.append(option);
+      });
+
+      parentSelect.value = getNode(current) ? current : 'root';
+    }
+
+    function renderMap() {
+      mapStage.replaceChildren();
+      nodes.forEach((node) => mapStage.append(makeNodeElement(node)));
+      renderEdges();
+      renderParentOptions();
+    }
+
+    function nextBranchPosition(parentId) {
+      const parent = getNode(parentId);
+      const siblings = getChildren(parentId);
+      const index = siblings.length;
+      const rowPositions = [10, 30, 70, 90];
+      if (parentId === 'root') {
+        return { x: rowPositions[index % rowPositions.length], y: index % 2 === 0 ? 92 : 8 };
+      }
+
+      const direction = index % 2 === 0 ? -1 : 1;
+      return {
+        x: Math.max(7, Math.min(93, parent.x + direction * 12)),
+        y: Math.max(8, Math.min(94, parent.y + 16 + Math.floor(index / 2) * 7))
+      };
+    }
+
+    branchForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const text = branchText.value.trim();
+      if (!text) return;
+
+      const parentId = parentSelect.value || 'root';
+      const position = nextBranchPosition(parentId);
+      const id = 'submitted-' + String(Date.now());
+
+      nodes.push({
+        id,
+        parent: parentId,
+        level: Math.min(3, getNode(parentId).level + 1),
+        x: position.x,
+        y: position.y,
+        type: 'Submitted branch',
+        title: text,
+        body: 'Submitted test branch attached to: ' + getNode(parentId).title
+      });
+
+      renderMap();
+      selectNode(id);
+      branchText.value = '';
+      branchStatus.textContent = 'Branch submitted and added to the map.';
+    });
+
+    renderMap();
+    selectNode('root');
+  </script>
+</body>
+</html>
