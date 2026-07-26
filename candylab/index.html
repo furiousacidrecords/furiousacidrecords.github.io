@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#130b24">
+  <title>Candy Lab · Furious Acid</title>
+  <meta name="description" content="A public, no-login Starburst patent lab game from Furious Acid.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="https://furiousacid.com/" aria-label="Furious Acid home">
+      <span class="brand-mark" aria-hidden="true">✦</span>
+      <span>Furious Acid</span>
+    </a>
+    <div class="header-path">/candylab <span>PUBLIC · NO LOGIN</span></div>
+  </header>
+
+  <main>
+    <section class="hero shell">
+      <div class="hero-copy">
+        <p class="eyebrow">Starburst Patent Lab · US4117176A</p>
+        <h1>Build the Starbursts.</h1>
+        <p class="hero-lede">Assemble the production line, weigh the exact 400.000 lb apple-cinnamon batch, and cook it to the modeled 242°F endpoint.</p>
+        <div class="hero-tags" aria-label="Lab facts">
+          <span>400.000 lb batch</span>
+          <span>15 formula bottles</span>
+          <span>242°F · 15.0 min</span>
+        </div>
+        <a class="primary-button" href="#formulation">Start Level 02 <span aria-hidden="true">↓</span></a>
+      </div>
+      <div class="hero-art" aria-label="Starburst candy lab illustration" role="img">
+        <div class="hero-kettle"><span class="hero-stirrer"></span><span class="hero-candy pink"></span><span class="hero-candy yellow"></span><span class="hero-candy green"></span><span class="hero-candy orange"></span></div>
+        <div class="hero-art-label">IMAGE PLACEHOLDER · FINISHED STARBURSTS</div>
+      </div>
+    </section>
+
+    <section id="assembly" class="level shell">
+      <div class="level-heading">
+        <div><p class="eyebrow">Level 01 · drag + drop</p><h2>Assemble the workspace</h2><p>Place every machine on its glowing bay. Tap a card, then tap a bay on mobile.</p></div>
+        <div class="level-score"><strong id="assembly-count">00 / 15</strong><span>secured</span></div>
+      </div>
+      <div class="assembly-layout">
+        <aside class="equipment-bank" aria-label="Equipment cards">
+          <div class="panel-topline"><strong>Equipment cards</strong><button class="small-button" id="reset-assembly" type="button">Reset</button></div>
+          <div id="equipment-list" class="equipment-list"></div>
+        </aside>
+        <div class="assembly-stage-wrap">
+          <div id="assembly-board" class="assembly-board" aria-label="Workspace drop board">
+            <div class="board-ceiling"><span></span><span></span><span></span></div>
+            <div class="board-bench"></div>
+            <div class="board-machine machine-left"><i></i><b></b></div>
+            <div class="board-machine machine-center"><i></i><b></b></div>
+            <div class="board-machine machine-right"><i></i><b></b></div>
+            <div class="board-shelf"></div>
+            <div id="target-bays" class="target-bays"></div>
+            <div class="board-caption">AFTER · ASSEMBLED STARBURST WORKSPACE</div>
+          </div>
+          <div id="assembly-message" class="status-message" role="status" aria-live="polite">Pick a part, then place it on its matching bay.</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="formulation" class="level formulation shell">
+      <div class="level-heading">
+        <div><p class="eyebrow">Level 02 · exact batch engine</p><h2>Make the Starbursts</h2><p>Enter the target mass for each placeholder bottle in the correct group order. The kettle accepts a tolerance of ±0.005 lb.</p></div>
+        <div class="level-score"><strong id="bottle-count">00 / 15</strong><span>correct</span></div>
+      </div>
+
+      <div class="endpoint-strip" aria-label="Beginning and endpoint">
+        <div><span>Beginning</span><strong>0.000 lb</strong><small>Water-only reference · pH 7.000000</small></div>
+        <b aria-hidden="true">→</b>
+        <div><span>Patent endpoint</span><strong>400.000 lb · 242°F</strong><small>15.0 min · modeled pH 3.083247</small></div>
+      </div>
+
+      <div class="progress-line"><div><span>Bottle accuracy</span><strong id="bottle-progress">0 / 15</strong></div><div class="progress-track"><i id="bottle-progress-bar"></i></div><div><span>Kettle mass</span><strong id="kettle-mass">0.000 / 400.000 lb</strong></div></div>
+
+      <div id="lab-message" class="lab-message" role="status" aria-live="polite">Start at Group 1. Enter a bottle's target mass, then weigh it into the kettle.</div>
+      <div id="group-tabs" class="group-tabs" aria-label="Formulation groups"></div>
+      <div id="bottle-rack" class="bottle-rack" aria-label="Formula bottle placeholders"></div>
+
+      <div class="kettle-panel">
+        <div class="kettle-heading"><div><p class="eyebrow">Engine readout</p><h3>Starburst kettle</h3></div><span id="kettle-status" class="kettle-status">LOADING</span></div>
+        <div class="kettle-grid">
+          <div class="kettle-window"><div id="kettle-art" class="kettle-art"><div class="kettle-lid"></div><div class="kettle-stirrer"></div><div class="kettle-liquid"></div><div id="kettle-candy" class="kettle-candy" hidden><span class="candy pink"></span><span class="candy yellow"></span><span class="candy green"></span><span class="candy orange"></span><span class="candy red"></span><span class="candy blue"></span></div><span id="kettle-placeholder" class="kettle-placeholder">IMAGE PLACEHOLDER<br>STARBURST FINISH</span><small id="kettle-caption">mix · dissolve · emulsify · cook</small></div></div>
+          <div class="readout-grid"><div><span>Modeled pH</span><strong id="ph-readout">7.000000</strong></div><div><span>H⁺ at endpoint</span><strong>0.000825568 M</strong></div><div><span>Known initial water</span><strong>31.7068 lb</strong></div><div><span>Batch mass</span><strong id="batch-readout">0.000 lb</strong></div></div>
+        </div>
+
+        <div class="controls-grid">
+          <section class="control-card"><div class="control-title"><span>Temperature path</span><strong id="temp-readout">70°F</strong></div><div id="temperature-buttons" class="choice-row"></div><small>Group 3 requires 150°F; the cook endpoint requires 242°F.</small></section>
+          <section class="control-card"><div class="control-title"><label for="cook-timer">Cook timer</label><strong id="timer-readout">0.0 min</strong></div><input id="cook-timer" type="range" min="0" max="15" step="0.1" value="0"><div class="range-scale"><span>0.0</span><span>5.0</span><span>10.0</span><span>15.0</span></div><small>First-order sucrose inversion model: k = 0.005206565 s⁻¹ at 242°F.</small></section>
+        </div>
+        <div class="endpoint-controls"><div><span>Final moisture target</span><div id="moisture-buttons" class="choice-row"></div></div><button id="finish-button" class="finish-button" type="button">Finish Starbursts</button></div>
+        <div id="reaction-meter" class="reaction-meter" hidden><div class="control-title"><span>Modeled sucrose inversion</span><strong id="conversion-readout">0.000000%</strong></div><div class="progress-track"><i id="conversion-bar"></i></div><div class="reaction-stats"><span id="sucrose-left">Sucrose left 28.000000 lb</span><span id="glucose-made">Glucose 0.000000 lb</span><span id="water-used">Water consumed 0.000000 lb</span></div></div>
+        <div id="moisture-readout" class="moisture-readout"></div>
+      </div>
+
+      <button id="chemistry-toggle" class="chemistry-toggle" type="button" aria-expanded="false">Open ICE / chemistry readout</button>
+      <section id="chemistry" class="chemistry" hidden><div><p class="eyebrow">Numeric reference</p><h3>ICE-table / chemistry engine</h3><code>C₁₂H₂₂O₁₁ + H₂O → C₆H₁₂O₆ + C₆H₁₂O₆</code></div><div class="chemistry-columns"><div><span>Final citrate species</span><b>H₃Cit 52.055165%</b><b>H₂Cit⁻ 46.958170%</b><b>HCit²⁻ 0.986185%</b><b>Cit³⁻ 0.000480%</b></div><div><span>Final malate species</span><b>H₂Mal 70.173235%</b><b>HMal⁻ 29.540567%</b><b>Mal²⁻ 0.286198%</b></div><div><span>Reaction / water model</span><b>15 min conversion 99.077565%</b><b>63.390280 lb estimated initial water</b><b>5–10% final moisture window</b></div></div><p class="chemistry-note">Mixtures, commercial blends, fruit, oil, flour, cinnamon, color, starch, and dextrin stay labeled as mixtures or variable polymers. Representative formulas are used only where defensible.</p></section>
+    </section>
+  </main>
+
+  <footer class="site-footer"><span>Furious Acid · Candy Lab</span><span>Public GitHub Pages build · no ChatGPT login</span><a href="https://furiousacid.com/">Back to FuriousAcid.com ↗</a></footer>
+  <script src="app.js" defer></script>
+</body>
+</html>
