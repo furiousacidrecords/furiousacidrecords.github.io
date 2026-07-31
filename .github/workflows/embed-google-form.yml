@@ -1,0 +1,77 @@
+name: Embed Google Form on homepage
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/embed-google-form.yml
+
+permissions:
+  contents: write
+
+jobs:
+  patch-homepage:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out site
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Replace comics with questionnaire
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          path = Path('index.html')
+          html = path.read_text(encoding='utf-8')
+
+          form_section = '''    <section id="questions" aria-label="Furious Acid questionnaire" style="margin-top:8px; overflow:hidden; background:#fff; border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow);">
+      <header style="padding:14px 16px 10px; border-bottom:1px solid var(--line);">
+        <h2 style="margin:0; font-size:20px; letter-spacing:-.02em;">Questions</h2>
+        <p style="margin:4px 0 0; color:var(--muted); font-size:12px;">Answer the Furious Acid questionnaire directly below.</p>
+      </header>
+      <iframe
+        src="https://docs.google.com/forms/d/e/1FAIpQLSc3CCnnXqeRuJDzXjZDbF0QyJFNSLs7Sc0409xqxGuDreRZ9w/viewform?embedded=true"
+        title="Furious Acid questionnaire"
+        width="100%"
+        height="1800"
+        frameborder="0"
+        marginheight="0"
+        marginwidth="0"
+        loading="lazy"
+        style="display:block; width:100%; min-height:1200px; border:0; background:#fff;"
+      >Loading…</iframe>
+      <p style="margin:0; padding:0 16px 14px; color:var(--muted); font-size:11px; text-align:center;">
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSc3CCnnXqeRuJDzXjZDbF0QyJFNSLs7Sc0409xqxGuDreRZ9w/viewform" target="_blank" rel="noopener noreferrer" style="color:var(--purple-dark); font-weight:800;">Open the questionnaire in a new window ↗</a>
+      </p>
+    </section>'''
+
+          pattern = re.compile(r'    <section id="anime-archive"\b.*?</section>', re.DOTALL)
+          updated, count = pattern.subn(form_section, html, count=1)
+
+          if count != 1:
+              raise SystemExit(f'Expected one comics section; replaced {count}.')
+          if '1FAIpQLSc3CCnnXqeRuJDzXjZDbF0QyJFNSLs7Sc0409xqxGuDreRZ9w' not in updated:
+              raise SystemExit('Google Form ID is missing after patch.')
+          if '<section id="anime-archive"' in updated:
+              raise SystemExit('Comics section still exists after patch.')
+
+          path.write_text(updated, encoding='utf-8')
+          PY
+
+      - name: Validate homepage
+        run: |
+          grep -q 'id="questions"' index.html
+          grep -q 'viewform?embedded=true' index.html
+          if grep -q '<section id="anime-archive"' index.html; then exit 1; fi
+
+      - name: Commit homepage and remove one-time workflow
+        run: |
+          rm .github/workflows/embed-google-form.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html .github/workflows/embed-google-form.yml
+          git commit -m "Replace comics with Google Form"
+          git push origin main
