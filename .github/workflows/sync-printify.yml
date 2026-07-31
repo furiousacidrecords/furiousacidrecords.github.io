@@ -1,6 +1,12 @@
 name: Sync Printify merch
 
 on:
+  push:
+    paths:
+      - ".github/workflows/sync-printify.yml"
+      - "scripts/install-purple-progress.mjs"
+      - "purple-progress.html"
+      - "purple-progress.json"
   schedule:
     - cron: "23 * * * *"
   workflow_dispatch:
@@ -20,17 +26,20 @@ jobs:
         with:
           node-version: 20
 
+      - name: Install Purple progress banner
+        run: node scripts/install-purple-progress.mjs
+
       - name: Refresh Printify products
         run: node scripts/sync-printify.mjs
 
-      - name: Publish changed merch data
+      - name: Publish site updates
         run: |
-          if git diff --quiet -- merch-data.json; then
-            echo "Printify products are already current."
+          if git diff --quiet; then
+            echo "Site data and progress banner are already current."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add merch-data.json
-          git commit -m "Sync Printify merch"
+          git add index.html merch-data.json
+          git commit -m "Install Purple progress moon"
           git push
