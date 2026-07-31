@@ -678,7 +678,25 @@
       .share-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
 
-  </style>
+  
+    /* purple-progress-embed:start */
+    .purple-progress-frame {
+      display: block;
+      width: 100%;
+      height: 150px;
+      margin-top: 8px;
+      overflow: hidden;
+      background: #09060f;
+      border: 0;
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+    }
+
+    @media (max-width: 620px) {
+      .purple-progress-frame { height: 118px; }
+    }
+    /* purple-progress-embed:end */
+</style>
 </head>
 
 <body>
@@ -700,6 +718,17 @@
               <button class="share-trigger" type="button" id="share-trigger" aria-controls="share-panel" aria-expanded="false">Share</button>
       </nav>
     </header>
+
+
+    <iframe
+      class="purple-progress-frame"
+      data-purple-progress-frame
+      src="purple-progress.html?embed=1"
+      title="Purple Rabbit live laboratory completion"
+      loading="eager"
+      scrolling="no"
+      sandbox="allow-scripts allow-same-origin allow-top-navigation-by-user-activation"
+    ></iframe>
 
     <aside class="update-strip" aria-label="Furious Acid update">
       <span class="update-label">Furious Acid Update</span>
