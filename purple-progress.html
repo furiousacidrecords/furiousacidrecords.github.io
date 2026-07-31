@@ -1,0 +1,526 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#09060f">
+  <title>Purple Rabbit — Digital Genie Progress</title>
+  <meta name="description" content="A live, moon-phase reflection of Purple Rabbit laboratory simulator progress.">
+  <style>
+    :root {
+      --purple: #6f00ff;
+      --purple-soft: #a96cff;
+      --yellow: #fdf200;
+      --ink: #f8f4ff;
+      --muted: #b8adc9;
+      --panel: rgba(16, 10, 25, .86);
+      --line: rgba(191, 155, 255, .24);
+      --progress: 3.6;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { min-height: 100%; }
+
+    body {
+      margin: 0;
+      display: grid;
+      place-items: center;
+      padding: 18px;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 18% 20%, rgba(111, 0, 255, .24), transparent 34%),
+        radial-gradient(circle at 85% 90%, rgba(253, 242, 0, .07), transparent 28%),
+        #07050b;
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .progress-card {
+      position: relative;
+      isolation: isolate;
+      width: min(1040px, 100%);
+      min-height: 300px;
+      display: grid;
+      grid-template-columns: minmax(230px, 360px) minmax(0, 1fr);
+      align-items: center;
+      gap: clamp(20px, 4vw, 54px);
+      overflow: hidden;
+      padding: clamp(20px, 4vw, 44px);
+      background:
+        linear-gradient(112deg, rgba(255,255,255,.055), transparent 38%),
+        var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      box-shadow:
+        0 24px 80px rgba(0,0,0,.55),
+        inset 0 1px 0 rgba(255,255,255,.06);
+    }
+
+    .progress-card::before {
+      content: "";
+      position: absolute;
+      inset: -50%;
+      z-index: -2;
+      background:
+        repeating-radial-gradient(circle at 50% 50%, transparent 0 36px, rgba(111,0,255,.035) 37px 38px),
+        conic-gradient(from 220deg, transparent, rgba(111,0,255,.18), transparent 28%);
+      animation: fieldSpin 28s linear infinite;
+    }
+
+    .progress-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background: linear-gradient(90deg, transparent 58%, rgba(253,242,0,.025));
+    }
+
+    .moon-stage {
+      position: relative;
+      display: grid;
+      place-items: center;
+      min-width: 0;
+    }
+
+    .moon-stage::before,
+    .moon-stage::after {
+      content: "";
+      position: absolute;
+      width: 84%;
+      aspect-ratio: 1;
+      border: 1px solid rgba(169,108,255,.18);
+      border-radius: 50%;
+      animation: orbit 16s linear infinite;
+    }
+
+    .moon-stage::after {
+      width: 104%;
+      border-style: dashed;
+      opacity: .65;
+      animation-duration: 28s;
+      animation-direction: reverse;
+    }
+
+    .moon {
+      width: min(310px, 74vw);
+      aspect-ratio: 1;
+      overflow: visible;
+      filter: drop-shadow(0 0 18px rgba(111,0,255,.62)) drop-shadow(0 16px 22px rgba(0,0,0,.7));
+    }
+
+    .surface-track {
+      transform-box: view-box;
+      transform-origin: center;
+      animation: surfaceRotate 34s linear infinite;
+    }
+
+    .surface-track.lit {
+      filter: contrast(1.38) brightness(1.1) saturate(.72);
+    }
+
+    .surface-track.dark {
+      filter: contrast(1.25) brightness(.38) saturate(1.4) hue-rotate(226deg);
+      opacity: .34;
+    }
+
+    .moon-glow { animation: glowPulse 4.8s ease-in-out infinite; }
+    .data { min-width: 0; }
+
+    .eyebrow {
+      margin: 0 0 8px;
+      color: var(--yellow);
+      font-size: clamp(10px, 1.4vw, 13px);
+      font-weight: 900;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      max-width: 660px;
+      font-size: clamp(28px, 5.2vw, 66px);
+      line-height: .92;
+      letter-spacing: -.055em;
+    }
+
+    .score-row {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      margin-top: 17px;
+      flex-wrap: wrap;
+    }
+
+    .score {
+      color: #fff;
+      font-size: clamp(34px, 7vw, 82px);
+      font-weight: 950;
+      line-height: .9;
+      letter-spacing: -.06em;
+      text-shadow: 0 0 30px rgba(111,0,255,.45);
+    }
+
+    .score-label {
+      color: var(--purple-soft);
+      font-size: clamp(12px, 2vw, 16px);
+      font-weight: 900;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .remaining {
+      margin: 7px 0 16px;
+      color: var(--muted);
+      font-size: clamp(13px, 2vw, 17px);
+      font-weight: 700;
+    }
+
+    .remaining strong { color: var(--ink); }
+
+    .ticks {
+      position: relative;
+      height: 17px;
+      overflow: hidden;
+      background:
+        repeating-linear-gradient(90deg, rgba(255,255,255,.22) 0 1px, transparent 1px 2%),
+        rgba(255,255,255,.055);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 999px;
+    }
+
+    .ticks::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: calc(var(--progress) * 1%);
+      min-width: 2px;
+      background: linear-gradient(90deg, var(--purple), var(--yellow));
+      box-shadow: 0 0 18px rgba(111,0,255,.8);
+      transition: width 900ms cubic-bezier(.2,.9,.2,1);
+    }
+
+    .ticks::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: calc(var(--progress) * 1%);
+      width: 11px;
+      height: 11px;
+      translate: -50% -50%;
+      background: #fff;
+      border: 3px solid var(--purple);
+      border-radius: 50%;
+      box-shadow: 0 0 16px rgba(253,242,0,.8);
+      transition: left 900ms cubic-bezier(.2,.9,.2,1);
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .metric {
+      min-width: 0;
+      padding: 10px 11px;
+      background: rgba(255,255,255,.035);
+      border: 1px solid rgba(255,255,255,.075);
+      border-radius: 12px;
+    }
+
+    .metric span {
+      display: block;
+      color: var(--muted);
+      font-size: 9px;
+      font-weight: 900;
+      letter-spacing: .11em;
+      text-transform: uppercase;
+    }
+
+    .metric strong {
+      display: block;
+      margin-top: 4px;
+      overflow: hidden;
+      font-size: clamp(11px, 1.65vw, 14px);
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .status {
+      margin: 13px 0 0;
+      color: #887d98;
+      font-size: 10px;
+      letter-spacing: .04em;
+    }
+
+    .status b { color: #cfc4df; }
+
+    @keyframes surfaceRotate {
+      from { transform: translateX(0); }
+      to { transform: translateX(-400px); }
+    }
+
+    @keyframes fieldSpin { to { transform: rotate(360deg); } }
+    @keyframes orbit { to { transform: rotate(360deg); } }
+
+    @keyframes glowPulse {
+      0%, 100% { opacity: .68; }
+      50% { opacity: 1; }
+    }
+
+    @media (max-width: 720px) {
+      body { padding: 10px; }
+      .progress-card { grid-template-columns: 1fr; text-align: center; gap: 6px; }
+      .moon { width: min(240px, 68vw); }
+      .score-row { justify-content: center; }
+      .metric-grid { grid-template-columns: 1fr; text-align: left; }
+    }
+
+    body.embed {
+      min-height: 0;
+      display: block;
+      padding: 0;
+      background: transparent;
+    }
+
+    body.embed .progress-card {
+      width: 100%;
+      min-height: 132px;
+      grid-template-columns: 118px minmax(0, 1fr);
+      gap: 12px;
+      padding: 8px 15px 8px 10px;
+      border-radius: 14px;
+      box-shadow: none;
+    }
+
+    body.embed .moon { width: 108px; }
+    body.embed .moon-stage::before { width: 90%; }
+    body.embed .moon-stage::after { width: 108%; }
+    body.embed .eyebrow { margin-bottom: 3px; font-size: 8px; }
+    body.embed h1 { font-size: clamp(17px, 3.1vw, 31px); line-height: .95; }
+    body.embed .score-row { display: inline-flex; margin-top: 7px; gap: 7px; }
+    body.embed .score { font-size: clamp(27px, 5vw, 48px); }
+    body.embed .score-label { font-size: 9px; }
+    body.embed .remaining { display: inline; margin: 0 0 0 9px; font-size: 10px; }
+    body.embed .ticks { height: 10px; margin-top: 7px; }
+    body.embed .ticks::after { width: 8px; height: 8px; border-width: 2px; }
+    body.embed .metric-grid,
+    body.embed .status { display: none; }
+
+    @media (max-width: 520px) {
+      body.embed .progress-card {
+        grid-template-columns: 88px minmax(0, 1fr);
+        min-height: 110px;
+        padding: 7px 9px 7px 5px;
+      }
+      body.embed .moon { width: 82px; }
+      body.embed h1 { font-size: 16px; }
+      body.embed .score { font-size: 27px; }
+      body.embed .remaining { display: block; margin: 2px 0 0; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .001ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="progress-card" href="purple-progress.html" target="_top" aria-label="Open the Purple Rabbit Digital Genie progress dashboard">
+    <div class="moon-stage" aria-hidden="true">
+      <svg class="moon" viewBox="0 0 200 200" role="img" aria-label="Moon illuminated to match project completion">
+        <defs>
+          <clipPath id="moonClip"><circle cx="100" cy="100" r="99"/></clipPath>
+
+          <mask id="phaseMask" maskUnits="userSpaceOnUse" x="0" y="0" width="200" height="200">
+            <rect width="200" height="200" fill="black"/>
+            <circle id="maskBase" cx="100" cy="100" r="100" fill="black"/>
+            <path id="maskShape" fill="white"/>
+          </mask>
+
+          <radialGradient id="sphereShade" cx="68%" cy="34%" r="75%">
+            <stop offset="0" stop-color="#fff" stop-opacity=".3"/>
+            <stop offset=".45" stop-color="#fff" stop-opacity=".03"/>
+            <stop offset=".78" stop-color="#000" stop-opacity=".16"/>
+            <stop offset="1" stop-color="#000" stop-opacity=".78"/>
+          </radialGradient>
+
+          <radialGradient id="nightTint" cx="28%" cy="35%" r="78%">
+            <stop offset="0" stop-color="#6f00ff" stop-opacity=".22"/>
+            <stop offset=".54" stop-color="#25103e" stop-opacity=".16"/>
+            <stop offset="1" stop-color="#010103" stop-opacity=".9"/>
+          </radialGradient>
+
+          <linearGradient id="rimLight" x1="0" x2="1">
+            <stop offset=".84" stop-color="#fff" stop-opacity="0"/>
+            <stop offset=".98" stop-color="#fdf200" stop-opacity=".8"/>
+            <stop offset="1" stop-color="#fff" stop-opacity=".95"/>
+          </linearGradient>
+
+          <filter id="craterRelief" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation=".45" result="blur"/>
+            <feSpecularLighting in="blur" surfaceScale="4" specularConstant=".42" specularExponent="18" lighting-color="#ffffff" result="spec">
+              <feDistantLight azimuth="225" elevation="36"/>
+            </feSpecularLighting>
+            <feComposite in="spec" in2="SourceAlpha" operator="in" result="specOut"/>
+            <feBlend in="SourceGraphic" in2="specOut" mode="screen"/>
+          </filter>
+        </defs>
+
+        <g clip-path="url(#moonClip)">
+          <rect width="200" height="200" fill="#07060a"/>
+          <g class="surface-track dark">
+            <image class="texture-image" x="-200" y="0" width="400" height="200" preserveAspectRatio="xMidYMid slice"/>
+            <image class="texture-image" x="200" y="0" width="400" height="200" preserveAspectRatio="xMidYMid slice"/>
+          </g>
+          <circle cx="100" cy="100" r="100" fill="url(#nightTint)"/>
+        </g>
+
+        <g mask="url(#phaseMask)" clip-path="url(#moonClip)" filter="url(#craterRelief)">
+          <g class="surface-track lit">
+            <image class="texture-image" x="-200" y="0" width="400" height="200" preserveAspectRatio="xMidYMid slice"/>
+            <image class="texture-image" x="200" y="0" width="400" height="200" preserveAspectRatio="xMidYMid slice"/>
+          </g>
+          <circle cx="100" cy="100" r="100" fill="url(#sphereShade)"/>
+          <circle class="moon-glow" cx="100" cy="100" r="100" fill="url(#rimLight)" opacity=".8"/>
+        </g>
+
+        <circle cx="100" cy="100" r="98.8" fill="none" stroke="#a96cff" stroke-opacity=".34" stroke-width=".8"/>
+      </svg>
+    </div>
+
+    <div class="data">
+      <p class="eyebrow">Purple Rabbit Laboratory · Live Reflection</p>
+      <h1>Reverse countdown to the Digital Genie</h1>
+
+      <div class="score-row">
+        <strong class="score" id="completion">3.600%</strong>
+        <span class="score-label">illuminated</span>
+        <p class="remaining"><strong id="remaining">96.400%</strong> remaining</p>
+      </div>
+
+      <div class="ticks" role="progressbar" aria-label="Purple Rabbit completion" aria-valuemin="0" aria-valuemax="100" aria-valuenow="3.6"></div>
+
+      <div class="metric-grid">
+        <div class="metric"><span>Project age</span><strong id="project-age">Calculating…</strong></div>
+        <div class="metric"><span>Phase geometry</span><strong id="phase-geometry">158.125° · 7.200% width</strong></div>
+        <div class="metric"><span>Confidence band</span><strong id="confidence">2.000–6.500%</strong></div>
+      </div>
+
+      <p class="status"><b>Live source:</b> purple-progress.json · refreshed every 60 seconds · lunar area is mathematically equal to completion.</p>
+    </div>
+  </a>
+
+  <script>
+    const TEXTURE_URL = 'https://photoshop-api.adobe.io/v2/short-url/urn:aaid:ps:US:eb5d454b-0bed-4267-bfe3-446ba653f126';
+    const DEFAULT_DATA = {
+      completion: 3.6,
+      epoch: '2026-07-29T00:00:00-04:00',
+      updatedAt: '2026-07-31T00:36:00-04:00',
+      confidenceLow: 2,
+      confidenceHigh: 6.5
+    };
+
+    const query = new URLSearchParams(location.search);
+    if (query.get('embed') === '1') document.body.classList.add('embed');
+
+    document.querySelectorAll('.texture-image').forEach((image) => {
+      image.setAttributeNS('http://www.w3.org/1999/xlink', 'href', TEXTURE_URL);
+      image.setAttribute('href', TEXTURE_URL);
+    });
+
+    const maskBase = document.getElementById('maskBase');
+    const maskShape = document.getElementById('maskShape');
+    const completionEl = document.getElementById('completion');
+    const remainingEl = document.getElementById('remaining');
+    const geometryEl = document.getElementById('phase-geometry');
+    const confidenceEl = document.getElementById('confidence');
+    const progressbar = document.querySelector('[role="progressbar"]');
+    let currentData = DEFAULT_DATA;
+
+    function rightCrescentPath(rx) {
+      return `M100 0 A100 100 0 0 1 100 200 A${rx.toFixed(6)} 100 0 0 0 100 0 Z`;
+    }
+
+    function leftCrescentPath(rx) {
+      return `M100 0 A100 100 0 0 0 100 200 A${rx.toFixed(6)} 100 0 0 1 100 0 Z`;
+    }
+
+    function renderPhase(percent) {
+      const p = Math.max(0, Math.min(100, Number(percent) || 0));
+      const k = p / 100;
+      const q = Math.abs(1 - 2 * k);
+      const rx = 100 * q;
+      const phaseAngle = Math.acos(2 * k - 1) * 180 / Math.PI;
+      const widestCrescent = 100 * (1 - q);
+
+      if (k <= 0) {
+        maskBase.setAttribute('fill', 'black');
+        maskShape.setAttribute('d', '');
+      } else if (k < .5) {
+        maskBase.setAttribute('fill', 'black');
+        maskShape.setAttribute('fill', 'white');
+        maskShape.setAttribute('d', rightCrescentPath(rx));
+      } else if (k === .5) {
+        maskBase.setAttribute('fill', 'black');
+        maskShape.setAttribute('fill', 'white');
+        maskShape.setAttribute('d', 'M100 0 A100 100 0 0 1 100 200 L100 0 Z');
+      } else if (k < 1) {
+        maskBase.setAttribute('fill', 'white');
+        maskShape.setAttribute('fill', 'black');
+        maskShape.setAttribute('d', leftCrescentPath(rx));
+      } else {
+        maskBase.setAttribute('fill', 'white');
+        maskShape.setAttribute('d', '');
+      }
+
+      document.documentElement.style.setProperty('--progress', p.toFixed(6));
+      completionEl.textContent = `${p.toFixed(3)}%`;
+      remainingEl.textContent = `${(100 - p).toFixed(3)}%`;
+      geometryEl.textContent = `${phaseAngle.toFixed(3)}° · ${widestCrescent.toFixed(3)}% width`;
+      progressbar.setAttribute('aria-valuenow', p.toFixed(3));
+    }
+
+    function renderData(data) {
+      currentData = { ...DEFAULT_DATA, ...data };
+      renderPhase(currentData.completion);
+      confidenceEl.textContent =
+        `${Number(currentData.confidenceLow).toFixed(3)}–${Number(currentData.confidenceHigh).toFixed(3)}%`;
+    }
+
+    function updateClock() {
+      const epoch = new Date(currentData.epoch);
+      const elapsed = Math.max(0, Date.now() - epoch.getTime());
+      const seconds = Math.floor(elapsed / 1000);
+      const days = Math.floor(seconds / 86400);
+      const hours = Math.floor((seconds % 86400) / 3600);
+      const minutes = Math.floor((seconds % 3600) / 60);
+      const secs = seconds % 60;
+      document.getElementById('project-age').textContent =
+        `${days}d ${String(hours).padStart(2, '0')}h ${String(minutes).padStart(2, '0')}m ${String(secs).padStart(2, '0')}s`;
+    }
+
+    async function refreshProgress() {
+      try {
+        const response = await fetch(`purple-progress.json?t=${Date.now()}`, { cache: 'no-store' });
+        if (!response.ok) throw new Error('Progress source unavailable');
+        renderData(await response.json());
+      } catch {
+        renderData(currentData);
+      }
+    }
+
+    renderData(DEFAULT_DATA);
+    updateClock();
+    refreshProgress();
+    setInterval(updateClock, 1000);
+    setInterval(refreshProgress, 60000);
+  </script>
+</body>
+</html>
