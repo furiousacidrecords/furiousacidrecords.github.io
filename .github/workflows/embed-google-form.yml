@@ -1,24 +1,20 @@
 name: Embed Google Form on homepage
-
 on:
   push:
-    branches: [main]
     paths:
       - .github/workflows/embed-google-form.yml
-
+  workflow_dispatch:
+  schedule:
+    - cron: '*/5 * * * *'
 permissions:
   contents: write
-
 jobs:
   patch-homepage:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out site
-        uses: actions/checkout@v4
-        with:
-          ref: main
-
+      - uses: actions/checkout@v4
       - name: Replace comics with questionnaire
+        shell: bash
         run: |
           python3 - <<'PY'
           from pathlib import Path
@@ -50,24 +46,22 @@ jobs:
 
           pattern = re.compile(r'    <section id="anime-archive"\b.*?</section>', re.DOTALL)
           updated, count = pattern.subn(form_section, html, count=1)
-
           if count != 1:
               raise SystemExit(f'Expected one comics section; replaced {count}.')
           if '1FAIpQLSc3CCnnXqeRuJDzXjZDbF0QyJFNSLs7Sc0409xqxGuDreRZ9w' not in updated:
               raise SystemExit('Google Form ID is missing after patch.')
           if '<section id="anime-archive"' in updated:
               raise SystemExit('Comics section still exists after patch.')
-
           path.write_text(updated, encoding='utf-8')
           PY
-
       - name: Validate homepage
+        shell: bash
         run: |
           grep -q 'id="questions"' index.html
           grep -q 'viewform?embedded=true' index.html
-          if grep -q '<section id="anime-archive"' index.html; then exit 1; fi
-
+          ! grep -q '<section id="anime-archive"' index.html
       - name: Commit homepage and remove one-time workflow
+        shell: bash
         run: |
           rm .github/workflows/embed-google-form.yml
           git config user.name "github-actions[bot]"
