@@ -1,0 +1,54 @@
+name: Add Italian book to homepage
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/add-italian-book.yml
+
+permissions:
+  contents: write
+
+jobs:
+  update-homepage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Insert Italian edition first
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          path = Path('index.html')
+          text = path.read_text(encoding='utf-8')
+          asin = 'B0HC8H1LR4'
+
+          if asin not in text:
+              marker = '        <div class="book-grid">\n'
+              card = '''          <article class="product-card book-card">
+            <img class="product-image" src="https://images-na.ssl-images-amazon.com/images/P/B0HC8H1LR4.01.L.jpg" alt="Sintesi di farmaci Italian edition book cover" loading="lazy">
+            <div class="product-body">
+              <h3>Sintesi di farmaci</h3>
+              <p class="product-detail">Edizione italiana</p>
+              <div class="product-links">
+                <a class="button" href="https://www.amazon.it/dp/B0HC8H1LR4" target="_blank" rel="noopener noreferrer">Acquista su Amazon.it ↗</a>
+              </div>
+            </div>
+          </article>
+
+'''
+              if marker not in text:
+                  raise SystemExit('Book grid marker not found')
+              text = text.replace(marker, marker + card, 1)
+              path.write_text(text, encoding='utf-8')
+          PY
+      - name: Commit homepage update
+        run: |
+          if git diff --quiet; then
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "Place Italian Drug Synthesis edition first"
+          git push
