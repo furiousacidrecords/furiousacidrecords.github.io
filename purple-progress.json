@@ -1,10 +1,10 @@
 {
-  "completion": 99.0,
-  "remaining": 1.0,
+  "completion": 3.6,
+  "remaining": 96.4,
   "epoch": "2026-07-29T00:00:00-04:00",
-  "updatedAt": "2026-08-02T02:39:00-04:00",
-  "confidenceLow": 99.0,
-  "confidenceHigh": 99.0,
+  "updatedAt": "2026-07-31T00:36:00-04:00",
+  "confidenceLow": 2.0,
+  "confidenceHigh": 6.5,
   "scale": "Purple Rabbit Completion Index",
   "target": "Digital Genie"
 }
