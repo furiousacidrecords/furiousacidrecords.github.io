@@ -6,6 +6,7 @@
   const partUrls = [1, 2, 3, 4, 5].map((number) =>
     new URL(`realtime-lab/part-${number}.txt?v=20260802-1`, base).href
   );
+  const mobileFixUrl = new URL("mobile-fix.js?v=20260802-2", base).href;
 
   const loadingStyle = document.createElement("style");
   loadingStyle.id = "fa-realtime-loader-style";
@@ -42,6 +43,15 @@
     return new Response(stream).text();
   };
 
+  const loadMobileFix = () => {
+    if (document.getElementById("purple-mobile-fix-script")) return;
+    const fix = document.createElement("script");
+    fix.id = "purple-mobile-fix-script";
+    fix.src = mobileFixUrl;
+    fix.async = false;
+    document.head.appendChild(fix);
+  };
+
   Promise.all(
     partUrls.map(async (url) => {
       const response = await fetch(url, { cache: "no-store" });
@@ -55,6 +65,7 @@
       runtime.id = "fa-realtime-runtime";
       runtime.textContent = `${source}\n//# sourceURL=purple-rabbit-realtime-lab.js`;
       document.head.appendChild(runtime);
+      loadMobileFix();
       loader.remove();
       loadingStyle.remove();
     })
