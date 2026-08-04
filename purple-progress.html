@@ -15,7 +15,7 @@
       --muted: #b8adc9;
       --panel: rgba(16, 10, 25, .86);
       --line: rgba(191, 155, 255, .24);
-      --progress: 3.6;
+      --progress: 100;
     }
 
     * { box-sizing: border-box; }
@@ -396,21 +396,21 @@
     </div>
 
     <div class="data">
-      <p class="eyebrow">Purple Rabbit Laboratory · Live Reflection</p>
-      <h1>Reverse countdown to the Digital Genie</h1>
+      <p class="eyebrow">Purple Rabbit Laboratory · Verified Beta</p>
+      <h1>Purple Rabbit public beta is ready</h1>
 
       <div class="score-row">
-        <strong class="score" id="completion">3.600%</strong>
+        <strong class="score" id="completion">100.000%</strong>
         <span class="score-label">illuminated</span>
-        <p class="remaining"><strong id="remaining">96.400%</strong> remaining</p>
+        <p class="remaining"><strong id="remaining">0.000%</strong> remaining in the tested beta scope</p>
       </div>
 
-      <div class="ticks" role="progressbar" aria-label="Purple Rabbit completion" aria-valuemin="0" aria-valuemax="100" aria-valuenow="3.6"></div>
+      <div class="ticks" role="progressbar" aria-label="Purple Rabbit completion" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"></div>
 
       <div class="metric-grid">
         <div class="metric"><span>Project age</span><strong id="project-age">Calculating…</strong></div>
-        <div class="metric"><span>Phase geometry</span><strong id="phase-geometry">158.125° · 7.200% width</strong></div>
-        <div class="metric"><span>Confidence band</span><strong id="confidence">2.000–6.500%</strong></div>
+        <div class="metric"><span>Phase geometry</span><strong id="phase-geometry">0.000° · 0.000% width</strong></div>
+        <div class="metric"><span>Confidence band</span><strong id="confidence">100.000–100.000%</strong></div>
       </div>
 
       <p class="status"><b>Live source:</b> purple-progress.json · refreshed every 60 seconds · lunar area is mathematically equal to completion.</p>
@@ -420,11 +420,11 @@
   <script>
     const TEXTURE_URL = 'https://photoshop-api.adobe.io/v2/short-url/urn:aaid:ps:US:eb5d454b-0bed-4267-bfe3-446ba653f126';
     const DEFAULT_DATA = {
-      completion: 3.6,
+      completion: 100,
       epoch: '2026-07-29T00:00:00-04:00',
-      updatedAt: '2026-07-31T00:36:00-04:00',
-      confidenceLow: 2,
-      confidenceHigh: 6.5
+      updatedAt: '2026-08-04T02:11:04-04:00',
+      confidenceLow: 100,
+      confidenceHigh: 100
     };
 
     const query = new URLSearchParams(location.search);
