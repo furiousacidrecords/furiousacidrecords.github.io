@@ -5,6 +5,7 @@ import { JSDOM } from "jsdom";
 
 const htmlPath = new URL("../purple/index.html", import.meta.url);
 const coreLoopPath = new URL("../purple/core-loop.js", import.meta.url);
+const stageStudioPath = new URL("../purple/stage-studio.js", import.meta.url);
 
 function rect(left, top, width, height) {
   return { left, top, width, height, right: left + width, bottom: top + height, x: left, y: top, toJSON() { return this; } };
@@ -12,6 +13,16 @@ function rect(left, top, width, height) {
 
 async function flush(window, delay = 30) {
   await new Promise((resolve) => window.setTimeout(resolve, delay));
+}
+
+async function waitFor(window, predicate, timeout = 1500) {
+  const started = window.performance.now();
+  while (window.performance.now() - started < timeout) {
+    const value = predicate();
+    if (value) return value;
+    await flush(window, 25);
+  }
+  return null;
 }
 
 function pointer(window, type, init) {
@@ -129,9 +140,8 @@ test("part drag places apparatus, then chemical drag adds its selected dose", as
   const { window } = dom;
 
   clickByText(window, ".scene-ribbon button", "＋ Part");
-  await flush(window);
-  const flaskRow = Array.from(window.document.querySelectorAll(".parts-tree .part-row"))
-    .find((row) => row.textContent.includes("Conical flask"));
+  const flaskRow = await waitFor(window, () => Array.from(window.document.querySelectorAll(".parts-tree .part-row"))
+    .find((row) => row.textContent.includes("Conical flask")));
   assert.ok(flaskRow);
   flaskRow.dispatchEvent(pointer(window, "pointerdown", { pointerId: 2, clientX: 30, clientY: 180 }));
   flaskRow.dispatchEvent(pointer(window, "pointermove", { pointerId: 2, clientX: 310, clientY: 220 }));
@@ -158,4 +168,60 @@ test("part drag places apparatus, then chemical drag adds its selected dose", as
   const updatedFlask = window.document.querySelectorAll(".lab-object.kind-flask")[1];
   assert.equal(updatedFlask.dataset.volume, "10.0");
   assert.match(updatedFlask.querySelector(".object-reading").textContent, /10\.0 cm³ · pH 0\.0/);
+});
+
+test("an added Crocodile-style library chemical participates in the live vessel engine", async (t) => {
+  const dom = await createApp();
+  t.after(() => dom.window.close());
+  const { window } = dom;
+
+  clickByText(window, ".scene-ribbon button", "＋ Part");
+  const acidRow = await waitFor(window, () => Array.from(window.document.querySelectorAll(".parts-tree .part-row"))
+    .find((row) => row.textContent.includes("Phosphoric acid")));
+  assert.ok(acidRow);
+  const flask = window.document.querySelector('[data-object-id="blank-flask"]');
+  const flaskRect = flask.getBoundingClientRect();
+  acidRow.dispatchEvent(pointer(window, "pointerdown", { pointerId: 7, clientX: 30, clientY: 180 }));
+  acidRow.dispatchEvent(pointer(window, "pointermove", { pointerId: 7, clientX: flaskRect.left + 45, clientY: flaskRect.top + 45 }));
+  acidRow.dispatchEvent(pointer(window, "pointerup", { pointerId: 7, clientX: flaskRect.left + 45, clientY: flaskRect.top + 45 }));
+  await flush(window, 60);
+
+  const updated = window.document.querySelector('[data-object-id="blank-flask"]');
+  assert.equal(updated.dataset.volume, "10.0");
+  assert.match(updated.querySelector(".object-reading").textContent, /10\.0 cm³ · pH 0\.0/);
+});
+
+test("the video stage captures and reloads exact live chemical state through the simulator save/open bridge", async (t) => {
+  const dom = await createApp();
+  t.after(() => dom.window.close());
+  const { window } = dom;
+
+  const bottle = window.document.querySelector('[data-object-id="blank-hcl"]');
+  const beaker = window.document.querySelector('[data-object-id="blank-beaker"]');
+  const bottleRect = bottle.getBoundingClientRect();
+  const beakerRect = beaker.getBoundingClientRect();
+  bottle.dispatchEvent(pointer(window, "pointerdown", { clientX: bottleRect.left + 20, clientY: bottleRect.top + 20 }));
+  bottle.dispatchEvent(pointer(window, "pointermove", { clientX: beakerRect.left + 45, clientY: beakerRect.top + 45 }));
+  bottle.dispatchEvent(pointer(window, "pointerup", { clientX: beakerRect.left + 45, clientY: beakerRect.top + 45 }));
+  await flush(window, 40);
+
+  window.eval(await readFile(stageStudioPath, "utf8"));
+  await flush(window, 20);
+  const studio = window.FuriousAcidStageStudio;
+  assert.ok(studio);
+  await studio.captureCurrent();
+
+  const project = studio.getProject();
+  const capturedBeaker = project.scenes[0].state.objects.find((item) => item.id === "blank-beaker");
+  assert.equal(JSON.stringify(capturedBeaker.contents), JSON.stringify({ water: 50, hcl: 10 }));
+  capturedBeaker.contents.hcl = 20;
+  studio.setProject(project);
+  assert.equal(studio.loadSceneIntoLab(project.scenes[0].id, { reload: false }), true);
+
+  const reloaded = await waitFor(window, () => {
+    const element = window.document.querySelector('[data-object-id="blank-beaker"]');
+    return element?.dataset.volume === "70.0" ? element : null;
+  });
+  assert.ok(reloaded);
+  assert.match(reloaded.querySelector(".object-reading").textContent, /70\.0 cm³ · pH 0\.5/);
 });
