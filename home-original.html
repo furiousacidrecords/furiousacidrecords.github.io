@@ -692,6 +692,32 @@
       box-shadow: var(--shadow);
     }
 
+    .lab-simulator-cta {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      min-height: 50px;
+      margin-top: 8px;
+      padding: 11px 18px;
+      color: var(--black);
+      background: #d9ff36;
+      border: 2px solid #b7e600;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(217, 255, 54, .52), var(--shadow);
+      font-size: clamp(15px, 2vw, 18px);
+      font-weight: 950;
+      letter-spacing: .015em;
+      text-align: center;
+      transition: transform .16s ease, box-shadow .16s ease;
+    }
+
+    .lab-simulator-cta:hover,
+    .lab-simulator-cta:focus-visible {
+      transform: translateY(-1px);
+      box-shadow: 0 0 28px rgba(217, 255, 54, .72), var(--shadow);
+    }
+
     @media (max-width: 620px) {
       .purple-progress-frame { height: 118px; }
     }
@@ -729,6 +755,8 @@
       scrolling="no"
       sandbox="allow-scripts allow-same-origin allow-top-navigation-by-user-activation"
     ></iframe>
+
+    <a class="lab-simulator-cta" href="/purple/">Try Lab Simulator</a>
 
     <aside class="update-strip" aria-label="Furious Acid update">
       <span class="update-label">Furious Acid Update</span>
