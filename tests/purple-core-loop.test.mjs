@@ -191,6 +191,22 @@ test("an added Crocodile-style library chemical participates in the live vessel 
   assert.match(updated.querySelector(".object-reading").textContent, /10\.0 cm³ · pH 0\.0/);
 });
 
+test("every expanded chemical category is reachable in the rendered parts library", async (t) => {
+  const dom = await createApp();
+  t.after(() => dom.window.close());
+  const { window } = dom;
+
+  clickByText(window, ".scene-ribbon button", "＋ Part");
+  const copperOxide = await waitFor(window, () => Array.from(window.document.querySelectorAll(".parts-tree .part-row"))
+    .find((row) => row.textContent.includes("Copper(II) oxide")));
+  assert.ok(copperOxide);
+
+  const summaries = new Set(Array.from(window.document.querySelectorAll(".parts-tree summary")).map((summary) => summary.textContent.replace(/^\s*[▾▸]\s*/, "").trim()));
+  for (const category of ["Oxides", "Halides", "Sulfides", "Nitrates", "Sulfates", "Gases"]) {
+    assert.ok(summaries.has(category), `Missing rendered ${category} category`);
+  }
+});
+
 test("the video stage captures and reloads exact live chemical state through the simulator save/open bridge", async (t) => {
   const dom = await createApp();
   t.after(() => dom.window.close());
