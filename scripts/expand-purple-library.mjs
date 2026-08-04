@@ -78,4 +78,10 @@ html = removeBlock(html, legacyStart, legacyEnd);
 if (!html.includes(anchor)) throw new Error("Purple chemical library anchor did not match the expected app bundle.");
 const source = substances.map((substance) => JSON.stringify(substance)).join(",");
 html = html.replace(anchor, `,${markerStart}${source}${markerEnd}],ne=[{id:\`beaker\`,label:\`Beaker\`}`);
+
+const originalCategories = '[`Acids`,`Alkalis`,`Oxidizers`,`Organic liquids`,`Salts`,`Metals`,`Carbonates`,`Indicators`,`Reduction substrates`,`Reduction catalysts`,`Reduction reagents`,`Reduction products`]';
+const expandedCategories = '[`Acids`,`Alkalis`,`Oxidizers`,`Oxides`,`Halides`,`Sulfides`,`Nitrates`,`Sulfates`,`Carbonates`,`Gases`,`Organic liquids`,`Salts`,`Metals`,`Indicators`,`Reduction substrates`,`Reduction catalysts`,`Reduction reagents`,`Reduction products`]';
+if (html.includes(originalCategories)) html = html.replace(originalCategories, expandedCategories);
+else if (!html.includes(expandedCategories)) throw new Error("Purple rendered category menu did not match the expected app bundle.");
+
 if (html !== original) await writeFile(path, html);
