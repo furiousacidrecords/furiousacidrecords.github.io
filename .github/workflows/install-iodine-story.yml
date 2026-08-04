@@ -3,7 +3,7 @@ name: Install iodine story media
 on:
   push:
     paths:
-      - "purple/assets/iodine-pre-sublimation-app.mp4.b64"
+      - "purple/install-iodine-story.trigger"
   workflow_dispatch:
 
 permissions:
@@ -16,17 +16,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Decode video and attach story script
+      - name: Download exact uploaded video
+        run: |
+          mkdir -p purple/assets
+          curl -L --fail --retry 3 \
+            "https://at.adobe.com/fAV8slBG4vsfv2vv" \
+            -o purple/assets/iodine-pre-sublimation-app.mp4
+          test -s purple/assets/iodine-pre-sublimation-app.mp4
+
+      - name: Attach story script to the app
         shell: python
         run: |
           from pathlib import Path
-          import base64
-
-          encoded = Path("purple/assets/iodine-pre-sublimation-app.mp4.b64")
-          output = Path("purple/assets/iodine-pre-sublimation-app.mp4")
-          output.parent.mkdir(parents=True, exist_ok=True)
-          output.write_bytes(base64.b64decode(encoded.read_text(encoding="utf-8")))
-          encoded.unlink()
 
           index = Path("purple/index.html")
           html = index.read_text(encoding="utf-8")
@@ -38,11 +39,13 @@ jobs:
                   html += f"\n{tag}\n"
               index.write_text(html, encoding="utf-8")
 
+          Path("purple/install-iodine-story.trigger").unlink(missing_ok=True)
+
       - name: Commit installed media
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add purple/index.html purple/iodine-story.js purple/assets/iodine-pre-sublimation-app.mp4
-          git rm --ignore-unmatch purple/assets/iodine-pre-sublimation-app.mp4.b64
+          git rm --ignore-unmatch purple/install-iodine-story.trigger
           git commit -m "Install exact reaction video before iodine sublimation" || exit 0
           git push
