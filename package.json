@@ -6,6 +6,7 @@
   },
   "scripts": {
     "test": "node --test tests/*.test.mjs",
+    "audit:purple:mobile": "node scripts/audit-purple-mobile.mjs",
     "mobile:prepare": "node scripts/prepare-capacitor-web.mjs",
     "mobile:check": "node scripts/check-capacitor-mobile.mjs",
     "mobile:add": "npm run mobile:prepare && npx cap add android && npx cap add ios",
@@ -20,6 +21,7 @@
     "@capacitor/android": "8.4.2",
     "@capacitor/cli": "8.4.2",
     "@capacitor/ios": "8.4.2",
-    "jsdom": "26.1.0"
+    "jsdom": "26.1.0",
+    "playwright": "1.54.2"
   }
 }
