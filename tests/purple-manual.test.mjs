@@ -14,51 +14,104 @@ const homeLoaderPath = path.join(root, 'index.html');
 const manual = fs.readFileSync(manualPath, 'utf8');
 const homeLoader = fs.readFileSync(homeLoaderPath, 'utf8');
 
-test('manual provides the requested title, table of contents, and top-down tree', () => {
+test('manual is organized around using the program', () => {
   assert.match(manual, /<title>Purple Rabbit Chemistry Simulation Manual<\/title>/);
+  assert.match(manual, /How to use the program/);
   assert.match(manual, /Table of contents/);
   assert.match(manual, /id="top-down-tree"/);
-  assert.match(manual, /Build → Validate → Run → Interpret → Save or Present/);
+  assert.match(manual, /Add → Place → Validate → Run → Report → Revise → Save or Present/);
 });
 
-test('manual covers the operational simulator modules', () => {
+test('manual covers the visible simulator workflow and controls', () => {
   const requiredSections = [
-    'quick-start',
-    'interface',
-    'build-scene',
-    'validate-run',
-    'outcomes',
-    'principles',
-    'molecule-canvas',
-    'iodine-workflow',
+    'start-here',
+    'screen-map',
+    'new-scene',
+    'parts-library',
+    'add-parts',
+    'amounts-vessels',
+    'arrange-remove',
+    'validate-scene',
+    'run-simulation',
+    'read-report',
+    'revise-compare',
+    'molecule-drawing',
     'stage-studio',
-    'save-export',
-    'shortcuts',
-    'prompt-instructions',
+    'save-load-export',
+    'phone-use',
+    'chatgpt-help',
     'troubleshooting',
-    'module-map',
   ];
 
   requiredSections.forEach((id) => {
     assert.match(manual, new RegExp(`id="${id}"`), `missing manual section ${id}`);
   });
 
-  assert.match(manual, /core-loop\.js/);
-  assert.match(manual, /lab-principles\.js/);
-  assert.match(manual, /molecule-draw\.js/);
-  assert.match(manual, /iupac-engine\.js/);
-  assert.match(manual, /stage-studio\.js/);
+  const visibleControls = [
+    '\\+ Part',
+    'Parts Library',
+    'Storage',
+    'Compounds',
+    'Reagents',
+    'Conditions',
+    'Equipment',
+    'Simulator',
+    'Stage',
+    'Report',
+    'New',
+    'Save',
+    'Load',
+    'Run',
+    'Clear',
+    'Validate Scene',
+    'Identify molecule',
+    'Load SMILES',
+    'PNG',
+    'PDF',
+  ];
+
+  visibleControls.forEach((label) => {
+    assert.match(manual, new RegExp(label, 'i'), `missing visible control or category ${label}`);
+  });
 });
 
-test('manual includes searchable prompt instructions and safety boundaries', () => {
+test('manual explains what users should read in the report', () => {
+  ['Name', 'Amount', 'Formula', 'Moles', 'MW', 'Conversion', 'Selectivity', 'Drift'].forEach((field) => {
+    assert.match(manual, new RegExp(`>${field}<|<strong>${field}<`, 'i'), `missing report field ${field}`);
+  });
+
+  assert.match(manual, /Clean/);
+  assert.match(manual, /Partial/);
+  assert.match(manual, /Failed/);
+});
+
+test('manual stays user-facing and excludes developer documentation', () => {
+  const forbidden = [
+    /\bcore-loop\.js\b/i,
+    /\blab-principles\.js\b/i,
+    /\bmolecule-draw\.js\b/i,
+    /\biupac-engine\.js\b/i,
+    /\bstage-studio\.js\b/i,
+    /module map/i,
+    /repository[- ]scanned/i,
+    /source basis/i,
+    /current main[- ]branch modules/i,
+  ];
+
+  forbidden.forEach((pattern) => {
+    assert.doesNotMatch(manual, pattern, `manual contains developer-facing language: ${pattern}`);
+  });
+});
+
+test('manual keeps search, focused ChatGPT prompts, mobile help, and a safety boundary', () => {
   assert.match(manual, /id="manualSearch"/);
   assert.match(manual, /data-prompt/);
-  assert.match(manual, /Copy prompt/);
-  assert.match(manual, /Simulation is not physical authorization/);
-  assert.match(manual, /Do not provide a laboratory procedure/);
+  assert.match(manual, /Focus only on using the program/);
+  assert.match(manual, /Use it on a phone/);
+  assert.match(manual, /Educational simulation only/);
 });
 
-test('homepage loader inserts the manual link in the updates panel', () => {
+test('homepage loader keeps the manual link in the updates panel', () => {
   assert.match(homeLoader, /href="\/purple\/manual\/"/);
   assert.match(homeLoader, /Purple Rabbit Chemistry Simulation Manual/);
   assert.match(homeLoader, /update-manual-link/);
