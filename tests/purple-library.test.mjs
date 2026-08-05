@@ -28,7 +28,7 @@ test("Purple includes a Crocodile-scale categorized chemical library", () => {
   }
 });
 
-test("the editable stage and beta access layers are loaded by the Purple page", () => {
+test("the molecule drawer, editable stage, and beta access layers are loaded by the Purple page", () => {\n  assert.match(html, /<script src="\\.\\/molecule-draw\\.js" defer><\\/script>/);
   assert.match(html, /<script src="\.\/stage-studio\.js" defer><\/script>/);
   assert.match(html, /<script src="\.\/beta-access\.js" defer><\/script>/);
 });
