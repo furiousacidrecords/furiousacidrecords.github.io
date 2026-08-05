@@ -9,6 +9,7 @@ on:
       - 'package.json'
       - 'scripts/prepare-capacitor-web.mjs'
       - 'scripts/check-capacitor-mobile.mjs'
+      - 'scripts/audit-purple-mobile.mjs'
       - 'tests/capacitor-mobile.test.mjs'
       - '.github/workflows/build-purple-mobile.yml'
 
@@ -16,7 +17,7 @@ permissions:
   contents: read
 
 jobs:
-  validate:
+  validate-and-play:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -27,10 +28,25 @@ jobs:
       - run: npm test
       - run: npm run mobile:prepare
       - run: npm run mobile:check
+      - run: npx playwright install --with-deps chromium
+      - name: Start Purple Rabbit locally
+        run: |
+          python3 -m http.server 4173 > /tmp/purple-rabbit-server.log 2>&1 &
+          echo $! > /tmp/purple-rabbit-server.pid
+          sleep 3
+      - name: Play the core flow on an iPhone-sized screen
+        run: npm run audit:purple:mobile
+      - name: Upload phone screenshots and failure report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: purple-rabbit-mobile-play-audit
+          path: audit-output/
+          if-no-files-found: warn
 
   android:
     if: github.event_name == 'workflow_dispatch'
-    needs: validate
+    needs: validate-and-play
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -55,7 +71,7 @@ jobs:
 
   ios:
     if: github.event_name == 'workflow_dispatch'
-    needs: validate
+    needs: validate-and-play
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
