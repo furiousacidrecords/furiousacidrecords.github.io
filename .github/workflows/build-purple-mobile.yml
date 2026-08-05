@@ -1,0 +1,82 @@
+name: Build Purple Rabbit mobile apps
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'purple/**'
+      - 'capacitor.config.ts'
+      - 'package.json'
+      - 'scripts/prepare-capacitor-web.mjs'
+      - 'scripts/check-capacitor-mobile.mjs'
+      - 'tests/capacitor-mobile.test.mjs'
+      - '.github/workflows/build-purple-mobile.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-audit --no-fund
+      - run: npm test
+      - run: npm run mobile:prepare
+      - run: npm run mobile:check
+
+  android:
+    if: github.event_name == 'workflow_dispatch'
+    needs: validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - run: npm install --no-audit --no-fund
+      - run: npm run mobile:prepare
+      - run: npx cap add android
+      - run: npx cap sync android
+      - run: chmod +x android/gradlew
+      - run: ./gradlew assembleDebug
+        working-directory: android
+      - uses: actions/upload-artifact@v4
+        with:
+          name: purple-rabbit-android-debug
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+
+  ios:
+    if: github.event_name == 'workflow_dispatch'
+    needs: validate
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-audit --no-fund
+      - run: npm run mobile:prepare
+      - run: npx cap add ios
+      - run: npx cap sync ios
+      - run: >-
+          xcodebuild
+          -project ios/App/App.xcodeproj
+          -scheme App
+          -configuration Debug
+          -sdk iphonesimulator
+          -destination 'generic/platform=iOS Simulator'
+          -derivedDataPath ios/build
+          CODE_SIGNING_ALLOWED=NO
+          build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: purple-rabbit-ios-simulator
+          path: ios/build/Build/Products/Debug-iphonesimulator/App.app
