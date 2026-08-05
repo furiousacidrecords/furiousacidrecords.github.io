@@ -9,7 +9,7 @@
 <body>
   <p>Loading Furious Acid…</p>
   <script>
-    fetch('home-original.html?v=20260805', { cache: 'no-store' })
+    fetch('home-original.html?v=20260805-2', { cache: 'no-store' })
       .then(function (response) {
         if (!response.ok) throw new Error('Homepage unavailable');
         return response.text();
@@ -22,43 +22,64 @@
 
         var mobileCatalogStyle = `<style id="mobile-catalog-grid-style">
           @media (max-width: 900px) {
-            .book-grid,
-            .merch-grid {
+            html, body {
+              max-width: 100% !important;
+              overflow-x: hidden !important;
+            }
+            .shop-panel,
+            .shop-row {
+              overflow: visible !important;
+            }
+            .shop-panel .book-grid,
+            .shop-panel .merch-grid {
               display: grid !important;
               grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
               grid-auto-flow: row !important;
-              grid-auto-columns: auto !important;
+              grid-auto-columns: minmax(0, 1fr) !important;
               gap: 8px !important;
+              width: 100% !important;
+              max-width: 100% !important;
               overflow: visible !important;
-              padding-bottom: 0 !important;
+              overflow-x: visible !important;
+              padding: 0 !important;
               scroll-snap-type: none !important;
+              -webkit-overflow-scrolling: auto !important;
             }
-            .book-grid > *,
-            .merch-grid > *,
-            .merch-card {
-              width: auto !important;
+            .shop-panel .book-grid > *,
+            .shop-panel .merch-grid > *,
+            .shop-panel .merch-card,
+            .shop-panel .product-card {
+              width: 100% !important;
               min-width: 0 !important;
-              max-width: none !important;
+              max-width: 100% !important;
               flex: none !important;
+              margin: 0 !important;
             }
-            .product-image { height: 118px !important; }
-            .product-body { padding: 7px !important; }
-            .product-body h3 {
+            .shop-panel .product-image {
+              width: 100% !important;
+              height: 118px !important;
+              object-fit: contain !important;
+            }
+            .shop-panel .merch-card .product-image {
+              object-fit: cover !important;
+            }
+            .shop-panel .product-body { padding: 7px !important; }
+            .shop-panel .product-body h3 {
               min-height: 30px !important;
               font-size: 11.5px !important;
             }
-            .product-detail,
-            .text-link { font-size: 10px !important; }
-            .product-links .button {
+            .shop-panel .product-detail,
+            .shop-panel .text-link { font-size: 10px !important; }
+            .shop-panel .product-links .button {
               min-height: 34px !important;
               padding: 5px !important;
               font-size: 10.5px !important;
             }
           }
           @media (max-width: 360px) {
-            .book-grid,
-            .merch-grid { gap: 6px !important; }
-            .product-image { height: 105px !important; }
+            .shop-panel .book-grid,
+            .shop-panel .merch-grid { gap: 6px !important; }
+            .shop-panel .product-image { height: 105px !important; }
           }
         </style>`;
         if (html.indexOf('mobile-catalog-grid-style') === -1 && html.indexOf('</head>') !== -1) {
@@ -66,7 +87,19 @@
         }
 
         var marker = '        <div class="book-grid">\n';
-        var card = `          <article class="product-card book-card">
+        var newPaperback = `          <article class="product-card book-card">
+            <img class="product-image" src="https://images-na.ssl-images-amazon.com/images/P/B0HCMMZF89.01.L.jpg" alt="Furious Acid paperback book cover" loading="lazy">
+            <div class="product-body">
+              <h3>Furious Acid Paperback</h3>
+              <p class="product-detail">Paperback edition</p>
+              <div class="product-links">
+                <a class="button" href="https://www.amazon.com/dp/B0HCMMZF89" target="_blank" rel="noopener noreferrer">View on Amazon ↗</a>
+              </div>
+            </div>
+          </article>
+
+`;
+        var italianCard = `          <article class="product-card book-card">
             <img class="product-image" src="https://images-na.ssl-images-amazon.com/images/P/B0HC8H1LR4.01.L.jpg" alt="Sintesi di farmaci Italian edition book cover" loading="lazy">
             <div class="product-body">
               <h3>Sintesi di farmaci</h3>
@@ -78,8 +111,11 @@
           </article>
 
 `;
-        if (html.indexOf('B0HC8H1LR4') === -1 && html.indexOf(marker) !== -1) {
-          html = html.replace(marker, marker + card);
+        var extraCards = '';
+        if (html.indexOf('B0HCMMZF89') === -1) extraCards += newPaperback;
+        if (html.indexOf('B0HC8H1LR4') === -1) extraCards += italianCard;
+        if (extraCards && html.indexOf(marker) !== -1) {
+          html = html.replace(marker, marker + extraCards);
         }
 
         document.open();
