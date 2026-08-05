@@ -18,6 +18,61 @@
         html = html.replace(/<iframe\b[^>]*class=["'][^"']*\bpurple-progress-frame\b[^"']*["'][\s\S]*?<\/iframe>/i, '');
         html = html.replace(/<a\b[^>]*class=["'][^"']*\blab-simulator-cta\b[^"']*["'][^>]*>[\s\S]*?<\/a>/i, '');
 
+        var mobileCatalogStyle = `<style id="mobile-catalog-grid-style">
+          @media (max-width: 900px) {
+            .book-grid,
+            .merch-grid {
+              display: grid !important;
+              grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+              grid-auto-flow: row !important;
+              grid-auto-columns: auto !important;
+              gap: 8px !important;
+              overflow: visible !important;
+              padding-bottom: 0 !important;
+              scroll-snap-type: none !important;
+            }
+            .book-grid > *,
+            .merch-grid > *,
+            .merch-card {
+              width: auto !important;
+              min-width: 0 !important;
+              max-width: none !important;
+              flex: none !important;
+            }
+            .product-image {
+              height: 118px !important;
+            }
+            .product-body {
+              padding: 7px !important;
+            }
+            .product-body h3 {
+              min-height: 30px !important;
+              font-size: 11.5px !important;
+            }
+            .product-detail,
+            .text-link {
+              font-size: 10px !important;
+            }
+            .product-links .button {
+              min-height: 34px !important;
+              padding: 5px !important;
+              font-size: 10.5px !important;
+            }
+          }
+          @media (max-width: 360px) {
+            .book-grid,
+            .merch-grid {
+              gap: 6px !important;
+            }
+            .product-image {
+              height: 105px !important;
+            }
+          }
+        </style>`;
+        if (html.indexOf('mobile-catalog-grid-style') === -1 && html.indexOf('</head>') !== -1) {
+          html = html.replace('</head>', mobileCatalogStyle + '\n</head>');
+        }
+
         var marker = '        <div class="book-grid">\n';
         var card = `          <article class="product-card book-card">
             <img class="product-image" src="https://images-na.ssl-images-amazon.com/images/P/B0HC8H1LR4.01.L.jpg" alt="Sintesi di farmaci Italian edition book cover" loading="lazy">
