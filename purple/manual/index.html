@@ -1,0 +1,1103 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="Complete text-based instruction manual for the Purple Rabbit Chemistry Simulator, including a top-down application tree, table of contents, workflows, controls, prompts, and troubleshooting.">
+  <title>Purple Rabbit Chemistry Simulation Manual</title>
+  <style>
+    :root {
+      --ink: #19151f;
+      --muted: #655f6d;
+      --paper: #fbf9ff;
+      --panel: #ffffff;
+      --line: #ddd5e7;
+      --purple: #6f00ff;
+      --purple-deep: #47109c;
+      --purple-soft: #eee3ff;
+      --yellow: #fdf200;
+      --green: #cfff00;
+      --danger: #8c2633;
+      --warn: #7b4e00;
+      --ok: #17633b;
+      --shadow: 0 12px 34px rgba(45, 18, 75, .10);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 10% 0%, rgba(111, 0, 255, .10), transparent 30rem),
+        var(--paper);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.58;
+    }
+    a { color: var(--purple-deep); }
+    a:hover { text-decoration-thickness: 2px; }
+    button, input { font: inherit; }
+    code, pre, kbd { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    img, svg { max-width: 100%; }
+
+    .skip-link {
+      position: absolute;
+      left: 12px;
+      top: -80px;
+      z-index: 100;
+      padding: 10px 14px;
+      border-radius: 10px;
+      background: var(--purple);
+      color: #fff;
+      font-weight: 800;
+    }
+    .skip-link:focus { top: 12px; }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      border-bottom: 1px solid rgba(111, 0, 255, .17);
+      background: color-mix(in srgb, var(--paper) 90%, transparent);
+      backdrop-filter: blur(14px);
+    }
+    .header-inner {
+      width: min(1180px, calc(100% - 28px));
+      margin: 0 auto;
+      min-height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      color: var(--ink);
+      text-decoration: none;
+      font-weight: 900;
+      letter-spacing: -.02em;
+    }
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border: 2px solid var(--purple);
+      border-radius: 50% 50% 46% 46%;
+      background: var(--purple-soft);
+      color: var(--purple);
+      font-size: 19px;
+    }
+    .header-actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+    .header-actions a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 40px;
+      padding: 8px 13px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--panel);
+      color: var(--ink);
+      text-decoration: none;
+      font-size: .9rem;
+      font-weight: 800;
+    }
+    .header-actions .primary {
+      border-color: #a8c900;
+      background: var(--green);
+      color: #101400;
+    }
+
+    .hero {
+      width: min(1180px, calc(100% - 28px));
+      margin: 36px auto 24px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(260px, .75fr);
+      gap: 22px;
+      align-items: stretch;
+    }
+    .hero-copy, .hero-summary {
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+    .hero-copy { padding: clamp(24px, 4vw, 48px); }
+    .eyebrow {
+      margin: 0 0 10px;
+      color: var(--purple);
+      font-weight: 900;
+      letter-spacing: .11em;
+      text-transform: uppercase;
+      font-size: .76rem;
+    }
+    h1 {
+      margin: 0;
+      max-width: 16ch;
+      font-size: clamp(2.25rem, 7vw, 4.8rem);
+      line-height: .96;
+      letter-spacing: -.055em;
+    }
+    .lede {
+      max-width: 68ch;
+      margin: 22px 0 0;
+      color: var(--muted);
+      font-size: clamp(1rem, 2vw, 1.16rem);
+    }
+    .status-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 22px;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      min-height: 32px;
+      padding: 6px 10px;
+      border: 1px solid rgba(111, 0, 255, .22);
+      border-radius: 999px;
+      background: var(--purple-soft);
+      color: var(--purple-deep);
+      font-size: .82rem;
+      font-weight: 800;
+    }
+    .hero-summary {
+      padding: 22px;
+      display: grid;
+      gap: 12px;
+      align-content: start;
+    }
+    .metric {
+      padding: 15px;
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      background: color-mix(in srgb, var(--panel) 88%, var(--purple-soft));
+    }
+    .metric strong { display: block; font-size: 1.8rem; line-height: 1; color: var(--purple-deep); }
+    .metric span { display: block; margin-top: 5px; color: var(--muted); font-size: .87rem; }
+
+    .manual-shell {
+      width: min(1180px, calc(100% - 28px));
+      margin: 0 auto 64px;
+      display: grid;
+      grid-template-columns: 275px minmax(0, 1fr);
+      gap: 24px;
+      align-items: start;
+    }
+    .toc {
+      position: sticky;
+      top: 82px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+      box-shadow: 0 8px 25px rgba(45, 18, 75, .07);
+    }
+    .toc h2 { margin: 0 0 12px; font-size: 1rem; }
+    .toc-search label { display: block; margin-bottom: 6px; color: var(--muted); font-size: .8rem; font-weight: 800; }
+    .toc-search input {
+      width: 100%;
+      min-height: 42px;
+      padding: 9px 11px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      background: var(--paper);
+      color: var(--ink);
+    }
+    .toc ol {
+      list-style: none;
+      padding: 0;
+      margin: 14px 0 0;
+      display: grid;
+      gap: 3px;
+    }
+    .toc a {
+      display: block;
+      padding: 7px 9px;
+      border-radius: 9px;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: .86rem;
+      font-weight: 700;
+    }
+    .toc a:hover, .toc a[aria-current="true"] {
+      background: var(--purple-soft);
+      color: var(--purple-deep);
+    }
+    .toc-note { margin: 14px 0 0; color: var(--muted); font-size: .76rem; }
+
+    .content { min-width: 0; }
+    .manual-section {
+      scroll-margin-top: 86px;
+      margin-bottom: 20px;
+      padding: clamp(20px, 3.5vw, 34px);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+      box-shadow: 0 8px 28px rgba(45, 18, 75, .06);
+    }
+    .manual-section[hidden] { display: none; }
+    .section-kicker {
+      margin: 0 0 4px;
+      color: var(--purple);
+      font-size: .72rem;
+      font-weight: 900;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+    .manual-section h2 { margin: 0 0 14px; font-size: clamp(1.45rem, 3vw, 2rem); letter-spacing: -.025em; }
+    .manual-section h3 { margin: 24px 0 8px; font-size: 1.08rem; }
+    .manual-section p { margin: 9px 0; }
+    .manual-section ul, .manual-section ol { padding-left: 1.25rem; }
+    .manual-section li + li { margin-top: 6px; }
+
+    .callout {
+      margin: 16px 0;
+      padding: 15px 17px;
+      border-left: 5px solid var(--purple);
+      border-radius: 10px;
+      background: var(--purple-soft);
+    }
+    .callout.warning { border-left-color: #c47a00; background: #fff1d8; color: #4f3400; }
+    .callout.safety { border-left-color: var(--danger); background: #ffe9ed; color: #54151e; }
+    .callout strong { display: block; margin-bottom: 3px; }
+
+    .step-grid, .feature-grid, .prompt-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .step, .feature, .prompt-card {
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: color-mix(in srgb, var(--panel) 94%, var(--purple-soft));
+    }
+    .step-number {
+      width: 31px;
+      height: 31px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 9px;
+      border-radius: 50%;
+      background: var(--purple);
+      color: #fff;
+      font-weight: 900;
+    }
+    .step h3, .feature h3, .prompt-card h3 { margin: 0 0 6px; }
+    .step p, .feature p, .prompt-card p { margin: 0; color: var(--muted); }
+
+    .tree {
+      margin-top: 18px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: #17121e;
+      color: #f7efff;
+      overflow: hidden;
+    }
+    .tree details { margin: 5px 0; }
+    .tree details details { margin-left: 20px; padding-left: 14px; border-left: 1px solid rgba(253, 242, 0, .34); }
+    .tree summary { cursor: pointer; padding: 4px 0; font-weight: 800; }
+    .tree .leaf { margin: 4px 0 4px 35px; color: #d8cce5; }
+    .tree .tree-note { color: var(--yellow); font-size: .83rem; }
+
+    .table-wrap { width: 100%; overflow-x: auto; margin-top: 14px; }
+    table { width: 100%; border-collapse: collapse; min-width: 610px; }
+    th, td { padding: 11px 12px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+    th { color: var(--purple-deep); background: var(--purple-soft); font-size: .82rem; }
+    td { font-size: .9rem; }
+    kbd {
+      display: inline-block;
+      padding: 2px 6px;
+      border: 1px solid #bcb3c7;
+      border-bottom-width: 2px;
+      border-radius: 6px;
+      background: #fff;
+      color: #201724;
+      font-size: .78rem;
+      white-space: nowrap;
+    }
+
+    .prompt-card { display: grid; gap: 10px; }
+    .prompt-card pre {
+      margin: 0;
+      padding: 13px;
+      border-radius: 11px;
+      background: #17121e;
+      color: #f7efff;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      font-size: .78rem;
+      line-height: 1.5;
+    }
+    .copy-button {
+      justify-self: start;
+      min-height: 38px;
+      padding: 8px 12px;
+      border: 1px solid var(--purple);
+      border-radius: 999px;
+      background: var(--purple-soft);
+      color: var(--purple-deep);
+      cursor: pointer;
+      font-weight: 800;
+    }
+    .copy-button:hover { background: var(--purple); color: #fff; }
+
+    .pill-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .pill-list span {
+      padding: 6px 9px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--paper);
+      font-size: .8rem;
+      font-weight: 800;
+    }
+
+    .checklist { list-style: none; padding: 0 !important; }
+    .checklist li { position: relative; padding-left: 29px; }
+    .checklist li::before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 21px;
+      height: 21px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--green);
+      color: #152000;
+      font-weight: 900;
+    }
+
+    .no-results {
+      display: none;
+      padding: 30px;
+      border: 1px dashed var(--line);
+      border-radius: var(--radius);
+      text-align: center;
+      color: var(--muted);
+    }
+    .no-results.show { display: block; }
+
+    footer {
+      padding: 30px 16px 44px;
+      border-top: 1px solid var(--line);
+      text-align: center;
+      color: var(--muted);
+      font-size: .86rem;
+    }
+
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; }
+      .hero-summary { grid-template-columns: repeat(2, 1fr); }
+      .manual-shell { grid-template-columns: 1fr; }
+      .toc { position: static; }
+      .toc ol { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 620px) {
+      .header-inner { align-items: flex-start; padding: 10px 0; }
+      .brand span:last-child { display: none; }
+      .header-actions a { min-height: 38px; padding: 7px 10px; font-size: .78rem; }
+      .hero { margin-top: 22px; }
+      .hero-summary, .step-grid, .feature-grid, .prompt-grid, .toc ol { grid-template-columns: 1fr; }
+      h1 { font-size: clamp(2.2rem, 16vw, 3.45rem); }
+      .manual-section { padding: 20px; }
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --ink: #f5eefb;
+        --muted: #bdb2c8;
+        --paper: #120e17;
+        --panel: #1b1522;
+        --line: #42354c;
+        --purple-deep: #cfadff;
+        --purple-soft: #2a1b3c;
+        --shadow: none;
+      }
+      .callout.warning { background: #39280a; color: #ffe3a6; }
+      .callout.safety { background: #3b171e; color: #ffd5dc; }
+      kbd { background: #251d2d; color: #fff; border-color: #71627c; }
+      .prompt-card pre, .tree { background: #0d0911; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#manual-content">Skip to manual</a>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="/purple/" aria-label="Return to Purple Rabbit simulator">
+        <span class="brand-mark" aria-hidden="true">⚗</span>
+        <span>Purple Rabbit Manual</span>
+      </a>
+      <nav class="header-actions" aria-label="Manual links">
+        <a href="/">Main site</a>
+        <a class="primary" href="/purple/">Open simulator</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero" aria-labelledby="manual-title">
+    <div class="hero-copy">
+      <p class="eyebrow">Text-first instruction manual</p>
+      <h1 id="manual-title">Purple Rabbit Chemistry Simulation Manual</h1>
+      <p class="lede">A complete top-down map of the simulator: how to build a scene, validate it, run the model, read the result, draw a molecule, save work, and turn a chemistry scene into a presentation.</p>
+      <div class="status-row" aria-label="Manual status">
+        <span class="badge">Current public build</span>
+        <span class="badge">Mobile friendly</span>
+        <span class="badge">Repository-scanned</span>
+        <span class="badge">Manual v1.0</span>
+      </div>
+    </div>
+    <aside class="hero-summary" aria-label="Simulator inventory summary">
+      <div class="metric"><strong>5</strong><span>library groups: storage, compounds, reagents, conditions, equipment</span></div>
+      <div class="metric"><strong>10</strong><span>elements available in the molecule canvas</span></div>
+      <div class="metric"><strong>3</strong><span>run outcomes: Clean, Partial, or Failed</span></div>
+      <div class="metric"><strong>8</strong><span>lab-principle explanation families</span></div>
+    </aside>
+  </section>
+
+  <div class="manual-shell">
+    <aside class="toc" aria-label="Table of contents">
+      <h2>Table of contents</h2>
+      <div class="toc-search">
+        <label for="manualSearch">Search this manual</label>
+        <input id="manualSearch" type="search" placeholder="Try: molecule, save, warning…" autocomplete="off">
+      </div>
+      <ol id="tocList">
+        <li><a href="#purpose">1. Purpose and limits</a></li>
+        <li><a href="#quick-start">2. Quick start</a></li>
+        <li><a href="#top-down-tree">3. Top-down application tree</a></li>
+        <li><a href="#interface">4. Interface map</a></li>
+        <li><a href="#build-scene">5. Build a reaction scene</a></li>
+        <li><a href="#validate-run">6. Validate and run</a></li>
+        <li><a href="#outcomes">7. Read the outcome</a></li>
+        <li><a href="#principles">8. Lab principles</a></li>
+        <li><a href="#molecule-canvas">9. Molecule canvas and IUPAC</a></li>
+        <li><a href="#iodine-workflow">10. Iodination story workflow</a></li>
+        <li><a href="#stage-studio">11. Stage Studio</a></li>
+        <li><a href="#save-export">12. Save, storage, and export</a></li>
+        <li><a href="#shortcuts">13. Keyboard shortcuts</a></li>
+        <li><a href="#prompt-instructions">14. ChatGPT prompt instructions</a></li>
+        <li><a href="#troubleshooting">15. Troubleshooting</a></li>
+        <li><a href="#module-map">16. Module map</a></li>
+        <li><a href="#glossary">17. Glossary</a></li>
+      </ol>
+      <p class="toc-note">Scanned against the simulator’s current main-branch modules on August 5, 2026.</p>
+    </aside>
+
+    <main class="content" id="manual-content">
+      <section class="manual-section" id="purpose" data-search="purpose limits safety educational simulator scope public build beta access">
+        <p class="section-kicker">01 · Orientation</p>
+        <h2>Purpose and limits</h2>
+        <p>Purple Rabbit is an interactive organic-chemistry workspace for assembling a reaction scene, checking whether the scene has enough information to run, calculating a deterministic simulated outcome, and presenting the scene visually.</p>
+        <div class="callout">
+          <strong>Current startup behavior</strong>
+          The public build opens directly. A legacy beta-request module remains in the codebase, but the current startup module disables the access gate.
+        </div>
+        <div class="callout safety">
+          <strong>Simulation is not physical authorization</strong>
+          A “Clean” result is a software classification, not proof that a real reaction is safe, lawful, scalable, or experimentally correct. For physical laboratory work, use qualified supervision, current safety data sheets, institutional procedures, and appropriate risk review.
+        </div>
+        <h3>What the simulator does</h3>
+        <ul class="checklist">
+          <li>Organizes compounds, reagents, conditions, environment, and equipment into one scene.</li>
+          <li>Checks required fields and compatibility signals before running.</li>
+          <li>Estimates conversion, selectivity, drift, family, medium, phase, and risk signals.</li>
+          <li>Explains applicable chemistry principles in plain language.</li>
+          <li>Saves scenes locally and exports presentation frames.</li>
+        </ul>
+        <h3>What it does not do</h3>
+        <ul>
+          <li>It does not replace literature review, analytical verification, hazard assessment, or professional judgment.</li>
+          <li>It does not guarantee a named reaction, mechanism, yield, stereochemistry, or safe operating window.</li>
+          <li>It does not upload a scene to a server merely because it is saved; scene storage is local unless the user exports or shares it.</li>
+        </ul>
+      </section>
+
+      <section class="manual-section" id="quick-start" data-search="quick start begin open parts library drag drop validate run save stage">
+        <p class="section-kicker">02 · First run</p>
+        <h2>Quick start</h2>
+        <div class="step-grid">
+          <article class="step"><span class="step-number">1</span><h3>Open the simulator</h3><p>Go to <strong>/purple/</strong>. The current public build should open directly to the simulator workspace.</p></article>
+          <article class="step"><span class="step-number">2</span><h3>Name the scene</h3><p>Use a short descriptive title so saved scenes and presentation frames remain recognizable.</p></article>
+          <article class="step"><span class="step-number">3</span><h3>Add the chemistry</h3><p>Add a starting compound, transformation, product target, primary reagent, and solvent when the scene is liquid phase.</p></article>
+          <article class="step"><span class="step-number">4</span><h3>Set the environment</h3><p>Review scale, temperature, time, stirring, pH, atmosphere, glassware, and supporting equipment.</p></article>
+          <article class="step"><span class="step-number">5</span><h3>Validate</h3><p>Use <strong>Reaction → Validate Scene</strong>. Correct blocking errors first, then review warnings.</p></article>
+          <article class="step"><span class="step-number">6</span><h3>Run</h3><p>Choose <strong>Run</strong> or press <kbd>Ctrl</kbd>/<kbd>Cmd</kbd> + <kbd>Enter</kbd>. Read the status and metrics together.</p></article>
+          <article class="step"><span class="step-number">7</span><h3>Save or present</h3><p>Save the scene locally, export JSON, or open Stage Studio to arrange and export a presentation frame.</p></article>
+          <article class="step"><span class="step-number">8</span><h3>Revise deliberately</h3><p>Change one important variable at a time, rerun, and compare the new outcome with the previous one.</p></article>
+        </div>
+      </section>
+
+      <section class="manual-section" id="top-down-tree" data-search="top down tree hierarchy architecture flow application map workspace libraries validate run outcome stage report">
+        <p class="section-kicker">03 · Architecture</p>
+        <h2>Top-down application tree</h2>
+        <p>Read this tree from top to bottom. Open any branch to see the user-facing parts underneath it.</p>
+        <div class="tree" role="tree" aria-label="Purple Rabbit simulator top-down tree">
+          <details open>
+            <summary>Purple Rabbit Chemistry Simulator</summary>
+            <details open>
+              <summary>1. Enter and orient</summary>
+              <div class="leaf">Simulator tab</div>
+              <div class="leaf">Report tab</div>
+              <div class="leaf">Simulator / Stage workspace modes</div>
+              <div class="leaf">File, Edit, View, Reaction, and Help menus</div>
+            </details>
+            <details open>
+              <summary>2. Build the scene</summary>
+              <details>
+                <summary>Compounds</summary>
+                <div class="leaf">Drawing Tool</div>
+                <div class="leaf">Starting Compound</div>
+                <div class="leaf">Product Target</div>
+              </details>
+              <details>
+                <summary>Reagents</summary>
+                <div class="leaf">Reagent System</div>
+                <div class="leaf">Catalyst</div>
+              </details>
+              <details>
+                <summary>Conditions and environment</summary>
+                <div class="leaf">Temperature · Reaction Time</div>
+                <div class="leaf">Solvent · Atmosphere · pH / Buffer</div>
+              </details>
+              <details>
+                <summary>Equipment</summary>
+                <div class="leaf">Round-bottom flask · Addition funnel · Thermometer probe</div>
+                <div class="leaf">Heating block · Ice bath · Magnetic stirrer</div>
+                <div class="leaf">Inert gas line · Vacuum adapter</div>
+                <div class="leaf">Distillation head · Reflux condenser</div>
+              </details>
+            </details>
+            <details open>
+              <summary>3. Validate the scene</summary>
+              <div class="leaf">Required-field checks</div>
+              <div class="leaf">Transformation/reagent compatibility</div>
+              <div class="leaf">Temperature, pH, scale, atmosphere, and duration warnings</div>
+            </details>
+            <details open>
+              <summary>4. Run the model</summary>
+              <div class="leaf">Infer reaction family, medium, and phase</div>
+              <div class="leaf">Calculate risk and drift signals</div>
+              <div class="leaf">Return Clean, Partial, or Failed</div>
+              <div class="leaf">Show conversion, selectivity, and drift</div>
+            </details>
+            <details open>
+              <summary>5. Interpret</summary>
+              <div class="leaf">Blocking issues and warnings</div>
+              <div class="leaf">Lab-principle cards</div>
+              <div class="leaf">Explanation chips and conclusion text</div>
+            </details>
+            <details open>
+              <summary>6. Save and present</summary>
+              <div class="leaf">Local scene save and JSON export</div>
+              <div class="leaf">Stage Studio scene deck</div>
+              <div class="leaf">PNG and browser-PDF export</div>
+              <div class="leaf">Report view</div>
+            </details>
+          </details>
+          <p class="tree-note">Primary loop: Build → Validate → Run → Interpret → Save or Present.</p>
+        </div>
+      </section>
+
+      <section class="manual-section" id="interface" data-search="interface menus file edit view reaction help simulator report stage workspace parts library controls">
+        <p class="section-kicker">04 · Screen map</p>
+        <h2>Interface map</h2>
+        <div class="feature-grid">
+          <article class="feature"><h3>Masthead tabs</h3><p><strong>Simulator</strong> is the working canvas. <strong>Report</strong> is the result/report surface.</p></article>
+          <article class="feature"><h3>Workspace modes</h3><p><strong>Simulator</strong> builds and runs chemistry scenes. <strong>Stage</strong> prepares visual presentation frames.</p></article>
+          <article class="feature"><h3>Parts and chemical libraries</h3><p>Search or browse parts, then add them to the scene. Library data is grouped by storage, chemistry, conditions, environment, equipment, and add-ons.</p></article>
+          <article class="feature"><h3>Workspace details</h3><p>Shows the scene name, step, selected values, run action, save action, run outcome, and principle explanations.</p></article>
+        </div>
+        <h3>Menu bar</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Menu</th><th>Main commands</th><th>Use</th></tr></thead>
+            <tbody>
+              <tr><td>File</td><td>New, Open, Save, Save As, Export JSON</td><td>Scene lifecycle and portable data.</td></tr>
+              <tr><td>Edit</td><td>Undo, Redo, Duplicate Selection, Delete</td><td>Change the current selection or reverse edits.</td></tr>
+              <tr><td>View</td><td>Zoom to Fit, Reset Zoom, Grid, Atom Labels, Bond Order</td><td>Control visual presentation without changing chemistry.</td></tr>
+              <tr><td>Reaction</td><td>Run, Stop, Validate Scene, Clear Run</td><td>Check and execute the simulation loop.</td></tr>
+              <tr><td>Help</td><td>Help and supporting information</td><td>Find guidance without modifying the scene.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="manual-section" id="build-scene" data-search="build scene substrate transformation product reagent catalyst solvent atmosphere ph temperature time scale stir glassware equipment">
+        <p class="section-kicker">05 · Scene construction</p>
+        <h2>Build a reaction scene</h2>
+        <p>A runnable scene needs a coherent description of <em>what changes</em>, <em>what drives the change</em>, and <em>under what environment</em>.</p>
+        <h3>Required chemistry fields</h3>
+        <ol>
+          <li><strong>Starting compound:</strong> the material entering the modeled transformation.</li>
+          <li><strong>Transformation:</strong> the reaction family or intended change.</li>
+          <li><strong>Product target:</strong> the modeled destination.</li>
+          <li><strong>Primary reagent:</strong> the principal reagent system.</li>
+          <li><strong>Solvent:</strong> expected for a liquid-phase scene.</li>
+        </ol>
+        <h3>Condition controls</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Control</th><th>Meaning in the model</th><th>Review before running</th></tr></thead>
+            <tbody>
+              <tr><td>Scale</td><td>Amount and unit, commonly mmol.</td><td>Large modeled scales raise the risk score.</td></tr>
+              <tr><td>Temperature start/end</td><td>Thermal profile and change across the run.</td><td>Extreme values or a large jump produce warnings.</td></tr>
+              <tr><td>Stir rate</td><td>Mixing input in revolutions per minute.</td><td>Very low mixing can reduce the simulated result.</td></tr>
+              <tr><td>Duration</td><td>Modeled reaction time in minutes.</td><td>Very long runs raise warnings and drift.</td></tr>
+              <tr><td>pH start/target</td><td>Acid-base environment and pH change.</td><td>Values outside 0–14 are invalid.</td></tr>
+              <tr><td>Glassware</td><td>Primary reaction vessel.</td><td>Match it to the scene’s intended operation.</td></tr>
+              <tr><td>Atmosphere</td><td>Air, inert, or other stated environment.</td><td>A missing atmosphere creates a warning.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <h3>Compatibility checks built into the scene</h3>
+        <ul>
+          <li>A redox transformation should identify a redox-active reagent.</li>
+          <li>A coupling transformation should identify a catalyst or base.</li>
+          <li>A low-boiling solvent combined with a high temperature creates a warning.</li>
+          <li>A flammable reagent combined with elevated temperature creates a warning.</li>
+          <li>A highly exothermic transformation with a large temperature change creates a warning.</li>
+        </ul>
+        <div class="callout warning">
+          <strong>Warnings are not instructions</strong>
+          They are model flags asking you to review the scene. Do not treat the absence of a warning as evidence that physical operation is safe.
+        </div>
+      </section>
+
+      <section class="manual-section" id="validate-run" data-search="validate run errors warnings missing substrate reagent transformation product solvent redox coupling catalyst base temperature ph duration atmosphere">
+        <p class="section-kicker">06 · Core loop</p>
+        <h2>Validate and run</h2>
+        <h3>Validation order</h3>
+        <ol>
+          <li>Open <strong>Reaction → Validate Scene</strong>.</li>
+          <li>Resolve blocking errors first.</li>
+          <li>Review warnings and decide whether the scene description is incomplete or intentionally unusual.</li>
+          <li>Run only after the scene expresses the intended model clearly.</li>
+        </ol>
+        <h3>Blocking errors</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Message category</th><th>What it means</th><th>Correction in the interface</th></tr></thead>
+            <tbody>
+              <tr><td>Missing starting compound</td><td>The scene has no substrate.</td><td>Add or draw the starting compound.</td></tr>
+              <tr><td>Missing reagent</td><td>No primary reagent system is identified.</td><td>Add a reagent system.</td></tr>
+              <tr><td>Missing transformation</td><td>The model cannot infer the intended change.</td><td>Select or enter the transformation.</td></tr>
+              <tr><td>Missing product target</td><td>The intended result is undefined.</td><td>Add the product target.</td></tr>
+              <tr><td>Liquid phase without solvent</td><td>The modeled phase needs a solvent.</td><td>Add a solvent system.</td></tr>
+              <tr><td>Redox mismatch</td><td>A redox transformation lacks a redox-active reagent.</td><td>Review the transformation and reagent descriptions.</td></tr>
+              <tr><td>Coupling support missing</td><td>A coupling scene lacks a catalyst or base.</td><td>Add the relevant scene component.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <h3>Run controls</h3>
+        <p>Choose <strong>Reaction → Run</strong> or press <kbd>Ctrl</kbd>/<kbd>Cmd</kbd> + <kbd>Enter</kbd>. Use <kbd>Esc</kbd> to stop. <strong>Clear Run</strong> removes the current run result without deleting the scene itself.</p>
+      </section>
+
+      <section class="manual-section" id="outcomes" data-search="outcome clean partial failed conversion selectivity drift risk family medium phase deterministic result">
+        <p class="section-kicker">07 · Results</p>
+        <h2>Read the outcome</h2>
+        <p>The run panel combines a status label, explanatory text, metrics, issues, and principle chips. Read the whole panel—not only the status word.</p>
+        <div class="feature-grid">
+          <article class="feature"><h3>Clean</h3><p>The modeled scene has enough information and favorable compatibility signals. This is still a simulation classification.</p></article>
+          <article class="feature"><h3>Partial</h3><p>The scene can run, but drift, compatibility, mixing, timing, or warning signals reduce the modeled performance.</p></article>
+          <article class="feature"><h3>Failed</h3><p>Blocking errors or severe incompatibility prevent a meaningful modeled outcome.</p></article>
+          <article class="feature"><h3>Deterministic behavior</h3><p>The same normalized scene should return the same modeled result, which supports deliberate comparison.</p></article>
+        </div>
+        <h3>Metrics</h3>
+        <ul>
+          <li><strong>Conversion:</strong> modeled fraction of starting material converted.</li>
+          <li><strong>Selectivity:</strong> modeled preference for the stated target relative to alternatives.</li>
+          <li><strong>Drift:</strong> a combined signal affected by temperature movement, pH movement, duration, reaction family, and medium.</li>
+          <li><strong>Risk score:</strong> an internal signal influenced by high or extreme temperature, pH extremes, large scale, long duration, missing atmosphere, elevated stirring, and volatile reagents.</li>
+        </ul>
+        <div class="callout">
+          <strong>Best comparison method</strong>
+          Save a baseline scene. Change one variable, rerun, and compare status, conversion, selectivity, drift, warnings, and principle explanations together.
+        </div>
+      </section>
+
+      <section class="manual-section" id="principles" data-search="lab principles limiting reagent redox acid base le chatelier rate law equilibrium phase solubility nernst pka">
+        <p class="section-kicker">08 · Explanations</p>
+        <h2>Lab principles</h2>
+        <p>The compact <strong>Lab principles</strong> panel appears in workspace details when relevant data is available. It keeps the most recent applicable explanations and shows a conclusion plus an expandable explanation.</p>
+        <div class="pill-list" aria-label="Principle families">
+          <span>Limiting reagent</span><span>Redox balance</span><span>Acid-base control</span><span>Le Châtelier</span><span>Rate law</span><span>Equilibrium quotient</span><span>Phase behavior</span><span>Solubility</span>
+        </div>
+        <h3>How to use the panel</h3>
+        <ol>
+          <li>Read the short conclusion first.</li>
+          <li>Expand the explanation to see why that principle applies to the current scene.</li>
+          <li>Change the relevant scene variable and rerun to see whether the conclusion changes.</li>
+        </ol>
+        <h3>Examples of what drives an explanation</h3>
+        <ul>
+          <li>Mole ratios and available equivalents can identify a limiting reagent.</li>
+          <li>Oxidation states, electron count, half-reaction information, and potential data can populate redox reasoning.</li>
+          <li>pKa, acid/base ratio, and target pH can populate acid-base reasoning.</li>
+          <li>Cooling, distillation, atmosphere, or temperature direction can change the stated equilibrium shift.</li>
+          <li>Temperature change can alter the model’s rate conclusion.</li>
+          <li>Phase and solvent data can populate phase stability and solubility conclusions.</li>
+        </ul>
+      </section>
+
+      <section class="manual-section" id="molecule-canvas" data-search="molecule draw canvas iupac atoms bonds single double triple wedge dashed undo redo clear select valence connected structure stereochemistry">
+        <p class="section-kicker">09 · Structure editor</p>
+        <h2>Molecule canvas and IUPAC identification</h2>
+        <p>Use <strong>Drawing Tool</strong> when a structure is easier to express graphically than by typing a name.</p>
+        <h3>Available controls</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Control</th><th>Available choices</th><th>Behavior</th></tr></thead>
+            <tbody>
+              <tr><td>Elements</td><td>C, H, N, O, S, P, F, Cl, Br, I</td><td>Select an element, then click the canvas to place an atom.</td></tr>
+              <tr><td>Bond</td><td>Single, double, triple, wedge, dashed</td><td>Select a bond type, then connect atoms.</td></tr>
+              <tr><td>Mode</td><td>Draw or Select</td><td>Draw creates atoms/bonds; Select moves or deletes an atom.</td></tr>
+              <tr><td>History</td><td>Undo, Redo, Clear</td><td>Reverse changes or reset the canvas.</td></tr>
+              <tr><td>Finish</td><td>Cancel or Use structure</td><td>Cancel closes without applying; Use structure validates and names the graph.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <h3>Drawing sequence</h3>
+        <ol>
+          <li>Select an element.</li>
+          <li>Click a blank position to create an atom.</li>
+          <li>Select an existing atom, then another atom to create a bond.</li>
+          <li>Switch to <strong>Select</strong> to drag an atom into a clearer position.</li>
+          <li>Use <strong>Use structure</strong> to validate the graph and send the generated name/structure to the target field.</li>
+        </ol>
+        <h3>Validation rules</h3>
+        <ul>
+          <li>At least one atom is required.</li>
+          <li>The drawing must be one connected component.</li>
+          <li>Valence checks are applied: H/F/Cl/Br/I = 1, O = 2, N = 3, C = 4, P = 5, and S up to 6.</li>
+          <li>Wedge and dashed bonds count as single bonds for valence checking.</li>
+        </ul>
+        <p>The naming engine can generate chain names, substituents, common suffixes, unsaturation labels, and stereochemical prefixes when the graph contains enough information. Review warnings and confidence before treating the generated name as final.</p>
+      </section>
+
+      <section class="manual-section" id="iodine-workflow" data-search="iodine iodination story reduction run reset drawn structure workflow secondary alcohol">
+        <p class="section-kicker">10 · Guided scene</p>
+        <h2>Iodination story workflow</h2>
+        <p>The simulator includes a guided iodination/reduction story module used as a start-to-finish demonstration scene.</p>
+        <h3>Main actions</h3>
+        <ul>
+          <li><strong>Use drawn structure:</strong> sends the current molecule-canvas structure into the guided workflow.</li>
+          <li><strong>Run reduction:</strong> advances the modeled reduction state and updates the visible product description.</li>
+          <li><strong>Reset iodination:</strong> returns the guided scene to its initial state.</li>
+        </ul>
+        <div class="callout">
+          <strong>Use the story as an interface tutorial</strong>
+          Follow the scene’s on-screen order and focus on how the workspace changes. The module demonstrates simulator state changes; it is not a laboratory procedure.
+        </div>
+      </section>
+
+      <section class="manual-section" id="stage-studio" data-search="stage studio scene deck frames drag parts reaction arrow cues fade reveal emphasize export png pdf selection keyboard">
+        <p class="section-kicker">11 · Presentation</p>
+        <h2>Stage Studio</h2>
+        <p>Stage Studio turns the current chemistry workspace into a presentation scene without leaving the simulator workflow.</p>
+        <h3>Open and compose</h3>
+        <ol>
+          <li>Select <strong>Open Stage Studio</strong>.</li>
+          <li>Drag parts from the Parts Library onto the stage.</li>
+          <li>Select a part to edit its label.</li>
+          <li>Create additional frames with <strong>New scene</strong>.</li>
+          <li>Use the scene deck to move between frames.</li>
+        </ol>
+        <h3>Scene cues</h3>
+        <ul>
+          <li><strong>Fade in</strong> marks a selected part for an entrance cue.</li>
+          <li><strong>Reveal</strong> marks it for a reveal cue.</li>
+          <li><strong>Emphasize</strong> marks it for emphasis.</li>
+        </ul>
+        <h3>Automatic and direct controls</h3>
+        <ul>
+          <li>A reaction arrow appears automatically when a frame contains at least two parts.</li>
+          <li><kbd>Delete</kbd> or <kbd>Backspace</kbd> removes the selected stage item when text is not being edited.</li>
+          <li>Arrow keys move the selected part in small increments.</li>
+          <li>The Purple Rabbit stage hotspot can display a short encouragement bubble.</li>
+        </ul>
+        <h3>Export</h3>
+        <p><strong>Export PNG</strong> creates an image of the stage. <strong>Export PDF</strong> opens a print-ready browser view for PDF saving.</p>
+      </section>
+
+      <section class="manual-section" id="save-export" data-search="save storage indexeddb localstorage json export scene stage persistence privacy browser private mode">
+        <p class="section-kicker">12 · Persistence</p>
+        <h2>Save, storage, and export</h2>
+        <div class="feature-grid">
+          <article class="feature"><h3>Scene save</h3><p>Core scenes are stored in browser IndexedDB when available, with local storage as a fallback.</p></article>
+          <article class="feature"><h3>Stage save</h3><p>Stage Studio frames are persisted in local browser storage.</p></article>
+          <article class="feature"><h3>JSON export</h3><p>Use File → Export JSON to create a portable scene record.</p></article>
+          <article class="feature"><h3>Presentation export</h3><p>Stage Studio exports PNG and a browser print view for PDF.</p></article>
+        </div>
+        <div class="callout warning">
+          <strong>Browser storage can be cleared</strong>
+          Private browsing, browser cleanup, device migration, or manual site-data deletion can remove locally saved scenes. Export important work as JSON and keep your own backup.
+        </div>
+        <p>Do not place confidential or proprietary information in a shared-device scene. Saving is local, but exported files can be copied or shared like any other document.</p>
+      </section>
+
+      <section class="manual-section" id="shortcuts" data-search="keyboard shortcuts ctrl cmd new open save export undo redo duplicate delete zoom run stop escape arrows">
+        <p class="section-kicker">13 · Keyboard</p>
+        <h2>Keyboard shortcuts</h2>
+        <p>On macOS, use <kbd>Cmd</kbd> where the table shows <kbd>Ctrl</kbd>.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Action</th><th>Shortcut</th><th>Context</th></tr></thead>
+            <tbody>
+              <tr><td>New Scene</td><td><kbd>Ctrl</kbd> + <kbd>N</kbd></td><td>Main simulator</td></tr>
+              <tr><td>Open Scene</td><td><kbd>Ctrl</kbd> + <kbd>O</kbd></td><td>Main simulator</td></tr>
+              <tr><td>Save Scene</td><td><kbd>Ctrl</kbd> + <kbd>S</kbd></td><td>Main simulator</td></tr>
+              <tr><td>Save Scene As</td><td><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>S</kbd></td><td>Main simulator</td></tr>
+              <tr><td>Export JSON</td><td><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>E</kbd></td><td>Main simulator</td></tr>
+              <tr><td>Undo</td><td><kbd>Ctrl</kbd> + <kbd>Z</kbd></td><td>Main simulator or molecule history</td></tr>
+              <tr><td>Redo</td><td><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>Z</kbd></td><td>Main simulator or molecule history</td></tr>
+              <tr><td>Duplicate selection</td><td><kbd>Ctrl</kbd> + <kbd>D</kbd></td><td>Main simulator</td></tr>
+              <tr><td>Delete selection</td><td><kbd>Delete</kbd></td><td>Main simulator, molecule canvas, or Stage Studio</td></tr>
+              <tr><td>Zoom to fit</td><td><kbd>Ctrl</kbd> + <kbd>0</kbd></td><td>Main simulator</td></tr>
+              <tr><td>Run</td><td><kbd>Ctrl</kbd> + <kbd>Enter</kbd></td><td>Main simulator</td></tr>
+              <tr><td>Stop / close</td><td><kbd>Esc</kbd></td><td>Run or modal context</td></tr>
+              <tr><td>Nudge selected stage part</td><td>Arrow keys</td><td>Stage Studio</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="manual-section" id="prompt-instructions" data-search="chatgpt prompt instructions templates build scene diagnose warning explain outcome molecule name stage narration">
+        <p class="section-kicker">14 · Prompt manual</p>
+        <h2>ChatGPT prompt instructions</h2>
+        <p>These prompts help translate a scene into clearer text. Replace bracketed fields with the values visible in your simulator. Keep the prompt focused on explanation and interface planning—not real-world procedural execution.</p>
+        <div class="prompt-grid">
+          <article class="prompt-card">
+            <h3>Build a complete scene description</h3>
+            <p>Use this before entering values.</p>
+            <pre data-prompt>Act as a Purple Rabbit Chemistry Simulator scene planner. Organize the following educational reaction concept into these interface fields only: scene name, starting compound, transformation, product target, primary reagent, catalyst/base if relevant, solvent, atmosphere, temperature start/end, duration, pH start/target, glassware, and equipment. Identify missing information and assumptions. Do not provide a laboratory procedure.
+
+Concept: [paste concept]</pre>
+            <button class="copy-button" type="button">Copy prompt</button>
+          </article>
+          <article class="prompt-card">
+            <h3>Repair validation errors</h3>
+            <p>Use after Validate Scene.</p>
+            <pre data-prompt>Review this Purple Rabbit validation result as an interface diagnosis. Separate blocking errors from warnings. For each item, name the simulator field that should be reviewed and explain the modeling reason in plain language. Do not recommend physical operating steps.
+
+Scene values: [paste values]
+Validation messages: [paste messages]</pre>
+            <button class="copy-button" type="button">Copy prompt</button>
+          </article>
+          <article class="prompt-card">
+            <h3>Explain a run outcome</h3>
+            <p>Use after a run.</p>
+            <pre data-prompt>Explain this Purple Rabbit simulated outcome for a learner. Interpret status, conversion, selectivity, drift, family, medium, phase, issues, and lab-principle cards. Distinguish what the software modeled from what would require experimental evidence. End with one safe comparison to try inside the simulator by changing only one variable.
+
+Outcome: [paste outcome]</pre>
+            <button class="copy-button" type="button">Copy prompt</button>
+          </article>
+          <article class="prompt-card">
+            <h3>Review a generated IUPAC name</h3>
+            <p>Use after Use structure.</p>
+            <pre data-prompt>Review the Purple Rabbit molecule-canvas output as a naming check. Use the graph description, generated IUPAC name, warnings, confidence, assignments, and trace. Explain any ambiguity or missing stereochemical information. Do not invent bonds or stereochemistry that are absent.
+
+Canvas output: [paste output]</pre>
+            <button class="copy-button" type="button">Copy prompt</button>
+          </article>
+          <article class="prompt-card">
+            <h3>Create a Stage Studio narration</h3>
+            <p>Use for a presentation frame sequence.</p>
+            <pre data-prompt>Turn this Purple Rabbit scene deck into a concise educational narration. Write one short narration block per frame. Mention only parts visible in that frame, describe the modeled state change, and mark where Fade in, Reveal, or Emphasize cues should occur. Do not add experimental procedure details.
+
+Frames and visible parts: [paste frame list]</pre>
+            <button class="copy-button" type="button">Copy prompt</button>
+          </article>
+          <article class="prompt-card">
+            <h3>Compare two saved scenes</h3>
+            <p>Use for deliberate iteration.</p>
+            <pre data-prompt>Compare these two Purple Rabbit saved scenes. First list every changed field. Then explain which changes most likely affected status, conversion, selectivity, drift, warnings, and principle cards inside the model. Clearly label inference versus directly reported output.
+
+Baseline scene: [paste JSON]
+Revised scene: [paste JSON]</pre>
+            <button class="copy-button" type="button">Copy prompt</button>
+          </article>
+        </div>
+        <p id="copyStatus" role="status" aria-live="polite"></p>
+      </section>
+
+      <section class="manual-section" id="troubleshooting" data-search="troubleshooting blank workspace failed run no solvent warning stage export molecule invalid saved scene missing mobile scroll touch">
+        <p class="section-kicker">15 · Fixes</p>
+        <h2>Troubleshooting</h2>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Problem</th><th>Likely cause</th><th>What to check</th></tr></thead>
+            <tbody>
+              <tr><td>Workspace still looks blank</td><td>No scene part has been added.</td><td>Add a Starting Compound or use Drawing Tool.</td></tr>
+              <tr><td>Run returns Failed</td><td>Required data is missing or incompatible.</td><td>Validate and resolve every blocking error.</td></tr>
+              <tr><td>Solvent error</td><td>The scene is treated as liquid phase without solvent.</td><td>Add or correct the solvent field.</td></tr>
+              <tr><td>Redox error</td><td>The transformation and reagent descriptions do not agree.</td><td>Review both fields for a coherent redox scene.</td></tr>
+              <tr><td>Coupling error</td><td>No catalyst or base is present.</td><td>Add the relevant supporting component.</td></tr>
+              <tr><td>Many temperature warnings</td><td>The profile is extreme or changes sharply.</td><td>Verify start/end values and units in the scene.</td></tr>
+              <tr><td>Molecule will not apply</td><td>The graph is empty, disconnected, or exceeds valence.</td><td>Connect all atoms and correct bond order/valence.</td></tr>
+              <tr><td>Stage export looks empty</td><td>The current frame has no visible parts.</td><td>Add parts and verify the selected frame before export.</td></tr>
+              <tr><td>Saved scene disappeared</td><td>Browser storage was cleared or private mode ended.</td><td>Restore from an exported JSON backup when available.</td></tr>
+              <tr><td>Touch drag feels imprecise</td><td>A small screen or browser gesture may be competing.</td><td>Use portrait/landscape orientation that gives the workspace more room and zoom the page back to its default level.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <h3>Reset sequence</h3>
+        <ol>
+          <li>Save or export any work you need.</li>
+          <li>Use <strong>Clear Run</strong> if only the outcome panel is stale.</li>
+          <li>Use <strong>New Scene</strong> if the scene itself should be cleared.</li>
+          <li>Reload the page only after saving if the interface is unresponsive.</li>
+        </ol>
+      </section>
+
+      <section class="manual-section" id="module-map" data-search="module map files core loop lab principles iodine stage molecule iupac startup beta tests architecture source">
+        <p class="section-kicker">16 · Repository coverage</p>
+        <h2>Module map</h2>
+        <p>This manual was produced from the current user-facing modules and their test coverage.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Module</th><th>User-facing responsibility</th><th>Manual coverage</th></tr></thead>
+            <tbody>
+              <tr><td><code>index.html</code></td><td>Main application shell, menus, tabs, libraries, workspace</td><td>Interface map and shortcuts</td></tr>
+              <tr><td><code>core-loop.js</code></td><td>Scene normalization, validation, outcome, save behavior</td><td>Build, validate, run, outcomes, storage</td></tr>
+              <tr><td><code>lab-principles.js</code></td><td>Principle conclusions and explanations</td><td>Lab principles</td></tr>
+              <tr><td><code>molecule-draw.js</code></td><td>Atom/bond editor, history, graph validation</td><td>Molecule canvas</td></tr>
+              <tr><td><code>iupac-engine.js</code></td><td>Deterministic structure naming and confidence output</td><td>IUPAC identification</td></tr>
+              <tr><td><code>iodine-story.js</code></td><td>Guided iodination/reduction demonstration state</td><td>Iodination story workflow</td></tr>
+              <tr><td><code>stage-studio.js</code></td><td>Frames, labels, cues, arrows, PNG/PDF export</td><td>Stage Studio</td></tr>
+              <tr><td><code>startup-ui.js</code></td><td>Direct startup and removal of legacy global overlays</td><td>Purpose and startup behavior</td></tr>
+              <tr><td><code>beta-access.js</code></td><td>Legacy beta-request flow, currently disabled at startup</td><td>Current build note</td></tr>
+              <tr><td><code>tests/purple-*.test.mjs</code></td><td>Library, core loop, Stage Studio, and molecule tool expectations</td><td>Control inventory and feature verification</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="manual-section" id="glossary" data-search="glossary definitions scene substrate transformation product target conversion selectivity drift medium phase atmosphere frame cue">
+        <p class="section-kicker">17 · Reference</p>
+        <h2>Glossary</h2>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Term</th><th>Meaning in Purple Rabbit</th></tr></thead>
+            <tbody>
+              <tr><td>Scene</td><td>The complete saved set of compounds, reagents, conditions, environment, equipment, and current state.</td></tr>
+              <tr><td>Starting compound</td><td>The modeled substrate entering the transformation.</td></tr>
+              <tr><td>Transformation</td><td>The reaction family or intended chemical change described to the model.</td></tr>
+              <tr><td>Product target</td><td>The intended modeled result.</td></tr>
+              <tr><td>Conversion</td><td>Modeled fraction of starting material converted.</td></tr>
+              <tr><td>Selectivity</td><td>Modeled preference for the target outcome.</td></tr>
+              <tr><td>Drift</td><td>A composite model signal for how far conditions move from a stable or favorable scene.</td></tr>
+              <tr><td>Medium</td><td>The inferred solvent environment: aqueous, polar organic, non-polar organic, mixed, or undefined.</td></tr>
+              <tr><td>Phase</td><td>The inferred physical phase: liquid, solid, or gas.</td></tr>
+              <tr><td>Atmosphere</td><td>The stated gas environment, such as air or inert conditions.</td></tr>
+              <tr><td>Frame</td><td>One saved visual composition in Stage Studio.</td></tr>
+              <tr><td>Cue</td><td>A presentation marker such as Fade in, Reveal, or Emphasize.</td></tr>
+              <tr><td>Principle card</td><td>A conclusion/explanation pair generated from current workflow data.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="callout">
+          <strong>Manual maintenance rule</strong>
+          When a simulator control, validation rule, library category, or export behavior changes, update the relevant section and the module map together.
+        </div>
+      </section>
+
+      <div class="no-results" id="noResults" role="status">No manual sections match that search. Try a broader word.</div>
+    </main>
+  </div>
+
+  <footer>
+    Purple Rabbit Chemistry Simulation Manual · Manual v1.0 · Repository scan: August 5, 2026<br>
+    Furious Acid™ and the Purple Rabbit™ are trademarks of Furiousacid.com, © 2024.
+  </footer>
+
+  <script>
+    (function () {
+      var search = document.getElementById('manualSearch');
+      var sections = Array.from(document.querySelectorAll('.manual-section'));
+      var tocLinks = Array.from(document.querySelectorAll('#tocList a'));
+      var noResults = document.getElementById('noResults');
+      var copyStatus = document.getElementById('copyStatus');
+
+      function normalize(value) {
+        return String(value || '').toLowerCase().replace(/\s+/g, ' ').trim();
+      }
+
+      function filterManual() {
+        var query = normalize(search.value);
+        var visible = 0;
+        sections.forEach(function (section) {
+          var haystack = normalize(section.textContent + ' ' + (section.dataset.search || ''));
+          var match = !query || haystack.indexOf(query) !== -1;
+          section.hidden = !match;
+          if (match) visible += 1;
+        });
+        tocLinks.forEach(function (link) {
+          var target = document.querySelector(link.getAttribute('href'));
+          link.parentElement.hidden = Boolean(target && target.hidden);
+        });
+        noResults.classList.toggle('show', visible === 0);
+      }
+
+      search.addEventListener('input', filterManual);
+      search.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') {
+          search.value = '';
+          filterManual();
+          search.blur();
+        }
+      });
+
+      document.querySelectorAll('.copy-button').forEach(function (button) {
+        button.addEventListener('click', function () {
+          var prompt = button.parentElement.querySelector('[data-prompt]');
+          if (!prompt) return;
+          var text = prompt.textContent.trim();
+          if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(text).then(function () {
+              copyStatus.textContent = 'Prompt copied.';
+            }).catch(function () {
+              copyStatus.textContent = 'Select the prompt text and copy it manually.';
+            });
+          } else {
+            var range = document.createRange();
+            range.selectNodeContents(prompt);
+            var selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            copyStatus.textContent = 'Prompt selected. Use Copy on your device.';
+          }
+        });
+      });
+
+      if ('IntersectionObserver' in window) {
+        var observer = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (!entry.isIntersecting) return;
+            tocLinks.forEach(function (link) {
+              link.removeAttribute('aria-current');
+              if (link.getAttribute('href') === '#' + entry.target.id) {
+                link.setAttribute('aria-current', 'true');
+              }
+            });
+          });
+        }, { rootMargin: '-20% 0px -70% 0px' });
+        sections.forEach(function (section) { observer.observe(section); });
+      }
+    })();
+  </script>
+</body>
+</html>

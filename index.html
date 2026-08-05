@@ -31,6 +31,38 @@
         if (html.indexOf('B0HC8H1LR4') === -1 && html.indexOf(marker) !== -1) {
           html = html.replace(marker, marker + card);
         }
+
+        var simulatorLink = '<a href="/purple/" class="update-cta">Open the simulator</a>';
+        var manualLink = `
+    <a href="/purple/manual/" class="update-manual-link">Purple Rabbit Chemistry Simulation Manual</a>`;
+        var manualStyle = `<style id="purple-manual-link-style">
+          .update-strip .update-manual-link {
+            display: block;
+            width: fit-content;
+            max-width: 100%;
+            margin: 10px auto 0;
+            color: #6f00ff;
+            font-size: .72rem;
+            font-weight: 900;
+            letter-spacing: .045em;
+            line-height: 1.35;
+            text-align: center;
+            text-decoration: underline;
+            text-decoration-thickness: 2px;
+            text-underline-offset: 4px;
+          }
+          .update-strip .update-manual-link:hover,
+          .update-strip .update-manual-link:focus-visible {
+            color: #45108f;
+          }
+        </style>`;
+        if (html.indexOf('/purple/manual/') === -1 && html.indexOf(simulatorLink) !== -1) {
+          html = html.replace(simulatorLink, simulatorLink + manualLink);
+        }
+        if (html.indexOf('purple-manual-link-style') === -1 && html.indexOf('</head>') !== -1) {
+          html = html.replace('</head>', manualStyle + '\n</head>');
+        }
+
         document.open();
         document.write(html);
         document.close();
