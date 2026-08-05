@@ -15,6 +15,9 @@
         return response.text();
       })
       .then(function (html) {
+        html = html.replace(/<iframe\b[^>]*class=["'][^"']*\bpurple-progress-frame\b[^"']*["'][\s\S]*?<\/iframe>/i, '');
+        html = html.replace(/<a\b[^>]*class=["'][^"']*\blab-simulator-cta\b[^"']*["'][^>]*>[\s\S]*?<\/a>/i, '');
+
         var marker = '        <div class="book-grid">\n';
         var card = `          <article class="product-card book-card">
             <img class="product-image" src="https://images-na.ssl-images-amazon.com/images/P/B0HC8H1LR4.01.L.jpg" alt="Sintesi di farmaci Italian edition book cover" loading="lazy">
