@@ -9,14 +9,16 @@
 <body>
   <p>Loading Furious Acid…</p>
   <script>
-    fetch('home-original.html?v=20260801', { cache: 'no-store' })
+    fetch('home-original.html?v=20260805', { cache: 'no-store' })
       .then(function (response) {
         if (!response.ok) throw new Error('Homepage unavailable');
         return response.text();
       })
       .then(function (html) {
-        html = html.replace(/<iframe\b[^>]*class=["'][^"']*\bpurple-progress-frame\b[^"']*["'][\s\S]*?<\/iframe>/i, '');
-        html = html.replace(/<a\b[^>]*class=["'][^"']*\blab-simulator-cta\b[^"']*["'][^>]*>[\s\S]*?<\/a>/i, '');
+        html = html.replace(/<iframe\b[^>]*class=["'][^"']*\bpurple-progress-frame\b[^"']*["'][\s\S]*?<\/iframe>/gi, '');
+        html = html.replace(/<a\b[^>]*class=["'][^"']*\blab-simulator-cta\b[^"']*["'][^>]*>[\s\S]*?<\/a>/gi, '');
+        html = html.replace(/<a\b[^>]*href=["']\/purple(?:\/manual)?\/?["'][^>]*>[\s\S]*?<\/a>/gi, '');
+        html = html.replace(/<p class=["']update-copy["'][^>]*>[\s\S]*?<\/p>/i, '<p class="update-copy">Books, merch, community links, and current Furious Acid releases.</p>');
 
         var mobileCatalogStyle = `<style id="mobile-catalog-grid-style">
           @media (max-width: 900px) {
@@ -39,20 +41,14 @@
               max-width: none !important;
               flex: none !important;
             }
-            .product-image {
-              height: 118px !important;
-            }
-            .product-body {
-              padding: 7px !important;
-            }
+            .product-image { height: 118px !important; }
+            .product-body { padding: 7px !important; }
             .product-body h3 {
               min-height: 30px !important;
               font-size: 11.5px !important;
             }
             .product-detail,
-            .text-link {
-              font-size: 10px !important;
-            }
+            .text-link { font-size: 10px !important; }
             .product-links .button {
               min-height: 34px !important;
               padding: 5px !important;
@@ -61,12 +57,8 @@
           }
           @media (max-width: 360px) {
             .book-grid,
-            .merch-grid {
-              gap: 6px !important;
-            }
-            .product-image {
-              height: 105px !important;
-            }
+            .merch-grid { gap: 6px !important; }
+            .product-image { height: 105px !important; }
           }
         </style>`;
         if (html.indexOf('mobile-catalog-grid-style') === -1 && html.indexOf('</head>') !== -1) {
@@ -88,37 +80,6 @@
 `;
         if (html.indexOf('B0HC8H1LR4') === -1 && html.indexOf(marker) !== -1) {
           html = html.replace(marker, marker + card);
-        }
-
-        var simulatorLink = '<a href="/purple/" class="update-cta">Open the simulator</a>';
-        var manualLink = `
-    <a href="/purple/manual/" class="update-manual-link">Purple Rabbit Chemistry Simulation Manual</a>`;
-        var manualStyle = `<style id="purple-manual-link-style">
-          .update-strip .update-manual-link {
-            display: block;
-            width: fit-content;
-            max-width: 100%;
-            margin: 10px auto 0;
-            color: #6f00ff;
-            font-size: .72rem;
-            font-weight: 900;
-            letter-spacing: .045em;
-            line-height: 1.35;
-            text-align: center;
-            text-decoration: underline;
-            text-decoration-thickness: 2px;
-            text-underline-offset: 4px;
-          }
-          .update-strip .update-manual-link:hover,
-          .update-strip .update-manual-link:focus-visible {
-            color: #45108f;
-          }
-        </style>`;
-        if (html.indexOf('/purple/manual/') === -1 && html.indexOf(simulatorLink) !== -1) {
-          html = html.replace(simulatorLink, simulatorLink + manualLink);
-        }
-        if (html.indexOf('purple-manual-link-style') === -1 && html.indexOf('</head>') !== -1) {
-          html = html.replace('</head>', manualStyle + '\n</head>');
         }
 
         document.open();

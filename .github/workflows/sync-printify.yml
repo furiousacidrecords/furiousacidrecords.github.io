@@ -4,10 +4,8 @@ on:
   push:
     paths:
       - ".github/workflows/sync-printify.yml"
-      - "scripts/install-purple-progress.mjs"
-      - "scripts/install-reaction-calculator.mjs"
-      - "purple-progress.html"
-      - "purple-progress.json"
+      - "scripts/sync-printify.mjs"
+      - "merch-data.json"
   schedule:
     - cron: "23 * * * *"
   workflow_dispatch:
@@ -27,22 +25,17 @@ jobs:
         with:
           node-version: 20
 
-      - name: Install Purple chemistry components
-        run: |
-          node scripts/install-purple-progress.mjs
-          node scripts/install-reaction-calculator.mjs
-
       - name: Refresh Printify products
         run: node scripts/sync-printify.mjs
 
-      - name: Publish site updates
+      - name: Publish merch updates
         run: |
           if git diff --quiet; then
-            echo "Site data and chemistry components are already current."
+            echo "Merch data is already current."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add index.html merch-data.json calc/index.html calc/app.js calc/styles.css
-          git commit -m "Install Purple chemistry components"
+          git add merch-data.json
+          git commit -m "Refresh Printify merch"
           git push
