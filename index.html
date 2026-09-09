@@ -20,6 +20,9 @@
         html = html.replace(/<a\b[^>]*href=["']\/purple(?:\/manual)?\/?["'][^>]*>[\s\S]*?<\/a>/gi, '');
         html = html.replace(/<p class=["']update-copy["'][^>]*>[\s\S]*?<\/p>/i, '<p class="update-copy">Books, merch, community links, and current Furious Acid releases.</p>');
 
+        html = html.replace(/href=["']#forum["']/g, 'href="https://acid-chat-hub.lovable.app/forum" target="_blank" rel="noopener noreferrer"');
+        html = html.replace(/https:\/\/furious-acid-forum\.lovable\.app(?:\/)?/g, 'https://acid-chat-hub.lovable.app/forum');
+
         var mobileCatalogStyle = `<style id="mobile-catalog-grid-style">
           @media (max-width: 900px) {
             html, body {
