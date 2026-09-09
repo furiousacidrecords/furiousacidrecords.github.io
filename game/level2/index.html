@@ -1,0 +1,1394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>Acid Maze — Level 2</title>
+  <meta name="theme-color" content="#15122a">
+  <meta name="description" content="Acid Maze Level 2: mapped 3D maze, then Purple Run. Continues from Level 1.">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root {
+  --color-bg: #15122a;
+  --color-fg: #f4f0e8;
+  --color-muted: #9a9488;
+  --color-primary: #f5e000;
+  --color-accent: #b44cff;
+  --font-sans: "IBM Plex Sans", system-ui, sans-serif;
+  --font-display: "Press Start 2P", monospace;
+}
+html, body, #root { height:100%; margin:0; background:#15122a; color:#f4f0e8; font-family:var(--font-sans); }
+.acid-root { position:relative; width:100%; height:100dvh; overflow:hidden; touch-action:none; user-select:none; background:#15122a; }
+.acid-canvas { display:block; position:absolute; inset:0; width:100%!important; height:100%!important; touch-action:none; background:#15122a; z-index:0; }
+.acid-hud { position:absolute; inset:0; pointer-events:none; padding:calc(10px + env(safe-area-inset-top)) 12px; z-index:2; }
+.acid-chip { position:absolute; display:flex; flex-direction:column; gap:4px; padding:8px 10px; border-radius:10px; background:rgba(7,6,11,.72); border:1px solid rgba(244,240,232,.12); font-variant-numeric:tabular-nums; }
+.acid-zone { top:calc(10px + env(safe-area-inset-top)); left:10px; flex-direction:row; align-items:center; gap:8px; }
+.acid-zone-swatch { width:12px; height:12px; border-radius:50%; background:var(--zone,#7b2cff); }
+.acid-pips { position:absolute; top:calc(10px + env(safe-area-inset-top)); left:50%; transform:translateX(-50%); display:flex; gap:6px; }
+.acid-pips i { width:10px; height:10px; border-radius:50%; background:var(--z); opacity:.25; box-shadow:0 0 0 1px rgba(255,255,255,.15); }
+.acid-pips i.is-on { opacity:1; box-shadow:0 0 10px var(--z); }
+.acid-score { top:calc(10px + env(safe-area-inset-top)); right:10px; }
+.acid-time { top:calc(52px + env(safe-area-inset-top)); right:10px; }
+.acid-score-label { font-size:10px; color:var(--color-muted); }
+.acid-score-val,.acid-time-val { color:var(--color-primary); font-family:var(--font-display); font-size:12px; }
+.acid-toast { position:absolute; left:50%; top:22%; transform:translateX(-50%); padding:8px 14px; border-radius:999px; background:var(--color-primary); color:#15122a; font-weight:600; opacity:0; z-index:3; pointer-events:none; }
+.acid-toast.is-on { opacity:1; }
+.acid-touch { position:absolute; left:0; right:0; bottom:0; height:140px; pointer-events:none; display:none; padding:12px; align-items:flex-end; justify-content:space-between; z-index:3; }
+.acid-touch.is-on { display:flex; pointer-events:auto; }
+.acid-stick { width:112px; height:112px; border-radius:50%; border:2px solid rgba(180,76,255,.45); background:rgba(7,6,11,.35); position:relative; }
+.acid-stick i { position:absolute; left:50%; top:50%; width:44px; height:44px; margin:-22px 0 0 -22px; border-radius:50%; background:#b44cff; }
+.acid-drag-hint { position:absolute; left:50%; bottom:16px; transform:translateX(-50%); margin:0; font-size:12px; color:var(--color-muted); }
+.acid-overlay { position:absolute; inset:0; display:grid; place-items:center; background:rgba(21,18,42,.82); padding:20px; z-index:8; }
+.acid-overlay[hidden] { display:none!important; }
+.acid-title-inner,.acid-panel { width:min(420px,100%); display:flex; flex-direction:column; gap:12px; align-items:stretch; text-align:center; }
+.acid-kicker { margin:0; color:#b44cff; font-family:var(--font-display); font-size:10px; letter-spacing:.08em; }
+h1,h2 { margin:0; font-family:var(--font-display); font-size:22px; line-height:1.35; }
+.acid-lead,.acid-help,.acid-win-stats { margin:0; color:var(--color-muted); font-size:14px; line-height:1.5; }
+.acid-btn { appearance:none; border:0; min-height:52px; padding:16px 22px; border-radius:14px; background:var(--color-primary); color:#15122a; font-weight:600; font-size:17px; cursor:pointer; }
+.acid-btn-ghost { background:transparent; color:var(--color-fg); border:1px solid rgba(244,240,232,.18); }
+#stage-run { display:none!important; position:absolute; inset:0; background:#1a0a2e; z-index:5; }
+#stage-run.is-on { display:block!important; }
+#stage-run canvas.run-canvas { display:block; width:100%; height:100%; image-rendering:pixelated; }
+.run-hud { position:absolute; inset:0; pointer-events:none; padding:calc(10px + env(safe-area-inset-top)) 12px; z-index:6; }
+.run-chip { display:inline-flex; gap:8px; align-items:center; padding:8px 10px; border-radius:10px; background:rgba(7,6,11,.72); border:1px solid rgba(244,240,232,.12); }
+.run-pips { position:absolute; top:calc(10px + env(safe-area-inset-top)); right:12px; display:flex; gap:6px; }
+.run-pips i { width:12px; height:12px; border-radius:50%; background:var(--z); opacity:.25; }
+.run-pips i.on { opacity:1; box-shadow:0 0 10px var(--z); }
+.run-score { position:absolute; top:calc(10px + env(safe-area-inset-top)); left:12px; }
+.run-toast { position:absolute; left:50%; top:22%; transform:translateX(-50%); padding:8px 14px; border-radius:999px; background:#f5e000; color:#1a0a2e; font-weight:600; opacity:0; z-index:7; }
+.run-toast.on { opacity:1; }
+.run-touch { position:absolute; left:0; right:0; bottom:0; height:140px; pointer-events:none; display:none; padding:12px; align-items:flex-end; justify-content:space-between; z-index:7; }
+.run-touch.on { display:flex; pointer-events:auto; }
+.run-pad { width:120px; height:120px; border-radius:50%; border:2px solid rgba(180,76,255,.45); background:rgba(7,6,11,.35); position:relative; }
+.run-pad i { position:absolute; left:50%; top:50%; width:44px; height:44px; margin:-22px 0 0 -22px; border-radius:50%; background:#b44cff; }
+.run-jump { width:88px; height:88px; border-radius:50%; border:0; background:#f5e000; color:#1a0a2e; font-weight:700; margin-bottom:8px; }
+.run-banner { position:absolute; left:50%; top:10%; transform:translateX(-50%); font-family:var(--font-display); font-size:10px; color:#b44cff; z-index:7; pointer-events:none; }
+.acid-root[data-stage="run"] .acid-canvas,
+.acid-root[data-stage="run"] .acid-hud,
+.acid-root[data-stage="run"] .acid-touch,
+.acid-root[data-stage="run"] .acid-toast,
+.acid-root[data-stage="run"] .acid-minimap { visibility:hidden; pointer-events:none; }
+</style>
+</head>
+<body>
+  <div id="root" class="acid-mount acid-root" data-phase="title" data-stage="maze">
+    <canvas class="acid-canvas" aria-label="Acid Maze"></canvas>
+    <div class="acid-hud">
+      <div class="acid-chip acid-zone" style="--zone:#7b2cff;">
+        <span class="acid-zone-swatch"></span>
+        <span class="acid-zone-name">—</span>
+      </div>
+      <div class="acid-pips" aria-label="colors">
+        <i data-z="0" style="--z:#ff3b3b"></i>
+        <i data-z="1" style="--z:#f5e000"></i>
+        <i data-z="2" style="--z:#3d6bff"></i>
+        <i data-z="3" style="--z:#ff7a1a"></i>
+        <i data-z="4" style="--z:#2ee35a"></i>
+        <i data-z="5" style="--z:#b44cff"></i>
+      </div>
+      <div class="acid-chip acid-score"><span class="acid-score-label">SCORE</span><span class="acid-score-val">0</span></div>
+      <div class="acid-chip acid-time"><span class="acid-score-label">TIME</span><span class="acid-time-val">0:00</span></div>
+    </div>
+    <div class="acid-toast"></div>
+    <div class="acid-touch">
+      <div class="acid-stick" data-stick="move"><i></i></div>
+      <p class="acid-drag-hint">Level 2 · map · colors → Purple Run</p>
+    </div>
+
+    <div id="stage-run" aria-label="Purple Run">
+      <canvas class="run-canvas" id="runCanvas"></canvas>
+      <p class="run-banner">PURPLE RUN</p>
+      <div class="run-hud">
+        <div class="run-chip run-score"><span>SCORE</span> <strong id="runScore">0</strong> · <span id="runTime">0:00</span></div>
+        <div class="run-pips">
+          <i style="--z:#ff3b3b"></i><i style="--z:#f5e000"></i><i style="--z:#3d6bff"></i>
+          <i style="--z:#ff7a1a"></i><i style="--z:#2ee35a"></i><i style="--z:#b44cff"></i>
+        </div>
+      </div>
+      <div class="run-toast" id="runToast"></div>
+      <div class="run-touch" id="runTouch">
+        <div class="run-pad" id="runStick"><i></i></div>
+        <button type="button" class="run-jump" id="runJump">JUMP</button>
+      </div>
+    </div>
+
+    <div class="acid-overlay acid-title">
+      <div class="acid-title-inner">
+        <p class="acid-kicker">Furious Acid · Level 2</p>
+        <h1>Acid Maze</h1>
+        <p class="acid-lead">You cleared Level 1. Map’s on. Grab every color, then hop into Purple Run.</p>
+        <button type="button" class="acid-btn" data-act="start">Hop in</button>
+        <p class="acid-help">WASD · right-click drag to look · map</p>
+      </div>
+    </div>
+    <div class="acid-overlay acid-pause" hidden>
+      <div class="acid-panel">
+        <h2>Paused</h2>
+        <button type="button" class="acid-btn" data-act="resume">Resume</button>
+        <button type="button" class="acid-btn acid-btn-ghost" data-act="restart">Restart</button>
+        <a class="acid-btn acid-btn-ghost" href="../index.html" style="display:grid;place-items:center;text-decoration:none;">Level 1</a>
+      </div>
+    </div>
+    <div class="acid-overlay acid-win" hidden>
+      <div class="acid-panel">
+        <p class="acid-kicker">Cleared</p>
+        <h2>Out.</h2>
+        <p class="acid-win-stats"></p>
+        <button type="button" class="acid-btn" data-act="again">Again</button>
+        <a class="acid-btn acid-btn-ghost" href="https://furiousacid.com" style="display:grid;place-items:center;text-decoration:none;">furiousacid.com</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  
+  window.__ACID_CARRY = (function () {
+    const q = new URLSearchParams(location.search);
+    const score = Number(q.get('score') || sessionStorage.getItem('acid-l1-score') || 0) || 0;
+    const timeSec = Number(q.get('time') || sessionStorage.getItem('acid-l1-time') || 0) || 0;
+    return { score, timeSec };
+  })();
+
+  window.__acidWantStart = false;
+  document.addEventListener('DOMContentLoaded', () => {
+    const root = document.getElementById('root');
+    const title = root.querySelector('.acid-title');
+    const lead = root.querySelector('.acid-lead');
+    if (lead && window.__ACID_CARRY && window.__ACID_CARRY.score) {
+      lead.textContent = 'Level 1 score ' + window.__ACID_CARRY.score + ' travels with you. Map’s on. Grab every color, then hop into Purple Run.';
+    }
+    root.querySelectorAll('[data-act]').forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const act = btn.getAttribute('data-act');
+        if (act === 'start' || act === 'again' || act === 'restart') {
+          window.__acidWantStart = true;
+          if (title) title.hidden = true;
+          root.dataset.phase = 'play';
+          root.dataset.stage = 'maze';
+          if (window.AcidRun) window.AcidRun.stop();
+          if (window.AcidMaze && window.AcidMaze.startGame) window.AcidMaze.startGame();
+        }
+        if (act === 'resume' && window.AcidMaze) window.AcidMaze.resumeGame();
+      });
+    });
+  });
+  </script>
+  <script>
+/* Purple Run — Mario platformer (maze removed) */
+window.AcidRun = (() => {
+  const COLORS = ['#ff3b3b','#f5e000','#3d6bff','#ff7a1a','#2ee35a','#b44cff'];
+  const GRAV = 2200, JUMP = 780, MOVE = 320, AIR = 0.85, FRICTION = 0.78;
+  const TILE = 40;
+  const EXIT_URL = 'https://furiousacid.com';
+
+  let ready = false;
+  let stage, canvas, ctx;
+  let scoreEl, timeEl, toastEl, touchEl, stickEl, stickKnob, jumpBtn, pips;
+  let phase = 'idle';
+  let score = 0, timeSec = 0, toastT = 0, baseScore = 0;
+  let collected = new Set();
+  let keys = {};
+  let stickX = 0, stickId = null;
+  let jumpHeld = false, jumpBuffered = 0, coyote = 0;
+  let last = 0, camX = 0, worldW = 0, raf = 0;
+  let plats = [], orbs = [], flag = {}, player = {};
+  let rabbit = new Image(), rabbitReady = false;
+  rabbit.onload = () => { rabbitReady = true; };
+  rabbit.src = '../sprites/hero.png';
+  let onComplete = null;
+
+  function bind() {
+    if (ready) return true;
+    stage = document.getElementById('stage-run');
+    canvas = document.getElementById('runCanvas');
+    if (!stage || !canvas) return false;
+    ctx = canvas.getContext('2d', { alpha: false });
+    scoreEl = document.getElementById('runScore');
+    timeEl = document.getElementById('runTime');
+    toastEl = document.getElementById('runToast');
+    touchEl = document.getElementById('runTouch');
+    stickEl = document.getElementById('runStick');
+    stickKnob = stickEl.querySelector('i');
+    jumpBtn = document.getElementById('runJump');
+    pips = [...document.querySelectorAll('.run-pips i')];
+    wireInput();
+    addEventListener('resize', resize);
+    ready = true;
+    return true;
+  }
+
+  function resize() {
+    if (!canvas) return;
+    const dpr = Math.min(devicePixelRatio || 1, 2);
+    const w = innerWidth, h = innerHeight;
+    canvas.width = Math.floor(w * dpr);
+    canvas.height = Math.floor(h * dpr);
+    canvas.style.width = w + 'px';
+    canvas.style.height = h + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  function toast(t) {
+    toastEl.textContent = t;
+    toastEl.classList.add('on');
+    toastT = 1.3;
+  }
+
+  function formatTime(t) {
+    const s = Math.floor(t), m = Math.floor(s / 60), r = s % 60;
+    return m + ':' + String(r).padStart(2, '0');
+  }
+
+  function buildLevel() {
+    const rows = 14, cols = 90;
+    worldW = cols * TILE;
+    const groundY = rows * TILE;
+    plats = [];
+    const gaps = new Set([18,19,20, 34,35, 48,49,50, 62,63, 75,76]);
+    for (let x = 0; x < cols; x++) {
+      if (gaps.has(x)) continue;
+      plats.push({ x: x * TILE, y: groundY - TILE, w: TILE, h: TILE, type: 'ground' });
+    }
+    const floats = [
+      [6, 10, 4], [12, 8, 3], [22, 9, 4], [28, 7, 3], [38, 10, 5],
+      [44, 8, 3], [52, 6, 4], [58, 9, 3], [66, 7, 5], [72, 5, 3],
+      [80, 8, 4], [85, 6, 3], [15, 5, 2], [40, 5, 2], [70, 10, 2],
+    ];
+    for (const [cx, cy, len] of floats) {
+      for (let i = 0; i < len; i++) {
+        plats.push({ x: (cx + i) * TILE, y: cy * TILE, w: TILE, h: 16, type: 'plat' });
+      }
+    }
+    for (let i = 0; i < 4; i++) {
+      plats.push({ x: (30 + i) * TILE, y: 11 * TILE, w: TILE, h: TILE, type: 'brick' });
+      plats.push({ x: (55 + i) * TILE, y: 10 * TILE, w: TILE, h: TILE, type: 'brick' });
+    }
+    orbs = [];
+    const orbSpots = [
+      [7, 9, 0], [13, 7, 1], [23, 8, 2], [29, 6, 3], [39, 9, 4], [45, 7, 5],
+      [53, 5, 0], [59, 8, 1], [67, 6, 2], [73, 4, 3], [81, 7, 4], [86, 5, 5],
+      [16, 4, 2], [41, 4, 5], [71, 9, 1],
+    ];
+    orbSpots.forEach(([cx, cy, id], i) => {
+      orbs.push({
+        x: cx * TILE + TILE / 2, y: cy * TILE - 18, r: 12,
+        id: i < 6 ? i : id, got: false, bonus: i >= 6,
+      });
+    });
+    flag = { x: (cols - 3) * TILE, y: groundY - TILE - 96, w: 20, h: 96 };
+    player = { x: 2 * TILE, y: groundY - TILE - 110, w: 56, h: 104, vx: 0, vy: 0, onGround: false, facing: 1 };
+    camX = 0;
+  }
+
+  function aabb(a, b) {
+    return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
+  }
+  function solidAt(box, vx, vy) {
+    const moved = { x: box.x + vx, y: box.y + vy, w: box.w, h: box.h };
+    for (const p of plats) if (aabb(moved, p)) return p;
+    return null;
+  }
+
+  function collectOrb(o) {
+    if (o.got) return;
+    o.got = true;
+    score += o.bonus ? 10 : 25;
+    scoreEl.textContent = String(score);
+    if (!o.bonus) {
+      collected.add(o.id);
+      pips[o.id]?.classList.add('on');
+      toast('+25');
+    } else toast('+10');
+  }
+
+  function update(dt) {
+    if (phase !== 'play') return;
+    timeSec += dt;
+    timeEl.textContent = formatTime(timeSec);
+    if (toastT > 0) { toastT -= dt; if (toastT <= 0) toastEl.classList.remove('on'); }
+    if (jumpBuffered > 0) jumpBuffered -= dt;
+    if (coyote > 0) coyote -= dt;
+
+    let inputX = stickX;
+    if (keys.KeyA || keys.ArrowLeft) inputX -= 1;
+    if (keys.KeyD || keys.ArrowRight) inputX += 1;
+    inputX = Math.max(-1, Math.min(1, inputX));
+    if (inputX) player.facing = inputX > 0 ? 1 : -1;
+
+    const accel = player.onGround ? MOVE * 3.2 : MOVE * 2.2 * AIR;
+    if (inputX) {
+      player.vx += inputX * accel * dt;
+      const cap = MOVE * ((keys.ShiftLeft || keys.ShiftRight) ? 1.35 : 1);
+      player.vx = Math.max(-cap, Math.min(cap, player.vx));
+    } else if (player.onGround) {
+      player.vx *= Math.pow(FRICTION, dt * 60);
+      if (Math.abs(player.vx) < 8) player.vx = 0;
+    } else player.vx *= Math.pow(0.98, dt * 60);
+
+    const wantJump = jumpHeld || keys.Space || keys.ArrowUp || keys.KeyW || jumpBuffered > 0;
+    if (wantJump && (player.onGround || coyote > 0)) {
+      player.vy = -JUMP; player.onGround = false; coyote = 0; jumpBuffered = 0; jumpHeld = false;
+    }
+
+    player.vy += GRAV * dt;
+    if (player.vy > 1400) player.vy = 1400;
+
+    const stepX = player.vx * dt;
+    if (!solidAt(player, stepX, 0)) player.x += stepX;
+    else {
+      const hit = solidAt(player, stepX, 0);
+      if (hit) player.x = stepX > 0 ? hit.x - player.w - 0.01 : hit.x + hit.w + 0.01;
+      player.vx = 0;
+    }
+
+    const stepY = player.vy * dt;
+    const wasOn = player.onGround;
+    player.onGround = false;
+    if (!solidAt(player, 0, stepY)) player.y += stepY;
+    else {
+      const hit = solidAt(player, 0, stepY);
+      if (hit) {
+        if (stepY > 0) { player.y = hit.y - player.h - 0.01; player.onGround = true; player.vy = 0; }
+        else { player.y = hit.y + hit.h + 0.01; player.vy = 40; }
+      }
+    }
+    if (player.onGround) coyote = 0.1;
+    else if (wasOn) coyote = 0.09;
+
+    if (player.x < 0) { player.x = 0; player.vx = 0; }
+    if (player.x > worldW - player.w) player.x = worldW - player.w;
+    if (player.y > 14 * TILE + 200) {
+      player.x = Math.max(40, camX + 80); player.y = 0; player.vx = 0; player.vy = 0;
+      toast('Fell'); score = Math.max(baseScore, score - 5); scoreEl.textContent = String(score);
+    }
+
+    for (const o of orbs) {
+      if (o.got) continue;
+      const dx = (player.x + player.w / 2) - o.x;
+      const dy = (player.y + player.h / 2) - o.y;
+      if (dx * dx + dy * dy < (o.r + 18) ** 2) collectOrb(o);
+    }
+
+    if (collected.size === 6 && aabb(player, flag)) {
+      phase = 'win';
+      toast('Flag!');
+      const root = document.getElementById('root');
+      const win = root?.querySelector('.acid-win');
+      const winStats = root?.querySelector('.acid-win-stats');
+      if (winStats) winStats.textContent = `Score ${score} · Time ${formatTime(timeSec)}`;
+      if (win) win.hidden = false;
+      if (root) root.dataset.phase = 'win';
+      setTimeout(() => { location.href = EXIT_URL; }, 1400);
+      if (typeof onComplete === 'function') onComplete({ score, timeSec });
+    }
+
+    const viewW = innerWidth;
+    const target = player.x + player.w / 2 - viewW * 0.35;
+    camX += (target - camX) * Math.min(1, 6 * dt);
+    camX = Math.max(0, Math.min(worldW - viewW, camX));
+  }
+
+  function draw() {
+    if (!ctx) return;
+    const W = innerWidth, H = innerHeight;
+    const g = ctx.createLinearGradient(0, 0, 0, H);
+    g.addColorStop(0, '#2a1050'); g.addColorStop(0.55, '#1a0a2e'); g.addColorStop(1, '#0d0618');
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = 'rgba(255,255,255,0.35)';
+    for (let i = 0; i < 40; i++) {
+      const sx = ((i * 97 + camX * 0.2) % W + W) % W;
+      ctx.fillRect(sx, (i * 53) % (H * 0.55), 2, 2);
+    }
+    ctx.save(); ctx.translate(-camX, 0);
+    for (const p of plats) {
+      if (p.x + p.w < camX - 40 || p.x > camX + W + 40) continue;
+      if (p.type === 'ground') {
+        ctx.fillStyle = '#3a1a66'; ctx.fillRect(p.x, p.y, p.w, p.h);
+        ctx.fillStyle = '#b44cff'; ctx.fillRect(p.x, p.y, p.w, 4);
+      } else if (p.type === 'brick') {
+        ctx.fillStyle = '#6b2abf'; ctx.fillRect(p.x, p.y, p.w - 1, p.h - 1);
+      } else {
+        ctx.fillStyle = '#f5e000'; ctx.fillRect(p.x, p.y, p.w, p.h);
+        ctx.fillStyle = '#b44cff'; ctx.fillRect(p.x, p.y + p.h - 4, p.w, 4);
+      }
+    }
+    ctx.fillStyle = '#888'; ctx.fillRect(flag.x + 8, flag.y, 4, flag.h);
+    ctx.fillStyle = collected.size === 6 ? '#f5e000' : '#555566';
+    ctx.beginPath();
+    ctx.moveTo(flag.x + 12, flag.y);
+    ctx.lineTo(flag.x + 12 + 36, flag.y + 14);
+    ctx.lineTo(flag.x + 12, flag.y + 28);
+    ctx.closePath(); ctx.fill();
+    for (const o of orbs) {
+      if (o.got) continue;
+      const pulse = 1 + Math.sin(performance.now() / 200 + o.x) * 0.08;
+      ctx.fillStyle = COLORS[o.id];
+      ctx.beginPath(); ctx.arc(o.x, o.y, o.r * pulse, 0, Math.PI * 2); ctx.fill();
+    }
+    if (rabbitReady) {
+      ctx.save();
+      ctx.translate(player.x + player.w / 2, player.y + player.h);
+      ctx.scale(player.facing, 1);
+      ctx.imageSmoothingEnabled = true;
+      const dw = player.w * 1.35, dh = player.h * 1.25;
+      ctx.drawImage(rabbit, -dw / 2, -dh, dw, dh);
+      ctx.restore();
+    } else {
+      ctx.fillStyle = '#b44cff'; ctx.fillRect(player.x, player.y, player.w, player.h);
+    }
+    ctx.restore();
+    ctx.fillStyle = collected.size < 6 ? 'rgba(244,240,232,0.55)' : '#f5e000';
+    ctx.font = '12px IBM Plex Sans, sans-serif';
+    ctx.fillText(collected.size < 6 ? 'Grab all 6 colors, then the flag' : 'Flag unlocked — run right!', 14, H - 18);
+  }
+
+  function frame(now) {
+    if (phase === 'idle') return;
+    const dt = Math.min(0.033, (now - last) / 1000);
+    last = now;
+    update(dt); draw();
+    raf = requestAnimationFrame(frame);
+  }
+
+  function setStick(x) {
+    stickX = x;
+    if (stickKnob) stickKnob.style.transform = `translate(${x * 28}px, 0)`;
+  }
+
+  function wireInput() {
+    stickEl.addEventListener('pointerdown', (e) => {
+      stickId = e.pointerId; stickEl.setPointerCapture(e.pointerId);
+      const r = stickEl.getBoundingClientRect();
+      setStick(Math.max(-1, Math.min(1, (e.clientX - r.left) / r.width * 2 - 1)));
+    });
+    stickEl.addEventListener('pointermove', (e) => {
+      if (e.pointerId !== stickId) return;
+      const r = stickEl.getBoundingClientRect();
+      setStick(Math.max(-1, Math.min(1, (e.clientX - r.left) / r.width * 2 - 1)));
+    });
+    const end = (e) => { if (e.pointerId === stickId) { stickId = null; setStick(0); } };
+    stickEl.addEventListener('pointerup', end);
+    stickEl.addEventListener('pointercancel', end);
+    jumpBtn.addEventListener('pointerdown', (e) => { e.preventDefault(); jumpHeld = true; jumpBuffered = 0.14; });
+    jumpBtn.addEventListener('pointerup', () => { jumpHeld = false; });
+    addEventListener('keydown', (e) => {
+      if (e.code === 'Escape') {
+        const pause = document.getElementById('pause');
+        const root = document.getElementById('root');
+        if (phase === 'play') {
+          phase = 'pause';
+          if (pause) pause.hidden = false;
+          if (root) root.dataset.phase = 'pause';
+        } else if (phase === 'pause') {
+          phase = 'play';
+          if (pause) pause.hidden = true;
+          if (root) root.dataset.phase = 'play';
+          last = performance.now();
+        }
+        return;
+      }
+      if (phase !== 'play') return;
+      keys[e.code] = true;
+      if (e.code === 'Space' || e.code === 'ArrowUp' || e.code === 'KeyW') {
+        e.preventDefault(); jumpBuffered = 0.14;
+      }
+    });
+    addEventListener('keyup', (e) => { keys[e.code] = false; });
+  }
+
+  function start(opts = {}) {
+    if (!bind()) return false;
+    cancelAnimationFrame(raf);
+    baseScore = opts.score || 0;
+    score = baseScore;
+    timeSec = opts.timeSec || 0;
+    onComplete = opts.onComplete || null;
+    collected.clear();
+    pips.forEach((el) => el.classList.remove('on'));
+    scoreEl.textContent = String(score);
+    timeEl.textContent = formatTime(timeSec);
+    buildLevel();
+    resize();
+    stage.classList.add('is-on');
+    const root = document.getElementById('root');
+    if (root) {
+      root.dataset.stage = 'run';
+      root.dataset.phase = 'play';
+      const tw = root.querySelector('.acid-title');
+      const pw = root.querySelector('.acid-pause');
+      const ww = root.querySelector('.acid-win');
+      if (tw) tw.hidden = true;
+      if (pw) pw.hidden = true;
+      if (ww) ww.hidden = true;
+    }
+    const touch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    touchEl.classList.toggle('on', touch);
+    phase = 'play';
+    last = performance.now();
+    toast('Jump!');
+    raf = requestAnimationFrame(frame);
+    return true;
+  }
+
+  function stop() {
+    phase = 'idle';
+    cancelAnimationFrame(raf);
+    if (stage) stage.classList.remove('is-on');
+  }
+
+  return { start, stop };
+})();
+
+  </script>
+  <script type="module">
+/* Acid Maze — Three.js dark maze, eye-level behind rabbit. Colors → Mario. */
+import * as THREE from 'https://unpkg.com/three@0.186.0/build/three.module.js';
+
+const ZONES = [
+  { name: 'Red', hex: '#ff3b3b', wall: 0xff8a9a },
+  { name: 'Yellow', hex: '#f5e000', wall: 0xffe566 },
+  { name: 'Blue', hex: '#3d6bff', wall: 0x7aa0ff },
+  { name: 'Orange', hex: '#ff7a1a', wall: 0xffb06a },
+  { name: 'Green', hex: '#2ee35a', wall: 0x7aee9a },
+  { name: 'Purple', hex: '#b44cff', wall: 0xd09aff },
+];
+
+const root = document.getElementById('root');
+const canvas = root.querySelector('.acid-canvas');
+const zoneEl = root.querySelector('.acid-zone');
+const zoneNameEl = root.querySelector('.acid-zone-name');
+const zoneSwatchEl = root.querySelector('.acid-zone-swatch');
+const pips = [...root.querySelectorAll('.acid-pips i')];
+const scoreEl = root.querySelector('.acid-score-val');
+const timeEl = root.querySelector('.acid-time-val');
+const toastEl = root.querySelector('.acid-toast');
+const touchEl = root.querySelector('.acid-touch');
+const stickEl = root.querySelector('.acid-stick');
+const stickKnob = stickEl.querySelector('i');
+const titleOverlay = root.querySelector('.acid-title');
+const pauseOverlay = root.querySelector('.acid-pause');
+const winOverlay = root.querySelector('.acid-win');
+const winStats = root.querySelector('.acid-win-stats');
+
+const COLS = 23, ROWS = 17;
+const MOVE = 3.4, STRAFE = 2.8, TURN = 2.8, LOOK = 0.012, SPRINT = 1.55;
+const ACCEL = 10, DECEL = 14;
+const EXIT_URL = 'https://furiousacid.com';
+const CELL = 1;
+const CAM_DIST = 1.65, CAM_HEIGHT = 0.78, CAM_LOOK_Y = 0.68;
+const PLAYER_H = 0.95;
+
+let phase = 'title';
+let score = 0, timeSec = 0, toastT = 0;
+let collected = new Set();
+let grid = [];
+let zoneOf = [];
+let secretMask = []; // 1 = false wall (looks solid, walkable)
+let px = 1.5, py = 1.5, yaw = 0;
+let keys = {};
+let stickX = 0, stickY = 0, stickId = null;
+let dragId = null, dragLastX = 0, dragLastY = 0, pitch = 0;
+let velX = 0, velZ = 0;
+let last = performance.now();
+let tunnelOpen = false;
+let handedOff = false;
+let exitCX = 1, exitCY = 1;
+let tunnelCells = [];
+let tunnelSet = new Set(); // [{x,y}, ...] path into dark tunnel
+let tunnelEnd = null; // {x,y} far end cell
+let wallGroup = null;
+let floorGroup = null;
+let cloudGroup = null;
+let tunnelGroup = null;
+let rabbitMesh = null;
+let npcGroup = null;
+let npcSprites = [];
+let rabbitTex = null;
+let rabbitHud = null;
+let minimapCtx = null;
+let minimapCanvas = null;
+let skyMat = null;
+
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
+renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.0;
+renderer.setClearColor(0x15122a, 1);
+
+const scene = new THREE.Scene();
+scene.fog = new THREE.Fog(0x15122a, 18, 48);
+scene.background = new THREE.Color(0x15122a);
+
+const camera = new THREE.PerspectiveCamera(50, 1, 0.05, 80);
+
+const hemi = new THREE.HemisphereLight(0x8a9acc, 0x1a1528, 0.55);
+scene.add(hemi);
+const amb = new THREE.AmbientLight(0xb0b8d8, 0.5);
+scene.add(amb);
+const sun = new THREE.DirectionalLight(0xffe8c8, 0.65);
+sun.position.set(8, 16, 6);
+scene.add(sun);
+const lamp = new THREE.PointLight(0xfff2d0, 1.05, 11, 2);
+scene.add(lamp);
+
+function loadRabbitTexture() {
+  const loader = new THREE.TextureLoader();
+  rabbitTex = loader.load('../sprites/hero.png', (tex) => {
+    tex.colorSpace = THREE.SRGBColorSpace;
+    tex.magFilter = THREE.NearestFilter;
+    tex.minFilter = THREE.NearestFilter;
+    if (rabbitMesh) rabbitMesh.material.map = tex;
+    rabbitMesh?.material && (rabbitMesh.material.needsUpdate = true);
+  });
+  rabbitTex.colorSpace = THREE.SRGBColorSpace;
+  rabbitTex.magFilter = THREE.NearestFilter;
+  rabbitTex.minFilter = THREE.NearestFilter;
+}
+
+function ensureHudExtras() {
+  if (!rabbitHud) {
+    rabbitHud = document.createElement('img');
+    rabbitHud.src = '../sprites/hero.png';
+    rabbitHud.alt = '';
+    rabbitHud.className = 'acid-rabbit-hud';
+    rabbitHud.style.cssText = 'position:absolute;right:8px;bottom:8px;height:min(22vh,180px);width:auto;pointer-events:none;image-rendering:pixelated;z-index:3;opacity:0.92;';
+    root.appendChild(rabbitHud);
+  }
+  if (!minimapCanvas) {
+    minimapCanvas = document.createElement('canvas');
+    const mapW = COLS * 5;
+    const mapH = ROWS * 5;
+    minimapCanvas.width = mapW;
+    minimapCanvas.height = mapH;
+    minimapCanvas.className = 'acid-minimap';
+    minimapCanvas.style.cssText = 'position:absolute;left:12px;bottom:12px;width:' + mapW + 'px;height:' + mapH + 'px;image-rendering:pixelated;pointer-events:none;z-index:4;opacity:0.95;border-radius:6px;border:2px solid rgba(245,224,0,0.45);background:rgba(7,6,11,0.75);';
+    root.appendChild(minimapCanvas);
+    minimapCtx = minimapCanvas.getContext('2d');
+  }
+}
+
+function ensureRabbit() {
+  if (rabbitMesh) return;
+  const mat = new THREE.SpriteMaterial({
+    map: rabbitTex || null,
+    transparent: true,
+    alphaTest: 0.15,
+    depthWrite: false,
+  });
+  rabbitMesh = new THREE.Sprite(mat);
+  rabbitMesh.scale.set(0.95, PLAYER_H * 1.35, 1);
+  scene.add(rabbitMesh);
+}
+
+function setPhase(p) {
+  phase = p;
+  root.dataset.phase = p;
+  titleOverlay.hidden = p !== 'title';
+  pauseOverlay.hidden = p !== 'pause';
+  winOverlay.hidden = p !== 'win';
+  const touch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+  touchEl.classList.toggle('is-on', p === 'play' && touch);
+  if (rabbitHud) rabbitHud.style.visibility = (p === 'title' || root.dataset.stage === 'run') ? 'hidden' : 'visible';
+  if (minimapCanvas) minimapCanvas.style.visibility = (p === 'play' && root.dataset.stage !== 'run') ? 'visible' : 'hidden';
+}
+
+function resize() {
+  const w = Math.max(1, root.clientWidth || innerWidth);
+  const h = Math.max(1, root.clientHeight || innerHeight);
+  renderer.setSize(w, h, false);
+  canvas.style.width = w + 'px';
+  canvas.style.height = h + 'px';
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+  renderer.setViewport(0, 0, w, h);
+  renderer.setScissor(0, 0, w, h);
+}
+addEventListener('resize', resize);
+resize();
+loadRabbitTexture();
+ensureHudExtras();
+ensureRabbit();
+
+function i(x, y) { return y * COLS + x; }
+function inb(x, y) { return x >= 0 && y >= 0 && x < COLS && y < ROWS; }
+
+function carveMaze() {
+  grid = Array(COLS * ROWS).fill(1);
+  secretMask = Array(COLS * ROWS).fill(0);
+  const stack = [[1, 1]];
+  grid[i(1, 1)] = 0;
+  const dirs = [[2, 0], [-2, 0], [0, 2], [0, -2]];
+  while (stack.length) {
+    const [cx, cy] = stack[stack.length - 1];
+    const opts = dirs
+      .map(([dx, dy]) => [cx + dx, cy + dy, dx, dy])
+      .filter(([nx, ny]) => inb(nx, ny) && grid[i(nx, ny)] === 1);
+    if (!opts.length) { stack.pop(); continue; }
+    const [nx, ny, dx, dy] = opts[(Math.random() * opts.length) | 0];
+    grid[i(cx + (dx / 2), cy + (dy / 2))] = 0;
+    grid[i(nx, ny)] = 0;
+    stack.push([nx, ny]);
+  }
+  for (let y = 1; y < ROWS - 1; y++) {
+    for (let x = 1; x < COLS - 1; x++) {
+      if (Math.random() < 0.07) grid[i(x, y)] = 0;
+    }
+  }
+  grid[i(1, 1)] = 0;
+
+  // Secret paths: false walls / hidden gaps (walkable, look solid)
+  addSecretPaths();
+
+  const dist = Array(COLS * ROWS).fill(-1);
+  const q = [[1, 1]];
+  dist[i(1, 1)] = 0;
+  let far = [1, 1];
+  while (q.length) {
+    const [x, y] = q.shift();
+    if (dist[i(x, y)] > dist[i(far[0], far[1])]) far = [x, y];
+    for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+      const nx = x + dx, ny = y + dy;
+      if (!inb(nx, ny) || grid[i(nx, ny)] !== 0 || dist[i(nx, ny)] >= 0) continue;
+      dist[i(nx, ny)] = dist[i(x, y)] + 1;
+      q.push([nx, ny]);
+    }
+  }
+  exitCX = far[0]; exitCY = far[1];
+  // Mark exit as special open cell
+  grid[i(exitCX, exitCY)] = 0;
+
+  zoneOf = Array(COLS * ROWS).fill(-1);
+  let maxD = 1;
+  for (const d of dist) if (d > maxD) maxD = d;
+  for (let y = 0; y < ROWS; y++) {
+    for (let x = 0; x < COLS; x++) {
+      const d = dist[i(x, y)];
+      if (d >= 0 && grid[i(x, y)] !== 1) {
+        zoneOf[i(x, y)] = Math.min(5, Math.floor((d / maxD) * 6));
+      }
+    }
+  }
+
+  // Tunnel removed
+  buildTunnelLayout();
+}
+
+function addSecretPaths() {
+  // Place several false-wall shortcuts: wall cells between open corridors that become walkable secrets
+  const candidates = [];
+  for (let y = 2; y < ROWS - 2; y++) {
+    for (let x = 2; x < COLS - 2; x++) {
+      if (grid[i(x, y)] !== 1) continue;
+      const openL = grid[i(x - 1, y)] === 0;
+      const openR = grid[i(x + 1, y)] === 0;
+      const openU = grid[i(x, y - 1)] === 0;
+      const openD = grid[i(x, y + 1)] === 0;
+      if ((openL && openR && !openU && !openD) || (openU && openD && !openL && !openR)) {
+        candidates.push([x, y]);
+      }
+    }
+  }
+  // Shuffle lightly
+  for (let k = candidates.length - 1; k > 0; k--) {
+    const j = (Math.random() * (k + 1)) | 0;
+    [candidates[k], candidates[j]] = [candidates[j], candidates[k]];
+  }
+  const count = Math.min(6, Math.max(3, (candidates.length / 4) | 0));
+  for (let n = 0; n < count && n < candidates.length; n++) {
+    const [x, y] = candidates[n];
+    grid[i(x, y)] = 0; // walkable
+    secretMask[i(x, y)] = 1; // still looks like a wall from some angles
+  }
+  // Also carve a couple of thin alternate corridors (hidden gaps)
+  let extras = 0;
+  for (let attempt = 0; attempt < 40 && extras < 3; attempt++) {
+    const x = 2 + ((Math.random() * (COLS - 4)) | 0);
+    const y = 2 + ((Math.random() * (ROWS - 4)) | 0);
+    if (grid[i(x, y)] !== 1) continue;
+    if (grid[i(x - 1, y)] === 0 || grid[i(x + 1, y)] === 0 || grid[i(x, y - 1)] === 0 || grid[i(x, y + 1)] === 0) {
+      grid[i(x, y)] = 0;
+      secretMask[i(x, y)] = 1;
+      extras++;
+    }
+  }
+}
+
+function buildTunnelLayout() {
+  tunnelCells = [];
+  tunnelSet = new Set();
+  tunnelEnd = null;
+}
+
+function wallColorAt(x, y) {
+  for (const [ax, ay] of [[1, 0], [-1, 0], [0, 1], [0, -1], [0, 0]]) {
+    const nx = x + ax, ny = y + ay;
+    if (inb(nx, ny) && zoneOf[i(nx, ny)] >= 0) return ZONES[zoneOf[i(nx, ny)]].wall;
+  }
+  return 0xc8e6ff;
+}
+
+function disposeGroup(g) {
+  if (!g) return;
+  scene.remove(g);
+  g.traverse((o) => {
+    if (o.geometry) o.geometry.dispose();
+    if (o.material) {
+      if (Array.isArray(o.material)) o.material.forEach((m) => m.dispose());
+      else o.material.dispose();
+    }
+  });
+}
+
+function rebuildWorld() {
+  disposeGroup(wallGroup);
+  disposeGroup(floorGroup);
+  disposeGroup(cloudGroup);
+  disposeGroup(tunnelGroup);
+  disposeGroup(npcGroup);
+  wallGroup = new THREE.Group();
+  floorGroup = new THREE.Group();
+  cloudGroup = new THREE.Group();
+  tunnelGroup = new THREE.Group();
+  npcGroup = new THREE.Group();
+  npcSprites = [];
+  tunnelGroup.visible = true;
+
+  const wallGeo = new THREE.BoxGeometry(CELL, 1.9, CELL);
+  const floorGeo = new THREE.BoxGeometry(CELL * 0.98, 0.05, CELL * 0.98);
+  const secretGeo = new THREE.BoxGeometry(CELL, 1.9, CELL);
+
+  for (let y = 0; y < ROWS; y++) {
+    for (let x = 0; x < COLS; x++) {
+      const cell = grid[i(x, y)];
+      const wx = x * CELL + 0.5;
+      const wz = y * CELL + 0.5;
+      const isSecret = secretMask[i(x, y)] === 1;
+
+      if (cell === 1) {
+        const mat = new THREE.MeshStandardMaterial({
+          color: wallColorAt(x, y),
+          roughness: 0.88,
+          metalness: 0.06,
+          emissive: wallColorAt(x, y),
+          emissiveIntensity: 0.04,
+          transparent: false,
+          depthWrite: true,
+          side: THREE.FrontSide,
+        });
+        const mesh = new THREE.Mesh(wallGeo, mat);
+        mesh.position.set(wx, 0.95, wz);
+        wallGroup.add(mesh);
+      } else if (isSecret) {
+        // Secret: looks like a solid wall (no peeking), still walkable
+        const mat = new THREE.MeshStandardMaterial({
+          color: wallColorAt(x, y),
+          roughness: 0.85,
+          metalness: 0.08,
+          transparent: false,
+          opacity: 1,
+          depthWrite: true,
+        });
+        const mesh = new THREE.Mesh(secretGeo, mat);
+        mesh.position.set(wx, 0.95, wz);
+        mesh.userData.secret = true;
+        wallGroup.add(mesh);
+      }
+
+      if (cell !== 1 || isSecret) {
+        const zi = zoneOf[i(x, y)];
+        const col = zi >= 0 ? new THREE.Color(ZONES[zi].hex) : new THREE.Color(0x2a2840);
+        const fmat = new THREE.MeshStandardMaterial({
+          color: col,
+          roughness: 0.9,
+          metalness: 0.02,
+          emissive: 0x000000,
+          emissiveIntensity: 0,
+        });
+        fmat.color.multiplyScalar(0.75);
+        const floor = new THREE.Mesh(floorGeo, fmat);
+        floor.position.set(wx, 0.025, wz);
+        floorGroup.add(floor);
+      }
+    }
+  }
+
+  // No sky clouds
+
+  // Dark ground under maze
+  const groundGeo = new THREE.PlaneGeometry(COLS * 3, ROWS * 3);
+  const groundMat = new THREE.MeshStandardMaterial({
+    color: 0x1a1830,
+    roughness: 1,
+    metalness: 0,
+  });
+  const ground = new THREE.Mesh(groundGeo, groundMat);
+  ground.rotation.x = -Math.PI / 2;
+  ground.position.set(COLS * 0.5, -0.02, ROWS * 0.5);
+  floorGroup.add(ground);
+
+  // Exit portal marker
+  buildTunnelMeshes();
+
+  scene.add(wallGroup);
+  scene.add(floorGroup);
+  scene.add(cloudGroup);
+  scene.add(tunnelGroup);
+  placeSpawnNpcs();
+  scene.add(npcGroup);
+}
+
+
+function placeSpawnNpcs() {
+  // Five cameos near spawn, spaced well apart from each other
+  const paths = [
+    'npc-1.png',
+    'npc-2.png',
+    'npc-3.png',
+    'npc-4.png',
+    'npc-5.png',
+  ];
+  const candidates = [];
+  for (let y = 1; y < ROWS - 1; y++) {
+    for (let x = 1; x < COLS - 1; x++) {
+      if (grid[i(x, y)] !== 0) continue;
+      if (secretMask[i(x, y)]) continue;
+      const dist = Math.hypot(x - 1, y - 1);
+      // still near-ish spawn, but allow a wider ring
+      if (dist < 2.5 || dist > 14) continue;
+      candidates.push({ x, y, dist });
+    }
+  }
+  // shuffle
+  for (let i = candidates.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [candidates[i], candidates[j]] = [candidates[j], candidates[i]];
+  }
+  const picks = [];
+  const MIN_SEP = 4.8; // keep characters spaced out
+  for (const c of candidates) {
+    if (picks.length >= 5) break;
+    if (picks.every((p) => Math.hypot(p.x - c.x, p.y - c.y) >= MIN_SEP)) {
+      picks.push(c);
+    }
+  }
+  // fallback spread corners if maze too packed
+  const fallbacks = [
+    { x: 3, y: 1 }, { x: 1, y: 5 }, { x: 8, y: 2 }, { x: 5, y: 8 },
+    { x: 10, y: 4 }, { x: 4, y: 11 }, { x: 12, y: 7 }, { x: 7, y: 3 },
+  ];
+  for (const f of fallbacks) {
+    if (picks.length >= 5) break;
+    if (!inb(f.x, f.y) || grid[i(f.x, f.y)] !== 0) continue;
+    if (picks.every((p) => Math.hypot(p.x - f.x, p.y - f.y) >= 4)) picks.push(f);
+  }
+  while (picks.length < 5) {
+    picks.push({ x: 2 + picks.length * 3, y: 2 + (picks.length % 3) * 3, dist: 1 });
+  }
+  const scales = [
+    [1.05, 2.15],
+    [1.1, 2.0],
+    [0.95, 2.2],
+    [0.9, 2.05],
+    [1.0, 1.85],
+  ];
+  paths.forEach((src, idx) => {
+    const cell = picks[idx];
+    const loader = new THREE.TextureLoader();
+    loader.load(src, (tex) => {
+      tex.colorSpace = THREE.SRGBColorSpace;
+      const mat = new THREE.SpriteMaterial({
+        map: tex, transparent: true, alphaTest: 0.12, depthWrite: false,
+      });
+      const spr = new THREE.Sprite(mat);
+      const [sx, sy] = scales[idx];
+      spr.scale.set(sx, sy, 1);
+      // slight random offset so they are not grid-locked
+      const ox = (Math.random() - 0.5) * 0.25;
+      const oz = (Math.random() - 0.5) * 0.25;
+      spr.position.set(cell.x * CELL + 0.5 + ox, sy * 0.48, cell.y * CELL + 0.5 + oz);
+      spr.userData.npc = true;
+      if (npcGroup) npcGroup.add(spr);
+      npcSprites.push(spr);
+    });
+  });
+}
+
+function buildTunnelMeshes() {
+  // No tunnel — just a purple exit marker at the maze exit
+  const mouthX = exitCX * CELL + 0.5;
+  const mouthZ = exitCY * CELL + 0.5;
+  const lit = collected.size === 6;
+  const arch = new THREE.Mesh(
+    new THREE.BoxGeometry(1.2, 1.8, 0.35),
+    new THREE.MeshStandardMaterial({
+      color: lit ? 0xb44cff : 0x667788,
+      emissive: lit ? 0xb44cff : 0x000000,
+      emissiveIntensity: lit ? 0.45 : 0,
+      roughness: 0.85,
+    })
+  );
+  arch.position.set(mouthX, 0.95, mouthZ);
+  tunnelGroup.add(arch);
+  if (lit) {
+    const glow = new THREE.PointLight(0xb44cff, 1.4, 6, 2);
+    glow.position.set(mouthX, 1.2, mouthZ);
+    tunnelGroup.add(glow);
+  }
+}
+
+function openTunnel() {
+  // kept for compatibility — tunnel removed; refresh exit portal look
+  disposeGroup(tunnelGroup);
+  tunnelGroup = new THREE.Group();
+  tunnelGroup.visible = true;
+  buildTunnelMeshes();
+  scene.add(tunnelGroup);
+}
+
+function showToast(t) {
+  toastEl.textContent = t;
+  toastEl.classList.add('is-on');
+  toastT = 1.6;
+}
+
+function updateZoneHud(zi) {
+  if (zi < 0) {
+    zoneNameEl.textContent = '—';
+    zoneEl.style.setProperty('--zone', '#7b2cff');
+    return;
+  }
+  const z = ZONES[zi];
+  zoneNameEl.textContent = z.name;
+  zoneEl.style.setProperty('--zone', z.hex);
+  zoneSwatchEl.style.background = z.hex;
+  zoneEl.classList.remove('is-flash');
+  void zoneEl.offsetWidth;
+  zoneEl.classList.add('is-flash');
+}
+
+function collect(zi) {
+  if (zi < 0 || collected.has(zi)) return;
+  collected.add(zi);
+  pips[zi]?.classList.add('is-on');
+  score += 25;
+  scoreEl.textContent = String(score);
+  showToast('+25 · ' + ZONES[zi].name);
+  if (collected.size === 6 && !handedOff) {
+    openTunnel(); // refresh exit glow only
+    showToast('All colors — Purple Run!');
+    setTimeout(() => handoffToMario(), 650);
+  }
+}
+
+function resetRun() {
+  carveMaze();
+  tunnelOpen = false;
+  rebuildWorld();
+  px = 1.5; py = 1.5; yaw = 0; pitch = 0; velX = 0; velZ = 0; handedOff = false;
+  score = (window.__ACID_CARRY && window.__ACID_CARRY.score) || 0; timeSec = (window.__ACID_CARRY && window.__ACID_CARRY.timeSec) || 0; collected.clear();
+  scoreEl.textContent = String(score);
+  timeEl.textContent = formatTime(timeSec);
+  pips.forEach((p) => p.classList.remove('is-on'));
+  scene.fog = new THREE.Fog(0x15122a, 18, 48);
+  scene.background = new THREE.Color(0x15122a);
+  renderer.setClearColor(0x15122a, 1);
+  lamp.intensity = 1.05;
+  const zi = zoneOf[i(1, 1)];
+  updateZoneHud(zi);
+  collect(zi);
+  syncCamera();
+}
+
+function startGame() {
+  if (window.AcidRun && window.AcidRun.stop) window.AcidRun.stop();
+  const rootEl = document.getElementById('root');
+  if (rootEl) rootEl.dataset.stage = 'maze';
+  resetRun();
+  setPhase('play');
+  last = performance.now();
+}
+function pauseGame() { if (phase === 'play') setPhase('pause'); }
+function resumeGame() { if (phase === 'pause') { setPhase('play'); last = performance.now(); } }
+
+function formatTime(t) {
+  const s = Math.floor(t), m = Math.floor(s / 60), r = s % 60;
+  return m + ':' + String(r).padStart(2, '0');
+}
+
+function inTunnelCell(cx, cy) {
+  if (tunnelOpen && cx === exitCX && cy === exitCY) return true;
+  return tunnelSet.has(cx + ',' + cy);
+}
+
+function solid(x, y) {
+  const cx = Math.floor(x), cy = Math.floor(y);
+  if (!inb(cx, cy)) return true;
+  const v = grid[i(cx, cy)];
+  if (v === 1) return true;
+  return false;
+}
+
+function tryMove(dx, dz) {
+  const r = 0.18;
+  if (!solid(px + dx, py) && !solid(px + dx + r, py) && !solid(px + dx - r, py)) px += dx;
+  if (!solid(px, py + dz) && !solid(px, py + dz + r) && !solid(px, py + dz - r)) py += dz;
+}
+
+function syncCamera() {
+  // Eye-level behind rabbit, looking straight ahead (not top-down)
+  const fx = Math.sin(yaw), fz = -Math.cos(yaw);
+  let camX = px - fx * CAM_DIST;
+  let camZ = py - fz * CAM_DIST;
+  // Keep camera out of walls so you cannot look through them
+  let dist = CAM_DIST;
+  while (dist > 0.35 && solid(camX, camZ)) {
+    dist -= 0.12;
+    camX = px - fx * dist;
+    camZ = py - fz * dist;
+  }
+  if (solid(camX, camZ)) {
+    camX = px - fx * 0.28;
+    camZ = py - fz * 0.28;
+  }
+  camera.position.set(camX, CAM_HEIGHT, camZ);
+  const lookDist = 2.5;
+  const ly = CAM_LOOK_Y + Math.sin(pitch) * lookDist;
+  const lz = Math.cos(pitch);
+  camera.lookAt(px + fx * lookDist * lz, ly, py + fz * lookDist * lz);
+  lamp.position.set(px, 0.9, py);
+  if (rabbitMesh) {
+    rabbitMesh.position.set(px, PLAYER_H * 0.42, py);
+  }
+
+  scene.fog = new THREE.Fog(0x15122a, 18, 48);
+  scene.background = new THREE.Color(0x15122a);
+  renderer.setClearColor(0x15122a, 1);
+  lamp.intensity = 1.05;
+  lamp.distance = 16;
+}
+
+function handoffToMario() {
+  if (handedOff) return;
+  handedOff = true;
+  showToast('Stage 2 — Purple Run');
+  if (window.AcidRun && window.AcidRun.start) {
+    window.AcidRun.start({ score, timeSec });
+  } else {
+    setPhase('win');
+    winStats.textContent = `Score ${score} · Time ${formatTime(timeSec)}`;
+    setTimeout(() => { location.href = EXIT_URL; }, 900);
+  }
+}
+
+function update(dt) {
+  if (phase !== 'play') return;
+  if (document.getElementById('root')?.dataset.stage === 'run') return;
+  timeSec += dt;
+  timeEl.textContent = formatTime(timeSec);
+  if (toastT > 0) {
+    toastT -= dt;
+    if (toastT <= 0) toastEl.classList.remove('is-on');
+  }
+
+  if (keys.ArrowLeft || keys.KeyQ) yaw -= TURN * dt;
+  if (keys.ArrowRight || keys.KeyE) yaw += TURN * dt;
+
+  let mx = stickX, my = stickY;
+  if (keys.KeyA) mx -= 1;
+  if (keys.KeyD) mx += 1;
+  if (keys.KeyW || keys.ArrowUp) my -= 1;
+  if (keys.KeyS || keys.ArrowDown) my += 1;
+
+  const sprint = (keys.ShiftLeft || keys.ShiftRight) ? SPRINT : 1;
+  const mag = Math.hypot(mx, my);
+  let wishX = 0, wishZ = 0;
+  if (mag > 0.05) {
+    const nx = mx / Math.min(mag, 1);
+    const ny = my / Math.min(mag, 1);
+    const fx = Math.sin(yaw), fz = -Math.cos(yaw);
+    const rx = Math.cos(yaw), rz = Math.sin(yaw);
+    const speed = MOVE * sprint;
+    const strafe = STRAFE * sprint;
+    wishX = fx * (-ny) * speed + rx * nx * strafe;
+    wishZ = fz * (-ny) * speed + rz * nx * strafe;
+  }
+  const rate = mag > 0.05 ? ACCEL : DECEL;
+  velX += (wishX - velX) * Math.min(1, rate * dt);
+  velZ += (wishZ - velZ) * Math.min(1, rate * dt);
+  if (Math.hypot(velX, velZ) > 0.02) tryMove(velX * dt, velZ * dt);
+  else { velX = 0; velZ = 0; }
+
+  syncCamera();
+
+  const cx = Math.floor(px), cy = Math.floor(py);
+  if (inb(cx, cy)) {
+    const zi = zoneOf[i(cx, cy)];
+    if (zi >= 0) {
+      if (zoneNameEl.textContent !== ZONES[zi].name) updateZoneHud(zi);
+      collect(zi);
+    }
+  }
+
+  // After all colors, stepping on exit also starts Mario
+  if (collected.size === 6 && !handedOff) {
+    const dx = px - (exitCX + 0.5);
+    const dz = py - (exitCY + 0.5);
+    if (dx * dx + dz * dz < 0.7 * 0.7) {
+      handoffToMario();
+    }
+  }
+
+  if (rabbitHud) {
+    const bob = Math.sin(performance.now() / 180) * 4;
+    rabbitHud.style.transform = `translateY(${bob}px)`;
+  }
+
+  // Soft cloud drift
+  if (cloudGroup) {
+    cloudGroup.children.forEach((c, idx) => {
+      c.position.x += Math.sin(performance.now() / 4000 + idx) * 0.002;
+    });
+  }
+}
+
+function drawMinimap() {
+  if (!minimapCtx) return;
+  const ms = 5;
+  const ctx = minimapCtx;
+  ctx.clearRect(0, 0, minimapCanvas.width, minimapCanvas.height);
+  // maze
+  for (let y = 0; y < ROWS; y++) {
+    for (let x = 0; x < COLS; x++) {
+      const cell = grid[i(x, y)];
+      const secret = secretMask[i(x, y)];
+      if (cell === 1) ctx.fillStyle = '#3a3055';
+      else if (secret) ctx.fillStyle = '#6a5a88';
+      else {
+        const zi = zoneOf[i(x, y)];
+        ctx.fillStyle = zi >= 0 ? ZONES[zi].hex : '#221833';
+      }
+      if (x === exitCX && y === exitCY) ctx.fillStyle = collected.size === 6 ? '#b44cff' : '#8899aa';
+      ctx.fillRect(x * ms, y * ms, ms - 1, ms - 1);
+    }
+  }
+  // exit marker
+  ctx.fillStyle = collected.size === 6 ? '#b44cff' : '#8899aa';
+  ctx.fillRect(exitCX * ms, exitCY * ms, ms - 1, ms - 1);
+  let drawX = px * ms, drawY = py * ms;
+  ctx.fillStyle = '#fff';
+  ctx.beginPath();
+  ctx.arc(drawX, drawY, 2.4, 0, Math.PI * 2);
+  ctx.fill();
+  const fx = Math.sin(yaw), fz = -Math.cos(yaw);
+  ctx.strokeStyle = '#f5e000';
+  ctx.beginPath();
+  ctx.moveTo(drawX, drawY);
+  ctx.lineTo(drawX + fx * 6, drawY + fz * 6);
+  ctx.stroke();
+}
+
+function frame(now) {
+  const dt = Math.min(0.05, (now - last) / 1000);
+  last = now;
+  if (window.__acidWantStart && phase === 'title') {
+    window.__acidWantStart = false;
+    startGame();
+  }
+  update(dt);
+  drawMinimap();
+  if (root.dataset.stage !== 'run') renderer.render(scene, camera);
+  requestAnimationFrame(frame);
+}
+
+function setStick(x, y) {
+  stickX = x; stickY = y;
+  stickKnob.style.transform = `translate(${x * 28}px, ${y * 28}px)`;
+}
+stickEl.addEventListener('pointerdown', (e) => {
+  if (phase !== 'play') return;
+  stickId = e.pointerId;
+  stickEl.setPointerCapture(e.pointerId);
+  const r = stickEl.getBoundingClientRect();
+  let x = (e.clientX - r.left) / r.width * 2 - 1;
+  let y = (e.clientY - r.top) / r.height * 2 - 1;
+  const m = Math.hypot(x, y) || 1;
+  if (m > 1) { x /= m; y /= m; }
+  setStick(x, y);
+});
+stickEl.addEventListener('pointermove', (e) => {
+  if (e.pointerId !== stickId) return;
+  const r = stickEl.getBoundingClientRect();
+  let x = (e.clientX - r.left) / r.width * 2 - 1;
+  let y = (e.clientY - r.top) / r.height * 2 - 1;
+  const m = Math.hypot(x, y);
+  if (m > 1) { x /= m; y /= m; }
+  setStick(x, y);
+});
+function endStick(e) {
+  if (e.pointerId !== stickId) return;
+  stickId = null; setStick(0, 0);
+}
+stickEl.addEventListener('pointerup', endStick);
+stickEl.addEventListener('pointercancel', endStick);
+
+// Right-click hold + move to look around
+canvas.addEventListener('contextmenu', (e) => { e.preventDefault(); });
+canvas.addEventListener('pointerdown', (e) => {
+  if (phase !== 'play') return;
+  if (e.button !== 2 && e.buttons !== 2) return; // right button only
+  e.preventDefault();
+  dragId = e.pointerId; dragLastX = e.clientX; dragLastY = e.clientY;
+  canvas.setPointerCapture(e.pointerId);
+});
+canvas.addEventListener('pointermove', (e) => {
+  if (e.pointerId !== dragId || phase !== 'play') return;
+  const dx = e.clientX - dragLastX;
+  const dy = e.clientY - dragLastY;
+  dragLastX = e.clientX;
+  dragLastY = e.clientY;
+  yaw += dx * LOOK;
+  pitch = Math.max(-0.45, Math.min(0.55, pitch - dy * LOOK));
+});
+canvas.addEventListener('pointerup', (e) => { if (e.pointerId === dragId) dragId = null; });
+canvas.addEventListener('pointercancel', (e) => { if (e.pointerId === dragId) dragId = null; });
+
+addEventListener('keydown', (e) => {
+  keys[e.code] = true;
+  if (e.code === 'Escape') {
+    if (phase === 'play') pauseGame();
+    else if (phase === 'pause') resumeGame();
+  }
+});
+addEventListener('keyup', (e) => { keys[e.code] = false; });
+
+function onAct(e) {
+  const btn = e.target.closest?.('[data-act]');
+  if (!btn) return;
+  const act = btn.getAttribute('data-act');
+  e.preventDefault(); e.stopPropagation();
+  if (act === 'start' || act === 'again' || act === 'restart') startGame();
+  if (act === 'resume') resumeGame();
+}
+root.addEventListener('click', onAct);
+
+window.AcidMaze = { startGame, pauseGame, resumeGame, setPhase };
+window.__controlsTest = {
+  getYaw: () => yaw,
+  getSpeed: () => Math.hypot(velX, velZ),
+  setKeys(codes) {
+    keys = {};
+    for (const c of codes || []) keys[c] = true;
+  },
+};
+
+
+carveMaze();
+rebuildWorld();
+setPhase('title');
+if (window.__acidWantStart) startGame();
+requestAnimationFrame(frame);
+
+  </script>
+</body>
+</html>
