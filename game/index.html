@@ -246,10 +246,16 @@ button:not(:disabled), [role="button"]:not(:disabled) { cursor: pointer; }
   justify-content: center;
   padding: 24px;
   background: color-mix(in oklab, #07060b 82%, transparent);
+  z-index: 8;
 }
 
 .acid-overlay[hidden] {
   display: none;
+}
+
+.acid-root[data-phase="play"] .acid-title,
+.acid-root[data-phase="pause"] .acid-title {
+  display: none !important;
 }
 
 .acid-overlay.acid-title {
