@@ -40,6 +40,9 @@ html, body, #root { height:100%; margin:0; background:#15122a; color:#f4f0e8; fo
 .acid-drag-hint { position:absolute; left:50%; bottom:16px; transform:translateX(-50%); margin:0; font-size:12px; color:var(--color-muted); }
 .acid-overlay { position:absolute; inset:0; display:grid; place-items:center; background:rgba(21,18,42,.82); padding:20px; z-index:8; }
 .acid-overlay[hidden] { display:none!important; }
+.acid-root[data-phase="play"] .acid-title,
+.acid-root[data-phase="pause"] .acid-title { display:none!important; }
+.acid-root[data-stage="run"] .acid-title { display:none!important; }
 .acid-title-inner,.acid-panel { width:min(420px,100%); display:flex; flex-direction:column; gap:12px; align-items:stretch; text-align:center; }
 .acid-kicker { margin:0; color:#b44cff; font-family:var(--font-display); font-size:10px; letter-spacing:.08em; }
 h1,h2 { margin:0; font-family:var(--font-display); font-size:22px; line-height:1.35; }
