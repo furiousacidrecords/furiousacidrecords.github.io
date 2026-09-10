@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>Pirate Ghost Ship — Level 1</title>
+  <meta name="theme-color" content="#12081c">
+  <meta name="description" content="Furious Acid Level 1: Pirate Ghost Ship. Auto-run the haunted galleon. The rabbit eats the first hit.">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+:root {
+  --bg: #12081c;
+  --fg: #f4f0e8;
+  --muted: #9a8fb0;
+  --yellow: #f5e000;
+  --purple: #b44cff;
+  --line: rgba(244,240,232,.12);
+}
+* { box-sizing: border-box; }
+html, body { height:100%; margin:0; background:var(--bg); color:var(--fg); font-family:"IBM Plex Sans", system-ui, sans-serif; }
+button:not(:disabled), a[role="button"] { cursor: pointer; }
+.stage { position:fixed; inset:0; width:100%; height:100%; display:block; background:#071018; touch-action:none; }
+.hud {
+  position:fixed; left:0; right:0; top:0; z-index:4; pointer-events:none;
+  padding: calc(10px + env(safe-area-inset-top)) 12px 0;
+  display:flex; align-items:center; gap:10px;
+}
+.chip {
+  min-width:64px; padding:8px 10px; border-radius:10px;
+  background:rgba(7,6,11,.72); border:1px solid var(--line);
+  font-variant-numeric:tabular-nums;
+}
+.chip strong { display:block; font-size:18px; line-height:1; }
+.chip span { font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:var(--muted); }
+.bar { flex:1; height:6px; border-radius:99px; background:rgba(244,240,232,.12); overflow:hidden; }
+.bar i { display:block; height:100%; width:0; background:var(--yellow); }
+.rabbit-hud { width:40px; height:40px; object-fit:contain; }
+.worlds-link {
+  position:fixed; left:12px; bottom:calc(12px + env(safe-area-inset-bottom)); z-index:9;
+  color:var(--fg); text-decoration:none; font-size:13px; padding:8px 12px; border-radius:999px;
+  background:rgba(7,4,15,.55); border:1px solid rgba(244,240,232,.2);
+}
+.pause-fab {
+  position:fixed; top:calc(10px + env(safe-area-inset-top)); right:12px; z-index:8;
+  appearance:none; border:1px solid var(--line); background:rgba(7,6,11,.72); color:var(--fg);
+  width:44px; height:44px; border-radius:12px; font-weight:700;
+}
+.overlay {
+  position:fixed; inset:0; z-index:10; display:flex; align-items:flex-end;
+  background:linear-gradient(to top, rgba(18,8,28,.92) 0%, rgba(18,8,28,.35) 46%, transparent 70%);
+  padding: 0 16px calc(20px + env(safe-area-inset-bottom));
+}
+.overlay[hidden] { display:none !important; }
+.card {
+  width:min(520px, 100%); margin:0 auto 0; padding:0 0 8px;
+}
+.kicker { margin:0; font-size:11px; letter-spacing:.28em; text-transform:uppercase; color:var(--purple); font-weight:600; }
+h1, h2 { margin:8px 0 0; font-size:28px; letter-spacing:-.03em; line-height:1.1; }
+.lead { margin:10px 0 0; color:var(--muted); font-size:14px; line-height:1.45; }
+.cast { display:flex; gap:12px; margin:16px 0 14px; align-items:flex-end; }
+.cast img { display:block; background:rgba(255,255,255,.04); border:1px solid var(--line); border-radius:16px; }
+.cast .face { width:96px; height:96px; object-fit:cover; }
+.cast .run { height:88px; width:auto; }
+.cast .bunny { width:72px; height:72px; object-fit:contain; background:transparent; border:0; }
+.cta {
+  appearance:none; border:0; width:100%; min-height:52px; border-radius:14px;
+  background:var(--yellow); color:#1a0a2e; font-weight:700; font-size:16px;
+}
+.cta:disabled { opacity:.55; }
+.ghost {
+  appearance:none; width:100%; min-height:48px; margin-top:8px; border-radius:14px;
+  border:1px solid var(--line); background:transparent; color:var(--fg); font-weight:600; font-size:15px;
+}
+.best { text-align:center; font-size:12px; color:var(--muted); margin:10px 0 0; }
+.center {
+  position:fixed; inset:0; z-index:11; display:grid; place-items:center;
+  background:rgba(10,4,22,.72); padding:16px;
+}
+.center[hidden] { display:none !important; }
+.center .box {
+  width:min(420px, 100%); padding:22px; border-radius:20px;
+  background:rgba(18,8,28,.94); border:1px solid var(--line);
+}
+.touch {
+  position:fixed; left:0; right:0; bottom:0; z-index:7; display:none;
+  padding:12px 12px calc(16px + env(safe-area-inset-bottom));
+  justify-content:space-between; align-items:flex-end; pointer-events:none;
+}
+.touch.on { display:flex; pointer-events:auto; }
+.touch button {
+  appearance:none; border:2px solid rgba(180,76,255,.45); background:rgba(7,6,11,.45);
+  color:var(--fg); font-weight:700; min-width:72px; height:72px; border-radius:18px;
+}
+#padJ { background:var(--yellow); color:#1a0a2e; border-color:var(--yellow); width:96px; }
+</style>
+</head>
+<body>
+  <canvas class="stage" id="stage"></canvas>
+
+  <div class="hud" id="hud" hidden>
+    <div class="chip"><strong id="dist">0</strong><span>Fathoms</span></div>
+    <div class="bar"><i id="bar"></i></div>
+    <div class="chip"><strong id="gems">0</strong><span>Gems</span></div>
+    <img class="rabbit-hud" id="rabbitHud" src="./sprites/rabbit.png" alt="">
+  </div>
+
+  <button type="button" class="pause-fab" id="pauseBtn" aria-label="Pause" hidden>II</button>
+
+  <div class="overlay" id="title">
+    <div class="card">
+      <p class="kicker">Level 1</p>
+      <h1>Pirate Ghost Ship</h1>
+      <div class="cast">
+        <img class="face" src="./sprites/portrait.jpg" alt="Runner">
+        <img class="run" src="./sprites/run_preview.gif" alt="Running">
+        <img class="bunny" src="./sprites/rabbit.png" alt="Purple rabbit">
+      </div>
+      <p class="lead">Auto-run the haunted galleon. A/D or Left/Right to strafe. Space or Jump over gaps, barrels, tentacles. The rabbit eats the first hit.</p>
+      <button type="button" class="cta" id="startBtn" disabled>Raising the wreck</button>
+      <p class="best">Best <span id="best">0</span> fathoms</p>
+      <button type="button" class="ghost" id="muteBtn">Sound on</button>
+    </div>
+  </div>
+
+  <div class="center" id="pause" hidden>
+    <div class="box">
+      <p class="kicker">Held fast</p>
+      <h2>Paused</h2>
+      <p class="lead">The wreck is still hungry.</p>
+      <button type="button" class="cta" id="resumeBtn" style="margin-top:16px">Resume</button>
+      <button type="button" class="ghost" id="restartBtn">Restart</button>
+    </div>
+  </div>
+
+  <div class="center" id="dead" hidden>
+    <div class="box">
+      <p class="kicker">Overboard</p>
+      <h2>The sea takes you</h2>
+      <p class="lead" id="deadBody"></p>
+      <button type="button" class="cta" id="againBtn" style="margin-top:16px">Try again</button>
+    </div>
+  </div>
+
+  <div class="center" id="win" hidden>
+    <div class="box">
+      <p class="kicker">Wheel in hand</p>
+      <h2>Captain of the ghost ship</h2>
+      <p class="lead" id="winBody"></p>
+      <button type="button" class="cta" id="sailBtn" style="margin-top:16px">Sail it again</button>
+      <a class="ghost" href="../run/index.html" style="display:grid;place-items:center;text-decoration:none">Next: Purple Run</a>
+    </div>
+  </div>
+
+  <div class="touch" id="touch">
+    <div style="display:flex;gap:8px">
+      <button type="button" id="padL">Left</button>
+      <button type="button" id="padR">Right</button>
+    </div>
+    <button type="button" id="padJ">JUMP</button>
+  </div>
+
+  <a class="worlds-link" href="../index.html">Worlds</a>
+  <script src="./game.js"></script>
+</body>
+</html>
