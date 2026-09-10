@@ -896,7 +896,7 @@ function input() {
     pitch += -stickY * 1.2;
     thrust += Math.min(1, sm);
   }
-  const boosting = (boostHeld || k.has("Space") || k.has("ShiftLeft")) && player.stam > 0.08;
+  const boosting = false;
   return { steer, pitch, thrust: Math.max(-1, Math.min(1, thrust)), boosting };
 }
 
@@ -1399,8 +1399,9 @@ function wire() {
   };
   stickEl.addEventListener("pointerup", endStick);
   stickEl.addEventListener("pointercancel", endStick);
-  boostBtn.addEventListener("pointerdown", (e) => { e.preventDefault(); boostHeld = true; sfx.boost(); });
-  boostBtn.addEventListener("pointerup", () => { boostHeld = false; });
+  if (boostBtn) {
+    boostBtn.addEventListener("pointerdown", (e) => { e.preventDefault(); });
+  }
   root.addEventListener("click", (e) => {
     const btn = e.target.closest("[data-act]");
     if (!btn) return;

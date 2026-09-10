@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>Acid Maze — Level 1</title>
+  <meta name="theme-color" content="#07060b">
+  <meta name="description" content="Acid Maze. Five worlds: color maze, Purple Run, Uranus mantle, diamond rain, event horizon.">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+  <script type="importmap">
+  { "imports": { "three": "https://unpkg.com/three@0.186.0/build/three.module.js" } }
+  </script>
+  <style>
+:root {
+  --color-bg: #07060b;
+  --color-surface: #121018;
+  --color-fg: #f4f0e8;
+  --color-muted: #9a9488;
+  --color-primary: #f5e000;
+  --color-accent: #7b2cff;
+  --font-sans: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --font-display: "Press Start 2P", ui-monospace, monospace;
+}
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  background: #07060b;
+  color: #f4f0e8;
+  font-family: var(--font-sans);
+}
+button:not(:disabled), [role="button"]:not(:disabled) { cursor: pointer; }
+.acid-mount,
+.acid-root {
+  position: relative;
+  width: 100%;
+  height: 100dvh;
+  min-height: 100%;
+  overflow: hidden;
+  background: #07060b;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.acid-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+.acid-root[data-phase="play"]::after {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 52%, #07060b 100%);
+  opacity: 0.45;
+}
+
+.acid-hud {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  padding: calc(10px + env(safe-area-inset-top)) 12px 12px;
+}
+
+.acid-chip {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: color-mix(in oklab, #07060b 72%, transparent);
+  border: 1px solid color-mix(in oklab, var(--color-fg) 12%, transparent);
+  font-variant-numeric: tabular-nums;
+}
+
+.acid-zone {
+  top: calc(10px + env(safe-area-inset-top));
+  left: 10px;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
+.acid-zone-swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--zone, #7b2cff);
+  box-shadow: 0 0 10px var(--zone, #7b2cff);
+}
+
+.acid-zone-name {
+  font-family: var(--font-display);
+  font-size: 8px;
+  letter-spacing: 0.04em;
+  color: var(--color-fg);
+}
+
+.acid-zone.is-flash {
+  animation: zone-in 400ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes zone-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.acid-pips {
+  position: absolute;
+  top: calc(48px + env(safe-area-inset-top));
+  left: 10px;
+  display: flex;
+  gap: 5px;
+}
+
+.acid-pips i {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in oklab, var(--z, #fff) 70%, transparent);
+  background: transparent;
+  display: block;
+}
+
+.acid-pips i.is-on {
+  background: var(--z, #f5e000);
+  box-shadow: 0 0 8px var(--z, #f5e000);
+}
+
+.acid-score {
+  top: calc(10px + env(safe-area-inset-top));
+  right: 10px;
+  align-items: flex-end;
+}
+
+.acid-time {
+  top: calc(58px + env(safe-area-inset-top));
+  right: 10px;
+  align-items: flex-end;
+}
+
+.acid-score-label {
+  font-family: var(--font-display);
+  font-size: 8px;
+  color: var(--color-muted);
+  letter-spacing: 0.12em;
+}
+
+.acid-score-val,
+.acid-time-val {
+  font-family: var(--font-display);
+  font-size: 13px;
+  color: var(--color-primary);
+}
+
+.acid-toast {
+  position: absolute;
+  left: 50%;
+  top: 26%;
+  transform: translate(-50%, -8px);
+  opacity: 0;
+  pointer-events: none;
+  font-family: var(--font-display);
+  font-size: 9px;
+  line-height: 1.45;
+  color: var(--color-fg);
+  text-align: center;
+  padding: 10px 14px;
+  border-radius: 10px;
+  max-width: 80vw;
+  background: color-mix(in oklab, #07060b 78%, transparent);
+  border: 1px solid color-mix(in oklab, var(--color-fg) 14%, transparent);
+  transition: opacity 150ms cubic-bezier(0.22, 1, 0.36, 1), transform 150ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.acid-toast.is-on {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.acid-touch {
+  display: none;
+  position: absolute;
+  inset: auto 0 calc(16px + env(safe-area-inset-bottom)) 0;
+  pointer-events: none;
+  justify-content: flex-start;
+  padding: 0 18px;
+}
+
+.acid-touch.is-on {
+  display: flex;
+}
+
+.acid-stick {
+  pointer-events: auto;
+  width: 112px;
+  height: 112px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in oklab, var(--color-fg) 22%, transparent);
+  background: color-mix(in oklab, #07060b 45%, transparent);
+  position: relative;
+}
+
+.acid-stick i {
+  position: absolute;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  left: 50%;
+  top: 50%;
+  margin: -22px 0 0 -22px;
+  background: color-mix(in oklab, var(--color-fg) 82%, transparent);
+}
+
+.acid-drag-hint {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 128px;
+  margin: 0;
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 7px;
+  letter-spacing: 0.08em;
+  color: color-mix(in oklab, var(--color-fg) 55%, transparent);
+  pointer-events: none;
+}
+
+.acid-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: color-mix(in oklab, #07060b 82%, transparent);
+  z-index: 8;
+}
+
+.acid-overlay[hidden] {
+  display: none;
+}
+
+.acid-root[data-phase="play"] .acid-title,
+.acid-root[data-phase="pause"] .acid-title {
+  display: none !important;
+}
+
+.acid-overlay.acid-title {
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    rgba(7, 6, 11, 0.4) 0%,
+    rgba(7, 6, 11, 0) 18%,
+    rgba(7, 6, 11, 0) 52%,
+    rgba(7, 6, 11, 0.92) 100%
+  );
+  align-items: flex-end;
+  justify-content: flex-end;
+  flex-direction: column;
+  padding: calc(20px + env(safe-area-inset-top)) 18px calc(22px + env(safe-area-inset-bottom));
+}
+
+.acid-title-inner,
+.acid-panel {
+  width: min(420px, 100%);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 22px 18px;
+  border-radius: 22px;
+  background: #121018;
+  border: 1px solid color-mix(in oklab, var(--color-fg) 12%, transparent);
+}
+
+.acid-title-inner {
+  width: 100%;
+  max-width: none;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.acid-title .acid-btn {
+  pointer-events: auto;
+}
+
+.acid-kicker {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 8px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+.acid-title-inner h1,
+.acid-panel h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(18px, 6vw, 28px);
+  line-height: 1.25;
+  color: var(--color-fg);
+}
+
+.acid-title-inner h1 {
+  text-shadow: 0 0 28px color-mix(in oklab, #7b2cff 70%, transparent);
+}
+
+.acid-lead,
+.acid-help,
+.acid-win-stats {
+  margin: 0;
+  color: var(--color-muted);
+  font-size: 14px;
+  line-height: 1.5;
+  max-width: 34ch;
+}
+
+.acid-help {
+  font-size: 12px;
+}
+
+.acid-win {
+  background: color-mix(in oklab, #07060b 62%, transparent);
+}
+
+.acid-btn {
+  appearance: none;
+  border: 0;
+  min-height: 52px;
+  padding: 16px 22px;
+  border-radius: 14px;
+  background: var(--color-primary);
+  color: #07060b;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 17px;
+  width: 100%;
+  max-width: 320px;
+  transition: transform 150ms cubic-bezier(0.22, 1, 0.36, 1), opacity 150ms ease;
+}
+
+.acid-btn:active {
+  transform: scale(0.98);
+}
+
+.acid-btn-ghost {
+  background: transparent;
+  color: var(--color-fg);
+  border: 1px solid color-mix(in oklab, var(--color-fg) 18%, transparent);
+}
+
+@media (min-width: 720px) {
+  .acid-drag-hint {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .acid-zone.is-flash,
+  .acid-toast,
+  .acid-btn {
+    animation: none;
+    transition: none;
+  }
+}
+
+  </style>
+</head>
+<body>
+  <div id="root" class="acid-mount">Acid Maze</div>
+  <script type="module" src="./game.js"></script>
+</body>
+</html>
