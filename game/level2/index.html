@@ -102,7 +102,7 @@ h1,h2 { margin:0; font-family:var(--font-display); font-size:22px; line-height:1
       <canvas class="run-canvas" id="runCanvas"></canvas>
       <p class="run-banner">PURPLE RUN</p>
       <div class="run-hud">
-        <div class="run-chip run-score"><span>SCORE</span> <strong id="runScore">0</strong> · <span id="runTime">0:00</span></div>
+        <div class="run-chip run-score"><span>SCORE</span> <strong id="runScore">0</strong> · <span id="runTime">0:00</span> · <span id="runLives">♥♥♥</span></div>
         <div class="run-pips">
           <i style="--z:#ff3b3b"></i><i style="--z:#f5e000"></i><i style="--z:#3d6bff"></i>
           <i style="--z:#ff7a1a"></i><i style="--z:#2ee35a"></i><i style="--z:#b44cff"></i>
@@ -119,8 +119,9 @@ h1,h2 { margin:0; font-family:var(--font-display); font-size:22px; line-height:1
       <div class="acid-title-inner">
         <p class="acid-kicker">Furious Acid · Level 2</p>
         <h1>Acid Maze</h1>
-        <p class="acid-lead">You cleared Level 1. Map’s on. Grab every color, then hop into Purple Run.</p>
+        <p class="acid-lead">You cleared Level 1. Map’s on. Grab every color — then Purple Run, which will try to kill you.</p>
         <button type="button" class="acid-btn" data-act="start">Hop in</button>
+        <button type="button" class="acid-btn acid-btn-ghost" data-act="level3">Level 3</button>
         <p class="acid-help">WASD · right-click drag to look · map</p>
       </div>
     </div>
@@ -134,11 +135,11 @@ h1,h2 { margin:0; font-family:var(--font-display); font-size:22px; line-height:1
     </div>
     <div class="acid-overlay acid-win" hidden>
       <div class="acid-panel">
-        <p class="acid-kicker">Cleared</p>
-        <h2>Out.</h2>
+        <p class="acid-kicker">Level 2 cleared</p>
+        <h2>Mantle's open.</h2>
         <p class="acid-win-stats"></p>
-        <button type="button" class="acid-btn" data-act="again">Again</button>
-        <a class="acid-btn acid-btn-ghost" href="https://furiousacid.com" style="display:grid;place-items:center;text-decoration:none;">furiousacid.com</a>
+        <button type="button" class="acid-btn" data-act="level3">Level 3 — Uranus Mantle</button>
+        <button type="button" class="acid-btn acid-btn-ghost" data-act="again">Again</button>
       </div>
     </div>
   </div>
@@ -173,6 +174,11 @@ h1,h2 { margin:0; font-family:var(--font-display); font-size:22px; line-height:1
           if (window.AcidMaze && window.AcidMaze.startGame) window.AcidMaze.startGame();
         }
         if (act === 'resume' && window.AcidMaze) window.AcidMaze.resumeGame();
+        if (act === 'level3') {
+          const s = (window.__ACID_CARRY && window.__ACID_CARRY.score) || 0;
+          const t = (window.__ACID_CARRY && window.__ACID_CARRY.timeSec) || 0;
+          location.href = '../level3/index.html?score=' + s + '&time=' + Math.floor(t);
+        }
       });
     });
   });
@@ -181,9 +187,9 @@ h1,h2 { margin:0; font-family:var(--font-display); font-size:22px; line-height:1
 /* Purple Run — Mario platformer (maze removed) */
 window.AcidRun = (() => {
   const COLORS = ['#ff3b3b','#f5e000','#3d6bff','#ff7a1a','#2ee35a','#b44cff'];
-  const GRAV = 2200, JUMP = 780, MOVE = 320, AIR = 0.85, FRICTION = 0.78;
+  const GRAV = 2350, JUMP = 760, MOVE = 300, AIR = 0.82, FRICTION = 0.76;
   const TILE = 40;
-  const EXIT_URL = 'https://furiousacid.com';
+  const EXIT_URL = '../level3/index.html';
 
   let ready = false;
   let stage, canvas, ctx;
@@ -196,6 +202,11 @@ window.AcidRun = (() => {
   let jumpHeld = false, jumpBuffered = 0, coyote = 0;
   let last = 0, camX = 0, worldW = 0, raf = 0;
   let plats = [], orbs = [], flag = {}, player = {};
+  let hazards = [], foes = [], movers = [];
+  let lives = 3, invuln = 0, runT = 0;
+  let spawn = { x: 80, y: 0 };
+  let checkpoints = [];
+  let livesEl = null;
   let rabbit = new Image(), rabbitReady = false;
   rabbit.onload = () => { rabbitReady = true; };
   rabbit.src = '../sprites/hero.png';
@@ -215,6 +226,7 @@ window.AcidRun = (() => {
     stickKnob = stickEl.querySelector('i');
     jumpBtn = document.getElementById('runJump');
     pips = [...document.querySelectorAll('.run-pips i')];
+    livesEl = document.getElementById('runLives');
     wireInput();
     addEventListener('resize', resize);
     ready = true;
@@ -244,44 +256,118 @@ window.AcidRun = (() => {
   }
 
   function buildLevel() {
-    const rows = 14, cols = 90;
+    const rows = 14, cols = 136;
     worldW = cols * TILE;
     const groundY = rows * TILE;
-    plats = [];
-    const gaps = new Set([18,19,20, 34,35, 48,49,50, 62,63, 75,76]);
-    for (let x = 0; x < cols; x++) {
-      if (gaps.has(x)) continue;
-      plats.push({ x: x * TILE, y: groundY - TILE, w: TILE, h: TILE, type: 'ground' });
-    }
-    const floats = [
-      [6, 10, 4], [12, 8, 3], [22, 9, 4], [28, 7, 3], [38, 10, 5],
-      [44, 8, 3], [52, 6, 4], [58, 9, 3], [66, 7, 5], [72, 5, 3],
-      [80, 8, 4], [85, 6, 3], [15, 5, 2], [40, 5, 2], [70, 10, 2],
-    ];
-    for (const [cx, cy, len] of floats) {
+    plats = []; hazards = []; foes = []; movers = []; orbs = [];
+    const gy = groundY - TILE;
+    const ground = (a, b) => {
+      for (let x = a; x < b; x++) plats.push({ x: x * TILE, y: gy, w: TILE, h: TILE, type: 'ground' });
+    };
+    const plat = (cx, cy, len, type = 'plat') => {
+      const h = type === 'plat' || type === 'crumble' || type === 'move' ? 16 : TILE;
       for (let i = 0; i < len; i++) {
-        plats.push({ x: (cx + i) * TILE, y: cy * TILE, w: TILE, h: 16, type: 'plat' });
+        plats.push({ x: (cx + i) * TILE, y: cy * TILE, w: TILE, h, type, life: 0.55, ox: (cx + i) * TILE, t: 0 });
       }
-    }
-    for (let i = 0; i < 4; i++) {
-      plats.push({ x: (30 + i) * TILE, y: 11 * TILE, w: TILE, h: TILE, type: 'brick' });
-      plats.push({ x: (55 + i) * TILE, y: 10 * TILE, w: TILE, h: TILE, type: 'brick' });
-    }
-    orbs = [];
-    const orbSpots = [
-      [7, 9, 0], [13, 7, 1], [23, 8, 2], [29, 6, 3], [39, 9, 4], [45, 7, 5],
-      [53, 5, 0], [59, 8, 1], [67, 6, 2], [73, 4, 3], [81, 7, 4], [86, 5, 5],
-      [16, 4, 2], [41, 4, 5], [71, 9, 1],
+    };
+    const spike = (cx, n) => {
+      for (let i = 0; i < n; i++) hazards.push({ x: (cx + i) * TILE + 4, y: gy - 16, w: TILE - 8, h: 16, type: 'spike' });
+    };
+    const foe = (cx, cy, span) => {
+      const x = cx * TILE, y = cy * TILE - 28;
+      foes.push({ x, y, w: 28, h: 28, dir: 1, minX: x, maxX: x + span * TILE, spd: 70 });
+    };
+    const mover = (cx, cy, len, amp, spd) => {
+      const p = { x: cx * TILE, y: cy * TILE, w: len * TILE, h: 16, type: 'move', ox: cx * TILE, amp: amp * TILE, spd, t: 0, vx: 0 };
+      plats.push(p);
+      movers.push(p);
+    };
+    const orb = (cx, cy, id, bonus = false) => {
+      orbs.push({ x: cx * TILE + TILE / 2, y: cy * TILE - 18, r: 11, id, got: false, bonus });
+    };
+
+    // 0-12 intro
+    ground(0, 13);
+    plat(4, 10, 3);
+    orb(5, 9, 0);
+    // 13-17 pit — 4 tile jump
+    plat(14, 9, 1);
+    // 18-26 ledge + spikes
+    ground(18, 27);
+    spike(21, 3);
+    plat(22, 8, 2);
+    orb(23, 7, 1);
+    // 27-35 wide pit, stepping stones
+    plat(28, 10, 1);
+    plat(31, 8, 1);
+    plat(34, 6, 2);
+    orb(34.5, 5, 2);
+    // 36-46 brick climb
+    ground(36, 47);
+    plat(38, 11, 3, 'brick');
+    plat(41, 9, 2, 'brick');
+    plat(43, 7, 2, 'brick');
+    orb(44, 6, 3);
+    foe(37, 13, 6);
+    // 47-58 moving plat over death
+    mover(49, 9, 2, 3.2, 1.15);
+    plat(55, 8, 1);
+    ground(58, 66);
+    spike(60, 2);
+    foe(59, 13, 5);
+    orb(63, 12, 4);
+    // 66-78 crumbling gauntlet
+    plat(67, 10, 2, 'crumble');
+    plat(71, 8, 1, 'crumble');
+    plat(74, 6, 1, 'crumble');
+    plat(77, 8, 2);
+    orb(74, 5, 5);
+    // 79-88 high road
+    ground(80, 89);
+    plat(82, 9, 2);
+    plat(85, 7, 2);
+    orb(86, 6, 0, true);
+    foe(81, 13, 6);
+    // 89-98 tight hops
+    plat(90, 9, 1);
+    plat(93, 7, 1);
+    plat(96, 9, 1);
+    plat(99, 6, 1);
+    orb(99, 5, 1, true);
+    // 99-108 sprint gap + low safety
+    ground(102, 108);
+    spike(104, 2);
+    plat(100, 11, 1);
+    // 108-118 last gauntlet
+    plat(109, 9, 1, 'crumble');
+    mover(112, 7, 1, 2.4, 1.4);
+    plat(116, 9, 1);
+    orb(116, 8, 2, true);
+    // 119-end flag island
+    ground(120, 136);
+    plat(124, 10, 3);
+    plat(128, 8, 2);
+    orb(129, 7, 3, true);
+    flag = { x: 132 * TILE, y: gy - 96, w: 20, h: 96 };
+    player = { x: 2 * TILE, y: gy - 110, w: 52, h: 100, vx: 0, vy: 0, onGround: false, facing: 1 };
+    spawn = { x: player.x, y: player.y };
+    checkpoints = [
+      { x: 18 * TILE, y: gy - 110 },
+      { x: 38 * TILE, y: gy - 110 },
+      { x: 58 * TILE, y: gy - 110 },
+      { x: 80 * TILE, y: gy - 110 },
+      { x: 102 * TILE, y: gy - 110 },
+      { x: 120 * TILE, y: gy - 110 },
     ];
-    orbSpots.forEach(([cx, cy, id], i) => {
-      orbs.push({
-        x: cx * TILE + TILE / 2, y: cy * TILE - 18, r: 12,
-        id: i < 6 ? i : id, got: false, bonus: i >= 6,
-      });
-    });
-    flag = { x: (cols - 3) * TILE, y: groundY - TILE - 96, w: 20, h: 96 };
-    player = { x: 2 * TILE, y: groundY - TILE - 110, w: 56, h: 104, vx: 0, vy: 0, onGround: false, facing: 1 };
     camX = 0;
+    lives = 3;
+    invuln = 0;
+    runT = 0;
+    paintLives();
+  }
+
+  function paintLives() {
+    if (livesEl) livesEl.textContent = '♥'.repeat(Math.max(0, lives)) + '♡'.repeat(Math.max(0, 3 - lives));
   }
 
   function aabb(a, b) {
@@ -289,7 +375,10 @@ window.AcidRun = (() => {
   }
   function solidAt(box, vx, vy) {
     const moved = { x: box.x + vx, y: box.y + vy, w: box.w, h: box.h };
-    for (const p of plats) if (aabb(moved, p)) return p;
+    for (const p of plats) {
+      if (p.dead) continue;
+      if (aabb(moved, p)) return p;
+    }
     return null;
   }
 
@@ -308,10 +397,12 @@ window.AcidRun = (() => {
   function update(dt) {
     if (phase !== 'play') return;
     timeSec += dt;
+    runT += dt;
     timeEl.textContent = formatTime(timeSec);
     if (toastT > 0) { toastT -= dt; if (toastT <= 0) toastEl.classList.remove('on'); }
     if (jumpBuffered > 0) jumpBuffered -= dt;
     if (coyote > 0) coyote -= dt;
+    if (invuln > 0) invuln -= dt;
 
     let inputX = stickX;
     if (keys.KeyA || keys.ArrowLeft) inputX -= 1;
@@ -322,7 +413,7 @@ window.AcidRun = (() => {
     const accel = player.onGround ? MOVE * 3.2 : MOVE * 2.2 * AIR;
     if (inputX) {
       player.vx += inputX * accel * dt;
-      const cap = MOVE * ((keys.ShiftLeft || keys.ShiftRight) ? 1.35 : 1);
+      const cap = MOVE * ((keys.ShiftLeft || keys.ShiftRight) ? 1.28 : 1);
       player.vx = Math.max(-cap, Math.min(cap, player.vx));
     } else if (player.onGround) {
       player.vx *= Math.pow(FRICTION, dt * 60);
@@ -331,11 +422,25 @@ window.AcidRun = (() => {
 
     const wantJump = jumpHeld || keys.Space || keys.ArrowUp || keys.KeyW || jumpBuffered > 0;
     if (wantJump && (player.onGround || coyote > 0)) {
-      player.vy = -JUMP; player.onGround = false; coyote = 0; jumpBuffered = 0; jumpHeld = false;
+      player.vy = -JUMP; player.onGround = false; coyote = 0; jumpBuffered = 0;
     }
+    if (!jumpHeld && player.vy < -280) player.vy *= Math.pow(0.12, dt);
 
     player.vy += GRAV * dt;
-    if (player.vy > 1400) player.vy = 1400;
+    if (player.vy > 1500) player.vy = 1500;
+
+    for (const m of movers) {
+      const prev = m.x;
+      m.t += dt * m.spd;
+      m.x = m.ox + Math.sin(m.t) * m.amp;
+      m.vx = m.x - prev;
+    }
+    for (const p of plats) {
+      if (p.type === 'crumble' && p.life < 0.55) {
+        p.life -= dt;
+        if (p.life <= 0) p.dead = true;
+      }
+    }
 
     const stepX = player.vx * dt;
     if (!solidAt(player, stepX, 0)) player.x += stepX;
@@ -348,41 +453,75 @@ window.AcidRun = (() => {
     const stepY = player.vy * dt;
     const wasOn = player.onGround;
     player.onGround = false;
+    let ride = null;
     if (!solidAt(player, 0, stepY)) player.y += stepY;
     else {
       const hit = solidAt(player, 0, stepY);
-      if (hit) {
-        if (stepY > 0) { player.y = hit.y - player.h - 0.01; player.onGround = true; player.vy = 0; }
-        else { player.y = hit.y + hit.h + 0.01; player.vy = 40; }
+      if (hit && !hit.dead) {
+        if (stepY > 0) {
+          player.y = hit.y - player.h - 0.01;
+          player.onGround = true;
+          player.vy = 0;
+          ride = hit;
+          if (hit.type === 'crumble' && hit.life >= 0.55) hit.life = 0.42;
+        } else { player.y = hit.y + hit.h + 0.01; player.vy = 40; }
       }
     }
-    if (player.onGround) coyote = 0.1;
-    else if (wasOn) coyote = 0.09;
+    if (player.onGround) coyote = 0.07;
+    else if (wasOn) coyote = 0.07;
+    if (ride && ride.type === 'move') player.x += ride.vx;
 
     if (player.x < 0) { player.x = 0; player.vx = 0; }
     if (player.x > worldW - player.w) player.x = worldW - player.w;
-    if (player.y > 14 * TILE + 200) {
-      player.x = Math.max(40, camX + 80); player.y = 0; player.vx = 0; player.vy = 0;
-      toast('Fell'); score = Math.max(baseScore, score - 5); scoreEl.textContent = String(score);
+
+    for (const cp of checkpoints) {
+      if (player.x > cp.x - 20) spawn = cp;
     }
+
+    if (player.y > 14 * TILE + 160) die('Fell');
+
+    const box = player;
+    if (invuln <= 0) {
+      for (const h of hazards) {
+        if (aabb(box, h)) { die('Spikes'); break; }
+      }
+    }
+    for (const f of foes) {
+      f.x += f.dir * f.spd * dt;
+      if (f.x < f.minX) { f.x = f.minX; f.dir = 1; }
+      if (f.x > f.maxX) { f.x = f.maxX; f.dir = -1; }
+      if (invuln <= 0 && aabb(box, f)) {
+        if (player.vy > 80 && player.y + player.h - 16 < f.y + 8) {
+          f.dead = true;
+          player.vy = -JUMP * 0.55;
+          score += 15;
+          scoreEl.textContent = String(score);
+          toast('+15 stomp');
+        } else die('Bitten');
+      }
+    }
+    foes = foes.filter((f) => !f.dead);
+    plats = plats.filter((p) => !p.dead);
 
     for (const o of orbs) {
       if (o.got) continue;
       const dx = (player.x + player.w / 2) - o.x;
       const dy = (player.y + player.h / 2) - o.y;
-      if (dx * dx + dy * dy < (o.r + 18) ** 2) collectOrb(o);
+      if (dx * dx + dy * dy < (o.r + 16) ** 2) collectOrb(o);
     }
 
     if (collected.size === 6 && aabb(player, flag)) {
       phase = 'win';
       toast('Flag!');
+      sessionStorage.setItem('acid-l2-score', String(score));
+      sessionStorage.setItem('acid-l2-time', String(Math.floor(timeSec)));
       const root = document.getElementById('root');
       const win = root?.querySelector('.acid-win');
       const winStats = root?.querySelector('.acid-win-stats');
       if (winStats) winStats.textContent = `Score ${score} · Time ${formatTime(timeSec)}`;
       if (win) win.hidden = false;
       if (root) root.dataset.phase = 'win';
-      setTimeout(() => { location.href = EXIT_URL; }, 1400);
+      setTimeout(() => { location.href = EXIT_URL + '?score=' + score + '&time=' + Math.floor(timeSec); }, 1800);
       if (typeof onComplete === 'function') onComplete({ score, timeSec });
     }
 
@@ -390,6 +529,28 @@ window.AcidRun = (() => {
     const target = player.x + player.w / 2 - viewW * 0.35;
     camX += (target - camX) * Math.min(1, 6 * dt);
     camX = Math.max(0, Math.min(worldW - viewW, camX));
+  }
+
+  function die(msg) {
+    if (invuln > 0) return;
+    lives -= 1;
+    paintLives();
+    invuln = 1.05;
+    toast(msg);
+    player.x = spawn.x;
+    player.y = spawn.y;
+    player.vx = 0;
+    player.vy = 0;
+    if (lives <= 0) {
+      toast('Again from the start.');
+      lives = 3;
+      paintLives();
+      collected.clear();
+      pips.forEach((el) => el.classList.remove('on'));
+      buildLevel();
+      score = baseScore;
+      scoreEl.textContent = String(score);
+    }
   }
 
   function draw() {
@@ -411,10 +572,35 @@ window.AcidRun = (() => {
         ctx.fillStyle = '#b44cff'; ctx.fillRect(p.x, p.y, p.w, 4);
       } else if (p.type === 'brick') {
         ctx.fillStyle = '#6b2abf'; ctx.fillRect(p.x, p.y, p.w - 1, p.h - 1);
+      } else if (p.type === 'crumble') {
+        ctx.fillStyle = p.life < 0.55 ? '#c45a2a' : '#c9a227';
+        ctx.fillRect(p.x, p.y, p.w, p.h);
+        if (p.life < 0.55) ctx.fillStyle = '#f5e000', ctx.fillRect(p.x, p.y, p.w * (p.life / 0.55), 3);
+      } else if (p.type === 'move') {
+        ctx.fillStyle = '#7dffd4'; ctx.fillRect(p.x, p.y, p.w, p.h);
+        ctx.fillStyle = '#f5e000'; ctx.fillRect(p.x, p.y + p.h - 4, p.w, 4);
       } else {
         ctx.fillStyle = '#f5e000'; ctx.fillRect(p.x, p.y, p.w, p.h);
         ctx.fillStyle = '#b44cff'; ctx.fillRect(p.x, p.y + p.h - 4, p.w, 4);
       }
+    }
+    for (const h of hazards) {
+      ctx.fillStyle = '#ff3b3b';
+      ctx.beginPath();
+      ctx.moveTo(h.x, h.y + h.h);
+      ctx.lineTo(h.x + h.w / 2, h.y);
+      ctx.lineTo(h.x + h.w, h.y + h.h);
+      ctx.closePath();
+      ctx.fill();
+    }
+    for (const f of foes) {
+      ctx.fillStyle = '#1a0a2e';
+      ctx.beginPath();
+      ctx.ellipse(f.x + f.w / 2, f.y + f.h / 2, f.w / 2, f.h / 2, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#ff3b3b';
+      ctx.fillRect(f.x + 6, f.y + 10, 4, 4);
+      ctx.fillRect(f.x + f.w - 10, f.y + 10, 4, 4);
     }
     ctx.fillStyle = '#888'; ctx.fillRect(flag.x + 8, flag.y, 4, flag.h);
     ctx.fillStyle = collected.size === 6 ? '#f5e000' : '#555566';
@@ -433,6 +619,7 @@ window.AcidRun = (() => {
       ctx.save();
       ctx.translate(player.x + player.w / 2, player.y + player.h);
       ctx.scale(player.facing, 1);
+      ctx.globalAlpha = invuln > 0 && Math.sin(runT * 24) > 0 ? 0.4 : 1;
       ctx.imageSmoothingEnabled = true;
       const dw = player.w * 1.35, dh = player.h * 1.25;
       ctx.drawImage(rabbit, -dw / 2, -dh, dw, dh);
@@ -443,7 +630,7 @@ window.AcidRun = (() => {
     ctx.restore();
     ctx.fillStyle = collected.size < 6 ? 'rgba(244,240,232,0.55)' : '#f5e000';
     ctx.font = '12px IBM Plex Sans, sans-serif';
-    ctx.fillText(collected.size < 6 ? 'Grab all 6 colors, then the flag' : 'Flag unlocked — run right!', 14, H - 18);
+    ctx.fillText(collected.size < 6 ? 'Six colors. Then the flag. Don\'t waste hearts.' : 'Flag is live — finish right.', 14, H - 18);
   }
 
   function frame(now) {
@@ -494,10 +681,13 @@ window.AcidRun = (() => {
       if (phase !== 'play') return;
       keys[e.code] = true;
       if (e.code === 'Space' || e.code === 'ArrowUp' || e.code === 'KeyW') {
-        e.preventDefault(); jumpBuffered = 0.14;
+        e.preventDefault(); jumpBuffered = 0.14; jumpHeld = true;
       }
     });
-    addEventListener('keyup', (e) => { keys[e.code] = false; });
+    addEventListener('keyup', (e) => {
+      keys[e.code] = false;
+      if (e.code === 'Space' || e.code === 'ArrowUp' || e.code === 'KeyW') jumpHeld = false;
+    });
   }
 
   function start(opts = {}) {

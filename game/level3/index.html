@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>Acid Maze — Level 3 · Uranus Mantle</title>
+  <meta name="theme-color" content="#041018">
+  <meta name="description" content="Level 3: hunt the ammonia sea of Uranus as the Acid Maze rabbit. The core is a black hole you almost escape.">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+  <script type="importmap">
+  { "imports": { "three": "https://unpkg.com/three@0.186.0/build/three.module.js" } }
+  </script>
+  <style>
+:root {
+  --color-bg: #041018;
+  --color-surface: #0c1c24;
+  --color-fg: #e8f6f4;
+  --color-muted: #7ea8a4;
+  --color-primary: #7dffd4;
+  --color-accent: #b44cff;
+  --color-warn: #f5e000;
+  --font-sans: "IBM Plex Sans", system-ui, sans-serif;
+  --font-display: "Press Start 2P", ui-monospace, monospace;
+}
+html, body, #root { height:100%; margin:0; background:#041018; color:#e8f6f4; font-family:var(--font-sans); }
+button:not(:disabled), [role="button"]:not(:disabled) { cursor:pointer; }
+.acid-root { position:relative; width:100%; height:100dvh; overflow:hidden; touch-action:none; user-select:none; background:#041018; }
+.acid-canvas { display:block; position:absolute; inset:0; width:100%!important; height:100%!important; touch-action:none; background:#041018; z-index:0; }
+.acid-hud { position:absolute; inset:0; pointer-events:none; padding:calc(10px + env(safe-area-inset-top)) 12px; z-index:2; }
+.acid-chip { position:absolute; display:flex; flex-direction:column; gap:3px; padding:8px 10px; border-radius:10px; background:rgba(4,16,24,.72); border:1px solid rgba(232,246,244,.12); font-variant-numeric:tabular-nums; }
+.acid-rank { top:calc(10px + env(safe-area-inset-top)); left:10px; }
+.acid-rank-name { font-family:var(--font-display); font-size:8px; letter-spacing:.04em; color:var(--color-primary); }
+.acid-hp { width:110px; height:7px; border-radius:99px; background:#132228; overflow:hidden; border:1px solid rgba(232,246,244,.16); }
+.acid-hp > i { display:block; height:100%; width:100%; background:linear-gradient(90deg,#7dffd4,#f5e000); transform-origin:left; }
+.acid-score { top:calc(10px + env(safe-area-inset-top)); right:10px; align-items:flex-end; }
+.acid-time { top:calc(58px + env(safe-area-inset-top)); right:10px; align-items:flex-end; }
+.acid-depth { top:calc(106px + env(safe-area-inset-top)); right:10px; align-items:flex-end; }
+.acid-score-label { font-size:10px; color:var(--color-muted); letter-spacing:.08em; }
+.acid-score-val { font-family:var(--font-display); font-size:12px; color:var(--color-primary); }
+.acid-missions { position:absolute; top:calc(78px + env(safe-area-inset-top)); left:10px; gap:5px; max-width:46vw; }
+.acid-missions li { list-style:none; margin:0; padding:0; font-size:11px; color:var(--color-muted); display:flex; gap:6px; align-items:center; }
+.acid-missions ul { margin:0; padding:0; display:flex; flex-direction:column; gap:4px; }
+.acid-missions li.is-on { color:var(--color-primary); }
+.acid-missions li i { width:7px; height:7px; border-radius:50%; background:transparent; border:1px solid var(--color-primary); flex:0 0 auto; }
+.acid-missions li.is-on i { background:var(--color-primary); box-shadow:0 0 8px var(--color-primary); }
+.acid-escape { position:absolute; left:50%; top:calc(12px + env(safe-area-inset-top)); transform:translateX(-50%); width:min(280px,70vw); display:none; }
+.acid-root[data-stage="hole"] .acid-escape { display:flex; }
+.acid-root[data-stage="hole"] .acid-missions { display:none; }
+.acid-escape-track { height:8px; border-radius:99px; background:#132228; border:1px solid rgba(245,224,0,.35); overflow:hidden; }
+.acid-escape-track > i { display:block; height:100%; width:0; background:linear-gradient(90deg,#7dffd4,#f5e000,#fff); }
+.acid-toast { position:absolute; left:50%; top:22%; transform:translate(-50%,-8px); padding:8px 14px; border-radius:999px; background:var(--color-warn); color:#041018; font-weight:600; opacity:0; z-index:3; pointer-events:none; max-width:80vw; text-align:center; transition:opacity 160ms ease, transform 160ms ease; }
+.acid-toast.is-on { opacity:1; transform:translate(-50%,0); }
+.acid-touch { position:absolute; left:0; right:0; bottom:0; height:150px; pointer-events:none; display:none; padding:12px 16px calc(16px + env(safe-area-inset-bottom)); align-items:flex-end; justify-content:space-between; z-index:3; }
+.acid-touch.is-on { display:flex; pointer-events:auto; }
+.acid-stick { width:112px; height:112px; border-radius:50%; border:2px solid rgba(125,255,212,.45); background:rgba(4,16,24,.4); position:relative; }
+.acid-stick i { position:absolute; left:50%; top:50%; width:44px; height:44px; margin:-22px 0 0 -22px; border-radius:50%; background:#7dffd4; }
+.acid-boost { width:88px; height:88px; border-radius:50%; border:0; background:#b44cff; color:#f4f0e8; font-weight:700; font-size:13px; margin-bottom:8px; }
+.acid-overlay { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; padding:20px; background:rgba(4,16,24,.82); z-index:8; }
+.acid-overlay[hidden] { display:none!important; }
+.acid-root[data-phase="play"] .acid-title,
+.acid-root[data-phase="pause"] .acid-title { display:none!important; }
+.acid-title { pointer-events:none; background:linear-gradient(to bottom, rgba(4,16,24,.35) 0%, transparent 22%, transparent 48%, rgba(4,16,24,.92) 100%); align-items:flex-end; }
+.acid-title-inner, .acid-panel { width:min(420px,100%); display:flex; flex-direction:column; gap:12px; align-items:stretch; text-align:center; }
+.acid-title-inner { pointer-events:none; }
+.acid-title .acid-btn { pointer-events:auto; }
+.acid-kicker { margin:0; color:var(--color-primary); font-family:var(--font-display); font-size:9px; letter-spacing:.1em; }
+h1,h2 { margin:0; font-family:var(--font-display); font-size:clamp(16px,5.4vw,24px); line-height:1.35; }
+.acid-lead,.acid-help,.acid-win-stats { margin:0; color:var(--color-muted); font-size:14px; line-height:1.5; }
+.acid-help { font-size:12px; }
+.acid-btn { appearance:none; border:0; min-height:52px; padding:16px 22px; border-radius:14px; background:var(--color-primary); color:#041018; font-weight:600; font-size:17px; width:100%; max-width:320px; margin:0 auto; }
+.acid-btn-ghost { background:transparent; color:var(--color-fg); border:1px solid rgba(232,246,244,.18); }
+.acid-btn:active { transform:scale(.98); }
+.minimap { position:absolute; left:10px; bottom:calc(158px + env(safe-area-inset-bottom)); width:88px; height:120px; border-radius:10px; border:1px solid rgba(232,246,244,.16); background:rgba(4,16,24,.55); overflow:hidden; }
+.acid-root[data-stage="hole"] .minimap { display:none; }
+@media (min-width:720px) {
+  .acid-touch { justify-content:flex-start; gap:24px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .acid-toast, .acid-btn { transition:none; }
+}
+  </style>
+</head>
+<body>
+  <div id="root" class="acid-root" data-phase="title" data-stage="mantle">
+    <canvas class="acid-canvas" id="view" aria-label="Uranus Mantle"></canvas>
+    <div class="acid-hud">
+      <div class="acid-chip acid-rank">
+        <span class="acid-rank-name" id="rankName">Ice Fry</span>
+        <span class="acid-hp" aria-label="health"><i id="hpFill"></i></span>
+      </div>
+      <div class="acid-chip acid-missions">
+        <ul id="missions"></ul>
+      </div>
+      <div class="acid-chip acid-score"><span class="acid-score-label">SCORE</span><span class="acid-score-val" id="scoreVal">0</span></div>
+      <div class="acid-chip acid-time"><span class="acid-score-label">TIME</span><span class="acid-score-val" id="timeVal">0:00</span></div>
+      <div class="acid-chip acid-depth"><span class="acid-score-label">DEPTH</span><span class="acid-score-val" id="depthVal">0 km</span></div>
+      <div class="acid-chip acid-escape">
+        <span class="acid-score-label">ESCAPE</span>
+        <div class="acid-escape-track"><i id="escapeFill"></i></div>
+      </div>
+      <canvas class="minimap" id="minimap" width="88" height="120"></canvas>
+    </div>
+    <div class="acid-toast" id="toast"></div>
+    <div class="acid-touch" id="touch">
+      <div class="acid-stick" id="stick" aria-hidden="true"><i></i></div>
+      <button type="button" class="acid-boost" id="boost">BOOST</button>
+    </div>
+
+    <div class="acid-overlay acid-title">
+      <div class="acid-title-inner">
+        <p class="acid-kicker">Furious Acid · Level 3 of 5</p>
+        <h1>Uranus Mantle</h1>
+        <p class="acid-lead">Same rabbit. Superionic ocean of water, ammonia, methane. Eat smaller, flee bigger — they hunt back. Grow enough or the well eats you. Then diamond rain. Then a hole you will almost leave.</p>
+        <button type="button" class="acid-btn" data-act="start">Dive him in</button>
+        <p class="acid-help">W thrust · A / D turn · Space boost</p>
+      </div>
+    </div>
+    <div class="acid-overlay acid-pause" hidden>
+      <div class="acid-panel">
+        <h2>Paused</h2>
+        <button type="button" class="acid-btn" data-act="resume">Resume</button>
+        <button type="button" class="acid-btn acid-btn-ghost" data-act="restart">Restart mantle</button>
+        <a class="acid-btn acid-btn-ghost" href="../level2/index.html" style="display:grid;place-items:center;text-decoration:none;">Level 2</a>
+      </div>
+    </div>
+    <div class="acid-overlay acid-dead" hidden>
+      <div class="acid-panel">
+        <p class="acid-kicker">Eaten</p>
+        <h2>Wrong size.</h2>
+        <p class="acid-win-stats" id="deadStats"></p>
+        <button type="button" class="acid-btn" data-act="restart">Spawn again</button>
+      </div>
+    </div>
+    <div class="acid-overlay acid-end" hidden>
+      <div class="acid-panel">
+        <p class="acid-kicker">That's the last level</p>
+        <h2>You almost made it.</h2>
+        <p class="acid-win-stats" id="endStats"></p>
+        <button type="button" class="acid-btn" data-act="hole-again">Fall in again</button>
+        <button type="button" class="acid-btn acid-btn-ghost" data-act="restart">Back to the mantle</button>
+        <a class="acid-btn acid-btn-ghost" href="../index.html" style="display:grid;place-items:center;text-decoration:none;">Level 1</a>
+      </div>
+    </div>
+  </div>
+  <script type="module" src="./game.js"></script>
+</body>
+</html>
