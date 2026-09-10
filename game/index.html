@@ -29,10 +29,51 @@ html, body, #root { height:100%; margin:0; background:#1a0a2e; color:#f4f0e8; fo
 .acid-pause { position:absolute; inset:0; display:grid; place-items:center; background:rgba(10,4,22,.72); z-index:8; color:#f4f0e8; font-size:14px; }
 .acid-pause[hidden] { display:none !important; }
 .acid-pause button { appearance:none; border:0; min-height:48px; padding:14px 22px; border-radius:12px; background:#f5e000; color:#1a0a2e; font-weight:700; font-size:16px; cursor:pointer; }
+.acid-intro {
+  position:absolute; inset:0; z-index:20; background:#07040f;
+  display:flex; align-items:center; justify-content:center;
+}
+.acid-intro[hidden] { display:none !important; }
+.acid-intro video {
+  position:absolute; inset:0; width:100%; height:100%; object-fit:cover; background:#07040f;
+}
+.acid-skip {
+  position:absolute;
+  top: calc(12px + env(safe-area-inset-top));
+  right: 12px;
+  appearance:none;
+  border:1px solid rgba(244,240,232,.38);
+  background:rgba(7,4,15,.62);
+  color:#f4f0e8;
+  padding:11px 18px;
+  border-radius:999px;
+  font-weight:700;
+  font-size:15px;
+  letter-spacing:.04em;
+  cursor:pointer;
+  z-index:22;
+  pointer-events:auto;
+}
+.acid-unmute {
+  position:absolute;
+  left:50%;
+  bottom: calc(24px + env(safe-area-inset-bottom));
+  transform:translateX(-50%);
+  appearance:none;
+  border:0;
+  background:rgba(7,4,15,.55);
+  color:#f4f0e8;
+  padding:8px 14px;
+  border-radius:999px;
+  font-size:13px;
+  cursor:pointer;
+  z-index:22;
+}
+.acid-unmute[hidden] { display:none !important; }
 </style>
 </head>
 <body>
-  <div id="root" class="acid-root" data-phase="play" data-stage="run">
+  <div id="root" class="acid-root" data-phase="intro" data-stage="run">
     <div id="stage-run" class="is-on" aria-label="Purple Run">
       <canvas class="run-canvas" id="runCanvas"></canvas>
       <p class="run-banner">PURPLE RUN</p>
@@ -51,6 +92,13 @@ html, body, #root { height:100%; margin:0; background:#1a0a2e; color:#f4f0e8; fo
     </div>
     <div class="acid-pause" id="pause" hidden>
       <button type="button" id="resumeBtn">Resume</button>
+    </div>
+    <div class="acid-intro" id="intro" aria-label="Furious Acid intro">
+      <video id="introVid" playsinline webkit-playsinline muted autoplay preload="auto" poster="./intro/poster.jpg">
+        <source src="./intro/open.mp4" type="video/mp4">
+      </video>
+      <button type="button" class="acid-skip" id="skipIntro">Skip intro</button>
+      <button type="button" class="acid-unmute" id="unmuteIntro">Tap for sound</button>
     </div>
   </div>
   <script>
@@ -602,13 +650,63 @@ window.AcidRun = (() => {
     const p = document.getElementById('pause');
     if (p) p.hidden = true;
     if (window.AcidRun) {
-      // resume by flipping phase via a key event
       window.dispatchEvent(new KeyboardEvent('keydown', { code: 'Escape', bubbles: true }));
     }
   });
-  window.addEventListener('load', () => {
-    window.AcidRun.start({ score: 0, timeSec: 0 });
-  });
+
+  (function bootIntro() {
+    const root = document.getElementById('root');
+    const wrap = document.getElementById('intro');
+    const vid = document.getElementById('introVid');
+    const skip = document.getElementById('skipIntro');
+    const unmute = document.getElementById('unmuteIntro');
+    let started = false;
+
+    function startGame() {
+      if (started) return;
+      started = true;
+      if (vid) {
+        vid.pause();
+        vid.removeAttribute('src');
+        vid.load();
+      }
+      if (wrap) wrap.hidden = true;
+      if (root) root.dataset.phase = 'play';
+      window.AcidRun.start({ score: 0, timeSec: 0 });
+    }
+
+    function tryPlay() {
+      if (!vid) return startGame();
+      const p = vid.play();
+      if (p && p.catch) p.catch(() => {});
+    }
+
+    skip.addEventListener('click', (e) => { e.stopPropagation(); startGame(); });
+    unmute.addEventListener('click', (e) => {
+      e.stopPropagation();
+      vid.muted = false;
+      tryPlay();
+      unmute.hidden = true;
+    });
+    wrap.addEventListener('click', () => {
+      if (vid.muted) {
+        vid.muted = false;
+        tryPlay();
+        unmute.hidden = true;
+      }
+    });
+    vid.addEventListener('ended', startGame);
+    vid.addEventListener('error', startGame);
+    addEventListener('keydown', (e) => {
+      if (started) return;
+      if (e.code === 'Escape' || e.code === 'Space' || e.code === 'Enter') {
+        e.preventDefault();
+        startGame();
+      }
+    });
+    window.addEventListener('load', tryPlay);
+    if (vid.readyState >= 2) tryPlay();
+  })();
   </script>
 </body>
 </html>
