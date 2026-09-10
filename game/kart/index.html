@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>Acid Kart — Rabbit vs Duck</title>
+  <meta name="theme-color" content="#1a3a18">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600;700&display=swap">
+<style>
+:root { --bg:#102010; --fg:#f4f0e8; --muted:#b7c9a8; --yellow:#f5e000; --purple:#b44cff; }
+* { box-sizing:border-box; }
+html, body, #root { height:100%; margin:0; background:#102010; color:#f4f0e8; font-family:"IBM Plex Sans", system-ui, sans-serif; overflow:hidden; }
+button:not(:disabled) { cursor:pointer; }
+canvas { display:block; image-rendering:pixelated; image-rendering:crisp-edges; }
+#view { position:absolute; inset:0; width:100%; height:100%; background:#102010; }
+.hud { position:absolute; inset:0; pointer-events:none; padding:calc(10px + env(safe-area-inset-top)) 12px; }
+.chip { position:absolute; padding:8px 10px; border-radius:10px; background:rgba(8,16,8,.72); border:1px solid rgba(244,240,232,.12); font-variant-numeric:tabular-nums; }
+.time { top:calc(10px + env(safe-area-inset-top)); right:12px; text-align:right; font-weight:700; letter-spacing:.04em; }
+.lap { top:calc(10px + env(safe-area-inset-top)); left:12px; }
+.pos { top:calc(52px + env(safe-area-inset-top)); left:12px; color:var(--yellow); font-weight:700; }
+.worlds { pointer-events:auto; position:absolute; left:12px; bottom:calc(12px + env(safe-area-inset-bottom)); color:#f4f0e8; text-decoration:none; font-size:13px; padding:8px 12px; border-radius:999px; background:rgba(8,16,8,.55); border:1px solid rgba(244,240,232,.2); z-index:6; }
+.touch { position:absolute; left:0; right:0; bottom:0; height:150px; display:none; padding:12px; align-items:flex-end; justify-content:space-between; pointer-events:none; z-index:5; }
+.touch.on { display:flex; pointer-events:auto; }
+.stick { width:120px; height:120px; border-radius:50%; border:2px solid rgba(180,76,255,.45); background:rgba(8,16,8,.35); position:relative; }
+.stick i { position:absolute; left:50%; top:50%; width:44px; height:44px; margin:-22px 0 0 -22px; border-radius:50%; background:#b44cff; }
+.gas { width:92px; height:92px; border-radius:50%; border:0; background:#f5e000; color:#102010; font-weight:700; margin-bottom:8px; }
+.overlay { position:absolute; inset:0; display:grid; place-items:center; padding:20px; background:rgba(10,16,10,.82); z-index:8; }
+.overlay[hidden] { display:none !important; }
+.panel { width:min(420px,100%); text-align:center; display:flex; flex-direction:column; gap:12px; align-items:stretch; }
+.kicker { margin:0; color:var(--purple); font-size:11px; letter-spacing:.2em; text-transform:uppercase; font-weight:600; }
+h1,h2 { margin:0; font-size:26px; }
+.pick { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.pick button { appearance:none; border:1px solid rgba(244,240,232,.16); background:rgba(255,255,255,.04); color:#f4f0e8; border-radius:16px; padding:12px 8px; min-height:160px; }
+.pick button img { width:110px; height:110px; object-fit:contain; display:block; margin:0 auto 8px; }
+.pick button.on { border-color:#f5e000; background:rgba(245,224,0,.1); }
+.go { appearance:none; border:0; min-height:52px; border-radius:14px; background:#f5e000; color:#102010; font-weight:700; font-size:17px; }
+.help { margin:0; color:var(--muted); font-size:13px; }
+.count { position:absolute; inset:0; display:grid; place-items:center; font-size:72px; font-weight:800; color:#f5e000; pointer-events:none; z-index:7; text-shadow:0 4px 0 #102010; }
+.count[hidden] { display:none !important; }
+</style>
+</head>
+<body>
+  <div id="root">
+    <canvas id="view" aria-label="Acid Kart"></canvas>
+    <div class="hud">
+      <div class="chip lap">LAP <strong id="lap">1</strong> / 3</div>
+      <div class="chip pos" id="place">1st</div>
+      <div class="chip time" id="time">00'00"00</div>
+    </div>
+    <div class="count" id="count" hidden></div>
+    <div class="touch" id="touch">
+      <div class="stick" id="stick"><i></i></div>
+      <button type="button" class="gas" id="gas">GAS</button>
+    </div>
+    <a class="worlds" href="../index.html">Worlds</a>
+    <div class="overlay" id="select">
+      <div class="panel">
+        <p class="kicker">Acid Kart</p>
+        <h1>Pick your racer</h1>
+        <div class="pick">
+          <button type="button" data-who="rabbit" class="on"><img src="../sprites/rabbit-portrait.png" alt="">Rabbit</button>
+          <button type="button" data-who="duck"><img src="../sprites/duck-portrait.png" alt="">Duck</button>
+        </div>
+        <button type="button" class="go" id="race">Race</button>
+        <p class="help">W gas · A / D steer · S brake · 3 laps</p>
+      </div>
+    </div>
+    <div class="overlay" id="done" hidden>
+      <div class="panel">
+        <p class="kicker" id="doneKicker">Finish</p>
+        <h2 id="doneTitle">That’s the race.</h2>
+        <p class="help" id="doneHelp"></p>
+        <button type="button" class="go" id="again">Race again</button>
+        <a class="go" href="../index.html" style="display:grid;place-items:center;text-decoration:none;background:transparent;color:#f4f0e8;border:1px solid rgba(244,240,232,.2);">Worlds</a>
+      </div>
+    </div>
+  </div>
+<script>
+const WORLD = 1024;
+const CTR = [
+  [512,900],[620,890],[740,850],[850,740],[900,600],[880,470],
+  [800,360],[680,280],[540,230],[400,210],[280,240],[190,320],
+  [150,430],[155,540],[210,640],[300,700],[400,740],[455,800],[480,860],[512,900]
+];
+
+function catmull(pts, n) {
+  const p = [pts[pts.length-2], ...pts, pts[1]];
+  const out = [];
+  for (let i = 1; i < p.length-2; i++) {
+    const p0=p[i-1], p1=p[i], p2=p[i+1], p3=p[i+2];
+    for (let k=0;k<n;k++) {
+      const t=k/n, t2=t*t, t3=t2*t;
+      out.push([
+        0.5*((2*p1[0])+(-p0[0]+p2[0])*t+(2*p0[0]-5*p1[0]+4*p2[0]-p3[0])*t2+(-p0[0]+3*p1[0]-3*p2[0]+p3[0])*t3),
+        0.5*((2*p1[1])+(-p0[1]+p2[1])*t+(2*p0[1]-5*p1[1]+4*p2[1]-p3[1])*t2+(-p0[1]+3*p1[1]-3*p2[1]+p3[1])*t3)
+      ]);
+    }
+  }
+  return out;
+}
+const PATH = catmull(CTR, 12);
+const CPS = [];
+(function makeCps() {
+  const step = Math.floor(PATH.length / 8);
+  for (let i = 0; i < 8; i++) CPS.push(PATH[(i*step)%PATH.length]);
+})();
+
+const canvas = document.getElementById('view');
+const ctx = canvas.getContext('2d', { alpha: false });
+const lapEl = document.getElementById('lap');
+const placeEl = document.getElementById('place');
+const timeEl = document.getElementById('time');
+const countEl = document.getElementById('count');
+const selectEl = document.getElementById('select');
+const doneEl = document.getElementById('done');
+const touchEl = document.getElementById('touch');
+const stickEl = document.getElementById('stick');
+const stickKnob = stickEl.querySelector('i');
+const gasBtn = document.getElementById('gas');
+
+const imgs = {};
+function loadImg(src) {
+  const im = new Image();
+  im.src = src;
+  return im;
+}
+imgs.track = loadImg('./track.jpg');
+imgs.rabbitFront = loadImg('./sprites/rabbit-front.png');
+imgs.rabbitSide = loadImg('./sprites/rabbit-side.png');
+imgs.duckFront = loadImg('./sprites/duck-front.png');
+imgs.duckBack = loadImg('./sprites/duck-back.png');
+imgs.duckSideL = loadImg('./sprites/duck-side-l.png');
+imgs.duckSideR = loadImg('./sprites/duck-side-r.png');
+imgs.duckQ = loadImg('./sprites/duck-threeq.png');
+
+let trackData = null, tw = 0, th = 0;
+imgs.track.onload = () => {
+  const c = document.createElement('canvas');
+  tw = c.width = imgs.track.width;
+  th = c.height = imgs.track.height;
+  const g = c.getContext('2d');
+  g.drawImage(imgs.track, 0, 0);
+  trackData = g.getImageData(0, 0, tw, th).data;
+};
+
+function groundAt(x, y) {
+  if (!trackData) return 'road';
+  let u = Math.floor((x / WORLD) * tw);
+  let v = Math.floor((y / WORLD) * th);
+  if (u < 0 || v < 0 || u >= tw || v >= th) return 'grass';
+  const i = (v * tw + u) * 4;
+  const r = trackData[i], g = trackData[i+1], b = trackData[i+2];
+  if (g > r + 18 && g > b + 12) return 'grass';
+  if (r > 180 && g < 90) return 'curb';
+  if (Math.abs(r - g) < 22 && r < 130) return 'road';
+  return 'dirt';
+}
+
+const keys = new Set();
+let steerPad = 0, gasHeld = false, qaSteer = null, qaKeys = null;
+addEventListener('keydown', (e) => { keys.add(e.code); if (['Space','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.code)) e.preventDefault(); });
+addEventListener('keyup', (e) => keys.delete(e.code));
+addEventListener('blur', () => keys.clear());
+
+function held(code) {
+  if (qaKeys) return qaKeys.includes(code);
+  return keys.has(code);
+}
+
+(function wireTouch() {
+  const touch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+  touchEl.classList.toggle('on', touch);
+  let id = null;
+  stickEl.addEventListener('pointerdown', (e) => {
+    id = e.pointerId; stickEl.setPointerCapture(e.pointerId);
+    const r = stickEl.getBoundingClientRect();
+    steerPad = Math.max(-1, Math.min(1, (e.clientX - (r.left + r.width/2)) / (r.width*0.5)));
+    stickKnob.style.transform = `translate(${steerPad*28}px,0)`;
+  });
+  stickEl.addEventListener('pointermove', (e) => {
+    if (e.pointerId !== id) return;
+    const r = stickEl.getBoundingClientRect();
+    steerPad = Math.max(-1, Math.min(1, (e.clientX - (r.left + r.width/2)) / (r.width*0.5)));
+    stickKnob.style.transform = `translate(${steerPad*28}px,0)`;
+  });
+  const end = (e) => { if (e.pointerId === id) { id = null; steerPad = 0; stickKnob.style.transform = ''; } };
+  stickEl.addEventListener('pointerup', end);
+  stickEl.addEventListener('pointercancel', end);
+  gasBtn.addEventListener('pointerdown', (e) => { e.preventDefault(); gasHeld = true; });
+  gasBtn.addEventListener('pointerup', () => { gasHeld = false; });
+})();
+
+let who = 'rabbit';
+document.querySelectorAll('[data-who]').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    who = btn.dataset.who;
+    document.querySelectorAll('[data-who]').forEach((b) => b.classList.toggle('on', b === btn));
+  });
+});
+
+function spawnKart(kind, pathI, offset) {
+  const p = PATH[pathI];
+  const n = PATH[(pathI+4)%PATH.length];
+  const dx = n[0]-p[0], dy = n[1]-p[1];
+  const yaw = Math.atan2(-dx, dy); // matches fx=-sin, fy=-cos
+  const rx = Math.cos(yaw), ry = -Math.sin(yaw);
+  return {
+    kind, x: p[0] + rx*offset, y: p[1] + ry*offset, yaw,
+    speed: 0, vx: 0, vy: 0, lap: 0, cp: 0, finish: false, t: 0
+  };
+}
+
+let player, cpu, racing = false, tRace = 0, last = 0, countdown = 0;
+const CAM_H = 42, FOCAL = 180, HORIZON = 0.38;
+
+function startRace() {
+  player = spawnKart(who, 0, -10);
+  cpu = spawnKart(who === 'rabbit' ? 'duck' : 'rabbit', 2, 10);
+  racing = false;
+  tRace = 0;
+  countdown = 3.2;
+  selectEl.hidden = true;
+  doneEl.hidden = true;
+  last = performance.now();
+}
+
+document.getElementById('race').addEventListener('click', startRace);
+document.getElementById('again').addEventListener('click', () => { selectEl.hidden = false; doneEl.hidden = true; });
+
+function inputSteer() {
+  if (qaSteer != null) return qaSteer;
+  let s = 0;
+  if (held('KeyA') || held('ArrowLeft')) s += 1;
+  if (held('KeyD') || held('ArrowRight')) s -= 1;
+  s += -steerPad; // stick right should turn right = -yaw? pad +1 is right, want -1 steer
+  // wait: steerPad +1 is stick to the right = D = steer -1. So s += -steerPad. Yes if pad is +1 right.
+  return Math.max(-1, Math.min(1, s));
+}
+function inputGas() {
+  return held('KeyW') || held('ArrowUp') || gasHeld;
+}
+function inputBrake() {
+  return held('KeyS') || held('ArrowDown');
+}
+
+function nearestPath(x, y) {
+  let best = 0, bd = 1e12;
+  for (let i = 0; i < PATH.length; i++) {
+    const dx = PATH[i][0]-x, dy = PATH[i][1]-y, d = dx*dx+dy*dy;
+    if (d < bd) { bd = d; best = i; }
+  }
+  return best;
+}
+
+function stepKart(k, dt, ai) {
+  let steer = 0, gas = 0, brake = 0;
+  if (ai) {
+    const i = nearestPath(k.x, k.y);
+    const look = PATH[(i + 10) % PATH.length];
+    const fx = -Math.sin(k.yaw), fy = -Math.cos(k.yaw);
+    const wantX = look[0]-k.x, wantY = look[1]-k.y;
+    const cross = fx*wantY - fy*wantX;
+    const dot = fx*wantX + fy*wantY;
+    steer = Math.max(-1, Math.min(1, -Math.atan2(cross, dot) * 1.6));
+    // A is +yaw = left. If target is left, we want +steer.
+    // atan2(cross,dot) is signed angle from forward to target, positive CCW in x/y-down? 
+    // fx,fy; cross = fx*wy - fy*wx. Standard 2D x right y down is clockwise positive...
+    // Let's use: target left of nose should +yaw.
+    // right = (cos(yaw), -sin(yaw)); yaw0 right=(1,0)
+    // If target is to the left, dot(right, want) < 0, we want +yaw.
+    const rx = Math.cos(k.yaw), ry = -Math.sin(k.yaw);
+    const side = rx*wantX + ry*wantY;
+    steer = Math.max(-1, Math.min(1, -side * 0.04));
+    gas = 1;
+    if (k.lap > player.lap || (k.lap === player.lap && k.cp > player.cp + 1)) gas = 0.72;
+    if (player.lap > k.lap) gas = 1;
+  } else {
+    steer = inputSteer();
+    gas = inputGas() ? 1 : 0;
+    brake = inputBrake() ? 1 : 0;
+  }
+
+  const gnd = groundAt(k.x, k.y);
+  const off = gnd === 'grass' || gnd === 'curb';
+  const max = off ? 78 : 172;
+  const acc = (gnd === 'dirt' ? 70 : 96);
+  if (gas) k.speed += acc * dt;
+  if (brake) k.speed -= 140 * dt;
+  k.speed *= Math.exp(-(off ? 3.4 : 0.55) * dt);
+  if (k.speed > max) k.speed = max;
+  if (k.speed < -40) k.speed = -40;
+
+  const spdF = Math.min(1, Math.abs(k.speed) / 40);
+  const reverse = k.speed >= 0 ? 1 : -1;
+  k.yaw += steer * 2.35 * spdF * reverse * dt;
+
+  const fx = -Math.sin(k.yaw), fy = -Math.cos(k.yaw);
+  k.x += fx * k.speed * dt;
+  k.y += fy * k.speed * dt;
+
+  // wrap not needed; soft push back if far off map
+  k.x = Math.max(20, Math.min(WORLD-20, k.x));
+  k.y = Math.max(20, Math.min(WORLD-20, k.y));
+
+  // checkpoints
+  const cp = CPS[k.cp % CPS.length];
+  const dx = k.x-cp[0], dy = k.y-cp[1];
+  if (dx*dx+dy*dy < 55*55) {
+    k.cp++;
+    if (k.cp % CPS.length === 0) {
+      k.lap++;
+      if (k === player) lapEl.textContent = String(Math.min(3, k.lap+1));
+      if (k.lap >= 3 && !k.finish) {
+        k.finish = true;
+        k.t = tRace;
+        if (k === player) finishRace();
+      }
+    }
+  }
+}
+
+function finishRace() {
+  racing = false;
+  const youWin = !cpu.finish || player.t <= cpu.t;
+  document.getElementById('doneKicker').textContent = youWin ? 'First' : 'Second';
+  document.getElementById('doneTitle').textContent = youWin ? 'You took it.' : 'The other one got there.';
+  document.getElementById('doneHelp').textContent = fmt(tRace);
+  doneEl.hidden = false;
+}
+
+function fmt(t) {
+  const cs = Math.floor(t * 100);
+  const m = Math.floor(cs / 6000);
+  const s = Math.floor((cs % 6000) / 100);
+  const c = cs % 100;
+  return String(m).padStart(2,'0') + "'" + String(s).padStart(2,'0') + '"' + String(c).padStart(2,'0');
+}
+
+function project(wx, wy, cam) {
+  const relx = wx - cam.x, rely = wy - cam.y;
+  const fx = -Math.sin(cam.yaw), fy = -Math.cos(cam.yaw);
+  const rx = Math.cos(cam.yaw), ry = -Math.sin(cam.yaw);
+  const depth = relx*fx + rely*fy;
+  const lat = relx*rx + rely*ry;
+  return { depth, lat };
+}
+
+function drawMode7(W, H, cam) {
+  const horizon = Math.floor(H * HORIZON);
+  // sky
+  const g = ctx.createLinearGradient(0, 0, 0, horizon);
+  g.addColorStop(0, '#cfe7ff'); g.addColorStop(1, '#9ec56a');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, horizon);
+  ctx.fillStyle = '#5aa24a';
+  ctx.beginPath();
+  ctx.moveTo(0, horizon);
+  for (let x = 0; x <= W; x += 8) {
+    const h = 18 + Math.sin(x * 0.04 + cam.yaw) * 10;
+    ctx.lineTo(x, horizon - h);
+  }
+  ctx.lineTo(W, horizon); ctx.closePath(); ctx.fill();
+
+  if (!imgs.track.complete) {
+    ctx.fillStyle = '#3d8c38'; ctx.fillRect(0, horizon, W, H-horizon); return;
+  }
+  const fx = -Math.sin(cam.yaw), fy = -Math.cos(cam.yaw);
+  const rx = Math.cos(cam.yaw), ry = -Math.sin(cam.yaw);
+  const img = imgs.track;
+  const scale = 1.15;
+  for (let sy = horizon + 1; sy < H; sy++) {
+    const row = sy - horizon;
+    const dist = (CAM_H * FOCAL) / (row * scale);
+    const lat0 = dist / FOCAL;
+    // one row: sample along
+    for (let sx = 0; sx < W; sx++) {
+      const lat = (sx - W/2) * lat0;
+      const wx = cam.x + fx * dist + rx * lat;
+      const wy = cam.y + fy * dist + ry * lat;
+      const u = (wx / WORLD) * img.width;
+      const v = (wy / WORLD) * img.height;
+      // wrap not; clamp color via drawImage 1px is too slow.
+      // We'll draw the whole row with drawImage stretch from a source line — can't easily.
+      // Per-pixel is OK at 240 width.
+      ctx.fillStyle = sampleColor(wx, wy);
+      ctx.fillRect(sx, sy, 1, 1);
+    }
+  }
+}
+
+function sampleColor(x, y) {
+  if (!trackData) return '#3d8c38';
+  let u = Math.floor((x / WORLD) * tw);
+  let v = Math.floor((y / WORLD) * th);
+  if (u < 0 || v < 0 || u >= tw || v >= th) return '#2e7a32';
+  const i = (v * tw + u) * 4;
+  return 'rgb(' + trackData[i] + ',' + trackData[i+1] + ',' + trackData[i+2] + ')';
+}
+
+function spriteFor(k, camYaw) {
+  let a = k.yaw - camYaw;
+  while (a < -Math.PI) a += Math.PI*2;
+  while (a > Math.PI) a -= Math.PI*2;
+  const ad = ((a + Math.PI) / (Math.PI*2)); // 0 behind? 
+  // relative 0 means kart faces same as cam = we see BACK
+  if (k.kind === 'duck') {
+    const aa = Math.abs(a);
+    if (aa < 0.5) return imgs.duckBack;
+    if (aa > 2.4) return imgs.duckFront;
+    if (a > 0) return imgs.duckSideL;
+    return imgs.duckSideR;
+  }
+  const aa = Math.abs(a);
+  if (aa < 0.8 || aa > 2.2) return imgs.rabbitFront;
+  return imgs.rabbitSide;
+}
+
+function drawKartBillboard(k, cam, W, H) {
+  const p = project(k.x, k.y, cam);
+  if (p.depth < 8 || p.depth > 520) return;
+  const horizon = H * HORIZON;
+  const scale = 1.05;
+  const bufW = 160, bufH = 90, h0 = Math.floor(bufH * HORIZON);
+  const row = (CAM_H * FOCAL) / (p.depth * scale);
+  const sy = horizon + row * ((H - horizon) / Math.max(1, bufH - h0));
+  const sx = W/2 + (p.lat * FOCAL / p.depth) * (W / bufW);
+  const sc = Math.max(14, 780 / p.depth);
+  const img = spriteFor(k, cam.yaw);
+  // kart body
+  ctx.fillStyle = k.kind === 'rabbit' ? '#5a2a9a' : '#1a1a22';
+  ctx.beginPath();
+  ctx.ellipse(sx, sy - sc*0.12, sc*0.42, sc*0.18, 0, 0, Math.PI*2);
+  ctx.fill();
+  ctx.fillStyle = '#c8c8d0';
+  ctx.beginPath(); ctx.ellipse(sx - sc*0.28, sy - sc*0.02, sc*0.12, sc*0.12, 0, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.ellipse(sx + sc*0.28, sy - sc*0.02, sc*0.12, sc*0.12, 0, 0, Math.PI*2); ctx.fill();
+  if (img && img.complete) {
+    const iw = sc * 1.05, ih = sc * 1.15;
+    ctx.drawImage(img, sx - iw/2, sy - ih, iw, ih);
+  }
+}
+
+function drawMap(mx, my, mw, mh, cam) {
+  ctx.save();
+  ctx.beginPath(); ctx.rect(mx, my, mw, mh); ctx.clip();
+  ctx.fillStyle = '#245c28'; ctx.fillRect(mx, my, mw, mh);
+  if (imgs.track.complete) ctx.drawImage(imgs.track, mx, my, mw, mh);
+  const toX = (x) => mx + (x / WORLD) * mw;
+  const toY = (y) => my + (y / WORLD) * mh;
+  const dots = [
+    [player, who === 'rabbit' ? '#b44cff' : '#222'],
+    [cpu, who === 'rabbit' ? '#222' : '#b44cff']
+  ];
+  for (const [k, col] of dots) {
+    ctx.fillStyle = col;
+    ctx.beginPath(); ctx.arc(toX(k.x), toY(k.y), 5, 0, Math.PI*2); ctx.fill();
+    const fx = -Math.sin(k.yaw), fy = -Math.cos(k.yaw);
+    ctx.strokeStyle = '#f5e000'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(toX(k.x), toY(k.y)); ctx.lineTo(toX(k.x+fx*18), toY(k.y+fy*18)); ctx.stroke();
+  }
+  ctx.restore();
+  ctx.strokeStyle = 'rgba(244,240,232,.25)'; ctx.strokeRect(mx+0.5, my+0.5, mw-1, mh-1);
+}
+
+function resize() {
+  const dpr = Math.min(devicePixelRatio || 1, 2);
+  canvas.width = Math.floor(innerWidth * dpr);
+  canvas.height = Math.floor(innerHeight * dpr);
+  canvas.style.width = innerWidth + 'px';
+  canvas.style.height = innerHeight + 'px';
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+addEventListener('resize', resize);
+resize();
+
+function frame(now) {
+  const dt = Math.min(0.033, (now - last) / 1000);
+  last = now;
+  if (player) {
+    if (countdown > 0) {
+      if (qaKeys) { countdown = 0; racing = true; countEl.hidden = true; }
+      else {
+        countdown -= dt;
+        const n = Math.ceil(countdown);
+        countEl.hidden = countdown <= 0;
+        countEl.textContent = countdown <= 0 ? 'GO' : String(Math.max(1, n));
+        if (countdown <= 0) { racing = true; countEl.hidden = true; }
+      }
+    }
+    if (racing) {
+      tRace += dt;
+      timeEl.textContent = fmt(tRace);
+      stepKart(player, dt, false);
+      stepKart(cpu, dt, true);
+      const youAhead = player.lap > cpu.lap || (player.lap === cpu.lap && player.cp >= cpu.cp);
+      placeEl.textContent = youAhead ? '1st' : '2nd';
+    }
+
+    const W = innerWidth, H = innerHeight;
+    ctx.fillStyle = '#102010'; ctx.fillRect(0, 0, W, H);
+    const mapH = Math.min(220, Math.floor(H * 0.32));
+    const viewH = H - mapH;
+    const fx = -Math.sin(player.yaw), fy = -Math.cos(player.yaw);
+    const cam = { x: player.x - fx * 22, y: player.y - fy * 22, yaw: player.yaw };
+    ctx.save();
+    ctx.beginPath(); ctx.rect(0, 0, W, viewH); ctx.clip();
+    ctx.imageSmoothingEnabled = false;
+    drawMode7Fast(W, viewH, cam);
+    const sprites = [cpu, player].sort((a,b) => project(b.x,b.y,cam).depth - project(a.x,a.y,cam).depth);
+    for (const k of sprites) drawKartBillboard(k, cam, W, viewH);
+    ctx.restore();
+    drawMap(0, viewH, W, mapH, cam);
+  }
+  requestAnimationFrame(frame);
+}
+
+function drawMode7Fast(W, H, cam) {
+  const horizon = Math.floor(H * HORIZON);
+  const g = ctx.createLinearGradient(0, 0, 0, horizon);
+  g.addColorStop(0, '#d7ecff'); g.addColorStop(1, '#8ec45e');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, horizon);
+  ctx.fillStyle = '#4f9a44';
+  ctx.beginPath(); ctx.moveTo(0, horizon);
+  for (let x = 0; x <= W; x += 10) ctx.lineTo(x, horizon - (16 + Math.sin(x*0.03 + cam.yaw*2)*8));
+  ctx.lineTo(W, horizon); ctx.closePath(); ctx.fill();
+
+  const dw = 160, dh = 90;
+  if (!drawMode7Fast._c) {
+    drawMode7Fast._c = document.createElement('canvas');
+    drawMode7Fast._c.width = dw; drawMode7Fast._c.height = dh;
+    drawMode7Fast._x = drawMode7Fast._c.getContext('2d');
+    drawMode7Fast._img = drawMode7Fast._x.createImageData(dw, dh);
+  }
+  const id = drawMode7Fast._img;
+  const pix = id.data;
+  const h0 = Math.floor(dh * HORIZON);
+  if (!trackData) {
+    ctx.fillStyle = '#3d8c38'; ctx.fillRect(0, horizon, W, H-horizon); return;
+  }
+  const fx = -Math.sin(cam.yaw), fy = -Math.cos(cam.yaw);
+  const rx = Math.cos(cam.yaw), ry = -Math.sin(cam.yaw);
+  const scale = 1.05;
+  for (let sy = 0; sy < dh; sy++) {
+    if (sy <= h0) {
+      for (let sx = 0; sx < dw; sx++) {
+        const i = (sy * dw + sx) * 4;
+        pix[i] = 180; pix[i+1] = 220; pix[i+2] = 140; pix[i+3] = 0;
+      }
+      continue;
+    }
+    const row = sy - h0;
+    const dist = (CAM_H * FOCAL) / (row * scale);
+    const lat0 = dist / FOCAL;
+    for (let sx = 0; sx < dw; sx++) {
+      const lat = (sx - dw/2) * lat0;
+      const wx = cam.x + fx * dist + rx * lat;
+      const wy = cam.y + fy * dist + ry * lat;
+      let u = (wx / WORLD) * tw | 0;
+      let v = (wy / WORLD) * th | 0;
+      const i = (sy * dw + sx) * 4;
+      if (u < 0 || v < 0 || u >= tw || v >= th) {
+        pix[i]=46; pix[i+1]=122; pix[i+2]=50; pix[i+3]=255;
+      } else {
+        const t = (v * tw + u) * 4;
+        pix[i]=trackData[t]; pix[i+1]=trackData[t+1]; pix[i+2]=trackData[t+2]; pix[i+3]=255;
+      }
+    }
+  }
+  drawMode7Fast._x.putImageData(id, 0, 0);
+  ctx.imageSmoothingEnabled = false;
+  ctx.drawImage(drawMode7Fast._c, 0, h0, dw, dh-h0, 0, horizon, W, H-horizon);
+}
+
+window.__controlsTest = {
+  getYaw: () => player ? player.yaw : 0,
+  getSpeed: () => player ? player.speed : 0,
+  setSteer: (v) => { qaSteer = v; },
+  setKeys: (codes) => { qaKeys = codes; }
+};
+
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>

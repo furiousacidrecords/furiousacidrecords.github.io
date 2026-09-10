@@ -3,709 +3,140 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-  <title>Acid Maze</title>
-  <meta name="theme-color" content="#1a0a2e">
-  <meta name="description" content="Acid Maze — Purple Run. Same rabbit. No menu.">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&display=swap">
+  <title>Furious Acid — Worlds</title>
+  <meta name="theme-color" content="#12081c">
+  <meta name="description" content="Furious Acid worlds: Purple Run, Acid Maze, Uranus Mantle, Diamond Rain, Event Horizon, Acid Kart.">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
 <style>
-html, body, #root { height:100%; margin:0; background:#1a0a2e; color:#f4f0e8; font-family:"IBM Plex Sans", system-ui, sans-serif; }
-.acid-root { position:relative; width:100%; height:100dvh; overflow:hidden; touch-action:none; user-select:none; background:#1a0a2e; }
-#stage-run { position:absolute; inset:0; background:#1a0a2e; }
-#stage-run canvas { display:block; width:100%; height:100%; image-rendering:pixelated; }
-.run-hud { position:absolute; inset:0; pointer-events:none; padding:calc(10px + env(safe-area-inset-top)) 12px; z-index:2; }
-.run-chip { display:inline-flex; gap:8px; align-items:center; padding:8px 10px; border-radius:10px; background:rgba(7,6,11,.72); border:1px solid rgba(244,240,232,.12); font-variant-numeric:tabular-nums; }
-.run-pips { position:absolute; top:calc(10px + env(safe-area-inset-top)); right:12px; display:flex; gap:6px; }
-.run-pips i { width:12px; height:12px; border-radius:50%; background:var(--z); opacity:.25; }
-.run-pips i.on { opacity:1; box-shadow:0 0 10px var(--z); }
-.run-score { position:absolute; top:calc(10px + env(safe-area-inset-top)); left:12px; }
-.run-toast { position:absolute; left:50%; top:22%; transform:translateX(-50%); padding:8px 14px; border-radius:999px; background:#f5e000; color:#1a0a2e; font-weight:600; opacity:0; z-index:3; pointer-events:none; }
-.run-toast.on { opacity:1; }
-.run-touch { position:absolute; left:0; right:0; bottom:0; height:140px; pointer-events:none; display:none; padding:12px; align-items:flex-end; justify-content:space-between; z-index:3; }
-.run-touch.on { display:flex; pointer-events:auto; }
-.run-pad { width:120px; height:120px; border-radius:50%; border:2px solid rgba(180,76,255,.45); background:rgba(7,6,11,.35); position:relative; }
-.run-pad i { position:absolute; left:50%; top:50%; width:44px; height:44px; margin:-22px 0 0 -22px; border-radius:50%; background:#b44cff; }
-.run-jump { width:88px; height:88px; border-radius:50%; border:0; background:#f5e000; color:#1a0a2e; font-weight:700; margin-bottom:8px; }
-.run-banner { position:absolute; left:50%; top:10%; transform:translateX(-50%); font-family:"IBM Plex Sans", sans-serif; font-size:12px; letter-spacing:.28em; color:#b44cff; z-index:3; pointer-events:none; font-weight:600; }
-.acid-pause { position:absolute; inset:0; display:grid; place-items:center; background:rgba(10,4,22,.72); z-index:8; color:#f4f0e8; font-size:14px; }
-.acid-pause[hidden] { display:none !important; }
-.acid-pause button { appearance:none; border:0; min-height:48px; padding:14px 22px; border-radius:12px; background:#f5e000; color:#1a0a2e; font-weight:700; font-size:16px; cursor:pointer; }
+:root {
+  --bg: #12081c;
+  --fg: #f4f0e8;
+  --muted: #9a8fb0;
+  --yellow: #f5e000;
+  --purple: #b44cff;
+  --line: rgba(244,240,232,.12);
+}
+* { box-sizing: border-box; }
+html, body { height:100%; margin:0; background:var(--bg); color:var(--fg); font-family:"IBM Plex Sans", system-ui, sans-serif; }
+button:not(:disabled), a[role="button"], a.world { cursor: pointer; }
+.wrap { min-height:100dvh; display:flex; flex-direction:column; padding: calc(18px + env(safe-area-inset-top)) 16px calc(20px + env(safe-area-inset-bottom)); overflow-y:auto; }
+.kicker { margin:0; font-size:11px; letter-spacing:.28em; text-transform:uppercase; color:var(--purple); font-weight:600; }
+h1 { margin:8px 0 0; font-size:28px; letter-spacing:-.03em; line-height:1.1; }
+.lead { margin:10px 0 0; color:var(--muted); font-size:14px; line-height:1.45; max-width:36ch; }
+.cast { display:flex; gap:12px; margin:22px 0 18px; align-items:flex-end; }
+.cast img { display:block; width:96px; height:96px; object-fit:contain; background:rgba(255,255,255,.04); border:1px solid var(--line); border-radius:18px; }
+.cast figcaption { margin:6px 0 0; font-size:12px; color:var(--muted); text-align:center; }
+.worlds { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:8px; }
+.world {
+  display:flex; align-items:center; gap:12px;
+  min-height:64px; padding:12px 14px;
+  text-decoration:none; color:var(--fg);
+  border:1px solid var(--line); border-radius:14px;
+  background: rgba(255,255,255,.03);
+}
+.world:hover, .world:focus-visible { border-color: color-mix(in oklab, var(--yellow) 50%, var(--line)); background: rgba(245,224,0,.06); }
+.world .n { font-variant-numeric: tabular-nums; color:var(--yellow); font-weight:700; font-size:13px; width:1.6em; }
+.world .t { display:flex; flex-direction:column; gap:2px; }
+.world .t strong { font-size:16px; font-weight:650; }
+.world .t span { font-size:12px; color:var(--muted); }
+.world .go { margin-left:auto; color:var(--yellow); font-size:18px; }
+
 .acid-intro {
-  position:absolute; inset:0; z-index:20; background:#07040f;
-  display:flex; align-items:center; justify-content:center;
+  position:fixed; inset:0; z-index:20; background:#07040f;
 }
 .acid-intro[hidden] { display:none !important; }
-.acid-intro video {
-  position:absolute; inset:0; width:100%; height:100%; object-fit:cover; background:#07040f;
+.acid-intro video { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+.acid-skip, .acid-unmute {
+  appearance:none; border:0; cursor:pointer; z-index:22; position:absolute;
+  border-radius:999px; color:var(--fg);
 }
 .acid-skip {
-  position:absolute;
-  top: calc(12px + env(safe-area-inset-top));
-  right: 12px;
-  appearance:none;
-  border:1px solid rgba(244,240,232,.38);
-  background:rgba(7,4,15,.62);
-  color:#f4f0e8;
-  padding:11px 18px;
-  border-radius:999px;
-  font-weight:700;
-  font-size:15px;
-  letter-spacing:.04em;
-  cursor:pointer;
-  z-index:22;
-  pointer-events:auto;
+  top: calc(12px + env(safe-area-inset-top)); right:12px;
+  border:1px solid rgba(244,240,232,.38); background:rgba(7,4,15,.62);
+  padding:11px 18px; font-weight:700; font-size:15px;
 }
 .acid-unmute {
-  position:absolute;
-  left:50%;
-  bottom: calc(24px + env(safe-area-inset-bottom));
-  transform:translateX(-50%);
-  appearance:none;
-  border:0;
-  background:rgba(7,4,15,.55);
-  color:#f4f0e8;
-  padding:8px 14px;
-  border-radius:999px;
-  font-size:13px;
-  cursor:pointer;
-  z-index:22;
+  left:50%; bottom: calc(24px + env(safe-area-inset-bottom));
+  transform:translateX(-50%); background:rgba(7,4,15,.55); padding:8px 14px; font-size:13px;
 }
 .acid-unmute[hidden] { display:none !important; }
 </style>
 </head>
 <body>
-  <div id="root" class="acid-root" data-phase="intro" data-stage="run">
-    <div id="stage-run" class="is-on" aria-label="Purple Run">
-      <canvas class="run-canvas" id="runCanvas"></canvas>
-      <p class="run-banner">PURPLE RUN</p>
-      <div class="run-hud">
-        <div class="run-chip run-score"><span>SCORE</span> <strong id="runScore">0</strong> · <span id="runTime">0:00</span> · <span id="runLives">♥♥♥</span></div>
-        <div class="run-pips">
-          <i style="--z:#ff3b3b"></i><i style="--z:#f5e000"></i><i style="--z:#3d6bff"></i>
-          <i style="--z:#ff7a1a"></i><i style="--z:#2ee35a"></i><i style="--z:#b44cff"></i>
-        </div>
-      </div>
-      <div class="run-toast" id="runToast"></div>
-      <div class="run-touch" id="runTouch">
-        <div class="run-pad" id="runStick"><i></i></div>
-        <button type="button" class="run-jump" id="runJump">JUMP</button>
-      </div>
-    </div>
-    <div class="acid-pause" id="pause" hidden>
-      <button type="button" id="resumeBtn">Resume</button>
-    </div>
-    <div class="acid-intro" id="intro" aria-label="Furious Acid intro">
-      <video id="introVid" playsinline webkit-playsinline muted autoplay preload="auto" poster="./intro/poster.jpg">
-        <source src="./intro/open.mp4" type="video/mp4">
-      </video>
-      <button type="button" class="acid-skip" id="skipIntro">Skip intro</button>
-      <button type="button" class="acid-unmute" id="unmuteIntro">Tap for sound</button>
-    </div>
+  <div class="acid-intro" id="intro" aria-label="Furious Acid intro">
+    <video id="introVid" playsinline webkit-playsinline muted autoplay preload="auto" poster="./intro/poster.jpg">
+      <source src="./intro/open.mp4" type="video/mp4">
+    </video>
+    <button type="button" class="acid-skip" id="skipIntro">Skip intro</button>
+    <button type="button" class="acid-unmute" id="unmuteIntro">Tap for sound</button>
   </div>
+
+  <main class="wrap" id="menu">
+    <p class="kicker">Furious Acid</p>
+    <h1>Worlds</h1>
+    <p class="lead">Same rabbit. Pick a world. Kart is just him and the duck.</p>
+    <div class="cast">
+      <figure>
+        <img src="./sprites/rabbit-portrait.png" alt="Purple rabbit">
+        <figcaption>Rabbit</figcaption>
+      </figure>
+      <figure>
+        <img src="./sprites/duck-portrait.png" alt="Angry duck">
+        <figcaption>Duck</figcaption>
+      </figure>
+    </div>
+    <nav>
+      <ul class="worlds">
+        <li><a class="world" href="./run/index.html"><span class="n">1</span><span class="t"><strong>Purple Run</strong><span>Jump. Colors. Flag.</span></span><span class="go">→</span></a></li>
+        <li><a class="world" href="./maze/index.html"><span class="n">2</span><span class="t"><strong>Acid Maze</strong><span>Walk every hue.</span></span><span class="go">→</span></a></li>
+        <li><a class="world" href="./level3/index.html"><span class="n">3</span><span class="t"><strong>Uranus Mantle</strong><span>Ammonia sea. Eat. Grow.</span></span><span class="go">→</span></a></li>
+        <li><a class="world" href="./level4/index.html"><span class="n">4</span><span class="t"><strong>Diamond Rain</strong><span>Fall through the ice giant.</span></span><span class="go">→</span></a></li>
+        <li><a class="world" href="./level5/index.html"><span class="n">5</span><span class="t"><strong>Event Horizon</strong><span>You almost leave.</span></span><span class="go">→</span></a></li>
+        <li><a class="world" href="./kart/index.html"><span class="n">6</span><span class="t"><strong>Acid Kart</strong><span>Rabbit vs duck. Three laps.</span></span><span class="go">→</span></a></li>
+      </ul>
+    </nav>
+  </main>
+
   <script>
-window.AcidRun = (() => {
-  const COLORS = ['#ff3b3b','#f5e000','#3d6bff','#ff7a1a','#2ee35a','#b44cff'];
-  const GRAV = 2350, JUMP = 760, MOVE = 300, AIR = 0.82, FRICTION = 0.76;
-  const TILE = 40;
-  const EXIT_URL = './level3/index.html';
-
-  let ready = false;
-  let stage, canvas, ctx;
-  let scoreEl, timeEl, toastEl, touchEl, stickEl, stickKnob, jumpBtn, pips;
-  let phase = 'idle';
-  let score = 0, timeSec = 0, toastT = 0, baseScore = 0;
-  let collected = new Set();
-  let keys = {};
-  let stickX = 0, stickId = null;
-  let jumpHeld = false, jumpBuffered = 0, coyote = 0;
-  let last = 0, camX = 0, worldW = 0, raf = 0;
-  let plats = [], orbs = [], flag = {}, player = {};
-  let hazards = [], foes = [], movers = [];
-  let lives = 3, invuln = 0, runT = 0;
-  let spawn = { x: 80, y: 0 };
-  let checkpoints = [];
-  let livesEl = null;
-  let rabbit = new Image(), rabbitReady = false;
-  rabbit.onload = () => { rabbitReady = true; };
-  rabbit.src = './sprites/hero.png';
-  let onComplete = null;
-
-  function bind() {
-    if (ready) return true;
-    stage = document.getElementById('stage-run');
-    canvas = document.getElementById('runCanvas');
-    if (!stage || !canvas) return false;
-    ctx = canvas.getContext('2d', { alpha: false });
-    scoreEl = document.getElementById('runScore');
-    timeEl = document.getElementById('runTime');
-    toastEl = document.getElementById('runToast');
-    touchEl = document.getElementById('runTouch');
-    stickEl = document.getElementById('runStick');
-    stickKnob = stickEl.querySelector('i');
-    jumpBtn = document.getElementById('runJump');
-    pips = [...document.querySelectorAll('.run-pips i')];
-    livesEl = document.getElementById('runLives');
-    wireInput();
-    addEventListener('resize', resize);
-    ready = true;
-    return true;
-  }
-
-  function resize() {
-    if (!canvas) return;
-    const dpr = Math.min(devicePixelRatio || 1, 2);
-    const w = innerWidth, h = innerHeight;
-    canvas.width = Math.floor(w * dpr);
-    canvas.height = Math.floor(h * dpr);
-    canvas.style.width = w + 'px';
-    canvas.style.height = h + 'px';
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  }
-
-  function toast(t) {
-    toastEl.textContent = t;
-    toastEl.classList.add('on');
-    toastT = 1.3;
-  }
-
-  function formatTime(t) {
-    const s = Math.floor(t), m = Math.floor(s / 60), r = s % 60;
-    return m + ':' + String(r).padStart(2, '0');
-  }
-
-  function buildLevel() {
-    const rows = 14, cols = 136;
-    worldW = cols * TILE;
-    const groundY = rows * TILE;
-    plats = []; hazards = []; foes = []; movers = []; orbs = [];
-    const gy = groundY - TILE;
-    const ground = (a, b) => {
-      for (let x = a; x < b; x++) plats.push({ x: x * TILE, y: gy, w: TILE, h: TILE, type: 'ground' });
-    };
-    const plat = (cx, cy, len, type = 'plat') => {
-      const h = type === 'plat' || type === 'crumble' || type === 'move' ? 16 : TILE;
-      for (let i = 0; i < len; i++) {
-        plats.push({ x: (cx + i) * TILE, y: cy * TILE, w: TILE, h, type, life: 0.55, ox: (cx + i) * TILE, t: 0 });
-      }
-    };
-    const spike = (cx, n) => {
-      for (let i = 0; i < n; i++) hazards.push({ x: (cx + i) * TILE + 4, y: gy - 16, w: TILE - 8, h: 16, type: 'spike' });
-    };
-    const foe = (cx, cy, span) => {
-      const x = cx * TILE, y = cy * TILE - 28;
-      foes.push({ x, y, w: 28, h: 28, dir: 1, minX: x, maxX: x + span * TILE, spd: 70 });
-    };
-    const mover = (cx, cy, len, amp, spd) => {
-      const p = { x: cx * TILE, y: cy * TILE, w: len * TILE, h: 16, type: 'move', ox: cx * TILE, amp: amp * TILE, spd, t: 0, vx: 0 };
-      plats.push(p);
-      movers.push(p);
-    };
-    const orb = (cx, cy, id, bonus = false) => {
-      orbs.push({ x: cx * TILE + TILE / 2, y: cy * TILE - 18, r: 11, id, got: false, bonus });
-    };
-
-    // 0-12 intro
-    ground(0, 13);
-    plat(4, 10, 3);
-    orb(5, 9, 0);
-    // 13-17 pit — 4 tile jump
-    plat(14, 9, 1);
-    // 18-26 ledge + spikes
-    ground(18, 27);
-    spike(21, 3);
-    plat(22, 8, 2);
-    orb(23, 7, 1);
-    // 27-35 wide pit, stepping stones
-    plat(28, 10, 1);
-    plat(31, 8, 1);
-    plat(34, 6, 2);
-    orb(34.5, 5, 2);
-    // 36-46 brick climb
-    ground(36, 47);
-    plat(38, 11, 3, 'brick');
-    plat(41, 9, 2, 'brick');
-    plat(43, 7, 2, 'brick');
-    orb(44, 6, 3);
-    foe(37, 13, 6);
-    // 47-58 moving plat over death
-    mover(49, 9, 2, 3.2, 1.15);
-    plat(55, 8, 1);
-    ground(58, 66);
-    spike(60, 2);
-    foe(59, 13, 5);
-    orb(63, 12, 4);
-    // 66-78 crumbling gauntlet
-    plat(67, 10, 2, 'crumble');
-    plat(71, 8, 1, 'crumble');
-    plat(74, 6, 1, 'crumble');
-    plat(77, 8, 2);
-    orb(74, 5, 5);
-    // 79-88 high road
-    ground(80, 89);
-    plat(82, 9, 2);
-    plat(85, 7, 2);
-    orb(86, 6, 0, true);
-    foe(81, 13, 6);
-    // 89-98 tight hops
-    plat(90, 9, 1);
-    plat(93, 7, 1);
-    plat(96, 9, 1);
-    plat(99, 6, 1);
-    orb(99, 5, 1, true);
-    // 99-108 sprint gap + low safety
-    ground(102, 108);
-    spike(104, 2);
-    plat(100, 11, 1);
-    // 108-118 last gauntlet
-    plat(109, 9, 1, 'crumble');
-    mover(112, 7, 1, 2.4, 1.4);
-    plat(116, 9, 1);
-    orb(116, 8, 2, true);
-    // 119-end flag island
-    ground(120, 136);
-    plat(124, 10, 3);
-    plat(128, 8, 2);
-    orb(129, 7, 3, true);
-    flag = { x: 132 * TILE, y: gy - 96, w: 20, h: 96 };
-    player = { x: 2 * TILE, y: gy - 110, w: 52, h: 100, vx: 0, vy: 0, onGround: false, facing: 1 };
-    spawn = { x: player.x, y: player.y };
-    checkpoints = [
-      { x: 18 * TILE, y: gy - 110 },
-      { x: 38 * TILE, y: gy - 110 },
-      { x: 58 * TILE, y: gy - 110 },
-      { x: 80 * TILE, y: gy - 110 },
-      { x: 102 * TILE, y: gy - 110 },
-      { x: 120 * TILE, y: gy - 110 },
-    ];
-    camX = 0;
-    lives = 3;
-    invuln = 0;
-    runT = 0;
-    paintLives();
-  }
-
-  function paintLives() {
-    if (livesEl) livesEl.textContent = '♥'.repeat(Math.max(0, lives)) + '♡'.repeat(Math.max(0, 3 - lives));
-  }
-
-  function aabb(a, b) {
-    return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
-  }
-  function solidAt(box, vx, vy) {
-    const moved = { x: box.x + vx, y: box.y + vy, w: box.w, h: box.h };
-    for (const p of plats) {
-      if (p.dead) continue;
-      if (aabb(moved, p)) return p;
-    }
-    return null;
-  }
-
-  function collectOrb(o) {
-    if (o.got) return;
-    o.got = true;
-    score += o.bonus ? 10 : 25;
-    scoreEl.textContent = String(score);
-    if (!o.bonus) {
-      collected.add(o.id);
-      pips[o.id]?.classList.add('on');
-      toast('+25');
-    } else toast('+10');
-  }
-
-  function update(dt) {
-    if (phase !== 'play') return;
-    timeSec += dt;
-    runT += dt;
-    timeEl.textContent = formatTime(timeSec);
-    if (toastT > 0) { toastT -= dt; if (toastT <= 0) toastEl.classList.remove('on'); }
-    if (jumpBuffered > 0) jumpBuffered -= dt;
-    if (coyote > 0) coyote -= dt;
-    if (invuln > 0) invuln -= dt;
-
-    let inputX = stickX;
-    if (keys.KeyA || keys.ArrowLeft) inputX -= 1;
-    if (keys.KeyD || keys.ArrowRight) inputX += 1;
-    inputX = Math.max(-1, Math.min(1, inputX));
-    if (inputX) player.facing = inputX > 0 ? 1 : -1;
-
-    const accel = player.onGround ? MOVE * 3.2 : MOVE * 2.2 * AIR;
-    if (inputX) {
-      player.vx += inputX * accel * dt;
-      const cap = MOVE;
-      player.vx = Math.max(-cap, Math.min(cap, player.vx));
-    } else if (player.onGround) {
-      player.vx *= Math.pow(FRICTION, dt * 60);
-      if (Math.abs(player.vx) < 8) player.vx = 0;
-    } else player.vx *= Math.pow(0.98, dt * 60);
-
-    const wantJump = jumpHeld || keys.Space || keys.ArrowUp || keys.KeyW || jumpBuffered > 0;
-    if (wantJump && (player.onGround || coyote > 0)) {
-      player.vy = -JUMP; player.onGround = false; coyote = 0; jumpBuffered = 0;
-    }
-    if (!jumpHeld && player.vy < -280) player.vy *= Math.pow(0.12, dt);
-
-    player.vy += GRAV * dt;
-    if (player.vy > 1500) player.vy = 1500;
-
-    for (const m of movers) {
-      const prev = m.x;
-      m.t += dt * m.spd;
-      m.x = m.ox + Math.sin(m.t) * m.amp;
-      m.vx = m.x - prev;
-    }
-    for (const p of plats) {
-      if (p.type === 'crumble' && p.life < 0.55) {
-        p.life -= dt;
-        if (p.life <= 0) p.dead = true;
-      }
-    }
-
-    const stepX = player.vx * dt;
-    if (!solidAt(player, stepX, 0)) player.x += stepX;
-    else {
-      const hit = solidAt(player, stepX, 0);
-      if (hit) player.x = stepX > 0 ? hit.x - player.w - 0.01 : hit.x + hit.w + 0.01;
-      player.vx = 0;
-    }
-
-    const stepY = player.vy * dt;
-    const wasOn = player.onGround;
-    player.onGround = false;
-    let ride = null;
-    if (!solidAt(player, 0, stepY)) player.y += stepY;
-    else {
-      const hit = solidAt(player, 0, stepY);
-      if (hit && !hit.dead) {
-        if (stepY > 0) {
-          player.y = hit.y - player.h - 0.01;
-          player.onGround = true;
-          player.vy = 0;
-          ride = hit;
-          if (hit.type === 'crumble' && hit.life >= 0.55) hit.life = 0.42;
-        } else { player.y = hit.y + hit.h + 0.01; player.vy = 40; }
-      }
-    }
-    if (player.onGround) coyote = 0.07;
-    else if (wasOn) coyote = 0.07;
-    if (ride && ride.type === 'move') player.x += ride.vx;
-
-    if (player.x < 0) { player.x = 0; player.vx = 0; }
-    if (player.x > worldW - player.w) player.x = worldW - player.w;
-
-    for (const cp of checkpoints) {
-      if (player.x > cp.x - 20) spawn = cp;
-    }
-
-    if (player.y > 14 * TILE + 160) die('Fell');
-
-    const box = player;
-    if (invuln <= 0) {
-      for (const h of hazards) {
-        if (aabb(box, h)) { die('Spikes'); break; }
-      }
-    }
-    for (const f of foes) {
-      f.x += f.dir * f.spd * dt;
-      if (f.x < f.minX) { f.x = f.minX; f.dir = 1; }
-      if (f.x > f.maxX) { f.x = f.maxX; f.dir = -1; }
-      if (invuln <= 0 && aabb(box, f)) {
-        if (player.vy > 80 && player.y + player.h - 16 < f.y + 8) {
-          f.dead = true;
-          player.vy = -JUMP * 0.55;
-          score += 15;
-          scoreEl.textContent = String(score);
-          toast('+15 stomp');
-        } else die('Bitten');
-      }
-    }
-    foes = foes.filter((f) => !f.dead);
-    plats = plats.filter((p) => !p.dead);
-
-    for (const o of orbs) {
-      if (o.got) continue;
-      const dx = (player.x + player.w / 2) - o.x;
-      const dy = (player.y + player.h / 2) - o.y;
-      if (dx * dx + dy * dy < (o.r + 16) ** 2) collectOrb(o);
-    }
-
-    if (collected.size === 6 && aabb(player, flag)) {
-      phase = 'win';
-      toast('Flag!');
-      sessionStorage.setItem('acid-l2-score', String(score));
-      sessionStorage.setItem('acid-l2-time', String(Math.floor(timeSec)));
-      sessionStorage.setItem('acid-l1-score', String(score));
-      sessionStorage.setItem('acid-l1-time', String(Math.floor(timeSec)));
-      setTimeout(() => { location.href = EXIT_URL + '?score=' + score + '&time=' + Math.floor(timeSec); }, 900);
-      if (typeof onComplete === 'function') onComplete({ score, timeSec });
-    }
-
-    const viewW = innerWidth;
-    const target = player.x + player.w / 2 - viewW * 0.35;
-    camX += (target - camX) * Math.min(1, 6 * dt);
-    camX = Math.max(0, Math.min(worldW - viewW, camX));
-  }
-
-  function die(msg) {
-    if (invuln > 0) return;
-    lives -= 1;
-    paintLives();
-    invuln = 1.05;
-    toast(msg);
-    player.x = spawn.x;
-    player.y = spawn.y;
-    player.vx = 0;
-    player.vy = 0;
-    if (lives <= 0) {
-      toast('Again from the start.');
-      lives = 3;
-      paintLives();
-      collected.clear();
-      pips.forEach((el) => el.classList.remove('on'));
-      buildLevel();
-      score = baseScore;
-      scoreEl.textContent = String(score);
-    }
-  }
-
-  function draw() {
-    if (!ctx) return;
-    const W = innerWidth, H = innerHeight;
-    const g = ctx.createLinearGradient(0, 0, 0, H);
-    g.addColorStop(0, '#2a1050'); g.addColorStop(0.55, '#1a0a2e'); g.addColorStop(1, '#0d0618');
-    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
-    ctx.fillStyle = 'rgba(255,255,255,0.35)';
-    for (let i = 0; i < 40; i++) {
-      const sx = ((i * 97 + camX * 0.2) % W + W) % W;
-      ctx.fillRect(sx, (i * 53) % (H * 0.55), 2, 2);
-    }
-    ctx.save(); ctx.translate(-camX, 0);
-    for (const p of plats) {
-      if (p.x + p.w < camX - 40 || p.x > camX + W + 40) continue;
-      if (p.type === 'ground') {
-        ctx.fillStyle = '#3a1a66'; ctx.fillRect(p.x, p.y, p.w, p.h);
-        ctx.fillStyle = '#b44cff'; ctx.fillRect(p.x, p.y, p.w, 4);
-      } else if (p.type === 'brick') {
-        ctx.fillStyle = '#6b2abf'; ctx.fillRect(p.x, p.y, p.w - 1, p.h - 1);
-      } else if (p.type === 'crumble') {
-        ctx.fillStyle = p.life < 0.55 ? '#c45a2a' : '#c9a227';
-        ctx.fillRect(p.x, p.y, p.w, p.h);
-        if (p.life < 0.55) ctx.fillStyle = '#f5e000', ctx.fillRect(p.x, p.y, p.w * (p.life / 0.55), 3);
-      } else if (p.type === 'move') {
-        ctx.fillStyle = '#7dffd4'; ctx.fillRect(p.x, p.y, p.w, p.h);
-        ctx.fillStyle = '#f5e000'; ctx.fillRect(p.x, p.y + p.h - 4, p.w, 4);
-      } else {
-        ctx.fillStyle = '#f5e000'; ctx.fillRect(p.x, p.y, p.w, p.h);
-        ctx.fillStyle = '#b44cff'; ctx.fillRect(p.x, p.y + p.h - 4, p.w, 4);
-      }
-    }
-    for (const h of hazards) {
-      ctx.fillStyle = '#ff3b3b';
-      ctx.beginPath();
-      ctx.moveTo(h.x, h.y + h.h);
-      ctx.lineTo(h.x + h.w / 2, h.y);
-      ctx.lineTo(h.x + h.w, h.y + h.h);
-      ctx.closePath();
-      ctx.fill();
-    }
-    for (const f of foes) {
-      ctx.fillStyle = '#1a0a2e';
-      ctx.beginPath();
-      ctx.ellipse(f.x + f.w / 2, f.y + f.h / 2, f.w / 2, f.h / 2, 0, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.fillStyle = '#ff3b3b';
-      ctx.fillRect(f.x + 6, f.y + 10, 4, 4);
-      ctx.fillRect(f.x + f.w - 10, f.y + 10, 4, 4);
-    }
-    ctx.fillStyle = '#888'; ctx.fillRect(flag.x + 8, flag.y, 4, flag.h);
-    ctx.fillStyle = collected.size === 6 ? '#f5e000' : '#555566';
-    ctx.beginPath();
-    ctx.moveTo(flag.x + 12, flag.y);
-    ctx.lineTo(flag.x + 12 + 36, flag.y + 14);
-    ctx.lineTo(flag.x + 12, flag.y + 28);
-    ctx.closePath(); ctx.fill();
-    for (const o of orbs) {
-      if (o.got) continue;
-      const pulse = 1 + Math.sin(performance.now() / 200 + o.x) * 0.08;
-      ctx.fillStyle = COLORS[o.id];
-      ctx.beginPath(); ctx.arc(o.x, o.y, o.r * pulse, 0, Math.PI * 2); ctx.fill();
-    }
-    if (rabbitReady) {
-      ctx.save();
-      ctx.translate(player.x + player.w / 2, player.y + player.h);
-      ctx.scale(player.facing, 1);
-      ctx.globalAlpha = invuln > 0 && Math.sin(runT * 24) > 0 ? 0.4 : 1;
-      ctx.imageSmoothingEnabled = true;
-      const dw = player.w * 1.35, dh = player.h * 1.25;
-      ctx.drawImage(rabbit, -dw / 2, -dh, dw, dh);
-      ctx.restore();
-    } else {
-      ctx.fillStyle = '#b44cff'; ctx.fillRect(player.x, player.y, player.w, player.h);
-    }
-    ctx.restore();
-    ctx.fillStyle = collected.size < 6 ? 'rgba(244,240,232,0.55)' : '#f5e000';
-    ctx.font = '12px IBM Plex Sans, sans-serif';
-    ctx.fillText(collected.size < 6 ? 'Six colors. Then the flag. Don\'t waste hearts.' : 'Flag is live — finish right.', 14, H - 18);
-  }
-
-  function frame(now) {
-    if (phase === 'idle') return;
-    const dt = Math.min(0.033, (now - last) / 1000);
-    last = now;
-    update(dt); draw();
-    raf = requestAnimationFrame(frame);
-  }
-
-  function setStick(x) {
-    stickX = x;
-    if (stickKnob) stickKnob.style.transform = `translate(${x * 28}px, 0)`;
-  }
-
-  function wireInput() {
-    stickEl.addEventListener('pointerdown', (e) => {
-      stickId = e.pointerId; stickEl.setPointerCapture(e.pointerId);
-      const r = stickEl.getBoundingClientRect();
-      setStick(Math.max(-1, Math.min(1, (e.clientX - r.left) / r.width * 2 - 1)));
-    });
-    stickEl.addEventListener('pointermove', (e) => {
-      if (e.pointerId !== stickId) return;
-      const r = stickEl.getBoundingClientRect();
-      setStick(Math.max(-1, Math.min(1, (e.clientX - r.left) / r.width * 2 - 1)));
-    });
-    const end = (e) => { if (e.pointerId === stickId) { stickId = null; setStick(0); } };
-    stickEl.addEventListener('pointerup', end);
-    stickEl.addEventListener('pointercancel', end);
-    jumpBtn.addEventListener('pointerdown', (e) => { e.preventDefault(); jumpHeld = true; jumpBuffered = 0.14; });
-    jumpBtn.addEventListener('pointerup', () => { jumpHeld = false; });
-    addEventListener('keydown', (e) => {
-      if (e.code === 'Escape') {
-        const pause = document.getElementById('pause');
-        const root = document.getElementById('root');
-        if (phase === 'play') {
-          phase = 'pause';
-          if (pause) pause.hidden = false;
-          if (root) root.dataset.phase = 'pause';
-        } else if (phase === 'pause') {
-          phase = 'play';
-          if (pause) pause.hidden = true;
-          if (root) root.dataset.phase = 'play';
-          last = performance.now();
-        }
-        return;
-      }
-      if (phase !== 'play') return;
-      keys[e.code] = true;
-      if (e.code === 'Space' || e.code === 'ArrowUp' || e.code === 'KeyW') {
-        e.preventDefault(); jumpBuffered = 0.14; jumpHeld = true;
-      }
-    });
-    addEventListener('keyup', (e) => {
-      keys[e.code] = false;
-      if (e.code === 'Space' || e.code === 'ArrowUp' || e.code === 'KeyW') jumpHeld = false;
-    });
-  }
-
-  function start(opts = {}) {
-    if (!bind()) return false;
-    cancelAnimationFrame(raf);
-    baseScore = opts.score || 0;
-    score = baseScore;
-    timeSec = opts.timeSec || 0;
-    onComplete = opts.onComplete || null;
-    collected.clear();
-    pips.forEach((el) => el.classList.remove('on'));
-    scoreEl.textContent = String(score);
-    timeEl.textContent = formatTime(timeSec);
-    buildLevel();
-    resize();
-    stage.classList.add('is-on');
-    const root = document.getElementById('root');
-    if (root) {
-      root.dataset.stage = 'run';
-      root.dataset.phase = 'play';
-      const tw = root.querySelector('.acid-title');
-      const pw = root.querySelector('.acid-pause');
-      const ww = root.querySelector('.acid-win');
-      if (tw) tw.hidden = true;
-      if (pw) pw.hidden = true;
-      if (ww) ww.hidden = true;
-    }
-    const touch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-    touchEl.classList.toggle('on', touch);
-    phase = 'play';
-    last = performance.now();
-    toast('Jump!');
-    raf = requestAnimationFrame(frame);
-    return true;
-  }
-
-  function stop() {
-    phase = 'idle';
-    cancelAnimationFrame(raf);
-    if (stage) stage.classList.remove('is-on');
-  }
-
-  return { start, stop };
-})();
-
-  document.getElementById('resumeBtn').addEventListener('click', () => {
-    const p = document.getElementById('pause');
-    if (p) p.hidden = true;
-    if (window.AcidRun) {
-      window.dispatchEvent(new KeyboardEvent('keydown', { code: 'Escape', bubbles: true }));
-    }
-  });
-
-  (function bootIntro() {
-    const root = document.getElementById('root');
+  (function () {
     const wrap = document.getElementById('intro');
     const vid = document.getElementById('introVid');
     const skip = document.getElementById('skipIntro');
     const unmute = document.getElementById('unmuteIntro');
-    let started = false;
-
-    function startGame() {
-      if (started) return;
-      started = true;
-      if (vid) {
-        vid.pause();
-        vid.removeAttribute('src');
-        vid.load();
-      }
+    let done = false;
+    function hide() {
+      if (done) return;
+      done = true;
+      sessionStorage.setItem('acid-intro-seen', '1');
+      if (vid) { vid.pause(); }
       if (wrap) wrap.hidden = true;
-      if (root) root.dataset.phase = 'play';
-      window.AcidRun.start({ score: 0, timeSec: 0 });
     }
-
     function tryPlay() {
-      if (!vid) return startGame();
+      if (!vid || wrap.hidden) return;
       const p = vid.play();
       if (p && p.catch) p.catch(() => {});
     }
-
-    skip.addEventListener('click', (e) => { e.stopPropagation(); startGame(); });
-    unmute.addEventListener('click', (e) => {
-      e.stopPropagation();
-      vid.muted = false;
-      tryPlay();
-      unmute.hidden = true;
-    });
-    wrap.addEventListener('click', () => {
-      if (vid.muted) {
-        vid.muted = false;
-        tryPlay();
-        unmute.hidden = true;
-      }
-    });
-    vid.addEventListener('ended', startGame);
-    vid.addEventListener('error', startGame);
-    addEventListener('keydown', (e) => {
-      if (started) return;
-      if (e.code === 'Escape' || e.code === 'Space' || e.code === 'Enter') {
-        e.preventDefault();
-        startGame();
-      }
-    });
-    window.addEventListener('load', tryPlay);
-    if (vid.readyState >= 2) tryPlay();
+    if (sessionStorage.getItem('acid-intro-seen') === '1') {
+      wrap.hidden = true;
+      done = true;
+    } else {
+      skip.addEventListener('click', (e) => { e.stopPropagation(); hide(); });
+      unmute.addEventListener('click', (e) => {
+        e.stopPropagation();
+        vid.muted = false; tryPlay(); unmute.hidden = true;
+      });
+      wrap.addEventListener('click', () => {
+        if (vid.muted) { vid.muted = false; tryPlay(); unmute.hidden = true; }
+      });
+      vid.addEventListener('ended', hide);
+      vid.addEventListener('error', hide);
+      addEventListener('keydown', (e) => {
+        if (done) return;
+        if (e.code === 'Escape' || e.code === 'Space' || e.code === 'Enter') { e.preventDefault(); hide(); }
+      });
+      window.addEventListener('load', tryPlay);
+      if (vid.readyState >= 2) tryPlay();
+    }
   })();
   </script>
 </body>
