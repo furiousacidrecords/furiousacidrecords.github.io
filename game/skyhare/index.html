@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>Sky Hare — Furious Acid</title>
+  <meta name="theme-color" content="#12081c">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Rajdhani:wght@600;700;800&display=swap">
+  <style>
+    :root { --bg:#12081c; --fg:#f4f0e8; --muted:#9a8fb0; --yellow:#f5e000; --purple:#b44cff; --line:rgba(244,240,232,.12); }
+    * { box-sizing:border-box; }
+    html, body { height:100%; margin:0; background:var(--bg); color:var(--fg); font-family:"IBM Plex Sans", system-ui, sans-serif; }
+    button { cursor:pointer; font:inherit; color:inherit; }
+    #wrap { position:relative; height:100dvh; overflow:hidden; }
+    canvas { position:absolute; inset:0; width:100%; height:100%; touch-action:none; }
+    .top-l, .top-r { position:absolute; z-index:20; pointer-events:none; }
+    .top-l { left:12px; top:max(12px, env(safe-area-inset-top)); }
+    .top-r { right:12px; top:max(12px, env(safe-area-inset-top)); display:flex; gap:8px; }
+    .chip, .key {
+      pointer-events:auto; appearance:none; border:1px solid var(--line); background:rgba(18,8,28,.8);
+      backdrop-filter:blur(8px); color:var(--fg); border-radius:8px;
+    }
+    .chip { height:44px; padding:0 12px; font-family:"Rajdhani", sans-serif; font-weight:600; text-decoration:none; display:inline-flex; align-items:center; }
+    .icon { width:44px; height:44px; }
+    #overlay { position:absolute; inset:0; z-index:10; display:flex; align-items:center; justify-content:center; padding:16px; background:color-mix(in oklab, var(--bg) 50%, transparent); }
+    #overlay[hidden] { display:none !important; }
+    .card { width:100%; max-width:440px; border:1px solid var(--line); background:rgba(18,8,28,.95); border-radius:12px; padding:28px; }
+    .kicker { margin:0; font-family:"IBM Plex Mono", monospace; font-size:12px; letter-spacing:.18em; text-transform:uppercase; color:var(--purple); }
+    h1, h2 { margin:8px 0 0; font-family:"Rajdhani", sans-serif; font-weight:800; letter-spacing:-.04em; line-height:.95; }
+    h1 { font-size:clamp(2.2rem,7vw,3.4rem); }
+    h2 { font-size:1.9rem; }
+    .lead { margin:12px 0 0; color:var(--muted); font-size:14px; line-height:1.5; max-width:38ch; }
+    .keys { margin:20px 0 0; padding:0; list-style:none; font-family:"IBM Plex Mono", monospace; font-size:12px; }
+    .keys li { display:flex; gap:8px; margin:6px 0; }
+    .keys span { width:80px; color:var(--muted); flex-shrink:0; }
+    .go { margin-top:24px; height:48px; width:100%; border:0; border-radius:8px; background:var(--yellow); color:var(--bg); font-family:"Rajdhani", sans-serif; font-weight:700; font-size:16px; }
+    .go:disabled { opacity:.5; }
+    #touch { position:absolute; inset:auto 0 0 0; z-index:20; display:flex; justify-content:space-between; padding:0 12px max(16px, env(safe-area-inset-bottom)); pointer-events:none; }
+    #touch[hidden] { display:none !important; }
+    .col { display:flex; flex-direction:column; gap:8px; pointer-events:auto; }
+    .row { display:flex; gap:8px; }
+    .key { width:64px; height:64px; font-family:"Rajdhani", sans-serif; font-weight:700; }
+    .key.wide { width:112px; }
+    .best { margin-top:16px; font-family:"IBM Plex Mono", monospace; font-size:12px; color:var(--muted); }
+  </style>
+</head>
+<body>
+  <div id="wrap">
+    <canvas id="c"></canvas>
+    <div class="top-l"><a class="chip" href="../">Worlds</a></div>
+    <div class="top-r">
+      <button type="button" class="chip icon" id="pause" hidden>Pause</button>
+      <button type="button" class="chip icon" id="mute">Mute</button>
+    </div>
+    <div id="overlay">
+      <div class="card" id="card-title">
+        <p class="kicker">Furious Acid · World</p>
+        <h1>Sky Hare</h1>
+        <p class="lead">Same rabbit. Jump the ducks or they get you. Climb the hanging ladders. Grab every gem. Flag at the far isle.</p>
+        <ul class="keys">
+          <li><span>Move</span>A D · arrows</li>
+          <li><span>Jump</span>W · Space</li>
+          <li><span>Climb</span>W up a ladder · S down</li>
+        </ul>
+        <p class="best" id="best"></p>
+        <button type="button" class="go" id="hop">Hop in</button>
+      </div>
+      <div class="card" id="card-pause" hidden>
+        <p class="kicker">Sky Hare</p>
+        <h2>Held</h2>
+        <p class="lead">Ducks keep walking. The isles do not.</p>
+        <button type="button" class="go" id="resume">Back</button>
+      </div>
+      <div class="card" id="card-win" hidden>
+        <p class="kicker">Flag</p>
+        <h2>Isle cleared</h2>
+        <p class="lead" id="win-body"></p>
+        <button type="button" class="go" id="again">Hop again</button>
+      </div>
+    </div>
+    <div id="touch" hidden>
+      <div class="col">
+        <div class="row">
+          <button type="button" class="key" data-dir="left" aria-label="Left">←</button>
+          <button type="button" class="key" data-dir="right" aria-label="Right">→</button>
+        </div>
+        <button type="button" class="key wide" data-dir="down" aria-label="Down">↓</button>
+      </div>
+      <div class="col" style="align-items:flex-end">
+        <button type="button" class="key wide" data-dir="up">Climb</button>
+        <button type="button" class="key wide" data-dir="jump">Jump</button>
+      </div>
+    </div>
+  </div>
+  <script>window.__ASSET_BASE__ = "./assets";</script>
+  <script src="./game.js"></script>
+</body>
+</html>
