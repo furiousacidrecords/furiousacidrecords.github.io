@@ -9,7 +9,7 @@
 <body>
   <p>Loading Furious Acid…</p>
   <script>
-    fetch('home-original.html?v=20260911-2', { cache: 'no-store' })
+    fetch('home-original.html?v=20260805-2', { cache: 'no-store' })
       .then(function (response) {
         if (!response.ok) throw new Error('Homepage unavailable');
         return response.text();
@@ -18,12 +18,7 @@
         html = html.replace(/<iframe\b[^>]*class=["'][^"']*\bpurple-progress-frame\b[^"']*["'][\s\S]*?<\/iframe>/gi, '');
         html = html.replace(/<a\b[^>]*class=["'][^"']*\blab-simulator-cta\b[^"']*["'][^>]*>[\s\S]*?<\/a>/gi, '');
         html = html.replace(/<a\b[^>]*href=["']\/purple(?:\/manual)?\/?["'][^>]*>[\s\S]*?<\/a>/gi, '');
-        html = html.replace(/<p class=["']update-copy["'][^>]*>[\s\S]*?<\/p>/i, '<p class="update-copy">#furious acid - drug synthesis (with images and Raman spec) now available in English, Italian, and Spanish. Amazon.com | Furious Acid Game: 9th dimension updated. #Publish it please.</p>');
-        html = html.replace(/<time class=["']update-date["'][^>]*>[\s\S]*?<\/time>/i, '<time class="update-date" datetime="2026-09-11">September 11, 2026</time>');
-        if (html.indexOf('href="/game/"') === -1 && html.indexOf("href='/game/'") === -1) {
-          html = html.replace('<button class="share-trigger"', '<a href="/game/">Game</a>\n        <button class="share-trigger"');
-        }
-        html = html.replace('Custom Studio</a>\\n', 'Custom Studio</a>');
+        html = html.replace(/<p class=["']update-copy["'][^>]*>[\s\S]*?<\/p>/i, '<p class="update-copy">Books, merch, community links, and current Furious Acid releases.</p>');
 
         html = html.replace(/href=["']#forum["']/g, 'href="https://acid-chat-hub.lovable.app/forum" target="_blank" rel="noopener noreferrer"');
         html = html.replace(/https:\/\/furious-acid-forum\.lovable\.app(?:\/)?/g, 'https://acid-chat-hub.lovable.app/forum');
@@ -95,7 +90,33 @@
         }
 
         var marker = '        <div class="book-grid">\n';
+        var newPaperback = `          <article class="product-card book-card">
+            <img class="product-image" src="https://images-na.ssl-images-amazon.com/images/P/B0HCMMZF89.01.L.jpg" alt="Furious Acid paperback book cover" loading="lazy">
+            <div class="product-body">
+              <h3>Furious Acid Paperback</h3>
+              <p class="product-detail">Paperback edition</p>
+              <div class="product-links">
+                <a class="button" href="https://www.amazon.com/dp/B0HCMMZF89" target="_blank" rel="noopener noreferrer">View on Amazon ↗</a>
+              </div>
+            </div>
+          </article>
+
+`;
+        var italianCard = `          <article class="product-card book-card">
+            <img class="product-image" src="https://images-na.ssl-images-amazon.com/images/P/B0HC8H1LR4.01.L.jpg" alt="Sintesi di farmaci Italian edition book cover" loading="lazy">
+            <div class="product-body">
+              <h3>Sintesi di farmaci</h3>
+              <p class="product-detail">Edizione italiana</p>
+              <div class="product-links">
+                <a class="button" href="https://www.amazon.it/dp/B0HC8H1LR4" target="_blank" rel="noopener noreferrer">Acquista su Amazon.it ↗</a>
+              </div>
+            </div>
+          </article>
+
+`;
         var extraCards = '';
+        if (html.indexOf('B0HCMMZF89') === -1) extraCards += newPaperback;
+        if (html.indexOf('B0HC8H1LR4') === -1) extraCards += italianCard;
         if (extraCards && html.indexOf(marker) !== -1) {
           html = html.replace(marker, marker + extraCards);
         }
