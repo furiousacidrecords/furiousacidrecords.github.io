@@ -9,7 +9,7 @@
 <body>
   <p>Loading Furious Acid…</p>
   <script>
-    fetch('home-original.html?v=20260805-2', { cache: 'no-store' })
+    fetch('home-original.html?v=20260911-3', { cache: 'no-store' })
       .then(function (response) {
         if (!response.ok) throw new Error('Homepage unavailable');
         return response.text();
@@ -18,7 +18,12 @@
         html = html.replace(/<iframe\b[^>]*class=["'][^"']*\bpurple-progress-frame\b[^"']*["'][\s\S]*?<\/iframe>/gi, '');
         html = html.replace(/<a\b[^>]*class=["'][^"']*\blab-simulator-cta\b[^"']*["'][^>]*>[\s\S]*?<\/a>/gi, '');
         html = html.replace(/<a\b[^>]*href=["']\/purple(?:\/manual)?\/?["'][^>]*>[\s\S]*?<\/a>/gi, '');
-        html = html.replace(/<p class=["']update-copy["'][^>]*>[\s\S]*?<\/p>/i, '<p class="update-copy">Books, merch, community links, and current Furious Acid releases.</p>');
+        html = html.replace(/<p class=["']update-copy["'][^>]*>[\s\S]*?<\/p>/i, '<p class="update-copy">#furious acid - drug synthesis (with images and Raman spec) now available in English, Italian, and Spanish. Amazon.com | Furious Acid Game: 9th dimension updated. #Publish it please.</p>');
+        html = html.replace(/<time class=["']update-date["'][^>]*>[\s\S]*?<\/time>/i, '<time class="update-date" datetime="2026-09-11">September 11, 2026</time>');
+        if (html.indexOf('href="/game/"') === -1) {
+          html = html.replace('<button class="share-trigger"', '<a href="/game/">Game</a>\n        <button class="share-trigger"');
+        }
+        html = html.replace('Custom Studio</a>\\n', 'Custom Studio</a>');
 
         html = html.replace(/href=["']#forum["']/g, 'href="https://acid-chat-hub.lovable.app/forum" target="_blank" rel="noopener noreferrer"');
         html = html.replace(/https:\/\/furious-acid-forum\.lovable\.app(?:\/)?/g, 'https://acid-chat-hub.lovable.app/forum');
