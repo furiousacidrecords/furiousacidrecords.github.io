@@ -81,6 +81,10 @@
       color: var(--accent-fg); padding: 12px 32px; font: 800 16px Nunito, sans-serif;
     }
     .play:disabled { opacity: .5; }
+    .ghost {
+      min-height: 44px; border: 0; background: transparent; color: var(--muted);
+      font: 700 14px Nunito, sans-serif;
+    }
     .hint { margin: 0; font-size: 12px; color: var(--subtle); }
     .url { margin: 0; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--subtle); }
     h2 { margin: 0; font-family: Creepster, Georgia, serif; font-size: 40px; font-weight: 400; }
@@ -148,8 +152,9 @@
       </div>
       <div class="card" id="dead-card" hidden>
         <h2>Dropped</h2>
-        <p class="lead">The street took you. Try the jump again.</p>
-        <button type="button" class="play" data-act="start">Restart</button>
+        <p class="lead">You'll pick up from the last spot you stood.</p>
+        <button type="button" class="play" data-act="start">Continue</button>
+        <button type="button" class="ghost" data-act="restart">From the start</button>
       </div>
       <div class="card" id="win-card" hidden>
         <h2>Connection closed</h2>
