@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>Phrogger Entry — Furious Acid Game 2</title>
+  <meta name="theme-color" content="#12081c">
+  <meta name="description" content="Furious Acid Game 2 — Level 1: Phrogger Entry. Halloween Night. Get the purple rabbit home.">
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Nunito:wght@500;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #12081c;
+      --surface: #1c1328;
+      --surface-2: #261a36;
+      --fg: #f3ead8;
+      --muted: #b7a992;
+      --subtle: #7a6e62;
+      --accent: #e07828;
+      --accent-fg: #1a0c08;
+      --good: #6ecf6a;
+      --border: color-mix(in oklab, var(--fg) 14%, transparent);
+      --border-strong: color-mix(in oklab, var(--fg) 26%, transparent);
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 24px;
+    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body { height: 100%; margin: 0; background: var(--bg); color: var(--fg); font-family: Nunito, "Segoe UI", system-ui, sans-serif; }
+    button:not(:disabled) { cursor: pointer; }
+    #wrap { position: relative; display: flex; flex-direction: column; height: 100dvh; width: 100%; overflow: hidden; background: var(--bg); touch-action: none; }
+    canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+    .hud {
+      pointer-events: none;
+      position: absolute; inset: 0 auto auto 0; right: 0;
+      z-index: 10; display: flex; flex-direction: column; gap: 12px;
+      padding: max(12px, env(safe-area-inset-top)) 16px 16px;
+    }
+    .row { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+    .chip {
+      border: 1px solid var(--border); background: color-mix(in oklab, var(--bg) 70%, transparent);
+      border-radius: var(--radius-md); padding: 8px 12px; backdrop-filter: blur(8px);
+    }
+    .kicker { margin: 0; font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+    .obj { margin: 0; font-size: 14px; font-weight: 800; }
+    .hearts { display: flex; gap: 4px; margin-top: 4px; }
+    .hp { display: block; width: 10px; height: 10px; border-radius: 2px; background: var(--surface-2); }
+    .hp.on { background: var(--accent); }
+    .stats { display: flex; gap: 8px; align-items: flex-start; }
+    .chip.right { text-align: right; }
+    .chip p { margin: 0; }
+    .num { font-size: 18px; font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1; }
+    .num.accent { color: var(--accent); }
+    button.chip { pointer-events: auto; min-height: 44px; color: var(--fg); font: 700 12px Nunito, sans-serif; }
+    .boss { margin: 0 auto; width: 100%; max-width: 28rem; }
+    .boss-top { display: flex; justify-content: space-between; font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+    .bar { height: 8px; overflow: hidden; border-radius: 2px; background: var(--surface-2); }
+    .bar > span { display: block; height: 100%; background: var(--good); }
+    .toast {
+      margin: 0 auto; max-width: 24rem; border: 1px solid var(--border);
+      background: color-mix(in oklab, var(--bg) 80%, transparent);
+      border-radius: 8px; padding: 8px 12px; text-align: center; font-size: 14px; font-weight: 800;
+      backdrop-filter: blur(8px);
+    }
+    .overlay, .pause {
+      position: absolute; inset: 0; z-index: 20; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; padding: 20px; text-align: center;
+      background: color-mix(in oklab, var(--bg) 55%, transparent); backdrop-filter: blur(2px);
+    }
+    .pause { background: color-mix(in oklab, var(--bg) 70%, transparent); }
+    .card { display: flex; max-width: 28rem; flex-direction: column; align-items: center; gap: 20px; }
+    .eyebrow { margin: 0; font-size: 12px; font-weight: 800; letter-spacing: .22em; text-transform: uppercase; color: var(--accent); }
+    .level { margin: 0; font-size: 12px; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); }
+    h1 { margin: 0; font-family: Creepster, Georgia, serif; font-size: clamp(42px, 10vw, 60px); font-weight: 400; line-height: 1; }
+    .night { margin: 0; font-family: Creepster, Georgia, serif; font-size: 24px; color: var(--accent); }
+    .lead { margin: 0; color: var(--muted); font-size: 16px; }
+    .play {
+      min-height: 48px; border: 0; border-radius: var(--radius-md); background: var(--accent);
+      color: var(--accent-fg); padding: 12px 32px; font: 800 16px Nunito, sans-serif;
+    }
+    .play:disabled { opacity: .5; }
+    .hint { margin: 0; font-size: 12px; color: var(--subtle); }
+    .url { margin: 0; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--subtle); }
+    h2 { margin: 0; font-family: Creepster, Georgia, serif; font-size: 40px; font-weight: 400; }
+    .mute-top { position: absolute; top: max(12px, env(safe-area-inset-top)); right: 16px; z-index: 30; }
+    .pads {
+      position: absolute; inset: auto 0 0 0; z-index: 20; display: none;
+      justify-content: space-between; gap: 16px; padding: 12px 12px max(12px, env(safe-area-inset-bottom));
+    }
+    .pads .g { display: flex; gap: 8px; }
+    .pad {
+      min-height: 64px; min-width: 64px; border: 1px solid var(--border-strong);
+      border-radius: var(--radius-xl); background: color-mix(in oklab, var(--surface) 80%, transparent);
+      color: var(--fg); font: 800 12px Nunito, sans-serif; letter-spacing: .08em; text-transform: uppercase;
+      backdrop-filter: blur(8px);
+    }
+    @media (max-width: 640px) { .pads { display: flex; } }
+    [hidden] { display: none !important; }
+    a.back { color: var(--subtle); font-size: 12px; font-weight: 700; }
+  </style>
+</head>
+<body>
+  <div id="wrap">
+    <canvas id="game"></canvas>
+
+    <div class="hud" id="hud" hidden>
+      <div class="row">
+        <div class="chip">
+          <p class="kicker" id="room"></p>
+          <p class="obj" id="objective"></p>
+          <div class="hearts" id="hearts" aria-label="Health"></div>
+        </div>
+        <div class="stats">
+          <div class="chip right">
+            <p class="kicker">Candy</p>
+            <p class="num accent" id="candy">0</p>
+          </div>
+          <div class="chip right">
+            <p class="kicker">Time</p>
+            <p class="num" id="clock">0:00</p>
+          </div>
+          <button type="button" class="chip" data-act="pause">Pause</button>
+          <button type="button" class="chip" data-mute>Sound</button>
+        </div>
+      </div>
+      <div class="boss chip" id="boss-wrap" hidden>
+        <div class="boss-top"><span>Spirit robot</span><span id="boss-hp">0/0</span></div>
+        <div class="bar"><span id="boss-bar"></span></div>
+      </div>
+      <p class="toast" id="toast-wrap" hidden><span id="toast"></span></p>
+    </div>
+
+    <div class="overlay" id="overlay">
+      <p id="boot-card" class="hint" hidden><span id="boot-msg">Lighting the pumpkins…</span></p>
+      <div class="card" id="title-card">
+        <p class="eyebrow">Furious Acid Game 2</p>
+        <p class="level">Level 1</p>
+        <h1>Phrogger Entry</h1>
+        <p class="night">Halloween Night</p>
+        <p class="lead">Run the haunted street. Jump the truck. Cut down the robots. Get to the house — then find the right room.</p>
+        <button type="button" class="play" id="play-btn" data-act="start" disabled>Lighting the pumpkins…</button>
+        <p class="hint" id="best-line">Move A/D or arrows · Jump W / Space · Attack J / K</p>
+        <p class="url">furiousacid.com/game2</p>
+        <a class="back" href="/game/">Game 1 worlds</a>
+      </div>
+      <div class="card" id="dead-card" hidden>
+        <h2>Dropped</h2>
+        <p class="lead">The street took you. Try the jump again.</p>
+        <button type="button" class="play" data-act="start">Restart</button>
+      </div>
+      <div class="card" id="win-card" hidden>
+        <h2>Connection closed</h2>
+        <p class="lead" id="win-line">The spirit robot timed out. The house can sleep.</p>
+        <button type="button" class="play" data-act="start">Play again</button>
+      </div>
+    </div>
+
+    <div class="pause" id="pause-card" hidden>
+      <h2>Paused</h2>
+      <p class="lead">Press P or the pause control</p>
+    </div>
+
+    <div class="mute-top" id="mute-top">
+      <button type="button" class="chip" data-mute>Sound</button>
+    </div>
+
+    <div class="pads" id="pads" hidden>
+      <div class="g">
+        <button type="button" class="pad" data-hold="left">Left</button>
+        <button type="button" class="pad" data-hold="right">Right</button>
+      </div>
+      <div class="g">
+        <button type="button" class="pad" data-hold="attack">Slash</button>
+        <button type="button" class="pad" data-hold="jump">Jump</button>
+      </div>
+    </div>
+  </div>
+  <script>window.__ASSET_BASE__ = "./assets";</script>
+  <script src="./game.js"></script>
+</body>
+</html>

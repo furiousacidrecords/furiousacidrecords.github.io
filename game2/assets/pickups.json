@@ -1,0 +1,17 @@
+{
+  "cell": 64,
+  "anims": {
+    "pumpkin": {
+      "row": 0,
+      "frames": 1
+    },
+    "pumpkin2": {
+      "row": 1,
+      "frames": 1
+    },
+    "cat": {
+      "row": 2,
+      "frames": 1
+    }
+  }
+}

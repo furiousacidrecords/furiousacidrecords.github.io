@@ -1,0 +1,53 @@
+{
+  "cell": 160,
+  "anims": {
+    "kline": {
+      "row": 0,
+      "frames": 1
+    },
+    "kick": {
+      "row": 1,
+      "frames": 1
+    },
+    "gline": {
+      "row": 2,
+      "frames": 1
+    },
+    "zline": {
+      "row": 3,
+      "frames": 1
+    },
+    "shun": {
+      "row": 4,
+      "frames": 1
+    },
+    "akill": {
+      "row": 5,
+      "frames": 1
+    },
+    "netsplit": {
+      "row": 6,
+      "frames": 1
+    },
+    "reset": {
+      "row": 7,
+      "frames": 1
+    },
+    "noroute": {
+      "row": 8,
+      "frames": 1
+    },
+    "ping": {
+      "row": 9,
+      "frames": 1
+    },
+    "flood": {
+      "row": 10,
+      "frames": 1
+    },
+    "nick": {
+      "row": 11,
+      "frames": 1
+    }
+  }
+}

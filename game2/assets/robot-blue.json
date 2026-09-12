@@ -1,0 +1,37 @@
+{
+  "cell": 140,
+  "anims": {
+    "idle": {
+      "row": 0,
+      "frames": 1
+    },
+    "walk": {
+      "row": 1,
+      "frames": 3
+    },
+    "punch": {
+      "row": 2,
+      "frames": 2
+    },
+    "kick": {
+      "row": 3,
+      "frames": 2
+    },
+    "special": {
+      "row": 4,
+      "frames": 1
+    },
+    "hurt": {
+      "row": 5,
+      "frames": 1
+    },
+    "down": {
+      "row": 6,
+      "frames": 1
+    },
+    "win": {
+      "row": 7,
+      "frames": 1
+    }
+  }
+}

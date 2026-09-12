@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" role="img" aria-label="Phrogger Entry">
+  <rect width="16" height="16" rx="3" fill="#12081c"/>
+  <rect x="7" y="1" width="2" height="3" fill="#6ecf6a"/>
+  <ellipse cx="8" cy="10" rx="6" ry="5" fill="#e07828"/>
+  <polygon points="5,8 7,8 6,6" fill="#12081c"/>
+  <polygon points="9,8 11,8 10,6" fill="#12081c"/>
+  <polygon points="8,9 9,10 7,10" fill="#12081c"/>
+  <path fill="#12081c" d="M4 11h2l1-1 1 1 1-1 1 1 2 0-1 3H5z"/>
+</svg>
