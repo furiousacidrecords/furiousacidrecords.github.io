@@ -26,6 +26,9 @@
         if (html.indexOf('href="/game2/"') === -1) {
           html = html.replace('<a href="/game/">Game</a>', '<a href="/game/">Game</a>\n        <a href="/game2/">Game 2</a>');
         }
+        if (html.indexOf('href="/game2.2/"') === -1) {
+          html = html.replace('<a href="/game2/">Game 2</a>', '<a href="/game2/">Game 2</a>\n        <a href="/game2.2/">Game 2.2</a>');
+        }
         html = html.replace('Custom Studio</a>\\n', 'Custom Studio</a>');
 
         html = html.replace(/href=["']#forum["']/g, 'href="https://acid-chat-hub.lovable.app/forum" target="_blank" rel="noopener noreferrer"');

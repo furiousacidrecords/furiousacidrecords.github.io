@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>Level 2 (beta) — Furious Acid Game 2.2</title>
+  <meta name="theme-color" content="#12081c">
+  <meta name="description" content="Furious Acid Game 2.2 beta — West Gate, the lab, and the pole as one level. Same walk as Phrogger Entry.">
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Nunito:wght@500;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #12081c;
+      --surface: #1c1328;
+      --surface-2: #261a36;
+      --fg: #f3ead8;
+      --muted: #b7a992;
+      --subtle: #7a6e62;
+      --accent: #e07828;
+      --accent-fg: #1a0c08;
+      --good: #6ecf6a;
+      --border: color-mix(in oklab, var(--fg) 14%, transparent);
+      --border-strong: color-mix(in oklab, var(--fg) 26%, transparent);
+      --radius-md: 12px;
+      --radius-xl: 24px;
+    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body { height: 100%; margin: 0; background: var(--bg); color: var(--fg); font-family: Nunito, "Segoe UI", system-ui, sans-serif; }
+    button:not(:disabled) { cursor: pointer; }
+    #wrap { position: relative; display: flex; flex-direction: column; height: 100dvh; width: 100%; overflow: hidden; background: var(--bg); touch-action: none; }
+    canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+    .hud {
+      pointer-events: none;
+      position: absolute; inset: 0 auto auto 0; right: 0;
+      z-index: 30; display: flex; flex-direction: column; gap: 12px;
+      padding: max(12px, env(safe-area-inset-top)) 16px 16px;
+    }
+    .row { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+    .chip {
+      border: 1px solid var(--border); background: color-mix(in oklab, var(--bg) 70%, transparent);
+      border-radius: var(--radius-md); padding: 8px 12px; backdrop-filter: blur(8px);
+    }
+    .kicker { margin: 0; font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+    .obj { margin: 0; font-size: 14px; font-weight: 800; }
+    .hearts { display: flex; gap: 4px; margin-top: 4px; }
+    .hp { display: block; width: 10px; height: 10px; border-radius: 2px; background: var(--surface-2); }
+    .hp.on { background: var(--accent); }
+    .stats { display: flex; gap: 8px; align-items: flex-start; }
+    .chip.right { text-align: right; }
+    .chip p { margin: 0; }
+    .num { font-size: 18px; font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1; }
+    .num.accent { color: var(--accent); }
+    button.chip { pointer-events: auto; min-height: 44px; color: var(--fg); font: 700 12px Nunito, sans-serif; }
+    .boss { margin: 0 auto; width: 100%; max-width: 28rem; }
+    .boss-top { display: flex; justify-content: space-between; font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+    .bar { height: 8px; overflow: hidden; border-radius: 2px; background: var(--surface-2); }
+    .bar > span { display: block; height: 100%; background: var(--good); }
+    .toast {
+      margin: 0 auto; max-width: 24rem; border: 1px solid var(--border);
+      background: color-mix(in oklab, var(--bg) 80%, transparent);
+      border-radius: 8px; padding: 8px 12px; text-align: center; font-size: 14px; font-weight: 800;
+      backdrop-filter: blur(8px);
+    }
+    .overlay, .pause {
+      position: absolute; inset: 0; z-index: 20; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; padding: 20px; text-align: center;
+      background: color-mix(in oklab, var(--bg) 55%, transparent); backdrop-filter: blur(2px);
+    }
+    .pause { background: color-mix(in oklab, var(--bg) 70%, transparent); }
+    .card { display: flex; max-width: 28rem; flex-direction: column; align-items: center; gap: 20px; }
+    .eyebrow { margin: 0; font-size: 12px; font-weight: 800; letter-spacing: .22em; text-transform: uppercase; color: var(--accent); }
+    .level { margin: 0; font-size: 12px; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); }
+    h1 { margin: 0; font-family: Creepster, Georgia, serif; font-size: clamp(42px, 10vw, 60px); font-weight: 400; line-height: 1; }
+    .night { margin: 0; font-family: Creepster, Georgia, serif; font-size: 24px; color: var(--accent); }
+    .lead { margin: 0; color: var(--muted); font-size: 16px; }
+    .play {
+      min-height: 48px; border: 0; border-radius: var(--radius-md); background: var(--accent);
+      color: var(--accent-fg); padding: 12px 32px; font: 800 16px Nunito, sans-serif;
+    }
+    .play:disabled { opacity: .5; }
+    .ghost {
+      min-height: 44px; border: 0; background: transparent; color: var(--muted);
+      font: 700 14px Nunito, sans-serif;
+    }
+    .hint { margin: 0; font-size: 12px; color: var(--subtle); }
+    .url { margin: 0; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--subtle); }
+    h2 { margin: 0; font-family: Creepster, Georgia, serif; font-size: 40px; font-weight: 400; }
+    .mute-top { position: absolute; top: max(12px, env(safe-area-inset-top)); right: 16px; z-index: 30; }
+    .pads {
+      position: absolute; inset: auto 0 0 0; z-index: 20; display: none;
+      justify-content: space-between; gap: 12px; padding: 12px 12px max(12px, env(safe-area-inset-bottom));
+    }
+    .pads .g { display: flex; gap: 8px; }
+    .pads .col { display: flex; flex-direction: column; gap: 8px; }
+    .pad {
+      min-height: 56px; min-width: 56px; border: 1px solid var(--border-strong);
+      border-radius: var(--radius-xl); background: color-mix(in oklab, var(--surface) 80%, transparent);
+      color: var(--fg); font: 800 12px Nunito, sans-serif; letter-spacing: .08em; text-transform: uppercase;
+      backdrop-filter: blur(8px);
+    }
+    @media (max-width: 640px) { .pads { display: flex; } }
+    [hidden] { display: none !important; }
+    a.back { color: var(--subtle); font-size: 12px; font-weight: 700; }
+    #cut-card { padding: 0; background: #000; }
+    #cut-card video { width: 100%; height: 100%; object-fit: cover; }
+    .cut-copy {
+      pointer-events: none; position: absolute; inset: auto 0 auto 0;
+      top: max(16px, env(safe-area-inset-top)); text-align: center;
+    }
+    .cut-copy p { margin: 0; }
+    .cut-skip {
+      position: absolute; left: 50%; bottom: max(16px, env(safe-area-inset-bottom));
+      transform: translateX(-50%); z-index: 30;
+    }
+  </style>
+</head>
+<body>
+  <div id="wrap">
+    <canvas id="game"></canvas>
+
+    <div class="hud" id="hud" hidden>
+      <div class="row">
+        <div class="chip">
+          <p class="kicker" id="room"></p>
+          <p class="obj" id="objective"></p>
+          <div class="hearts" id="hearts" aria-label="Health"></div>
+        </div>
+        <div class="stats">
+          <div class="chip right">
+            <p class="kicker">Candy</p>
+            <p class="num accent" id="candy">0</p>
+          </div>
+          <div class="chip right">
+            <p class="kicker">Time</p>
+            <p class="num" id="clock">0:00</p>
+          </div>
+          <button type="button" class="chip" data-act="pause">Pause</button>
+          <button type="button" class="chip" data-mute>Sound</button>
+        </div>
+      </div>
+      <div class="boss chip" id="boss-wrap" hidden>
+        <div class="boss-top"><span>Spirit robot</span><span id="boss-hp">0/0</span></div>
+        <div class="bar"><span id="boss-bar"></span></div>
+      </div>
+      <p class="toast" id="toast-wrap" hidden><span id="toast"></span></p>
+    </div>
+
+    <div class="overlay" id="overlay">
+      <p id="boot-card" class="hint" hidden><span id="boot-msg">Lighting the pumpkins…</span></p>
+      <div class="card" id="title-card">
+        <p class="eyebrow">Furious Acid Game 2.2</p>
+        <p class="level">Level 2 · beta</p>
+        <h1>Meet my friend</h1>
+        <p class="night">West Gate · Lab · Pole</p>
+        <p class="lead">Same walk as Phrogger Entry. The cut plays, then one long section — no extra buttons.</p>
+        <button type="button" class="play" id="play-btn" data-act="level2" disabled>Lighting the pumpkins…</button>
+        <button type="button" class="ghost" data-act="start" id="l1-btn">Play Level 1 street first</button>
+        <p class="hint">A/D move · Up stairs · Jump W / Space · Attack J / K</p>
+        <p class="url">furiousacid.com/game2.2</p>
+        <a class="back" href="/game2/">Level 1 lives at /game2</a>
+      </div>
+      <div class="card" id="dead-card" hidden>
+        <h2>Dropped</h2>
+        <p class="lead">You'll pick up from the last spot you stood.</p>
+        <button type="button" class="play" data-act="start">Continue</button>
+        <button type="button" class="ghost" data-act="restart">From the start</button>
+      </div>
+      <div class="card" id="win-card" hidden>
+        <h2>Ding</h2>
+        <p class="lead" id="win-line">Nobody saw it.</p>
+        <button type="button" class="play" data-act="level2">Play Level 2 again</button>
+      </div>
+    </div>
+
+    <div class="overlay" id="cut-card" hidden>
+      <video id="cut-video" src="./cut/meet-friend.mp4" playsinline></video>
+      <div class="cut-copy">
+        <p class="night">Come on mother</p>
+        <p class="lead" style="color:#f3ead8">I want you to meet my friend</p>
+      </div>
+      <button type="button" class="play cut-skip" data-act="skip-cut">Walk into Level 2</button>
+    </div>
+
+    <div class="pause" id="pause-card" hidden>
+      <h2>Paused</h2>
+      <p class="lead">Tap resume to keep going.</p>
+      <button type="button" class="play" data-act="pause">Resume</button>
+    </div>
+
+    <div class="mute-top" id="mute-top">
+      <button type="button" class="chip" data-mute>Sound</button>
+    </div>
+
+    <div class="pads" id="pads" hidden>
+      <div class="g">
+        <button type="button" class="pad" data-hold="left">Left</button>
+        <button type="button" class="pad" data-hold="right">Right</button>
+      </div>
+      <div class="col">
+        <div class="g">
+          <button type="button" class="pad" data-hold="up">Up</button>
+          <button type="button" class="pad" data-hold="jump">Jump</button>
+        </div>
+        <div class="g">
+          <button type="button" class="pad" data-hold="down">Down</button>
+          <button type="button" class="pad" data-hold="attack">Slash</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>window.__ASSET_BASE__ = "/game2/assets";</script>
+  <script src="./game.js"></script>
+  <script>
+    (function () {
+      const wrap = document.getElementById("wrap");
+      const canvas = document.getElementById("game");
+      if (!wrap || !canvas || !window.createGame) return;
+      let muted = false;
+      function clock(t) {
+        const m = Math.floor(t / 60);
+        const s = Math.floor(t % 60);
+        return m + ":" + String(s).padStart(2, "0");
+      }
+      function show(id, on) {
+        const el = document.getElementById(id);
+        if (el) el.hidden = !on;
+      }
+      function setText(id, t) {
+        const el = document.getElementById(id);
+        if (el) el.textContent = t;
+      }
+      const api = window.createGame(canvas, wrap, function (hud) {
+        const play = hud.scene === "play" || hud.scene === "pause";
+        show("hud", play);
+        show("overlay", hud.scene === "title" || hud.scene === "boot" || hud.scene === "dead" || hud.scene === "win");
+        show("title-card", hud.scene === "title" || hud.scene === "boot");
+        show("dead-card", hud.scene === "dead");
+        show("win-card", hud.scene === "win");
+        show("pause-card", hud.scene === "pause");
+        show("pads", play && hud.scene !== "pause");
+        show("mute-top", !play);
+        show("cut-card", hud.scene === "cut");
+        const vid = document.getElementById("cut-video");
+        if (hud.scene === "cut") {
+          if (vid && vid.paused) {
+            vid.currentTime = 0;
+            vid.play().catch(function () {});
+          }
+        } else if (vid) {
+          vid.pause();
+        }
+        setText("room", hud.room);
+        setText("objective", hud.objective);
+        setText("candy", String(hud.candy));
+        setText("clock", clock(hud.time));
+        setText("toast", hud.toast);
+        show("toast-wrap", !!hud.toast);
+        show("boss-wrap", hud.bossHpMax > 0);
+        setText("boss-hp", hud.bossHp + "/" + hud.bossHpMax);
+        const bar = document.getElementById("boss-bar");
+        if (bar && hud.bossHpMax) bar.style.width = (hud.bossHp / hud.bossHpMax) * 100 + "%";
+        const hearts = document.getElementById("hearts");
+        if (hearts) {
+          hearts.innerHTML = "";
+          for (let i = 0; i < hud.hpMax; i++) {
+            const s = document.createElement("span");
+            s.className = i < hud.hp ? "hp on" : "hp";
+            hearts.appendChild(s);
+          }
+        }
+        const playBtn = document.getElementById("play-btn");
+        if (playBtn) {
+          playBtn.disabled = !hud.ready;
+          playBtn.textContent = hud.ready ? "Level 2 (beta)" : "Lighting the pumpkins…";
+        }
+        setText("win-line", "Candy " + hud.candy + " · " + clock(hud.time));
+      });
+      wrap.querySelectorAll("[data-hold]").forEach(function (btn) {
+        btn.addEventListener("pointerdown", function (e) {
+          e.preventDefault();
+          btn.setPointerCapture(e.pointerId);
+          api.holdTouch(btn.dataset.hold, true, e.pointerId);
+          api.unlock();
+        });
+        btn.addEventListener("pointerup", function (e) { api.holdTouch(btn.dataset.hold, false, e.pointerId); });
+        btn.addEventListener("pointercancel", function (e) { api.holdTouch(btn.dataset.hold, false, e.pointerId); });
+      });
+      wrap.querySelectorAll("[data-mute]").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          muted = !muted;
+          api.setMuted(muted);
+          wrap.querySelectorAll("[data-mute]").forEach(function (b) { b.textContent = muted ? "Sound off" : "Sound"; });
+        });
+      });
+      wrap.addEventListener("click", function (e) {
+        const act = e.target.closest("[data-act]") && e.target.closest("[data-act]").getAttribute("data-act");
+        if (act === "level2") { api.unlock(); api.startLevel2(); }
+        if (act === "skip-cut") api.skipCut();
+      });
+      const vid = document.getElementById("cut-video");
+      if (vid) vid.addEventListener("ended", function () { api.skipCut(); });
+    })();
+  </script>
+</body>
+</html>
