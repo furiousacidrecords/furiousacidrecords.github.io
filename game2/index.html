@@ -119,8 +119,12 @@
         </div>
         <div class="stats">
           <div class="chip right">
-            <p class="kicker">Candy</p>
+            <p class="kicker" id="candy-label">Candy</p>
             <p class="num accent" id="candy">0</p>
+          </div>
+          <div class="chip right" id="shells-chip" hidden>
+            <p class="kicker">Shells</p>
+            <p class="num accent" id="shells">0</p>
           </div>
           <div class="chip right">
             <p class="kicker">Time</p>
@@ -144,7 +148,7 @@
         <p class="level">Level 1</p>
         <h1>Phrogger Entry</h1>
         <p class="night">Halloween Night</p>
-        <p class="lead">Run the haunted street. Jump the truck. Cut down the robots. Get to the house — then find the right room.</p>
+        <p class="lead">Run the haunted street. Get to the house. Then hold Compton Inn West Gate — you are the purple hare.</p>
         <button type="button" class="play" id="play-btn" data-act="start" disabled>Lighting the pumpkins…</button>
         <p class="hint" id="best-line">Move A/D · Up stairs · Jump W / Space · Attack J / K</p>
         <p class="url">furiousacid.com/game2</p>
@@ -157,8 +161,8 @@
         <button type="button" class="ghost" data-act="restart">From the start</button>
       </div>
       <div class="card" id="win-card" hidden>
-        <h2>Connection closed</h2>
-        <p class="lead" id="win-line">The spirit robot timed out. The house can sleep.</p>
+        <h2>Gate holds</h2>
+        <p class="lead" id="win-line">Compton Inn can sleep.</p>
         <button type="button" class="play" data-act="start">Play again</button>
       </div>
     </div>
@@ -178,7 +182,7 @@
         <button type="button" class="pad" data-hold="left">Left</button>
         <button type="button" class="pad" data-hold="right">Right</button>
       </div>
-      <div class="col">
+      <div class="col" id="pads-plat">
         <div class="g">
           <button type="button" class="pad" data-hold="up">Up</button>
           <button type="button" class="pad" data-hold="jump">Jump</button>
@@ -187,6 +191,10 @@
           <button type="button" class="pad" data-hold="down">Down</button>
           <button type="button" class="pad" data-hold="attack">Slash</button>
         </div>
+      </div>
+      <div class="g" id="pads-fps" hidden>
+        <button type="button" class="pad" id="shot-pad" data-hold="shotgun" hidden>Boom</button>
+        <button type="button" class="pad" data-hold="attack">Fire</button>
       </div>
     </div>
   </div>
