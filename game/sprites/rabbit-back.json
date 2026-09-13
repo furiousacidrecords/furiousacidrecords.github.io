@@ -1,0 +1,65 @@
+{
+  "cell": 160,
+  "anims": {
+    "idle": {
+      "row": 0,
+      "frames": 8
+    },
+    "run": {
+      "row": 1,
+      "frames": 6
+    },
+    "jump": {
+      "row": 2,
+      "frames": 6
+    },
+    "fall": {
+      "row": 3,
+      "frames": 3
+    },
+    "land": {
+      "row": 4,
+      "frames": 4
+    },
+    "attack": {
+      "row": 5,
+      "frames": 7
+    },
+    "hurt": {
+      "row": 6,
+      "frames": 6
+    },
+    "death": {
+      "row": 7,
+      "frames": 7
+    },
+    "crouch": {
+      "row": 8,
+      "frames": 2
+    },
+    "lookup": {
+      "row": 9,
+      "frames": 3
+    },
+    "lookdown": {
+      "row": 10,
+      "frames": 3
+    },
+    "climb": {
+      "row": 11,
+      "frames": 4
+    },
+    "hang": {
+      "row": 12,
+      "frames": 4
+    },
+    "swim": {
+      "row": 13,
+      "frames": 3
+    },
+    "spin": {
+      "row": 14,
+      "frames": 4
+    }
+  }
+}

@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-  <title>Level 2 (beta) — Furious Acid Game 2.2</title>
+  <title>Furious Acid Game 2.2 — Pole & Sniper</title>
   <meta name="theme-color" content="#12081c">
-  <meta name="description" content="Furious Acid Game 2.2 beta — West Gate, the lab, and the pole as one level. Same walk as Phrogger Entry.">
+  <meta name="description" content="Furious Acid Game 2.2 — street, West Gate, telephone pole climbing simulator, sniper simulator. Yellow dot. Three rounds.">
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -132,6 +132,10 @@
             <p class="kicker">Candy</p>
             <p class="num accent" id="candy">0</p>
           </div>
+          <div class="chip right" id="rounds-wrap" hidden>
+            <p class="kicker">Rounds</p>
+            <p class="num accent" id="rounds">3</p>
+          </div>
           <div class="chip right">
             <p class="kicker">Time</p>
             <p class="num" id="clock">0:00</p>
@@ -151,13 +155,15 @@
       <p id="boot-card" class="hint" hidden><span id="boot-msg">Lighting the pumpkins…</span></p>
       <div class="card" id="title-card">
         <p class="eyebrow">Furious Acid Game 2.2</p>
-        <p class="level">Level 2 · beta</p>
-        <h1>Meet my friend</h1>
-        <p class="night">West Gate · Lab · Pole</p>
-        <p class="lead">Same walk as Phrogger Entry. The cut plays, then one long section — no extra buttons.</p>
-        <button type="button" class="play" id="play-btn" data-act="level2" disabled>Lighting the pumpkins…</button>
-        <button type="button" class="ghost" data-act="start" id="l1-btn">Play Level 1 street first</button>
-        <p class="hint">A/D move · Up stairs · Jump W / Space · Attack J / K</p>
+        <p class="level">Street · Gate · Pole · Wire</p>
+        <h1>Halloween Night</h1>
+        <p class="night">Part 1 pole · Part 2 sniper</p>
+        <p class="lead">Same walk as Phrogger Entry. Climb the pole. Put the reticle on the yellow. Three rounds. The TV only if you hit it.</p>
+        <button type="button" class="play" id="play-btn" data-act="start" disabled>Lighting the pumpkins…</button>
+        <button type="button" class="ghost" data-act="level2">Level 2 · West Gate</button>
+        <button type="button" class="ghost" data-act="level3">Part 1 · Telephone pole</button>
+        <button type="button" class="ghost" data-act="level4">Part 2 · Sniper simulator</button>
+        <p class="hint">Drag onto the yellow · Fire J / K · 3 rounds</p>
         <p class="url">furiousacid.com/game2.2</p>
         <a class="back" href="/game2/">Level 1 lives at /game2</a>
       </div>
@@ -205,7 +211,7 @@
         </div>
         <div class="g">
           <button type="button" class="pad" data-hold="down">Down</button>
-          <button type="button" class="pad" data-hold="attack">Slash</button>
+          <button type="button" class="pad" data-hold="attack" id="atk-pad">Slash</button>
         </div>
       </div>
     </div>
@@ -255,6 +261,11 @@
         setText("objective", hud.objective);
         setText("candy", String(hud.candy));
         setText("clock", clock(hud.time));
+        const left = Math.max(0, (hud.shotMax || 0) - (hud.shots || 0));
+        setText("rounds", String(left));
+        show("rounds-wrap", (hud.shotMax || 0) > 0);
+        const atk = document.getElementById("atk-pad");
+        if (atk) atk.textContent = hud.level >= 4 ? "Fire" : "Slash";
         setText("toast", hud.toast);
         show("toast-wrap", !!hud.toast);
         show("boss-wrap", hud.bossHpMax > 0);
@@ -273,7 +284,7 @@
         const playBtn = document.getElementById("play-btn");
         if (playBtn) {
           playBtn.disabled = !hud.ready;
-          playBtn.textContent = hud.ready ? "Level 2 (beta)" : "Lighting the pumpkins…";
+          playBtn.textContent = hud.ready ? "Level 1 · Street" : "Lighting the pumpkins…";
         }
         setText("win-line", "Candy " + hud.candy + " · " + clock(hud.time));
       });
@@ -297,6 +308,8 @@
       wrap.addEventListener("click", function (e) {
         const act = e.target.closest("[data-act]") && e.target.closest("[data-act]").getAttribute("data-act");
         if (act === "level2") { api.unlock(); api.startLevel2(); }
+        if (act === "level3") { api.unlock(); api.startLevel3(); }
+        if (act === "level4") { api.unlock(); api.startLevel4(); }
         if (act === "skip-cut") api.skipCut();
       });
       const vid = document.getElementById("cut-video");
