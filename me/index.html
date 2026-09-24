@@ -6,39 +6,161 @@
   <title>What happened to Furious Acid</title>
   <style>
     body { margin: 0; background: #f3f2f5; color: #17131d; font-family: ui-sans-serif, system-ui, sans-serif; }
-    main { width: min(720px, 100%); margin: 0 auto; padding: 20px 16px 48px; }
+    main { width: min(760px, 100%); margin: 0 auto; padding: 20px 16px 64px; }
     a { color: #4b00ad; font-weight: 800; text-decoration: none; }
-    h1 { margin: 12px 0 0; font-size: 40px; line-height: 1; letter-spacing: -.03em; }
-    .lead { color: #69636f; }
-    blockquote { margin: 18px 0 0; padding: 16px; background: #fff; border-left: 5px solid #e10600; border-radius: 12px; }
-    blockquote p { margin: 0; font-size: 22px; line-height: 1.35; }
-    cite { display: block; margin-top: 8px; color: #69636f; font-style: normal; font-size: 13px; font-weight: 700; }
+    h1, h2 { letter-spacing: -.03em; line-height: 1; }
+    h1 { margin: 12px 0 0; font-size: 40px; }
+    h2 { margin: 8px 0 0; font-size: 32px; }
+    .kicker { margin: 28px 0 0; color: #4b00ad; font-size: 12px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+    .lead, .mute { color: #69636f; }
+    nav { display: flex; gap: 8px; overflow-x: auto; margin-top: 18px; }
+    nav a { flex: none; border: 1px solid #dedbe3; background: #fff; border-radius: 999px; padding: 8px 12px; color: #17131d; font-weight: 700; }
+    blockquote, .card, .note { margin: 14px 0 0; padding: 16px; background: #fff; border-radius: 12px; }
+    blockquote { border-left: 5px solid #e10600; }
+    blockquote p, .ask { margin: 0; font-size: 22px; line-height: 1.35; }
+    cite, .who { display: block; margin-top: 8px; color: #69636f; font-style: normal; font-size: 13px; font-weight: 700; }
+    .grid { display: grid; gap: 10px; margin-top: 14px; }
+    @media (min-width: 640px) { .grid.three { grid-template-columns: repeat(3, 1fr); } .grid.two { grid-template-columns: 1fr 1fr; } }
+    .card h3 { margin: 0; font-size: 22px; }
+    .card p, .row p { margin: 6px 0 0; color: #69636f; }
+    .row { display: grid; gap: 4px; padding: 14px 0; border-top: 1px solid #dedbe3; }
+    .bar { height: 8px; margin-top: 6px; background: #dedbe3; border-radius: 99px; }
+    .bar span { display: block; height: 8px; border-radius: 99px; background: #6f00ff; }
+    .stat { font-size: 36px; line-height: 1; }
+    input, button { font: inherit; }
+    input { width: 100%; margin-top: 8px; padding: 12px; border: 1px solid #dedbe3; border-radius: 12px; }
+    button { margin-top: 10px; padding: 8px 14px; border: 1px solid #dedbe3; border-radius: 999px; background: #fff; }
   </style>
 </head>
 <body>
   <main>
     <a href="/">Furious Acid</a>
     <h1>What happened to Furious Acid</h1>
-    <p class="lead">People said these. I kept them.</p>
-    <blockquote>
-      <p>My uncle couldn’t try any. He’s getting old, but he explained it. It actually worked. It had me tripping so good.</p>
-      <cite>u/Specific_Gas_2933</cite>
-    </blockquote>
-    <blockquote><p>Damn bro you’re a legend</p><cite>@bezbxznik</cite></blockquote>
-    <blockquote><p>you are always truly kind</p><cite>@mommasuwi</cite></blockquote>
-    <blockquote><p>love chatting with you</p><cite>@mommasuwi</cite></blockquote>
-    <blockquote><p>thank you for keeping in touch</p><cite>@mommasuwi</cite></blockquote>
-    <blockquote><p>How are you so smart. I want to be as knowledgeable as you one day.</p><cite>@j0hhal</cite></blockquote>
-    <blockquote><p>You are so helpful</p><cite>@j0hhal</cite></blockquote>
-    <blockquote><p>I need to follow in your footsteps. I’m trying to get like you.</p><cite>@j0hhal</cite></blockquote>
-    <blockquote><p>Love all the knowledge</p><cite>@ponchipoo2</cite></blockquote>
-    <blockquote><p>Hardcore. Loving your content.</p><cite>John</cite></blockquote>
-    <blockquote><p>Stay strong, brother.</p><cite>John</cite></blockquote>
-    <blockquote><p>Been seeing your face among some TikTok legends. See you getting out, and making a difference. Glad to be able to get your content. God bless.</p><cite>John</cite></blockquote>
-    <blockquote><p>I love your page. Love the chemistry facts mixed with this odd, analog-horror vibe.</p><cite>a viewer</cite></blockquote>
-    <blockquote><p>It’s way over my head but I support it 100%</p><cite>ghoulish one</cite></blockquote>
-    <blockquote><p>It’s so fun</p><cite>TheUncannyValleyCo</cite></blockquote>
-    <p class="lead">Books are on <a href="https://www.amazon.com/stores/author/B0GWLWJBS6/allbooks">Amazon</a>. Email <a href="mailto:furiousacidcreator@gmail.com">furiousacidcreator@gmail.com</a>.</p>
+    <p class="lead">The rabbit, the books, and what people actually said.</p>
+    <nav>
+      <a href="#said">Said</a>
+      <a href="#origin">Origin</a>
+      <a href="#scientist">Scientist</a>
+      <a href="#library">Library</a>
+      <a href="#asked">Asked</a>
+      <a href="#users">Users</a>
+      <a href="#scan">Scan</a>
+    </nav>
+
+    <p class="kicker" id="said">Said to you</p>
+    <blockquote><p>My uncle couldn’t try any. He’s getting old, but he explained it. It actually worked. It had me tripping so good.</p><cite>u/Specific_Gas_2933 · June 2025</cite></blockquote>
+    <blockquote><p>Damn bro you’re a legend</p><cite>@bezbxznik · August 2026</cite></blockquote>
+    <blockquote><p>you are always truly kind</p><cite>@mommasuwi · November 2024</cite></blockquote>
+    <blockquote><p>love chatting with you</p><cite>@mommasuwi · November 2024</cite></blockquote>
+    <blockquote><p>thank you for keeping in touch</p><cite>@mommasuwi · January 2025</cite></blockquote>
+    <blockquote><p>How are you so smart. I want to be as knowledgeable as you one day.</p><cite>@j0hhal · May 2026</cite></blockquote>
+    <blockquote><p>You are so helpful</p><cite>@j0hhal · August 2026</cite></blockquote>
+    <blockquote><p>I need to follow in your footsteps. I’m trying to get like you.</p><cite>@j0hhal · July 2026</cite></blockquote>
+    <blockquote><p>Love all the knowledge</p><cite>@ponchipoo2 · June 2026</cite></blockquote>
+    <blockquote><p>Hardcore. Loving your content.</p><cite>John · May 2025</cite></blockquote>
+    <blockquote><p>Stay strong, brother.</p><cite>John · April 2026</cite></blockquote>
+    <blockquote><p>Been seeing your face among some TikTok legends. See you getting out, and making a difference. Glad to be able to get your content. God bless.</p><cite>John · August 2026</cite></blockquote>
+    <blockquote><p>I love your page. Love the chemistry facts mixed with this odd, analog-horror vibe.</p><cite>a viewer · August 2026</cite></blockquote>
+    <blockquote><p>It’s way over my head but I support it 100%</p><cite>ghoulish one · May 2025</cite></blockquote>
+    <blockquote><p>It’s so fun</p><cite>TheUncannyValleyCo · May 2026</cite></blockquote>
+
+    <p class="kicker" id="origin">01 · Origin</p>
+    <h2>The architect</h2>
+    <p>It started as a theoretical-physics sketch: a hypothetical superacid meant to protonate any known element. That became the Purple Rabbit on TikTok in 2020.</p>
+    <blockquote><p>The project went viral for a “how it’s made” directness and the original channel was banned for being too direct. Growth since then is unpaid.</p></blockquote>
+
+    <p class="kicker" id="scientist">02 · Scientist</p>
+    <h2>Behind the animation</h2>
+    <div class="grid three">
+      <article class="card"><h3>Materials</h3><p>Nanotechnology, nanocrystals, graphene oxide.</p></article>
+      <article class="card"><h3>Record</h3><p>Material scientist.</p></article>
+      <article class="card"><h3>Focus</h3><p>Where materials meet medicinal chemistry. An organic audience, no ads.</p></article>
+    </div>
+
+    <p class="kicker" id="library">03 · Library</p>
+    <h2>Titles, not methods</h2>
+    <div class="row"><p><strong>I · The Marijuana Manual</strong></p><p>Technical notebook. The visual one.</p><p><a href="https://www.amazon.com/dp/B0G8VLPS1K">Buy on Amazon</a></p></div>
+    <div class="row"><p><strong>II · Hidden Passages</strong></p><p>The Chemistry Behind Medicine and Drug Discovery, Volume 1.</p><p><a href="https://www.amazon.com/dp/B0GJPYPJTZ">Buy on Amazon</a></p></div>
+    <div class="row"><p><strong>III · Indoor Cultivation</strong></p><p>Coca, Khat & Kratom.</p><p><a href="https://www.amazon.com/dp/B0GPL18WSK">Buy on Amazon</a></p></div>
+    <div class="row"><p><strong>IV · Furious Acid Coloring Book</strong></p><p>60 pages.</p><p><a href="https://www.amazon.com/Furious-Acid-Coloring-Book/dp/B0GW9BRT6X">Buy on Amazon</a></p></div>
+    <div class="row"><p><strong>V · Drug Synthesis</strong></p><p>English paperback. Italian and Spanish editions are up too.</p><p><a href="https://www.amazon.com/dp/B0HCMMZF89">Buy on Amazon</a></p></div>
+    <p class="mute">Also on the author page</p>
+    <ul>
+      <li>Drug Synthesis, hardcover and paperback</li>
+      <li>Síntesis de fármacos, Spanish paperback</li>
+      <li>Sintesi di farmaci, Italian paperback, in a series titled Drug Synthesis Worldwide</li>
+    </ul>
+    <h3>Shelf</h3>
+    <div class="grid two">
+      <article class="card"><h3>Chemical reference poster</h3><p>Uncoated wall chart</p></article>
+      <article class="card"><h3>Logo sticker</h3><p>Kiss-cut vinyl</p></article>
+      <article class="card"><h3>Purple rabbit blanket</h3><p>Velveteen plush</p></article>
+      <article class="card"><h3>Rabbit hoodie</h3><p>Listed on the shop</p></article>
+    </div>
+
+    <p class="kicker" id="asked">04 · Asked</p>
+    <h2>What they asked. Not what I said.</h2>
+    <article class="card"><p class="ask">“When book”</p><p class="who">u/ElectionMundane5140 · r/furiousacid · June 2025</p></article>
+    <p class="mute">That is the one public question this scan could keep in full. Other comments asked for manufacturing tutorials. Those questions are not printed here. My answers are not printed here.</p>
+
+    <p class="kicker" id="users">Users · 2 Sep 2026</p>
+    <h2>What they were most interested in</h2>
+    <p class="mute">Inbox on the TikTok archive. Family labels are what people wrote in about. Not methods.</p>
+    <div class="grid two">
+      <article class="card"><p class="mute">Coded weight</p><p class="stat">116</p><p>68 events</p></article>
+      <article class="card"><p class="mute">DMs</p><p class="stat">591</p><p>28 threads</p></article>
+    </div>
+    <div id="families"></div>
+    <h3>Comments on the videos</h3>
+    <p class="mute">15 coded comments. Partial crawl.</p>
+    <div id="comments"></div>
+
+    <p class="kicker" id="scan">05 · Scan</p>
+    <h2>What I kept from the posts</h2>
+    <label for="q">Search the kept record</label>
+    <input id="q" placeholder="Search the kept record">
+    <div id="hits"></div>
+    <h3>One line at a time</h3>
+    <p class="mute">5 June 2026 · 9 seconds · 3.7K views</p>
+    <p class="ask" id="line"></p>
+    <p><a href="https://www.tiktok.com/@furiousacid/video/7648041719170174221">That post</a></p>
+    <button type="button" id="prev">Previous</button>
+    <button type="button" id="next">Next</button>
+    <p class="lead">Email <a href="mailto:furiousacidcreator@gmail.com">furiousacidcreator@gmail.com</a>.</p>
   </main>
+  <script>
+    var families = [["Unspecified synthesis",27.2],["Book commerce",12],["General organic chem",8.7],["Cannabinoids",7.7],["Cathinones",5.4],["Tryptamines",5.4],["Phenethylamines",5],["Opioids",4.2],["Entactogens",3.8],["Benzodiazepines",3.8],["Gabapentinoids",3.6],["Adamantanes",3.2],["Pyrrolidines",3],["Ergolines",2.9],["Ephedra alkaloids",2],["Social / parasocial",1.6],["Arylcyclohexylamines",0.3],["Spam / noise",0.1]];
+    var comments = [["Phenethylamines",5],["Ergolines",3],["Book commerce",2],["Cannabinoids",1],["Pyrrolidines",1],["Ephedra alkaloids",1],["Arylcyclohexylamines",1],["Spam / noise",1]];
+    function bars(id, rows, max) {
+      document.getElementById(id).innerHTML = rows.map(function (row) {
+        return '<div class="row"><strong>' + row[0] + '</strong> ' + row[1] + (id === 'families' ? '%' : '') + '<div class="bar"><span style="width:' + (row[1] / max * 100) + '%"></span></div></div>';
+      }).join('');
+    }
+    bars('families', families, 27.2);
+    bars('comments', comments, 5);
+    var notes = [
+      ["Origin", "Furious Acid began as a hypothetical superacid meant to protonate any known element. That idea became the Purple Rabbit on TikTok in 2020. The first channel was banned for being too direct."],
+      ["Scientist", "Material scientist. Nanotechnology, nanocrystals, graphene oxide. A focus where materials meet medicinal chemistry. No paid promotion."],
+      ["Kept caption", "in my voice you can hear the whispering wind the rustle of leaves and amidst these natural sounds there is a faint echo of curious"],
+      ["Book preview post", "27 January 2026. A 14-second post titles Hidden Passages as The Chemistry Behind Medicine and Drug Discovery, a Furious Acid publication. About 3.1K views."],
+      ["Asked", "June 2025, r/furiousacid. Someone asked: When book. Other public comments asked for manufacturing tutorials. Those questions are not stored here, and none of the replies are either."],
+      ["Editions", "The Amazon author page lists seven titles, including Spanish and Italian editions, plus Hidden Passages at 3.6 from four reviews and the Marijuana Manual at 3.0 from one review."]
+    ];
+    var q = document.getElementById('q');
+    q.addEventListener('input', function () {
+      var needle = q.value.trim().toLowerCase();
+      var hits = document.getElementById('hits');
+      if (!needle) { hits.innerHTML = ''; return; }
+      var found = notes.filter(function (note) { return (note[0] + ' ' + note[1]).toLowerCase().indexOf(needle) !== -1; });
+      hits.innerHTML = found.length ? found.map(function (note) { return '<article class="note"><h3>' + note[0] + '</h3><p>' + note[1] + '</p></article>'; }).join('') : '<p class="mute">Nothing in the kept record matches.</p>';
+    });
+    var lines = ["in my voice you can hear the whispering wind", "the rustle of leaves", "and amidst these natural sounds", "there is a faint echo of curious"];
+    var i = 0;
+    var line = document.getElementById('line');
+    function show() { line.textContent = '\u201c' + lines[i] + '\u201d'; }
+    document.getElementById('prev').onclick = function () { i = i === 0 ? lines.length - 1 : i - 1; show(); };
+    document.getElementById('next').onclick = function () { i = (i + 1) % lines.length; show(); };
+    show();
+  </script>
 </body>
 </html>
