@@ -1,0 +1,5 @@
+Bangers font (assets/Bangers-Regular.ttf)
+Copyright 2010 The Bangers Project Authors (https://github.com/googlefonts/bangers)
+This Font Software is licensed under the SIL Open Font License, Version 1.1.
+The license is available with a FAQ at: https://openfontlicense.org (https://scripts.sil.org/OFL)
+The font is bundled unmodified so the page makes no external font requests.

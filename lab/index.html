@@ -1,0 +1,1590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Furious Acid Lab: chemistry simulator with live equations</title>
+<meta name="description" content="A playful chemistry bench from Furious Acid: mix classic classroom chemicals, watch balanced equations update live, read the cockpit gauges, and run a simple distillation. The Purple Rabbit explains every step.">
+<link rel="icon" href="data:,">
+<style>
+@font-face{font-family:"FA Comic";src:local("Bangers"),local("Bangers Regular"),url("assets/Bangers-Regular.ttf") format("truetype");font-display:swap}
+:root{
+  --ink:#17131d;--purple:#6f00ff;--purple-dark:#4b00ad;--yellow:#fdf200;--lime:#d9ff36;
+  --red:rgba(214,22,38,.86);--red-solid:#d61626;--outline:#140a18;
+  --comic:"FA Comic",Bangers,Impact,"Arial Black","Chalkboard SE",sans-serif;
+  --ui:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  --mono:ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;min-height:100vh;color:#fff;font-family:var(--ui);line-height:1.4;
+  background:linear-gradient(180deg,rgba(24,6,34,.30),rgba(24,6,34,.55)),url("assets/store-bg.svg") center top/cover fixed,#ffc233}
+a{color:inherit}
+button{font:inherit;color:inherit}
+[hidden]{display:none!important}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+sub{font-size:.68em;line-height:0}
+
+/* ---------- header ---------- */
+.top{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:10px 16px;max-width:1408px;margin:10px auto 10px;background:rgba(20,8,30,.93);border:3px solid var(--outline);border-radius:18px;box-shadow:5px 5px 0 rgba(20,10,24,.9)}
+@media (min-width:1441px){.top{margin-left:auto;margin-right:auto}}
+@media (max-width:1440px){.top{margin-left:16px;margin-right:16px}}
+.logo{flex:none;width:92px;height:54px;background:#fffdf6;border-radius:10px;transform:rotate(-3deg);border:3px solid var(--outline);box-shadow:4px 4px 0 var(--outline);display:flex;align-items:center;justify-content:center;padding:3px}
+.logo img{max-width:100%;max-height:100%;display:block}
+.brand{flex:1 1 280px;min-width:0}
+.brand h1{margin:0;font-family:var(--comic);font-weight:400;font-size:clamp(30px,4.2vw,50px);letter-spacing:2px;line-height:1;color:#fff;transform:rotate(-1.5deg);
+  text-shadow:3px 3px 0 var(--outline),-2px -2px 0 var(--outline),2px -2px 0 var(--outline),-2px 2px 0 var(--outline),0 3px 0 var(--outline),5px 6px 0 var(--purple)}
+.brand h1 .zap{color:var(--yellow)}
+.brand p{margin:4px 0 0;font-weight:800;font-size:14px;color:#fff;text-shadow:1px 1px 0 var(--outline),0 0 6px rgba(0,0,0,.6)}
+.nav{display:flex;gap:8px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:40px;padding:7px 13px;border-radius:12px;border:3px solid var(--outline);background:#fff;color:var(--ink);font-weight:900;font-size:14px;text-decoration:none;cursor:pointer;box-shadow:3px 3px 0 var(--outline);transition:transform .1s,box-shadow .1s;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+.btn:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--outline)}
+.btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--outline)}
+.btn:focus-visible,.chem:focus-visible,.chip button:focus-visible{outline:3px solid var(--yellow);outline-offset:2px}
+.btn.purple{background:var(--purple);color:#fff}
+.btn.lime{background:var(--lime)}
+.btn.yellow{background:var(--yellow)}
+.btn.on{background:var(--yellow);color:var(--ink)}
+.btn.small{min-height:34px;padding:4px 10px;font-size:13px;border-width:2px;box-shadow:2px 2px 0 var(--outline);border-radius:10px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap}
+.tab{font-family:var(--comic);font-size:22px;letter-spacing:1px;font-weight:400;padding:6px 16px}
+.tab[aria-selected="true"]{background:var(--yellow);transform:rotate(-1deg)}
+
+/* ---------- layout ---------- */
+.layout{max-width:1440px;margin:0 auto;padding:0 16px 16px;display:grid;grid-template-columns:270px minmax(0,1.15fr) minmax(0,1fr);grid-template-areas:"shelf dash dash" "shelf stage side";gap:14px;align-items:start}
+#shelfPanel{grid-area:shelf;position:sticky;top:10px;max-height:calc(100vh - 20px);display:flex;flex-direction:column}
+#dashPanel,#dDashPanel{grid-area:dash}
+#stagePanel,#distillPanel{grid-area:stage}
+.col-side{grid-area:side;display:flex;flex-direction:column;gap:14px;min-width:0}
+body.mode-distill .layout{grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);grid-template-areas:"dash dash" "stage side"}
+body.mode-distill #shelfPanel{display:none}
+.panel{min-width:0;position:relative;background:var(--red);border:3px solid var(--outline);border-radius:20px;box-shadow:6px 6px 0 rgba(20,10,24,.92);padding:12px 14px 14px;-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+.panel h2{margin:0 0 8px;font-family:var(--comic);font-weight:400;font-size:28px;letter-spacing:1.5px;line-height:1.05;color:#fff;display:inline-block;transform:rotate(-1.2deg);
+  text-shadow:2px 2px 0 var(--outline),-2px -2px 0 var(--outline),2px -2px 0 var(--outline),-2px 2px 0 var(--outline),4px 4px 0 var(--outline)}
+.panel h2 small{font-family:var(--ui);font-size:12px;letter-spacing:0;font-weight:800;text-shadow:none;opacity:.9;margin-left:6px}
+.hint{font-size:12.5px;font-weight:650;opacity:.95;margin:0 0 8px}
+
+/* ---------- shelf ---------- */
+.sizes .btn.small{padding:3px 10px}
+.sizes .szl{width:100%;font-size:12px}
+.sizes{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:8px;font-weight:800;font-size:13px}
+.shelf{display:grid;grid-template-columns:1fr 1fr;gap:8px;overflow:auto;padding:2px 4px 6px 2px;margin:0 -4px 0 -2px;overscroll-behavior:contain}
+.shelf-group{grid-column:1/-1;font-family:var(--comic);font-size:17px;letter-spacing:1px;margin:4px 0 -2px;color:var(--yellow);text-shadow:1px 1px 0 var(--outline)}
+.chem{position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;gap:1px;padding:6px 4px 6px;background:#fff8e7;color:var(--ink);border:2.5px solid var(--outline);border-radius:14px;box-shadow:3px 3px 0 var(--outline);cursor:grab;touch-action:manipulation;user-select:none;-webkit-user-select:none;min-height:112px;transition:transform .1s}
+.chem:hover{transform:translateY(-2px) rotate(-1deg)}
+.chem:active{transform:scale(.97)}
+.chem svg{width:40px;height:44px;flex:none;pointer-events:none}
+.chem .nm{font-weight:900;font-size:12px;line-height:1.1}
+.chem .fm{font-family:var(--mono);font-weight:700;font-size:12px;color:var(--purple-dark)}
+.chem .amt{margin-top:auto;font-weight:900;font-size:11.5px;background:var(--yellow);border:2px solid var(--outline);border-radius:999px;padding:0 7px}
+.chem .hz{position:absolute;top:4px;right:5px;font-size:9px;font-weight:900;color:#b0001a;text-transform:uppercase;letter-spacing:.02em}
+.chem.flash{animation:flash .45s}
+@keyframes flash{0%{background:var(--yellow)}100%{background:#fff8e7}}
+.ghost{position:fixed;z-index:50;pointer-events:none;width:64px;height:70px;transform:translate(-50%,-60%) rotate(-12deg);filter:drop-shadow(3px 3px 0 var(--outline))}
+.dropping{outline:4px dashed var(--yellow);outline-offset:-8px}
+
+/* ---------- stage ---------- */
+.stage-wrap{display:grid;grid-template-columns:minmax(0,1fr);gap:8px}
+.stage{position:relative;background:repeating-linear-gradient(0deg,rgba(20,10,24,.07) 0 2px,transparent 2px 36px),repeating-linear-gradient(90deg,rgba(20,10,24,.07) 0 2px,transparent 2px 36px),linear-gradient(#fffdf6,#eadfc6);border:3px solid var(--outline);border-radius:16px;min-height:280px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.stage svg{width:100%;height:262px;display:block}
+.stage .tag{position:absolute;left:8px;top:8px;background:var(--outline);color:#fff;border-radius:8px;padding:2px 8px;font-weight:900;font-size:12px}
+.stage .droptip{position:absolute;right:8px;top:8px;background:rgba(255,255,255,.9);color:var(--ink);border:2px solid var(--outline);border-radius:8px;padding:2px 8px;font-weight:800;font-size:11.5px}
+.readouts{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.ro{background:#0d0f14;border:3px solid var(--outline);border-radius:12px;padding:5px 8px;box-shadow:inset 0 0 0 2px #2c313b}
+.ro b{display:block;font-size:10.5px;letter-spacing:.08em;color:#9aa3b5;font-weight:900}
+.ro span{font-family:var(--mono);font-size:16px;white-space:nowrap;font-weight:800;color:#8dff6f;text-shadow:0 0 6px rgba(141,255,111,.55)}
+.controls{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;align-items:center}
+.controls .grp{display:flex;gap:4px;align-items:center;background:rgba(20,10,24,.35);border-radius:12px;padding:3px 6px}
+.controls .lbl{font-weight:900;font-size:12px;margin-right:2px}
+.contents{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;min-height:34px;align-items:center}
+.contents .empty{font-weight:700;font-size:13px;opacity:.9}
+.chip{display:inline-flex;align-items:center;gap:4px;background:#fff;color:var(--ink);border:2px solid var(--outline);border-radius:999px;padding:2px 3px 2px 9px;font-size:12.5px;font-weight:800;box-shadow:2px 2px 0 var(--outline);touch-action:manipulation}
+.chip .v{font-family:var(--mono);font-size:11.5px;color:#4b00ad}
+.chip button{width:26px;height:26px;border-radius:50%;border:2px solid var(--outline);background:var(--yellow);color:var(--ink);font-weight:900;cursor:pointer;line-height:1;padding:0;font-size:14px}
+.chip button.x{background:#ffd0d6}
+.suggest{margin-top:8px;font-size:12.5px;font-weight:800;display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+.suggest button{border:2px dashed #fff;background:rgba(255,255,255,.14);color:#fff;border-radius:999px;padding:3px 9px;font-weight:800;font-size:12px;cursor:pointer}
+
+/* ---------- rabbit ---------- */
+.rabbit{display:grid;grid-template-columns:88px minmax(0,1fr);gap:10px;align-items:start}
+.rabbit .ava{width:88px;height:88px;border-radius:50%;background:#fff;border:3px solid var(--outline);box-shadow:3px 3px 0 var(--outline);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.rabbit .ava img{width:84px;height:84px;display:block;image-rendering:auto}
+.rabbit .ava.hop img{animation:hop .6s ease}
+@keyframes hop{0%,100%{transform:translateY(0)}40%{transform:translateY(-12px) rotate(-6deg)}70%{transform:translateY(2px)}}
+.bubble{position:relative;background:#fff;color:var(--ink);border:3px solid var(--outline);border-radius:16px;padding:9px 12px 10px;box-shadow:3px 3px 0 var(--outline);font-size:14px;line-height:1.42}
+.bubble:before{content:"";position:absolute;left:-15px;top:26px;border:8px solid transparent;border-right:12px solid var(--outline)}
+.bubble:after{content:"";position:absolute;left:-9px;top:28px;border:6px solid transparent;border-right:9px solid #fff}
+.bubble .t{font-family:var(--comic);font-size:21px;letter-spacing:.8px;color:var(--purple-dark);line-height:1.05;margin-bottom:4px}
+.bubble p{margin:0 0 5px}
+.bubble p b{color:#b0001a}
+.bubble .think{background:#f3ecff;border:2px dashed var(--purple);border-radius:10px;padding:5px 8px;margin:6px 0 0}
+.bubble .think b{color:var(--purple-dark)}
+.rbnav{display:flex;gap:6px;justify-content:flex-end;align-items:center;margin-top:6px;font-size:12px;font-weight:800}
+
+/* ---------- equation ---------- */
+.eq-live{display:flex;flex-direction:column;gap:8px}
+.eq-card{background:#fff;color:var(--ink);border:3px solid var(--outline);border-radius:14px;padding:8px 11px;box-shadow:3px 3px 0 var(--outline)}
+.eq-card[data-status="done"],.eq-card[data-status="stopped"]{background:#f1eef5}
+.eq-card .meta{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:11.5px;font-weight:900;text-transform:uppercase;letter-spacing:.04em;color:#6a6275}
+.eq-card .st{padding:0 7px;border-radius:999px;border:2px solid var(--outline);color:var(--ink)}
+.st.running{background:var(--lime)}.st.waiting{background:var(--yellow)}.st.done{background:#dfe6ff}.st.stopped{background:#ffd0d6}
+.skel{font-family:var(--mono);font-size:13px;color:#6a6275;margin-top:4px}
+.skel s{text-decoration-color:#c0001a}
+.eq-balanced{font-family:var(--mono);font-weight:800;font-size:clamp(16px,2.1vw,21px);margin:2px 0 3px;word-break:break-word;color:var(--ink)}
+.eq-balanced .coef{color:#d4001f;background:#fff3a3;border-radius:4px;padding:0 2px}
+.eq-balanced .arr{position:relative;display:inline-block;padding:0 2px}.eq-balanced .arr[data-over]::before{content:attr(data-over);position:absolute;left:50%;top:-.95em;transform:translateX(-50%);font-size:.5em;color:var(--purple-dark);white-space:nowrap;font-weight:900}
+.eq-card .obs{font-size:12.5px;font-weight:650;color:#3a3342}
+.eq-none{background:rgba(255,255,255,.14);border:2px dashed #fff;border-radius:12px;padding:10px;font-weight:750;font-size:14px}
+details.math{margin-top:8px;background:rgba(20,10,24,.35);border-radius:12px;padding:6px 10px}
+details.math summary{cursor:pointer;font-weight:900}
+.mtab{border-collapse:collapse;font-family:var(--mono);font-size:12.5px;margin:6px 0;background:#fff;color:var(--ink);border-radius:8px;overflow:hidden}
+.mtab th,.mtab td{border:1px solid #cfc7da;padding:3px 7px;text-align:center}
+.mtab th{background:#efe8ff}
+.mtab td.bad{background:#ffd0d6;font-weight:900}.mtab td.ok{background:#d9ffd0;font-weight:900}
+.mscroll{overflow-x:auto}
+.log{margin:8px 0 0;padding:0;list-style:none;font-size:12.5px;max-height:120px;overflow:auto}
+.log li{padding:2px 0;border-bottom:1px dashed rgba(255,255,255,.35);font-family:var(--mono)}
+
+/* ---------- cockpit ---------- */
+.cockpit{background:linear-gradient(160deg,#2b2f37,#15171c);border:3px solid var(--outline);border-radius:16px;padding:10px;box-shadow:inset 0 0 0 2px #3d434f,inset 0 0 30px rgba(0,0,0,.6)}
+.crow{display:grid;grid-template-columns:minmax(0,1.75fr) minmax(0,1fr);gap:12px;align-items:start}
+.dials{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.cside .annun{margin-top:0}
+.cside .bars{max-height:112px;overflow:auto}
+#dashPanel h2,#dDashPanel h2{font-size:23px;margin-bottom:6px}
+.cockpit .model-note{margin-top:8px}
+.dial svg{width:100%;height:auto;display:block}
+.model-note{font-size:10.5px;font-weight:800;color:#ffcf5c;letter-spacing:.03em;margin:6px 2px 0;text-transform:uppercase}
+.annun{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:8px}
+.ann{font-family:var(--mono);font-size:9.5px;font-weight:900;text-align:center;padding:4px 2px;border-radius:5px;background:#1d1f25;color:#4b4f5a;border:2px solid #0b0c0f;letter-spacing:.04em;transition:all .2s}
+.ann.on{color:#1a1200;background:#ffb300;box-shadow:0 0 10px #ffb300}
+.ann.on.g{background:#58ff7a;box-shadow:0 0 10px #58ff7a}
+.ann.on.r{background:#ff4d4d;box-shadow:0 0 12px #ff4d4d;color:#fff}
+.ann.on.b{background:#56c8ff;box-shadow:0 0 10px #56c8ff}
+.bars{margin-top:8px;display:flex;flex-direction:column;gap:3px}
+.bars h3{margin:0 0 2px;font-size:10.5px;letter-spacing:.1em;color:#9aa3b5;font-weight:900}
+.bar{display:grid;grid-template-columns:92px 1fr 70px;gap:6px;align-items:center;font-family:var(--mono);font-size:11.5px;color:#dfe6f3}
+.bar .trk{height:10px;background:#07080a;border:1px solid #3d434f;border-radius:3px;overflow:hidden}
+.bar .fill{height:100%;background:linear-gradient(90deg,#39ff88,#ffe14d 70%,#ff6a3d);transition:width .35s}
+.bar .val{text-align:right;color:#8dff6f}
+.bar .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* ---------- distillation ---------- */
+.dgrid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:12px}
+.dgrid>*{min-width:0}
+.apparatus,.chart{background:rgba(255,255,255,.92);border:3px solid var(--outline);border-radius:16px;overflow:hidden}
+.apparatus svg,.chart svg{display:block;width:100%;height:auto}
+.dctrl{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 0}
+.dctrl select{font:inherit;font-weight:800;min-height:40px;border-radius:12px;border:3px solid var(--outline);padding:4px 8px;background:#fff;color:var(--ink);max-width:100%}
+.dctrl label{font-weight:900;font-size:13px;display:flex;align-items:center;gap:6px}
+.dctrl input[type=range]{width:120px;accent-color:var(--yellow)}
+.dnote{font-size:12.5px;font-weight:700;margin-top:8px}
+
+/* ---------- footer ---------- */
+.foot{max-width:1440px;margin:0 auto;padding:0 16px 26px}
+.books{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin-top:6px}
+.book{display:flex;flex-direction:column;gap:4px;background:#fff;color:var(--ink);border:3px solid var(--outline);border-radius:14px;padding:10px 12px;box-shadow:3px 3px 0 var(--outline);text-decoration:none}
+.book b{font-size:15px}.book span{font-size:13px;color:#4a4352}.book em{font-style:normal;font-weight:900;color:var(--purple-dark)}
+.foot .links{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.small{font-size:12px;font-weight:700;margin:10px 0 0;opacity:.95}
+
+/* ---------- responsive ---------- */
+@media (max-width:1180px){.layout{grid-template-columns:240px minmax(0,1fr) minmax(0,1fr)}}
+@media (max-width:980px){
+  .layout{display:flex;flex-direction:column}
+  .col-side{display:contents}
+  #stagePanel,#distillPanel{order:1}#shelfPanel{order:2}#eqPanel{order:3}#rabbitPanel{order:4}#dashPanel,#dDashPanel{order:5}
+  #shelfPanel{position:relative;top:0;max-height:none}
+  .shelf{grid-template-columns:repeat(auto-fill,minmax(104px,1fr));max-height:none;overflow:visible}
+  .dgrid{grid-template-columns:1fr}
+  .crow{grid-template-columns:1fr}
+  .cside .bars{max-height:none}
+}
+@media (max-width:560px){
+  .top{padding:8px 10px;gap:10px;margin:8px 10px}.tabs,.layout,.foot{padding-left:10px;padding-right:10px}
+  .logo{width:78px;height:46px}
+  .brand p{font-size:12.5px}
+  .nav .btn{min-height:36px;padding:5px 10px;font-size:13px}
+  .tab{font-size:19px;padding:5px 12px}
+  .panel{padding:10px 10px 12px;border-radius:18px}
+  .panel h2{font-size:25px}
+  .dials{grid-template-columns:1fr 1fr}
+  .ro{flex:1;padding:4px 6px}.ro span{font-size:15px}.ro b{font-size:9.5px}
+  .stage svg{height:260px}
+  .top .tabs{order:3;width:100%}
+  .top .nav{order:4}
+  .shelf{grid-template-columns:repeat(3,1fr);gap:6px}
+  .chem{min-height:104px;padding:5px 3px}
+  .chem .nm{font-size:11px}
+  .rabbit{grid-template-columns:62px minmax(0,1fr);gap:8px}
+  .rabbit .ava{width:62px;height:62px}.rabbit .ava img{width:58px;height:58px}
+  .bubble{font-size:13.5px;padding:8px 10px}
+  .annun{grid-template-columns:repeat(4,1fr)}
+  .bar{grid-template-columns:82px 1fr 64px}
+  .dctrl select{width:100%;min-width:0}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header class="top">
+  <a class="logo" href="/" aria-label="Furious Acid home"><img src="assets/furiousacid-logo.png" alt="Furious Acid" width="160" height="92"></a>
+  <div class="brand">
+    <h1>FURIOUS ACID <span class="zap">LAB</span></h1>
+    <p>Think first. Then follow the steps in the right order.</p>
+  </div>
+  <div class="tabs" role="tablist" aria-label="Lab mode">
+    <button class="btn tab" role="tab" id="tabBench" aria-selected="true" aria-controls="stagePanel">Reaction Bench</button>
+    <button class="btn tab" role="tab" id="tabDistill" aria-selected="false" aria-controls="distillPanel">Distillation</button>
+  </div>
+  <nav class="nav" aria-label="Site">
+    <a class="btn" href="/">&larr; Home</a>
+    <a class="btn purple" href="/rabbit/">Ask the Rabbit</a>
+  </nav>
+</header>
+
+
+<main class="layout">
+    <section class="panel" id="shelfPanel" aria-labelledby="shelfH">
+      <h2 id="shelfH">Chemical Shelf</h2>
+      <p class="hint">Tap a bottle to add it. On a computer you can also drag it onto the flask. Classroom chemicals only, and every amount is dilute.</p>
+      <div class="sizes" role="group" aria-label="Pour size"><span class="szl">Pour size (each tap adds this much)</span>
+        <button class="btn small" data-size="0">Small</button>
+        <button class="btn small on" data-size="1">Medium</button>
+        <button class="btn small" data-size="2">Large</button>
+      </div>
+      <div class="shelf" id="shelf"></div>
+    </section>
+
+    <section class="panel" id="stagePanel" aria-labelledby="stageH">
+      <h2 id="stageH">The Bench <small id="vesselLabel">500 mL Erlenmeyer flask</small></h2>
+      <div class="stage-wrap">
+        <div class="stage" id="stage" aria-label="Reaction vessel. Drop chemicals here.">
+          <span class="tag" id="simClock">t = 0.0 s</span>
+          <span class="droptip">Drop here</span>
+          <svg id="vesselSvg" viewBox="0 0 300 330" role="img" aria-label="Reaction vessel"></svg>
+        </div>
+        <div class="readouts" aria-live="off">
+          <div class="ro"><b>VOLUME</b><span id="roV">0 mL</span></div>
+          <div class="ro"><b>TEMP</b><span id="roT">22.0 &deg;C</span></div>
+          <div class="ro"><b>pH</b><span id="roPH">--</span></div>
+          <div class="ro"><b>GAS OUT</b><span id="roGas">0 mL</span></div>
+        </div>
+      </div>
+      <div class="controls">
+        <div class="grp" role="group" aria-label="Vessel"><span class="lbl">Vessel</span>
+          <button class="btn small" id="vesBeaker">Beaker 400</button><button class="btn small on" id="vesFlask">Flask 500</button></div>
+        <div class="grp" role="group" aria-label="Hot plate"><span class="lbl">Heat</span>
+          <button class="btn small on" data-heat="0">Off</button><button class="btn small" data-heat="1">Warm</button><button class="btn small" data-heat="2">Hot</button></div>
+        <button class="btn small yellow" id="sparkBtn" title="Spark igniter for the gas demo">Spark</button>
+        <button class="btn small" id="speedBtn" title="Simulation speed">Speed 1&times;</button>
+        <button class="btn small" id="pauseBtn">Pause</button>
+        <button class="btn small" id="emptyBtn">Empty &amp; rinse</button>
+      </div>
+      <div class="contents" id="contents" aria-live="polite"></div>
+      <div class="suggest" id="suggest"></div>
+    </section>
+
+    <section class="panel" id="distillPanel" aria-labelledby="distH" hidden>
+      <h2 id="distH">Simple Distillation <small>heat, boil, condense, collect</small></h2>
+      <div class="dgrid">
+        <div class="apparatus"><svg id="distSvg" viewBox="0 0 640 360" role="img" aria-label="Distillation apparatus"></svg></div>
+        <div class="chart"><svg id="chartSvg" viewBox="0 0 420 300" role="img" aria-label="Temperature and distillate volume over time"></svg></div>
+      </div>
+      <div class="dctrl">
+        <select id="dMix" aria-label="Mixture">
+          <option value="salt">Salt water (200 mL, 3.5% NaCl)</option>
+          <option value="dye">Colored water (200 mL, food dye)</option>
+          <option value="eth">Water + ethanol (100 + 100 mL), idealized</option>
+        </select>
+        <button class="btn lime" id="dStart">Start heating</button>
+        <label>Heat <input type="range" id="dHeat" min="100" max="600" step="25" value="400"><span id="dHeatV">400 W</span></label>
+        <button class="btn small" id="dSpeed">Speed 20&times;</button>
+        <button class="btn small" id="dReset">Reset</button>
+      </div>
+      <p class="dnote" id="dNote">The thermometer bulb sits at the still head, right where vapor turns into the condenser. It measures the vapor, not the boiling liquid.</p>
+    </section>
+
+    <div class="col-side">
+    <section class="panel" id="rabbitPanel" aria-labelledby="rbH">
+      <h2 id="rbH">The Purple Rabbit Explains</h2>
+      <div class="rabbit">
+        <div class="ava" id="rbAva"><img id="rbImg" src="assets/rabbit-idle.png" alt="The Purple Rabbit" width="192" height="192"></div>
+        <div>
+          <div class="bubble" id="rbBubble" aria-live="polite">
+            <div class="t" id="rbTitle"></div>
+            <p id="rbWhat"></p>
+            <p id="rbWhy"></p>
+            <p id="rbOrder"></p>
+            <p class="think" id="rbThink"></p>
+          </div>
+          <div class="rbnav"><button class="btn small" id="rbPrev" aria-label="Previous tip">&#9664;</button><span id="rbCount">1/1</span><button class="btn small" id="rbNext" aria-label="Next tip">&#9654;</button></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" id="eqPanel" aria-labelledby="eqH">
+      <h2 id="eqH">Live Equation</h2>
+      <div class="eq-live" id="eqLive" aria-live="polite"></div>
+      <details class="math" id="eqMath"><summary>Show the math (how the balancer works)</summary><div id="mathBody"></div></details>
+      <ul class="log" id="eqLog" aria-label="Reaction log"></ul>
+    </section>
+    </div>
+
+    <section class="panel" id="dashPanel" aria-labelledby="dashH">
+      <h2 id="dashH">Cockpit</h2>
+      <div class="cockpit"><div class="crow">
+        <div class="dials">
+          <div class="dial" id="dialPH"></div>
+          <div class="dial" id="dialT"></div>
+          <div class="dial" id="dialV"></div>
+          <div class="dial" id="dialRate"></div>
+        </div>
+        <div class="cside"><div class="annun" id="annun"></div>
+        <div class="bars" id="molBars"><h3>SPECIES IN THE VESSEL</h3></div>
+        
+      </div></div><p class="model-note">Simplified models: rate r = k(T)&middot;[A][B]/([A]+[B]) with an Arrhenius k(T); pH from an ideal charge balance at 25 &deg;C. For teaching, not for lab planning.</p></div>
+    </section>
+    <section class="panel" id="dDashPanel" aria-labelledby="ddashH" hidden>
+      <h2 id="ddashH">Still Cockpit</h2>
+      <div class="cockpit"><div class="crow">
+        <div class="dials">
+          <div class="dial" id="dialHead"></div>
+          <div class="dial" id="dialPot"></div>
+          <div class="dial" id="dialDist"></div>
+          <div class="dial" id="dialVap"></div>
+        </div>
+        <div class="cside"><div class="annun" id="dAnnun"></div>
+        <div class="bars" id="dBars"><h3>POT AND RECEIVER</h3></div>
+        
+      </div></div><p class="model-note">Simplified model: constant heater power, fixed heat loss, 1 atm. Ethanol mode uses idealized vapor&ndash;liquid data.</p></div>
+    </section>
+</main>
+
+<footer class="foot">
+  <section class="panel" aria-labelledby="bookH">
+    <h2 id="bookH">Want the real story behind the chemistry?</h2>
+    <p class="hint">No pressure. If the bench made you curious, here's where the Rabbit's stories come from.</p>
+    <div class="books">
+      <a class="book" href="https://www.amazon.com/dp/B0GJPYPJTZ" target="_blank" rel="noopener noreferrer" data-fa-link="amazon" data-book="hidden" data-lang="en" data-store="com" data-asin="B0GJPYPJTZ" data-card="lab">
+        <b>Hidden Passages: The Chemistry Behind Medicine and Drug Discovery</b>
+        <span>How chemists found, tested and improved the medicines we use. <em>$34.99 on Amazon</em></span>
+      </a>
+      <a class="book" href="https://www.amazon.com/dp/B0GW9BRT6X" target="_blank" rel="noopener noreferrer" data-fa-link="amazon" data-book="coloring" data-lang="en" data-store="com" data-asin="B0GW9BRT6X" data-card="lab">
+        <b>Furious Acid Coloring Book</b>
+        <span>A calmer way to spend time with the Rabbit. <em>$9.99 on Amazon</em></span>
+      </a>
+    </div>
+    <div class="links">
+      <a class="btn purple" href="/rabbit/">Ask the Rabbit</a>
+      <a class="btn" href="/">&larr; Back to furiousacid.com</a>
+    </div>
+    <p class="small">Simulation for learning. Don't try reactions at home without proper supervision and safety gear.</p>
+    <p class="small">This page sets no cookies, stores nothing and sends nothing anywhere. Everything runs in your browser.</p>
+  </section>
+</footer>
+<script>
+(function () {
+'use strict';
+/* =====================================================================
+   Furious Acid Lab: chemistry bench simulator
+   Fixed catalog only: no free-text chemical entry anywhere.
+   No cookies, no storage, no network calls. Everything runs locally.
+   ===================================================================== */
+
+/* ---------- atomic masses (g/mol) ---------- */
+var AM = { H: 1.008, C: 12.011, N: 14.007, O: 15.999, Na: 22.990, Mg: 24.305, S: 32.06, Cl: 35.45, Ca: 40.078, Fe: 55.845, Cu: 63.546, Zn: 65.38, Ag: 107.868 };
+var GAS_ML_PER_MOL = 24465; // ideal gas at 25 C, 1 atm
+
+/* ---------- the shelf: a FIXED catalog ---------- */
+var CATALOG = [
+  { id: 'water', group: 'Liquids & solutions', name: 'Water', formula: null, kind: 'liquid', color: '#9fd8ff', amounts: [10, 25, 50], unit: 'mL', label: 'distilled' },
+  { id: 'nacl', group: 'Liquids & solutions', name: 'Table salt solution', formula: 'NaCl', kind: 'solution', M: 1.0, color: '#e9f6ff', amounts: [5, 10, 25], unit: 'mL' },
+  { id: 'vinegar', group: 'Liquids & solutions', name: 'Vinegar (acetic acid)', formula: 'CH3COOH', kind: 'solution', M: 0.83, color: '#f5eab8', amounts: [10, 25, 50], unit: 'mL', label: '5%' },
+  { id: 'hcl', group: 'Liquids & solutions', name: 'Dilute hydrochloric acid', formula: 'HCl', kind: 'solution', M: 1.0, color: '#e3f7e3', amounts: [5, 10, 25], unit: 'mL', hz: 'irritant' },
+  { id: 'naoh', group: 'Liquids & solutions', name: 'Dilute sodium hydroxide', formula: 'NaOH', kind: 'solution', M: 1.0, color: '#eef0ff', amounts: [5, 10, 25], unit: 'mL', hz: 'corrosive' },
+  { id: 'cuso4', group: 'Liquids & solutions', name: 'Copper(II) sulfate', formula: 'CuSO4', kind: 'solution', M: 0.5, color: '#1f7fe0', amounts: [10, 25, 50], unit: 'mL', hz: 'harmful' },
+  { id: 'agno3', group: 'Liquids & solutions', name: 'Silver nitrate (dilute)', formula: 'AgNO3', kind: 'solution', M: 0.1, color: '#f4f4f4', bottle: '#7a4a1c', amounts: [2, 5, 10], unit: 'mL', hz: 'stains' },
+  { id: 'na2co3', group: 'Liquids & solutions', name: 'Sodium carbonate', formula: 'Na2CO3', kind: 'solution', M: 0.5, color: '#f2fbff', amounts: [5, 10, 25], unit: 'mL' },
+  { id: 'cacl2', group: 'Liquids & solutions', name: 'Calcium chloride', formula: 'CaCl2', kind: 'solution', M: 0.5, color: '#f7f7ff', amounts: [5, 10, 25], unit: 'mL' },
+  { id: 'h2o2', group: 'Liquids & solutions', name: 'Hydrogen peroxide 3%', formula: 'H2O2', kind: 'solution', M: 0.88, color: '#f4fbff', bottle: '#6b3a12', amounts: [10, 25, 50], unit: 'mL', hz: 'irritant' },
+  { id: 'nahco3', group: 'Solids', name: 'Baking soda', formula: 'NaHCO3', kind: 'solid', color: '#ffffff', amounts: [0.5, 1, 2], unit: 'g' },
+  { id: 'fe', group: 'Solids', name: 'Iron nails', formula: 'Fe', kind: 'solid', color: '#8a8f98', amounts: [0.5, 1, 2], unit: 'g' },
+  { id: 'zn', group: 'Solids', name: 'Zinc granules', formula: 'Zn', kind: 'solid', color: '#a9b7c6', amounts: [0.25, 0.5, 1], unit: 'g' },
+  { id: 'mg', group: 'Solids', name: 'Magnesium ribbon', formula: 'Mg', kind: 'solid', color: '#d9dde3', amounts: [0.05, 0.1, 0.25], unit: 'g', hz: 'flammable' },
+  { id: 'yeast', group: 'Indicators & helpers', name: 'Yeast (catalyst)', formula: null, kind: 'catalyst', color: '#d9b77a', amounts: [0.25, 0.5, 1], unit: 'g' },
+  { id: 'php', group: 'Indicators & helpers', name: 'Phenolphthalein', formula: null, kind: 'indicator', color: '#ffffff', cap: '#ff3fa4', amounts: [1, 3, 5], unit: 'drops' },
+  { id: 'ui', group: 'Indicators & helpers', name: 'Universal indicator', formula: null, kind: 'indicator', color: '#56c26a', cap: '#ff8a00', amounts: [1, 3, 5], unit: 'drops' },
+  { id: 'ch4', group: 'Gases (combustion demo)', name: 'Methane', formula: 'CH4', kind: 'gas', color: '#ffd23f', amounts: [25, 50, 100], unit: 'mL', hz: 'flammable' },
+  { id: 'o2', group: 'Gases (combustion demo)', name: 'Oxygen', formula: 'O2', kind: 'gas', color: '#ffffff', amounts: [50, 100, 200], unit: 'mL', hz: 'oxidizer' }
+];
+var CAT = {}; CATALOG.forEach(function (c) { CAT[c.id] = c; });
+var SHELF_BY_FORMULA = {}; CATALOG.forEach(function (c) { if (c.formula) SHELF_BY_FORMULA[c.formula] = c.id; });
+
+/* ---------- species facts ---------- */
+var SOLIDS = { Fe: 1, Zn: 1, Mg: 1, Cu: 1, AgCl: 1, CaCO3: 1, 'Cu(OH)2': 1 };
+var PPT = { AgCl: [246, 246, 246], CaCO3: [252, 252, 250], 'Cu(OH)2': [120, 180, 255] };
+var GASES = { CH4: 1, O2: 1, CO2: 1, H2: 1 };
+var NAMES = {
+  HCl: 'hydrochloric acid', NaOH: 'sodium hydroxide', NaCl: 'sodium chloride', H2O: 'water', CH3COOH: 'acetic acid', CH3COONa: 'sodium acetate',
+  NaHCO3: 'sodium bicarbonate', CO2: 'carbon dioxide', Na2CO3: 'sodium carbonate', CaCl2: 'calcium chloride', CaCO3: 'calcium carbonate',
+  AgNO3: 'silver nitrate', AgCl: 'silver chloride', NaNO3: 'sodium nitrate', 'Ca(NO3)2': 'calcium nitrate', HNO3: 'nitric acid (dilute)',
+  CuSO4: 'copper(II) sulfate', FeSO4: 'iron(II) sulfate', ZnSO4: 'zinc sulfate', Cu: 'copper metal', Fe: 'iron', Zn: 'zinc', Mg: 'magnesium',
+  ZnCl2: 'zinc chloride', MgCl2: 'magnesium chloride', FeCl2: 'iron(II) chloride', H2: 'hydrogen', 'Mg(CH3COO)2': 'magnesium acetate',
+  'Cu(OH)2': 'copper(II) hydroxide', Na2SO4: 'sodium sulfate', H2O2: 'hydrogen peroxide', O2: 'oxygen', CH4: 'methane'
+};
+
+/* ---------- curated reaction table ----------
+   skel: skeleton equation (the balancer computes the coefficients)
+   k: rate constant at 25 C, Ea: activation energy kJ/mol (simplified),
+   dH: approx. enthalpy per mole of reaction AS BALANCED (kJ), aq: needs liquid water */
+var REACTIONS = [
+  { id: 'neut', name: 'Neutralization: strong acid + strong base', skel: 'HCl + NaOH -> NaCl + H2O', k: 500, Ea: 10, dH: -57.3, aq: true, obs: 'No bubbles, no solid, but the flask warms up. H\u207a + OH\u207b \u2192 H\u2082O.' },
+  { id: 'aneut', name: 'Neutralization: weak acid + strong base', skel: 'CH3COOH + NaOH -> CH3COONa + H2O', k: 300, Ea: 10, dH: -56.1, aq: true, obs: 'Gentle warming. Acetate left behind makes the end point slightly basic.' },
+  { id: 'fizz', name: 'Baking soda + vinegar (CO\u2082 fizz)', skel: 'NaHCO3 + CH3COOH -> CH3COONa + H2O + CO2', k: 0.5, Ea: 40, dH: 18, aq: true, gas: 'CO2', obs: 'Fizzing CO\u2082 bubbles and foam. Slightly endothermic, so the flask cools a little.' },
+  { id: 'fizzh', name: 'Baking soda + hydrochloric acid', skel: 'NaHCO3 + HCl -> NaCl + H2O + CO2', k: 1.2, Ea: 35, dH: 12, aq: true, gas: 'CO2', obs: 'Fast CO\u2082 fizz; strong acid means more free H\u207a.' },
+  { id: 'carbh', name: 'Sodium carbonate + hydrochloric acid', skel: 'Na2CO3 + HCl -> NaCl + H2O + CO2', k: 1.0, Ea: 35, dH: -27, aq: true, gas: 'CO2', obs: 'CO\u2082 bubbles once enough acid has been added (carbonate takes two H\u207a).' },
+  { id: 'carba', name: 'Sodium carbonate + vinegar', skel: 'Na2CO3 + CH3COOH -> CH3COONa + H2O + CO2', k: 0.4, Ea: 40, dH: 5, aq: true, gas: 'CO2', obs: 'Slower fizz: the weak acid hands over its protons reluctantly.' },
+  { id: 'agcl', name: 'Precipitation: silver chloride', skel: 'AgNO3 + NaCl -> AgCl + NaNO3', k: 50, Ea: 5, dH: -65.5, aq: true, ppt: 'AgCl', obs: 'Instant white, cloudy precipitate of AgCl that slowly settles.' },
+  { id: 'agcl2', name: 'Precipitation: AgCl from calcium chloride', skel: 'AgNO3 + CaCl2 -> AgCl + Ca(NO3)2', k: 50, Ea: 5, dH: -131, aq: true, ppt: 'AgCl', obs: 'White AgCl precipitate. CaCl\u2082 brings two Cl\u207b per formula unit.' },
+  { id: 'agclh', name: 'Precipitation: AgCl from hydrochloric acid', skel: 'AgNO3 + HCl -> AgCl + HNO3', k: 50, Ea: 5, dH: -65.5, aq: true, ppt: 'AgCl', obs: 'White AgCl precipitate; the H\u207a stays in solution, so it stays acidic.' },
+  { id: 'caco3', name: 'Precipitation: calcium carbonate', skel: 'Na2CO3 + CaCl2 -> CaCO3 + NaCl', k: 40, Ea: 8, dH: 12, aq: true, ppt: 'CaCO3', obs: 'Milky white CaCO\u2083 (chalk) forms and settles.' },
+  { id: 'cuoh', name: 'Precipitation: copper(II) hydroxide', skel: 'CuSO4 + NaOH -> Cu(OH)2 + Na2SO4', k: 40, Ea: 8, dH: -45, aq: true, ppt: 'Cu(OH)2', obs: 'Pale blue, jelly-like Cu(OH)\u2082 precipitate.' },
+  { id: 'caco3h', name: 'Chalk + hydrochloric acid', skel: 'CaCO3 + HCl -> CaCl2 + H2O + CO2', k: 0.15, Ea: 40, dH: -15, aq: true, gas: 'CO2', obs: 'The white solid dissolves with fizzing.' },
+  { id: 'fecu', name: 'Single replacement: iron + copper(II) sulfate', skel: 'Fe + CuSO4 -> FeSO4 + Cu', k: 0.04, Ea: 45, dH: -153, aq: true, metal: 'Fe', obs: 'Copper coats the nail reddish-brown; the blue fades toward pale green Fe\u00b2\u207a.' },
+  { id: 'zncu', name: 'Single replacement: zinc + copper(II) sulfate', skel: 'Zn + CuSO4 -> ZnSO4 + Cu', k: 0.08, Ea: 45, dH: -217, aq: true, metal: 'Zn', obs: 'Zinc turns dark as copper deposits; blue fades to colorless; it warms up.' },
+  { id: 'znh', name: 'Single replacement: zinc + hydrochloric acid', skel: 'Zn + HCl -> ZnCl2 + H2', k: 0.06, Ea: 50, dH: -153, aq: true, gas: 'H2', metal: 'Zn', obs: 'Steady H\u2082 bubbles stream off the zinc.' },
+  { id: 'mgh', name: 'Magnesium + hydrochloric acid', skel: 'Mg + HCl -> MgCl2 + H2', k: 0.35, Ea: 30, dH: -462, aq: true, gas: 'H2', metal: 'Mg', obs: 'Vigorous H\u2082 fizz; the ribbon shrinks fast and the flask gets warm.' },
+  { id: 'feh', name: 'Iron + hydrochloric acid', skel: 'Fe + HCl -> FeCl2 + H2', k: 0.008, Ea: 55, dH: -87, aq: true, gas: 'H2', metal: 'Fe', obs: 'Slow trickle of H\u2082; pale green Fe\u00b2\u207a appears. Warming speeds it up.' },
+  { id: 'mga', name: 'Magnesium + vinegar', skel: 'Mg + CH3COOH -> Mg(CH3COO)2 + H2', k: 0.05, Ea: 35, dH: -460, aq: true, gas: 'H2', metal: 'Mg', obs: 'Gentler H\u2082 bubbles than with HCl: a weak acid has fewer free H\u207a.' },
+  { id: 'perox', name: 'Decomposition: hydrogen peroxide (yeast catalyst)', skel: 'H2O2 -> H2O + O2', k: 0.15, kUncat: 1e-6, Ea: 25, dH: -196, aq: true, gas: 'O2', cat: 'yeast', obs: 'Oxygen foam climbs the glass; the flask gets warm.' },
+  { id: 'comb', name: 'Combustion: methane + oxygen', skel: 'CH4 + O2 -> CO2 + H2O', k: 3, Ea: 0, dH: -890, aq: false, spark: true, obs: 'A flash of flame. Needs a spark first; then its own heat keeps it going.' }
+];
+var RXMAP = {}; REACTIONS.forEach(function (r) { RXMAP[r.id] = r; });
+/* ---------- the Purple Rabbit's script ----------
+   Each message: t (title), what, why, order (first... then...), think (question) */
+function M(t, what, why, order, think) { return { t: t, what: what, why: why, order: order, think: think }; }
+var CHEM_MSG = {
+  water: M('Water: the stage for everything', 'Water is the solvent. Most of today\u2019s reactions happen between ions swimming in it.', 'Ions can only bump into each other when they\u2019re dissolved and free to move. Dry powders just sit there.', 'First the water (or a solution), then the solids. And the classic rule: always add acid to water, never water to acid.', 'Why would pouring a little water into a lot of strong acid be riskier than the other way round?'),
+  nacl: M('Salt water', 'You added 1.0 M sodium chloride: Na\u207a and Cl\u207b ions, already pulled apart by water.', 'Salt is ionic. Water molecules surround each ion and carry it off (dissociation). Those Cl\u207b ions are ready partners for silver later.', 'First think \u201cions\u201d, not \u201cNaCl molecules\u201d. Then ask which ion could find a partner that makes something insoluble.', 'Table salt dissolves but silver chloride doesn\u2019t. What could make one ionic solid dissolve and another refuse?'),
+  vinegar: M('Vinegar', 'About 5% acetic acid, CH\u2083COOH (0.83 M). A weak acid.', '\u201cWeak\u201d means only about 1 molecule in 200 has let go of its H\u207a at any moment. Still an acid, just a polite one.', 'First decide strong or weak, then predict the pH: a weak acid gives a higher pH than a strong acid at the same concentration.', 'Vinegar and 0.83 M HCl have the same concentration. Which has the lower pH, and why?'),
+  hcl: M('Dilute hydrochloric acid', '1.0 M HCl, a strong acid: every molecule hands its H\u207a to water.', 'More free H\u207a means a lower pH and faster reactions with metals and carbonates.', 'First count moles: M \u00d7 litres. 10 mL of 1.0 M is 0.010 mol. Then compare with whatever it\u2019s going to meet.', 'If you double the volume but keep the concentration, does the pH change? Does the number of moles?'),
+  naoh: M('Dilute sodium hydroxide', '1.0 M NaOH, a strong base that releases OH\u207b ions.', 'OH\u207b grabs H\u207a to make water: neutralization. Even dilute NaOH is corrosive, which is why real labs use goggles and gloves.', 'First find the moles of OH\u207b, then compare with the moles of H\u207a. Whichever is bigger decides the pH.', 'Why does a base feel slippery on skin? (Hint: it starts reacting with the oils.)'),
+  cuso4: M('Copper(II) sulfate', 'Cu\u00b2\u207a ions give the solution that famous sky blue.', 'Water molecules wrapped around Cu\u00b2\u207a absorb orange-red light. We see what\u2019s left over: blue.', 'First note the color as your \u201cbefore\u201d reading. Then add a more reactive metal and watch whether the blue fades.', 'If the blue gets paler, where did the copper ions go?'),
+  agno3: M('Silver nitrate (dilute)', '0.1 M AgNO\u2083. Ag\u207a is basically a chloride detector.', 'Ag\u207a and Cl\u207b make AgCl, which barely dissolves at all. Real silver nitrate stains skin brown, so it lives in dark bottles and you wear gloves.', 'First add the silver nitrate, then any chloride (or the other way round: for a precipitate, the order doesn\u2019t matter).', 'Why is silver nitrate kept in a brown bottle? (Hint: light.)'),
+  na2co3: M('Sodium carbonate', 'Washing soda. CO\u2083\u00b2\u207b is a stronger base than bicarbonate.', 'Carbonate can take two protons, one after the other, before it turns into CO\u2082 and water.', 'First CO\u2083\u00b2\u207b + H\u207a \u2192 HCO\u2083\u207b, then HCO\u2083\u207b + H\u207a \u2192 H\u2082CO\u2083 \u2192 CO\u2082 + H\u2082O. Two steps.', 'Would you expect bubbles right away if you add just a drop of acid to carbonate? Why not?'),
+  cacl2: M('Calcium chloride', 'Ca\u00b2\u207a and Cl\u207b ions: the salt that melts icy roads.', 'Ca\u00b2\u207a will pair with carbonate to make chalky CaCO\u2083, and its Cl\u207b can meet silver.', 'First list the ions: one Ca\u00b2\u207a and two Cl\u207b per formula. Then look for insoluble partners.', 'Why does calcium chloride warm the water as it dissolves?'),
+  h2o2: M('Hydrogen peroxide 3%', 'The drugstore bottle. H\u2082O\u2082 slowly breaks down into water and oxygen.', 'The O\u2013O bond is weak, but without help the reaction is very slow. Light speeds it up, hence the brown bottle.', 'First add the peroxide, then the catalyst (yeast). Then watch the foam.', 'If peroxide \u201cwants\u201d to decompose, why does a bottle last months on the shelf?'),
+  nahco3: M('Baking soda', 'Sodium bicarbonate, NaHCO\u2083: a mild base that can take a proton (H\u207a).', 'HCO\u2083\u207b accepts H\u207a from an acid and becomes H\u2082CO\u2083, which falls apart into water and carbon dioxide.', 'First it dissolves into Na\u207a and HCO\u2083\u207b, then the bicarbonate waits for an acid.', 'Why do pancakes only rise once baking soda meets something acidic, like buttermilk?'),
+  fe: M('Iron nails', 'Solid iron: more reactive than copper, less reactive than zinc or magnesium.', 'Metals higher on the activity series give away electrons more easily.', 'First check the activity series, then predict: will iron push copper out of solution? Will it react with acid?', 'Why do ships bolt blocks of zinc onto their steel hulls?'),
+  zn: M('Zinc granules', 'Zinc is fairly reactive: it dissolves in acids and gives off hydrogen.', 'Zinc gives electrons to H\u207a more easily than hydrogen holds on to them.', 'First the acid, then the metal. Watch where the bubbles form: on the metal surface.', 'Why do bubbles form on the zinc and not all through the liquid?'),
+  mg: M('Magnesium ribbon', 'A very reactive metal. It fizzes hard in acid and gets warm.', 'Magnesium sits high on the activity series, so it gives up electrons eagerly and releases a lot of energy.', 'First use just a small piece, then add acid. More metal means more heat and more hydrogen.', 'Magnesium ribbon vs magnesium powder, same mass. Which reacts faster, and why?'),
+  yeast: M('Yeast, the catalyst', 'Yeast carries an enzyme called catalase.', 'Catalase gives peroxide a faster path over a lower energy hill, and it isn\u2019t used up.', 'First the reactant, then the catalyst. The catalyst is written over the arrow, not in the equation.', 'If a catalyst isn\u2019t used up, how can adding more of it make things faster?'),
+  php: M('Phenolphthalein', 'An indicator: colorless in acid and neutral water, pink above about pH 8.2.', 'The molecule changes shape when it loses protons, and the new shape absorbs green light, so it looks pink.', 'First a few drops, then add base slowly. The first pink that stays is your end point.', 'Why use a few drops of indicator instead of a big splash?'),
+  ui: M('Universal indicator', 'A blend of dyes that runs through a rainbow: red (acid), green (neutral), purple (base).', 'Each dye switches at a different pH, so together they cover the whole scale.', 'First the drops, then acid or base. Read the color like a rough pH meter.', 'Why is a single indicator better than a universal one for finding an exact end point?'),
+  ch4: M('Methane (natural gas)', 'CH\u2084, the smallest hydrocarbon. It fills the space above the liquid.', 'It won\u2019t react with oxygen at room temperature. It needs a spark to get over the activation-energy hill.', 'First methane, then oxygen (1 : 2 by volume), then the spark. Never the spark first.', 'Why does the same 1 : 2 ratio work for gas volumes and for moles?'),
+  o2: M('Oxygen', 'O\u2082 is the oxidizer. It doesn\u2019t burn itself, but it makes other things burn.', 'Fire needs fuel + oxidizer + ignition. Take any one away and there\u2019s no fire.', 'First fuel and oxygen in the right ratio, then the spark.', 'Which side of the fire triangle does a fire blanket take away?')
+};
+var RX_MSG = {
+  neut: M('Neutralization!', 'H\u207a from the acid and OH\u207b from the base snap together into water. Na\u207a and Cl\u207b just watch: they\u2019re spectator ions.', 'H\u207a + OH\u207b \u2192 H\u2082O is one of the most favorable reactions in water, so it\u2019s instant and releases about 57 kJ per mole. Check the temperature gauge.', 'First count moles of acid and base (M \u00d7 L), then compare them using the coefficients (1 : 1 here), then see which is left over. The leftover sets the pH.', 'If you add 5 mL of 1.0 M NaOH to 10 mL of 1.0 M HCl, is the result acidic or basic?'),
+  aneut: M('Weak acid meets strong base', 'OH\u207b pulls the protons off acetic acid, making acetate and water.', 'Even a weak acid gets fully neutralized by a strong base, because OH\u207b is so eager for H\u207a.', 'First the OH\u207b takes the free H\u207a, then more acetic acid lets go of its H\u207a to replace it, then repeat until one side runs out.', 'When exactly equal moles have reacted, the pH is above 7, not 7. Why? (Hint: what can acetate do with water?)'),
+  fizz: M('Fizz time: CO\u2082!', 'Bicarbonate grabs a proton from acetic acid and becomes carbonic acid, which falls apart into water and CO\u2082 gas. That\u2019s the fizz.', 'The gas escapes, pulling the reaction forward (Le Chatelier). It\u2019s slightly endothermic, so the flask actually cools.', 'First the acid donates H\u207a, then H\u2082CO\u2083 forms, then it breaks into H\u2082O + CO\u2082. Three steps hiding in one equation.', 'The flask gets lighter as it fizzes. Where does the mass go, and does that break the law of conservation of mass?'),
+  fizzh: M('Faster fizz', 'Same bicarbonate chemistry, but with a strong acid.', 'HCl hands over all of its H\u207a at once, so bicarbonate finds protons much faster than with vinegar.', 'First H\u207a meets HCO\u2083\u207b, then carbonic acid forms, then it splits into water and CO\u2082.', 'Same concentration, same amount of baking soda: why does HCl fizz faster than vinegar?'),
+  carbh: M('Carbonate takes two protons', 'Each CO\u2083\u00b2\u207b needs two H\u207a before it can leave as CO\u2082.', 'That\u2019s why the balanced equation has a 2 in front of HCl.', 'First CO\u2083\u00b2\u207b \u2192 HCO\u2083\u207b (no bubbles yet), then HCO\u2083\u207b \u2192 H\u2082CO\u2083 \u2192 CO\u2082 + H\u2082O.', 'How many mL of 1.0 M HCl would fully react with 10 mL of 0.5 M Na\u2082CO\u2083?'),
+  carba: M('Carbonate + vinegar', 'Acetic acid slowly gives carbonate the two protons it needs.', 'The acid is weak, so protons arrive slowly and the fizz is gentle.', 'First carbonate becomes bicarbonate, then bicarbonate becomes CO\u2082 + water.', 'What would warming the flask do to the fizz rate, and why?'),
+  agcl: M('A precipitate!', 'Ag\u207a and Cl\u207b find each other and form AgCl, so insoluble (Ksp \u2248 1.8\u00d710\u207b\u00b9\u2070) that it drops out as a white solid.', 'Swapping partners only \u201cwins\u201d when one product can escape the solution, here as a solid.', 'First write out the ions, then swap partners, then check the solubility rules to see which product is the solid.', 'Na\u207a and NO\u2083\u207b never do anything here. Can you write the shorter \u201cnet ionic\u201d equation?'),
+  agcl2: M('Double the chloride', 'Each CaCl\u2082 brings two Cl\u207b, so it takes two Ag\u207a to use them up.', 'Coefficients follow the atoms: two Cl on the left means two AgCl on the right.', 'First count the chloride ions per formula, then balance Cl, then Ag and N follow.', 'Why does CaCl\u2082 need twice as much silver nitrate as NaCl for the same moles?'),
+  agclh: M('Silver meets acid', 'Ag\u207a grabs the Cl\u207b from HCl, leaving H\u207a and NO\u2083\u207b in solution.', 'It\u2019s the chloride that matters to silver, not where it came from.', 'First spot the chloride source, then predict the solid, then ask what stays dissolved.', 'After the AgCl forms, is the liquid still acidic? Check the pH gauge.'),
+  caco3: M('Chalk from two clear liquids', 'Ca\u00b2\u207a and CO\u2083\u00b2\u207b lock together as CaCO\u2083, the stuff of chalk, limestone and seashells.', 'Calcium carbonate is nearly insoluble, so it clouds the liquid and settles out.', 'First identify the ions in each bottle, then swap partners, then use solubility rules.', 'If you now add hydrochloric acid, what will happen to the white solid? Try it.'),
+  cuoh: M('Blue jelly', 'Cu\u00b2\u207a meets OH\u207b and forms pale blue Cu(OH)\u2082, which won\u2019t dissolve.', 'Most metal hydroxides are insoluble. That\u2019s a handy test for metal ions.', 'First the base provides OH\u207b, then two of them pair with each Cu\u00b2\u207a.', 'Why does the equation need 2 NaOH for every 1 CuSO\u2084?'),
+  caco3h: M('Dissolving chalk', 'Acid attacks the carbonate, releasing CO\u2082 and leaving dissolved Ca\u00b2\u207a.', 'This is why acid rain eats limestone statues.', 'First H\u207a meets CO\u2083\u00b2\u207b on the solid\u2019s surface, then CO\u2082 escapes, then more surface is exposed.', 'Would a big lump of chalk or chalk powder react faster? Why?'),
+  fecu: M('Metal swap: iron vs copper', 'Iron atoms hand electrons to Cu\u00b2\u207a. Copper metal coats the nail and the blue fades toward pale green.', 'Iron is higher on the activity series, so it gives up electrons more readily than copper does.', 'First check the activity series, then decide who is oxidized (loses e\u207b: Fe) and who is reduced (gains e\u207b: Cu\u00b2\u207a), then balance.', 'Would a copper wire in iron(II) sulfate do anything? Why or why not?'),
+  zncu: M('Metal swap: zinc vs copper', 'Zinc pushes copper out of solution; the blue fades and dark copper coats the zinc.', 'Zinc is even more reactive than iron, so this one is faster and warmer.', 'First activity series, then electron transfer, then balance: Zn \u2192 Zn\u00b2\u207a + 2e\u207b, Cu\u00b2\u207a + 2e\u207b \u2192 Cu.', 'This is the chemistry inside a Daniell cell. Where would the electrons go if you separated the two halves with a wire?'),
+  znh: M('Hydrogen bubbles', 'Zinc gives electrons to H\u207a ions, which pair up as H\u2082 gas.', 'Zinc sits above hydrogen in the activity series.', 'First the acid, then the metal. Then watch the surface: that\u2019s where electrons change hands.', 'If you warm the flask, the bubbles speed up. What are the molecules doing differently?'),
+  mgh: M('Magnesium goes wild', 'Magnesium dissolves fast, releasing H\u2082 and a lot of heat.', 'Mg is very high on the activity series, and each mole releases about 460 kJ.', 'First a small piece, then the acid. Watch the temperature and rate gauges climb together.', 'Why does the rate drop as the reaction goes on, even though it\u2019s getting hotter?'),
+  feh: M('Slow and steady iron', 'Iron reacts with acid too, just slowly.', 'Iron is only a little above hydrogen in the activity series, so the energy hill is higher.', 'First add acid, then try warming it with the hot plate and watch the rate gauge.', 'Why does rust-proofing matter more in acid rain?'),
+  mga: M('Magnesium in vinegar', 'The same Mg + acid reaction, gentler.', 'Vinegar has far fewer free H\u207a at the same concentration, so fewer collisions succeed per second.', 'First compare free H\u207a (strong vs weak acid), then predict the rate.', 'Will Mg in vinegar make less hydrogen in total than in HCl with the same moles of acid, or just make it slower?'),
+  perox: M('Elephant-toothpaste mini', 'Catalase in the yeast rips through H\u2082O\u2082, making water and oxygen foam.', 'The catalyst lowers the energy hill. The yeast is written over the arrow because it comes out unchanged.', 'First the peroxide, then the yeast. The equation stays the same with or without the catalyst; only the speed changes.', 'If the yeast isn\u2019t used up, why does adding more yeast make it faster?'),
+  comb: M('Combustion!', 'Methane burns: carbon ends up in CO\u2082, hydrogen in H\u2082O, and a burst of energy is released.', 'The spark supplies the activation energy; after that, the reaction\u2019s own heat keeps it going.', 'First mix the gases in the right ratio (1 CH\u2084 : 2 O\u2082), then the spark. Balance C first, then H, then O last.', 'Why do we balance oxygen last in a combustion equation?')
+};
+var EV_MSG = {
+  welcome: M('Welcome to the bench!', 'This is a safe simulator: tap bottles on the shelf and watch what happens in the flask, on the gauges and in the equation.', 'Chemistry is mostly about counting: atoms, moles, charges. The equation keeps the score.', 'First think about what you expect. Then add one chemical at a time, in order, and compare the result with your guess.', 'Start with a classic: add hydrochloric acid, then sodium hydroxide. What do you predict for the temperature?'),
+  overfill: M('Whoa, that won\u2019t fit', 'That pour would overflow the vessel.', 'Real labs never fill a flask to the brim: you need headspace for bubbles, foam and swirling.', 'First remove or decant something, then add. Or switch to the bigger flask.', 'Why do foaming reactions need even more headspace?'),
+  gasfull: M('No room for more gas', 'The space above the liquid is already full of gas.', 'Gas takes up the room that liquid doesn\u2019t.', 'First remove some gas or liquid, then add more.', 'At the same temperature and pressure, why does 100 mL of any gas hold about the same number of molecules?'),
+  sparkNone: M('Nothing to ignite', 'The spark jumped, but there\u2019s no fuel-and-oxygen mix to light.', 'Combustion needs fuel + oxygen + ignition, all three at once.', 'First add methane and oxygen from the gas shelf, then press Spark.', 'Why doesn\u2019t a spark alone start a fire?'),
+  sparkHalf: M('Only half a fire triangle', 'You have one gas but not the other.', 'Methane can\u2019t burn without oxygen, and oxygen has nothing to burn without fuel.', 'First add the missing gas (1 CH\u2084 : 2 O\u2082 is ideal), then spark.', 'What would happen with plenty of methane but very little oxygen?'),
+  noLiquid: M('Add a liquid first', 'Solids are sitting dry at the bottom. Nothing happens yet.', 'Ions need a solvent to move around and collide.', 'First add water or a solution, then the solids can dissolve and react.', 'Why does a dry mix of baking soda and citric acid (a bath bomb) only fizz in water?'),
+  heatOn: M('Hot plate on', 'Heat flows into the flask and the temperature climbs.', 'Hotter molecules move faster and collide harder, so more collisions clear the energy hill. That\u2019s the Arrhenius factor in the rate model.', 'First turn on the heat, then watch the temperature and rate gauges together.', 'A common rule of thumb: rates roughly double for every 10 \u00b0C. Why only roughly?'),
+  boiling: M('It\u2019s boiling', 'The liquid reached 100 \u00b0C and water is turning into steam.', 'At the boiling point, extra heat goes into vaporizing water, not raising the temperature.', 'First watch the temperature flatten at 100 \u00b0C, then watch the volume gauge drop as water leaves.', 'This is the same plateau you\u2019ll see in Distillation mode. Where does the energy go?'),
+  empty: M('Rinsed and ready', 'The vessel is empty and clean.', 'A clean start means no leftovers can sneak into the next experiment.', 'First empty, then rinse, then start the next reaction.', 'Why do chemists rinse glassware with the solution they\u2019re about to use?'),
+  decant: M('Poured off the liquid', 'You decanted the liquid; any solids stay behind in the vessel.', 'Decanting is the quickest way to separate a settled solid from a liquid.', 'First let the solid settle, then pour the liquid off gently.', 'Filtering vs decanting: which one gets more of the liquid back?'),
+  vessel: M('Vessel switched', 'Same chemicals, new glassware. The volume gauge now measures against the new capacity.', 'A conical flask\u2019s narrow neck cuts splashing; a beaker is easier to pour and reach into.', 'First choose the vessel for the job, then add chemicals.', 'Why does a conical flask swirl without spilling?')
+};
+var D_MSG = {
+  intro: M('Simple distillation', 'We\u2019ll boil a mixture, turn the vapor back into liquid in the condenser, and collect it.', 'Different substances boil at different temperatures. Salt doesn\u2019t boil anywhere near 100 \u00b0C, so the water leaves it behind.', 'First check the setup: flask no more than 2/3 full, cooling water IN at the bottom of the condenser and OUT at the top. Then heat.', 'Why does the cooling water go in at the bottom of the condenser, not the top?'),
+  start: M('Heating up', 'The heater pours energy into the liquid and its temperature climbs steadily.', 'Below the boiling point, the energy mostly makes molecules move faster, so the temperature rises.', 'First the pot warms, then it boils, then vapor climbs to the thermometer. The head thermometer stays cool until the vapor gets there.', 'Why doesn\u2019t the still-head thermometer move at first?'),
+  vapor: M('Vapor at the still head', 'The head reading jumps: hot vapor is now wrapping around the bulb.', 'The bulb sits right at the side arm, so it reads the temperature of the vapor that\u2019s about to be condensed.', 'First vapor warms the glass, then the first drops condense and fall into the receiver.', 'What would go wrong if the bulb were down in the boiling liquid instead?'),
+  plateau: M('The 100 \u00b0C plateau', 'The head temperature is stuck at 100 \u00b0C even though the heater is still on.', 'At the boiling point, the energy goes into pulling molecules apart into vapor (latent heat), not into making them hotter.', 'First the temperature climbs, then it flattens while water distills over. A flat line says one pure substance is coming over.', 'The pot is a bit hotter than 100 \u00b0C. Why does salt in the water raise its boiling point?'),
+  plateauDye: M('The 100 \u00b0C plateau', 'The head sits at 100 \u00b0C and the drips in the receiver are perfectly clear.', 'Dye molecules are big and not volatile. Only water leaves as vapor.', 'First the temperature climbs, then it flattens while the water distills over.', 'The distillate comes out clear. Where did the color go?'),
+  eth: M('First plateau: ethanol', 'The head sits near 78 \u00b0C and the drips are mostly ethanol.', 'Ethanol molecules hold on to each other less strongly than water molecules do, so ethanol boils first.', 'First the more volatile liquid comes over, then the temperature climbs, then the next liquid. You\u2019d collect them in separate receivers.', 'Why is the pot hotter than the still head right now?'),
+  mid: M('In between the plateaus', 'The head temperature is climbing: the pot is running out of ethanol.', 'The vapor is now a mix, so its temperature sits between the two boiling points.', 'This is where you\u2019d swap receivers so the two fractions stay separate.', 'Real ethanol\u2013water can\u2019t be distilled past about 95.6% ethanol. Look up \u201cazeotrope\u201d: what\u2019s special about that mixture?'),
+  water: M('Second plateau: water', 'Now it\u2019s almost pure water coming over at 100 \u00b0C.', 'With the ethanol gone, the vapor is water, so the head settles at water\u2019s boiling point.', 'First ethanol (78 \u00b0C), then a climb, then water (100 \u00b0C). Two flat lines, two substances.', 'How could you tell from the graph alone that the mixture had two volatile parts?'),
+  dry: M('Stop before it\u2019s dry', 'We stopped heating with a little liquid left in the flask.', 'Distilling to dryness can crack glassware or scorch the residue. Whatever didn\u2019t boil stays behind in the flask.', 'First turn off the heat, then let everything cool, then take the apparatus apart.', 'How would you get the salt back out as crystals?')
+};
+/* =====================================================================
+   1. Formula parser + matrix (nullspace) equation balancer
+   ===================================================================== */
+function parseFormula(f) {
+  var i = 0;
+  function num() { var s = ''; while (i < f.length && /[0-9]/.test(f[i])) s += f[i++]; return s ? parseInt(s, 10) : 1; }
+  function group() {
+    var m = {};
+    while (i < f.length) {
+      var ch = f[i];
+      if (ch === '(') { i++; var g = group(); if (f[i] !== ')') throw new Error('Unclosed ( in ' + f); i++; var n = num(); for (var k in g) m[k] = (m[k] || 0) + g[k] * n; }
+      else if (ch === ')') return m;
+      else if (/[A-Z]/.test(ch)) { var el = ch; i++; while (i < f.length && /[a-z]/.test(f[i])) el += f[i++]; if (!AM[el]) throw new Error('Unknown element ' + el); var c = num(); m[el] = (m[el] || 0) + c; }
+      else throw new Error('Unexpected "' + ch + '" in ' + f);
+    }
+    return m;
+  }
+  var r = group(); if (i !== f.length) throw new Error('Unbalanced ) in ' + f); return r;
+}
+function molarMass(f) { var c = parseFormula(f), m = 0; for (var k in c) m += AM[k] * c[k]; return m; }
+function gcd(a, b) { a = Math.abs(a); b = Math.abs(b); while (b) { var t = a % b; a = b; b = t; } return a; }
+function lcm(a, b) { return a / gcd(a, b) * b; }
+function Fr(n, d) { if (d === undefined) d = 1; if (d < 0) { n = -n; d = -d; } var g = gcd(n, d) || 1; this.n = n / g; this.d = d / g; }
+Fr.prototype.add = function (o) { return new Fr(this.n * o.d + o.n * this.d, this.d * o.d); };
+Fr.prototype.sub = function (o) { return new Fr(this.n * o.d - o.n * this.d, this.d * o.d); };
+Fr.prototype.mul = function (o) { return new Fr(this.n * o.n, this.d * o.d); };
+Fr.prototype.div = function (o) { return new Fr(this.n * o.d, this.d * o.n); };
+Fr.prototype.zero = function () { return this.n === 0; };
+Fr.prototype.toString = function () { return this.d === 1 ? String(this.n) : this.n + '/' + this.d; };
+
+/* Build the composition matrix A (rows = elements, columns = species; products negative),
+   reduce to RREF with exact fractions, and read off the one-dimensional nullspace A.x = 0. */
+function balance(skel) {
+  var sides = skel.replace(/\u2192/g, '->').split('->');
+  if (sides.length !== 2) return { ok: false, reason: 'Need exactly one arrow' };
+  var L = sides[0].split('+').map(function (s) { return s.trim(); }).filter(Boolean);
+  var R = sides[1].split('+').map(function (s) { return s.trim(); }).filter(Boolean);
+  var sp = L.concat(R), comps;
+  try { comps = sp.map(parseFormula); } catch (e) { return { ok: false, reason: e.message }; }
+  var els = []; comps.forEach(function (c) { for (var k in c) if (els.indexOf(k) < 0) els.push(k); });
+  var A = els.map(function (e) { return sp.map(function (s, j) { return (comps[j][e] || 0) * (j < L.length ? 1 : -1); }); });
+  var Mx = A.map(function (row) { return row.map(function (v) { return new Fr(v); }); });
+  var rows = Mx.length, cols = sp.length, r = 0, piv = [];
+  for (var c = 0; c < cols && r < rows; c++) {
+    var p = -1; for (var i = r; i < rows; i++) if (!Mx[i][c].zero()) { p = i; break; }
+    if (p < 0) continue;
+    var tmp = Mx[r]; Mx[r] = Mx[p]; Mx[p] = tmp;
+    var pv = Mx[r][c]; Mx[r] = Mx[r].map(function (x) { return x.div(pv); });
+    for (i = 0; i < rows; i++) if (i !== r && !Mx[i][c].zero()) { var f = Mx[i][c]; Mx[i] = Mx[i].map(function (x, k) { return x.sub(f.mul(Mx[r][k])); }); }
+    piv.push(c); r++;
+  }
+  var free = []; for (c = 0; c < cols; c++) if (piv.indexOf(c) < 0) free.push(c);
+  if (free.length !== 1) return { ok: false, reason: free.length ? 'More than one independent way to balance' : 'No way to balance these species', elements: els, A: A };
+  var x = new Array(cols); x[free[0]] = new Fr(1);
+  piv.forEach(function (pc, row) { x[pc] = new Fr(0).sub(Mx[row][free[0]]); });
+  var den = x.reduce(function (a, q) { return lcm(a, q.d); }, 1);
+  var ints = x.map(function (q) { return q.n * (den / q.d); });
+  if (ints.every(function (v) { return v <= 0; })) ints = ints.map(function (v) { return -v; });
+  if (ints.some(function (v) { return v <= 0; })) return { ok: false, reason: 'A species would need a zero or negative coefficient', elements: els, A: A };
+  var g = ints.reduce(function (a, b) { return gcd(a, b); }); ints = ints.map(function (v) { return v / g; });
+  var res = { ok: true, L: L, R: R, species: sp, coef: ints, cL: ints.slice(0, L.length), cR: ints.slice(L.length), elements: els, A: A,
+    rref: Mx.map(function (row) { return row.map(String); }), x: x.map(String), comps: comps };
+  res.text = side(L, res.cL) + ' \u2192 ' + side(R, res.cR);
+  res.skeleton = L.join(' + ') + ' \u2192 ' + R.join(' + ');
+  return res;
+}
+function side(names, coefs) { return names.map(function (n, i) { return (coefs[i] > 1 ? coefs[i] : '') + n; }).join(' + '); }
+function atomTally(b, coefs) {
+  var cL = coefs ? coefs.slice(0, b.L.length) : b.L.map(function () { return 1; });
+  var cR = coefs ? coefs.slice(b.L.length) : b.R.map(function () { return 1; });
+  return b.elements.map(function (e) {
+    var l = 0, r = 0;
+    b.L.forEach(function (s, i) { l += (b.comps[i][e] || 0) * cL[i]; });
+    b.R.forEach(function (s, i) { r += (b.comps[b.L.length + i][e] || 0) * cR[i]; });
+    return { el: e, left: l, right: r };
+  });
+}
+function fHTML(f) { return esc(f).replace(/(\d+)/g, '<sub>$1</sub>'); }
+function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+function sideHTML(names, coefs) { return names.map(function (n, i) { return (coefs && coefs[i] > 1 ? '<span class="coef">' + coefs[i] + '</span>' : '') + fHTML(n); }).join(' + '); }
+
+// Balance every curated reaction once, up front. The simulator uses these coefficients.
+REACTIONS.forEach(function (r) {
+  var b = balance(r.skel);
+  if (!b.ok) throw new Error('Curated reaction failed to balance: ' + r.skel);
+  r.b = b;
+  r.reac = b.L.map(function (s, i) { return { sp: s, nu: b.cL[i] }; });
+  r.prod = b.R.map(function (s, i) { return { sp: s, nu: b.cR[i] }; });
+});
+
+/* =====================================================================
+   2. Simulation state
+   ===================================================================== */
+var VESSELS = { flask: { cap: 500, label: '500 mL Erlenmeyer flask' }, beaker: { cap: 400, label: '400 mL beaker' } };
+var HEAT_W = [0, 150, 450];
+var S;
+function freshState(keep) {
+  S = {
+    vessel: keep ? S.vessel : 'flask', VL: 0, n: {}, stock: {}, T: 22, heat: 0, time: 0,
+    yeast: 0, ind: { php: 0, ui: 0 }, burning: false, flash: 0, cloud: 0, pptKind: null,
+    released: { CO2: 0, H2: 0, O2: 0 }, rx: {}, gasRate: 0, rateInst: 0, rateDisp: 0, dTdt: 0, lastT: 22,
+    cuFromFe: 0, feStart: 0, foam: 0, boiled: false, speed: keep ? S.speed : 1, paused: keep ? S.paused : false, order: 0
+  };
+  REACTIONS.forEach(function (r) { S.rx[r.id] = { status: 'idle', extent: 0, rate: 0, startOrder: 0, stoppedBy: null, limiting: null }; });
+}
+freshState(false);
+function cap() { return VESSELS[S.vessel].cap; }
+function N(sp) { return S.n[sp] || 0; }
+function gasVolume() { var v = 0; for (var k in S.n) if (GASES[k]) v += S.n[k] * GAS_ML_PER_MOL; return v; }
+function amountFor(id) { return CAT[id].amounts[ui.size]; }
+
+/* ---------- pH: ideal charge balance solved by bisection (25 C) ---------- */
+var KW = 1e-14, KA_AC = 1.8e-5, KA1_C = 4.45e-7, KA2_C = 4.69e-11;
+var METAL_KA = { CuSO4: 3e-8, ZnSO4: 1e-9, ZnCl2: 1e-9, FeSO4: 3e-10, FeCl2: 3e-10 };
+function computePH() {
+  if (S.VL < 0.5) return null;
+  var V = S.VL / 1000, c = function (sp) { return N(sp) / V; };
+  var pos = c('NaOH') + c('CH3COONa') + c('NaHCO3') + 2 * c('Na2CO3') + 2 * c('Mg(CH3COO)2');
+  var neg = c('HCl') + c('HNO3');
+  var Ac = c('CH3COOH') + c('CH3COONa') + 2 * c('Mg(CH3COO)2');
+  var Ct = c('NaHCO3') + c('Na2CO3');
+  var metals = []; for (var m in METAL_KA) if (N(m) > 0) metals.push([c(m), METAL_KA[m]]);
+  function f(H) {
+    var a1 = KA1_C * H, a2 = KA1_C * KA2_C, d = H * H + a1 + a2;
+    var s = pos + H - neg - KW / H - Ac * KA_AC / (KA_AC + H) - Ct * (a1 + 2 * a2) / d;
+    for (var i = 0; i < metals.length; i++) s -= metals[i][0] * metals[i][1] / (metals[i][1] + H);
+    return s;
+  }
+  var lo = -15.5, hi = 1.5; // log10 [H+]
+  for (var it = 0; it < 70; it++) { var mid = (lo + hi) / 2; if (f(Math.pow(10, mid)) > 0) hi = mid; else lo = mid; }
+  var pH = -(lo + hi) / 2; return Math.max(0, Math.min(14, pH));
+}
+
+/* ---------- kinetics: one small time step ---------- */
+function arrhenius(Ea, T) { return Math.exp(-Ea * 1000 / 8.314 * (1 / (T + 273.15) - 1 / 298.15)); }
+function solidFactor(n) { return Math.min(1, Math.pow(Math.max(n, 0) / 0.004, 2 / 3)); }
+function heatCap() { return S.VL * 4.18 + 60; }
+function rxPresent(r) {
+  if (r.aq && S.VL < 0.5) return false;
+  for (var i = 0; i < r.reac.length; i++) if (N(r.reac[i].sp) <= 0) return false;
+  return true;
+}
+var events = [];
+function simStep(dt) {
+  var V = S.VL / 1000, head = Math.max(0.001, (cap() - S.VL) / 1000), gasMol = 0, foamMol = 0, heat = 0, totRate = 0;
+  REACTIONS.forEach(function (r) {
+    var st = S.rx[r.id];
+    if (!rxPresent(r)) { st.rate = 0; return; }
+    if (r.spark && !S.burning) { st.rate = 0; return; }
+    var k = r.k, vol = r.aq ? V : head;
+    if (r.cat === 'yeast') k = S.yeast > 0 ? r.k * Math.min(3, S.yeast / 0.5) : r.kUncat;
+    k *= arrhenius(r.Ea, S.T);
+    var conc = [], sf = 1;
+    r.reac.forEach(function (x) {
+      if (SOLIDS[x.sp]) sf *= solidFactor(N(x.sp));
+      else conc.push(N(x.sp) / vol);
+    });
+    var cterm = conc.length === 1 ? conc[0] : conc.length === 2 ? conc[0] * conc[1] / (conc[0] + conc[1]) : 1;
+    var ext = k * cterm * sf * vol * dt; // mol of reaction (as balanced)
+    var maxExt = Infinity, lim = null;
+    r.reac.forEach(function (x) { var m = N(x.sp) / x.nu; if (m < maxExt) { maxExt = m; lim = x.sp; } });
+    // finish the tail: if the limiting reagent is nearly gone, let it go
+    if (maxExt - ext < 2e-6 || ext >= maxExt) ext = maxExt;
+    if (ext <= 0) { st.rate = 0; return; }
+    r.reac.forEach(function (x) { S.n[x.sp] = N(x.sp) - x.nu * ext; if (S.n[x.sp] < 1e-9) S.n[x.sp] = 0; });
+    r.prod.forEach(function (x) {
+      var d = x.nu * ext;
+      if (x.sp === 'H2O') { S.VL += d * 18.015 / 0.997; }
+      else if (r.aq && GASES[x.sp]) { S.released[x.sp] = (S.released[x.sp] || 0) + d; gasMol += d; if (x.sp !== 'H2') foamMol += d; }
+      else S.n[x.sp] = N(x.sp) + d;
+      if (PPT[x.sp]) { S.cloud = Math.min(1, S.cloud + d / Math.max(V, 1e-4) * 60); S.pptKind = x.sp; }
+      if (x.sp === 'Cu' && r.metal) S.cuFromFe += d;
+    });
+    heat += -r.dH * 1000 * ext;
+    st.extent += ext; st.rate = ext / dt; st.limiting = lim;
+    totRate += ext / dt / (r.aq ? Math.max(V, 1e-4) : head) * 1000; // mM/s
+  });
+  if (S.burning && (N('CH4') <= 0 || N('O2') <= 0)) S.burning = false;
+  // temperature: reaction heat, hot plate, Newton cooling, boiling
+  var C = heatCap();
+  var P = HEAT_W[S.heat];
+  S.T += (heat + (P - 3 * (S.T - 22)) * dt) / C;
+  if (S.VL > 0.5 && S.T > 100) {
+    var excess = (S.T - 100) * C; S.T = 100;
+    var evap = excess / 2257; S.VL = Math.max(0, S.VL - evap / 0.958);
+    if (!S.boiled) { S.boiled = true; events.push({ type: 'boiling' }); }
+    if (S.VL < 0.5) { S.VL = 0; S.heat = 0; events.push({ type: 'dry' }); }
+  }
+  if (S.VL <= 0.5 && S.T > 150) { S.T = 150; S.heat = 0; }
+  S.gasRate = gasMol / dt;
+  S.rateInst = totRate;
+  S.cloud *= Math.exp(-dt / 25);
+  S.foam = Math.max(0, S.foam + (Math.min(60, foamMol / dt * 9000) - S.foam) * Math.min(1, dt * 1.5));
+  S.time += dt;
+}
+function advance(sec) {
+  var steps = Math.max(1, Math.ceil(sec / 0.02)), dt = sec / steps;
+  for (var i = 0; i < steps; i++) simStep(dt);
+  updateStatuses();
+}
+/* Status bookkeeping: idle -> running/waiting -> done | stopped */
+function updateStatuses() {
+  REACTIONS.forEach(function (r) {
+    var st = S.rx[r.id], present = rxPresent(r), prev = st.status;
+    if (present) {
+      var waiting = (r.spark && !S.burning) || (r.cat === 'yeast' && S.yeast <= 0);
+      st.status = waiting ? 'waiting' : 'running'; st.stoppedBy = null;
+      if (prev !== 'running' && prev !== 'waiting') { st.startOrder = ++S.order; }
+      if (st.status === 'running' && prev !== 'running') events.push({ type: 'rxstart', id: r.id });
+      if (st.status === 'waiting' && prev !== 'waiting') events.push({ type: 'rxwait', id: r.id });
+    } else if (prev === 'running' || prev === 'waiting') {
+      if (st.stoppedBy) { st.status = 'stopped'; }
+      else if (st.extent > 0) { st.status = 'done'; events.push({ type: 'rxdone', id: r.id }); }
+      else st.status = 'idle';
+    }
+  });
+}
+/* =====================================================================
+   3. UI helpers
+   ===================================================================== */
+var $ = function (id) { return document.getElementById(id); };
+var ui = { size: 1, seen: {}, pour: null, mode: 'bench', lastSig: {}, bubbles: [], throttle: 0 };
+var SVGNS = 'http://www.w3.org/2000/svg';
+function hexRGB(h) { h = h.replace('#', ''); return [parseInt(h.substr(0, 2), 16), parseInt(h.substr(2, 2), 16), parseInt(h.substr(4, 2), 16)]; }
+function mix(a, b, t) { return [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t]; }
+function rgb(c, a) { return 'rgba(' + Math.round(c[0]) + ',' + Math.round(c[1]) + ',' + Math.round(c[2]) + ',' + (a === undefined ? 1 : a) + ')'; }
+function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+function fmtAmt(v, unit) { return (v < 1 && unit === 'g' ? v.toFixed(2).replace(/0$/, '') : String(v)) + ' ' + unit; }
+
+/* ---------- shelf icons (inline SVG, no images) ---------- */
+function icon(c) {
+  var o = '#140a18', s = '<svg viewBox="0 0 40 44" aria-hidden="true">';
+  if (c.kind === 'solution' || c.kind === 'liquid') {
+    var glass = c.bottle || '#eaf6ff';
+    s += '<rect x="15" y="3" width="10" height="6" rx="1.5" fill="' + (c.hz ? '#e3162b' : '#6f00ff') + '" stroke="' + o + '" stroke-width="2"/>' +
+      '<path d="M16,9 h8 v6 q8,3 8,10 v14 q0,3 -3,3 h-18 q-3,0 -3,-3 v-14 q0,-7 8,-10z" fill="' + glass + '" stroke="' + o + '" stroke-width="2.2"/>' +
+      '<path d="M9,27 h22 v12 q0,2 -2,2 h-18 q-2,0 -2,-2z" fill="' + c.color + '" opacity="' + (c.bottle ? .55 : .95) + '"/>' +
+      '<rect x="11" y="22" width="18" height="7" rx="1" fill="#fff" stroke="' + o + '" stroke-width="1.2"/><path d="M12,14 v8" stroke="#fff" stroke-width="2" opacity=".7"/>';
+  } else if (c.kind === 'gas') {
+    s += '<rect x="11" y="9" width="18" height="33" rx="8" fill="' + c.color + '" stroke="' + o + '" stroke-width="2.2"/><rect x="16" y="3" width="8" height="7" fill="#9aa3b5" stroke="' + o + '" stroke-width="2"/><path d="M24,6 h6" stroke="' + o + '" stroke-width="2.5"/>' +
+      '<rect x="11" y="20" width="18" height="8" fill="#fff" stroke="' + o + '" stroke-width="1.2"/><text x="20" y="27" font-size="6.5" font-weight="900" text-anchor="middle" font-family="sans-serif" fill="' + o + '">' + c.formula.replace(/\d/g, '') + '</text>';
+  } else if (c.kind === 'indicator') {
+    s += '<path d="M17,3 h6 l1,10 h-8z" fill="' + c.cap + '" stroke="' + o + '" stroke-width="2"/><rect x="11" y="13" width="18" height="28" rx="4" fill="#f6f6ff" stroke="' + o + '" stroke-width="2.2"/><rect x="13" y="26" width="14" height="13" rx="2" fill="' + c.color + '" opacity=".8"/>';
+  } else if (c.id === 'fe') {
+    s += '<rect x="6" y="28" width="26" height="4" rx="1" fill="#8a8f98" stroke="' + o + '" stroke-width="1.6" transform="rotate(-20 20 30)"/><rect x="7" y="18" width="26" height="4" rx="1" fill="#8a8f98" stroke="' + o + '" stroke-width="1.6" transform="rotate(10 20 20)"/><rect x="5" y="15" width="3" height="10" fill="#6d727b" stroke="' + o + '" stroke-width="1.4" transform="rotate(10 20 20)"/><rect x="4" y="25" width="3" height="10" fill="#6d727b" stroke="' + o + '" stroke-width="1.4" transform="rotate(-20 20 30)"/>';
+  } else if (c.id === 'zn') {
+    s += '<circle cx="13" cy="30" r="6" fill="#a9b7c6" stroke="' + o + '" stroke-width="2"/><circle cx="25" cy="31" r="7" fill="#9fb0c1" stroke="' + o + '" stroke-width="2"/><circle cx="19" cy="20" r="6" fill="#b6c3d1" stroke="' + o + '" stroke-width="2"/>';
+  } else if (c.id === 'mg') {
+    s += '<path d="M6,34 q6,-22 10,-4 t10,-4 t8,-10" fill="none" stroke="' + o + '" stroke-width="6" stroke-linecap="round"/><path d="M6,34 q6,-22 10,-4 t10,-4 t8,-10" fill="none" stroke="#e3e7ec" stroke-width="3" stroke-linecap="round"/>';
+  } else {
+    s += '<rect x="8" y="12" width="24" height="29" rx="4" fill="' + (c.id === 'yeast' ? '#f0d9a6' : '#ff9e1f') + '" stroke="' + o + '" stroke-width="2.2"/><rect x="7" y="7" width="26" height="7" rx="2" fill="#fff" stroke="' + o + '" stroke-width="2"/>' +
+      '<rect x="11" y="20" width="18" height="10" rx="1" fill="#fff" stroke="' + o + '" stroke-width="1.2"/><circle cx="16" cy="36" r="1.6" fill="' + o + '"/><circle cx="22" cy="37" r="1.4" fill="' + o + '"/><circle cx="26" cy="35" r="1.2" fill="' + o + '"/>';
+  }
+  return s + '</svg>';
+}
+function renderShelf() {
+  var h = '', g = '';
+  CATALOG.forEach(function (c) {
+    if (c.group !== g) { g = c.group; h += '<div class="shelf-group">' + g + '</div>'; }
+    var conc = c.M ? c.M + ' M' : (c.label || '');
+    h += '<button class="chem" type="button" data-id="' + c.id + '" aria-label="Add ' + esc(c.name) + '">' + (c.hz ? '<span class="hz">' + c.hz + '</span>' : '') + icon(c) +
+      '<span class="nm">' + esc(c.name) + '</span><span class="fm">' + (c.formula ? fHTML(c.formula) : '&nbsp;') + (conc ? ' <small>' + conc + '</small>' : '') + '</span>' +
+      '<span class="amt" data-amt>+' + fmtAmt(c.amounts[ui.size], c.unit) + '</span></button>';
+  });
+  $('shelf').innerHTML = h;
+}
+function refreshAmts() { Array.prototype.forEach.call(document.querySelectorAll('.chem'), function (b) { var c = CAT[b.dataset.id]; b.querySelector('[data-amt]').textContent = '+' + fmtAmt(c.amounts[ui.size], c.unit); }); }
+
+/* ---------- tap vs drag (mouse drags immediately, touch needs a long-press so scrolling still works) ---------- */
+function enableDrag(container, selector, getGhost, onDrop, onTap) {
+  var st = null;
+  container.addEventListener('pointerdown', function (e) {
+    var el = e.target.closest(selector); if (!el || e.button > 0) return;
+    if (e.target.closest('button') && e.target.closest('button') !== el) return;
+    st = { el: el, x: e.clientX, y: e.clientY, id: e.pointerId, drag: false, touch: e.pointerType !== 'mouse', moved: false, timer: null };
+    if (st.touch) st.timer = setTimeout(function () { if (st && !st.moved) startDrag(e.clientX, e.clientY); }, 260);
+  });
+  function startDrag(x, y) {
+    st.drag = true; var gh = document.createElement('div'); gh.className = 'ghost'; gh.innerHTML = getGhost(st.el); document.body.appendChild(gh); st.ghost = gh; moveGhost(x, y);
+    try { st.el.setPointerCapture(st.id); } catch (err) { /* ignore */ }
+  }
+  function moveGhost(x, y) { st.ghost.style.left = x + 'px'; st.ghost.style.top = y + 'px'; var t = document.elementFromPoint(x, y); $('stage').classList.toggle('dropping', !!(t && t.closest('#stage')) && selector === '.chem'); }
+  document.addEventListener('pointermove', function (e) {
+    if (!st || e.pointerId !== st.id) return;
+    var d = Math.hypot(e.clientX - st.x, e.clientY - st.y);
+    if (!st.drag) { if (d > 8) { st.moved = true; if (!st.touch) startDrag(e.clientX, e.clientY); else { clearTimeout(st.timer); } } return; }
+    moveGhost(e.clientX, e.clientY);
+  });
+  document.addEventListener('touchmove', function (e) { if (st && st.drag) e.preventDefault(); }, { passive: false });
+  function end(e, cancel) {
+    if (!st || e.pointerId !== st.id) return;
+    clearTimeout(st.timer);
+    var s = st; st = null; $('stage').classList.remove('dropping');
+    if (s.drag) { s.ghost.remove(); if (!cancel) { var t = document.elementFromPoint(e.clientX, e.clientY); onDrop(s.el, t); } s.el.dataset.noclick = '1'; setTimeout(function () { delete s.el.dataset.noclick; }, 50); }
+    else if (!s.moved && !cancel && onTap) { /* handled by click */ }
+  }
+  document.addEventListener('pointerup', function (e) { end(e, false); });
+  document.addEventListener('pointercancel', function (e) { end(e, true); });
+}
+
+/* ---------- vessel geometry ---------- */
+var GEOM = {
+  flask: { outline: 'M122,14 H178 V24 H172 V104 L246,270 Q253,292 230,294 H70 Q47,292 54,270 L128,104 V24 H122 Z',
+    w: function (y) { return y < 104 ? 44 : y < 270 ? 44 + (y - 104) / 166 * 148 : 192 - (y - 270) * 1.2; }, top: 24, bottom: 293, capY: 116, thermX: 160, streamX: 140 },
+  beaker: { outline: 'M62,36 L50,28 H240 V36 V284 Q240,294 230,294 H72 Q62,294 62,284 Z',
+    w: function () { return 176; }, top: 36, bottom: 293, capY: 70, thermX: 212, streamX: 120 }
+};
+(function prepGeom() {
+  for (var k in GEOM) {
+    var g = GEOM[k], cum = [], acc = 0;
+    for (var y = g.bottom; y >= 0; y--) { acc += Math.pow(Math.max(0, g.w(y)), 2); cum[y] = acc; }
+    g.cum = cum; g.scale = VESSELS[k].cap / cum[g.capY];
+  }
+})();
+function levelY(V) {
+  var g = GEOM[S.vessel]; if (V <= 0) return g.bottom + 2;
+  for (var y = g.bottom; y >= g.top; y--) if (g.cum[y] * g.scale >= V) return y;
+  return g.top;
+}
+var V_ = {};
+function buildVessel() {
+  var g = GEOM[S.vessel], o = '#140a18', grads = '';
+  for (var v = 100; v <= VESSELS[S.vessel].cap; v += 100) {
+    var y = levelY(v), x = 150 - g.w(y) / 2 + 5;
+    if (g.w(y) < 80) { var xo = 150 - g.w(y) / 2 - 3; grads += '<line x1="' + xo + '" y1="' + y + '" x2="' + (xo - 12) + '" y2="' + y + '" stroke="#140a18" stroke-width="2.5"/><text x="' + (xo - 15) + '" y="' + (y + 4) + '" text-anchor="end" font-size="11" font-weight="800" fill="#140a18" stroke="#fff" stroke-width="3" paint-order="stroke" font-family="sans-serif">' + v + ' mL</text>'; continue; }
+    grads += '<line x1="' + x + '" y1="' + y + '" x2="' + (x + 14) + '" y2="' + y + '" stroke="#140a18" stroke-width="2.5"/><text x="' + (x + 17) + '" y="' + (y + 4) + '" font-size="11" font-weight="800" fill="#140a18" stroke="#fff" stroke-width="3" paint-order="stroke" font-family="sans-serif">' + v + '</text>';
+  }
+  var tx = g.thermX;
+  $('vesselSvg').innerHTML =
+    '<defs><clipPath id="vclip"><path d="' + g.outline + '"/></clipPath>' +
+    '<linearGradient id="glassG" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset=".25" stop-color="#fff" stop-opacity=".08"/><stop offset=".8" stop-color="#fff" stop-opacity=".05"/><stop offset="1" stop-color="#fff" stop-opacity=".4"/></linearGradient>' +
+    '<radialGradient id="flameG"><stop offset="0" stop-color="#fff6a8"/><stop offset=".45" stop-color="#ffb000"/><stop offset="1" stop-color="#ff3b00" stop-opacity="0"/></radialGradient>' +
+    '<filter id="blur6"><feGaussianBlur stdDeviation="6"/></filter></defs>' +
+    '<ellipse id="vGlow" cx="150" cy="296" rx="115" ry="12" fill="#ff5a1f" opacity="0" filter="url(#blur6)"/>' +
+    '<rect x="28" y="296" width="244" height="28" rx="7" fill="#3a3f48" stroke="' + o + '" stroke-width="4"/><rect id="vPlate" x="40" y="293" width="220" height="7" rx="3" fill="#6b717c" stroke="' + o + '" stroke-width="2.5"/>' +
+    '<circle cx="252" cy="310" r="7" fill="#d9ff36" stroke="' + o + '" stroke-width="3"/><circle id="vLed" cx="46" cy="310" r="4" fill="#333"/>' +
+    '<path d="' + g.outline + '" fill="rgba(255,255,255,.16)"/>' +
+    '<g clip-path="url(#vclip)"><path id="vLiq" d=""/><rect id="vCloud" x="0" y="0" width="300" height="0" opacity="0"/>' +
+    '<g id="vSolids"></g><g id="vBubbles"></g><path id="vFoam" d="" fill="#fffdf5" stroke="#d8d2c0" stroke-width="1.5"/><g id="vFlame" opacity="0">' +
+    '<ellipse cx="150" cy="170" rx="95" ry="80" fill="url(#flameG)"/><path d="M150,110 q30,40 10,80 q30,-20 20,-50 q25,40 -5,80 h-50 q-30,-40 0,-80 q-5,30 15,40 q-20,-40 10,-70z" fill="#ffcf33" stroke="#ff6a00" stroke-width="3"/></g>' +
+    '<text id="vGasLbl" x="150" y="0" text-anchor="middle" font-size="12" font-weight="900" fill="#fff" stroke="' + o + '" stroke-width="3" paint-order="stroke" font-family="sans-serif"></text></g>' +
+    '<path d="' + g.outline + '" fill="url(#glassG)" stroke="' + o + '" stroke-width="5" stroke-linejoin="round"/>' + grads +
+    '<rect x="' + (tx - 4) + '" y="4" width="8" height="266" rx="4" fill="#f4f8ff" stroke="' + o + '" stroke-width="2.5"/><circle cx="' + tx + '" cy="272" r="7" fill="#e3162b" stroke="' + o + '" stroke-width="2.5"/>' +
+    '<rect id="vTcol" x="' + (tx - 1.6) + '" y="200" width="3.2" height="70" fill="#e3162b"/>' +
+    '<line id="vStream" x1="' + g.streamX + '" y1="0" x2="' + g.streamX + '" y2="0" stroke-width="7" stroke-linecap="round" opacity="0"/>' +
+    '<g id="vSteam" opacity="0"><path d="M130,20 q-12,-10 0,-20 q12,-10 0,-20" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"/><path d="M165,22 q12,-10 0,-20 q-12,-10 0,-20" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"/></g>';
+  ['vLiq', 'vCloud', 'vSolids', 'vBubbles', 'vFoam', 'vFlame', 'vGasLbl', 'vTcol', 'vStream', 'vSteam', 'vGlow', 'vPlate', 'vLed'].forEach(function (id) { V_[id] = $(id); });
+  ui.bubbles = []; ui.lastSig.solids = '';
+  $('vesselLabel').textContent = VESSELS[S.vessel].label;
+}
+
+/* ---------- liquid color from what's dissolved ---------- */
+var UI_COLORS = [[1, [228, 30, 36]], [3, [255, 120, 20]], [5, [250, 215, 40]], [7, [60, 180, 60]], [9, [30, 140, 170]], [11, [40, 70, 200]], [13, [115, 40, 170]]];
+function uiColor(pH) {
+  if (pH <= UI_COLORS[0][0]) return UI_COLORS[0][1];
+  for (var i = 1; i < UI_COLORS.length; i++) if (pH <= UI_COLORS[i][0]) { var a = UI_COLORS[i - 1], b = UI_COLORS[i]; return mix(a[1], b[1], (pH - a[0]) / (b[0] - a[0])); }
+  return UI_COLORS[UI_COLORS.length - 1][1];
+}
+function liquidColor(pH) {
+  var V = Math.max(S.VL, 1e-3) / 1000, parts = [[[196, 232, 255], 0.6]], w = 0;
+  var cu = N('CuSO4') / V; if (cu > 0) parts.push([[25, 110, 235], Math.min(1.6, cu / 0.12)]);
+  var fe = (N('FeSO4') + N('FeCl2')) / V; if (fe > 0) parts.push([[140, 200, 110], Math.min(0.9, fe / 0.3)]);
+  if (S.ind.php > 0 && pH !== null) { var p = clamp((pH - 8.2) / 1.6, 0, 1); if (p > 0) parts.push([[255, 30, 160], p * Math.min(1.8, S.ind.php / 1.5)]); }
+  if (S.ind.ui > 0 && pH !== null) parts.push([uiColor(pH), Math.min(1.8, S.ind.ui / 1.5)]);
+  var c = [0, 0, 0]; parts.forEach(function (q) { c[0] += q[0][0] * q[1]; c[1] += q[0][1] * q[1]; c[2] += q[0][2] * q[1]; w += q[1]; });
+  c = [c[0] / w, c[1] / w, c[2] / w];
+  return rgb(c, clamp(0.5 + (w - 0.6) * 0.3, 0.5, 0.9));
+}
+
+/* ---------- solids at the bottom of the vessel ---------- */
+function renderSolids() {
+  var g = GEOM[S.vessel], o = '#140a18', yb = g.bottom - 3, s = '';
+  var sig = [N('Fe'), N('Zn'), N('Mg'), N('Cu'), N('AgCl'), N('CaCO3'), N('Cu(OH)2'), N('NaHCO3'), S.yeast, S.VL > 0.5 ? 1 : 0, S.vessel].map(function (v) { return typeof v === 'number' ? v.toFixed(5) : v; }).join('|');
+  if (sig === ui.lastSig.solids) return; ui.lastSig.solids = sig;
+  var coat = clamp(N('Cu') / 0.003, 0, 1);
+  var ppt = N('AgCl') + N('CaCO3') + N('Cu(OH)2');
+  if (ppt > 0) {
+    var kind = N('Cu(OH)2') > N('AgCl') + N('CaCO3') ? 'Cu(OH)2' : (N('AgCl') > N('CaCO3') ? 'AgCl' : 'CaCO3');
+    var hh = Math.min(26, 4 + Math.sqrt(ppt) * 260);
+    s += '<ellipse cx="150" cy="' + yb + '" rx="' + (g.w(yb) / 2 - 6) + '" ry="' + hh + '" fill="' + rgb(PPT[kind]) + '" stroke="#b9b9c9" stroke-width="1.5"/>';
+  }
+  if (N('NaHCO3') > 0 && S.VL <= 0.5) { var ph = Math.min(24, 6 + N('NaHCO3') * 700); s += '<path d="M' + (150 - ph * 2.6) + ',' + yb + ' Q150,' + (yb - ph * 2) + ' ' + (150 + ph * 2.6) + ',' + yb + 'Z" fill="#fff" stroke="#bbb" stroke-width="2"/>'; }
+  var fe = N('Fe') * AM.Fe;
+  if (fe > 0) {
+    var nails = Math.min(3, Math.max(1, Math.ceil(fe / 0.7))), len = 30 + 60 * Math.min(1, fe / nails / 0.7);
+    var col = rgb(mix([138, 143, 152], [181, 101, 43], coat));
+    for (var i = 0; i < nails; i++) { var ny = yb - 8 - i * 9, nx = 150 - len / 2 + (i - 1) * 14, rot = [-6, 5, -2][i];
+      s += '<g transform="rotate(' + rot + ' 150 ' + ny + ')"><rect x="' + nx + '" y="' + ny + '" width="' + len + '" height="7" rx="2" fill="' + col + '" stroke="' + o + '" stroke-width="2"/><rect x="' + (nx - 4) + '" y="' + (ny - 3) + '" width="5" height="13" rx="1" fill="' + col + '" stroke="' + o + '" stroke-width="2"/></g>'; }
+  }
+  var zn = N('Zn') * AM.Zn;
+  if (zn > 0) { var cnt = Math.min(12, Math.max(1, Math.round(zn / 0.08))), zc = rgb(mix([169, 183, 198], [90, 64, 48], coat));
+    for (i = 0; i < cnt; i++) { var zx = 150 + ((i * 37) % 110) - 55, zy = yb - 6 - (i % 3) * 7, zr = 5 + (i % 3); s += '<circle cx="' + zx + '" cy="' + zy + '" r="' + zr + '" fill="' + zc + '" stroke="' + o + '" stroke-width="2"/>'; } }
+  var mg = N('Mg') * AM.Mg;
+  if (mg > 0) { var L = 20 + 160 * Math.min(1, mg / 0.25), pts = ''; for (var x = 0; x <= L; x += 8) pts += (150 - L / 2 + x) + ',' + (yb - 10 + Math.sin(x / 9) * 6) + ' ';
+    s += '<polyline points="' + pts + '" fill="none" stroke="' + o + '" stroke-width="7" stroke-linecap="round"/><polyline points="' + pts + '" fill="none" stroke="#e3e7ec" stroke-width="3.5" stroke-linecap="round"/>'; }
+  if (N('Cu') > 0 && fe <= 0 && zn <= 0) { var cc = Math.min(16, Math.max(2, Math.round(N('Cu') / 0.0008)));
+    for (i = 0; i < cc; i++) s += '<ellipse cx="' + (150 + ((i * 29) % 120) - 60) + '" cy="' + (yb - 3 - (i % 2) * 4) + '" rx="6" ry="2.6" fill="#b5652b" stroke="' + o + '" stroke-width="1.2"/>'; }
+  if (S.yeast > 0) { var yy = S.VL > 0.5 ? levelY(S.VL) + 6 : yb - 4; for (i = 0; i < 14; i++) s += '<circle cx="' + (150 + ((i * 41) % 120) - 60) + '" cy="' + (yy + (i % 3) * 3) + '" r="2.2" fill="#c9a15b" stroke="#6b4b1c" stroke-width=".8"/>'; }
+  V_.vSolids.innerHTML = s;
+}
+
+/* ---------- per-frame vessel drawing ---------- */
+function renderVessel(dtR, pH) {
+  var g = GEOM[S.vessel], lv = levelY(S.VL), t = performance.now() / 1000;
+  var boiling = S.VL > 0.5 && S.T >= 99.9;
+  if (S.VL > 0.5) {
+    var amp = 1.2 + Math.min(4, S.gasRate * 3000) + (boiling ? 2.5 : 0), d = 'M0,' + lv;
+    for (var x = 0; x <= 300; x += 12) d += ' L' + x + ',' + (lv + amp * Math.sin(x / 22 + t * 3)).toFixed(1);
+    d += ' L300,330 L0,330 Z';
+    V_.vLiq.setAttribute('d', d); V_.vLiq.setAttribute('fill', liquidColor(pH));
+  } else V_.vLiq.setAttribute('d', '');
+  var cl = S.VL > 0.5 ? S.cloud : 0;
+  V_.vCloud.setAttribute('y', lv); V_.vCloud.setAttribute('height', Math.max(0, 330 - lv)); V_.vCloud.setAttribute('opacity', Math.min(0.85, cl).toFixed(3));
+  if (S.pptKind) V_.vCloud.setAttribute('fill', rgb(PPT[S.pptKind]));
+  // foam
+  if (S.foam > 1 && S.VL > 0.5) {
+    var fh = Math.min(S.foam, lv - g.top - 4), fd = 'M0,' + (lv + 2);
+    for (x = 0; x <= 300; x += 20) fd += ' Q' + (x + 10) + ',' + (lv - fh - 8 * Math.abs(Math.sin(x + t * 2))).toFixed(1) + ' ' + (x + 20) + ',' + (lv - fh).toFixed(1);
+    fd += ' L300,' + (lv + 2) + ' Z'; V_.vFoam.setAttribute('d', fd);
+  } else V_.vFoam.setAttribute('d', '');
+  // bubbles
+  var spawn = S.VL > 0.5 ? (S.gasRate * 20000 + (boiling ? 12 : 0)) : 0;
+  if (!S.paused) {
+    ui.bubAcc = (ui.bubAcc || 0) + Math.min(40, spawn) * dtR;
+    var src = [];
+    REACTIONS.forEach(function (r) { if (r.gas && S.rx[r.id].rate > 0 && r.metal) src.push(r.metal); });
+    while (ui.bubAcc >= 1 && ui.bubbles.length < 70) {
+      ui.bubAcc -= 1;
+      var c = document.createElementNS(SVGNS, 'circle'), w = g.w(g.bottom - 20);
+      var bx = src.length ? 150 + (Math.random() - 0.5) * 90 : 150 + (Math.random() - 0.5) * (w - 30);
+      var b = { el: c, x: bx, y: g.bottom - 10 - Math.random() * 12, r: 2 + Math.random() * 4, vy: 40 + Math.random() * 60, ph: Math.random() * 6 };
+      c.setAttribute('fill', 'rgba(255,255,255,.55)'); c.setAttribute('stroke', 'rgba(20,10,24,.6)'); c.setAttribute('stroke-width', '1.2');
+      V_.vBubbles.appendChild(c); ui.bubbles.push(b);
+    }
+    if (ui.bubAcc > 5) ui.bubAcc = 0;
+  }
+  ui.bubbles = ui.bubbles.filter(function (b) {
+    if (!S.paused) { b.y -= b.vy * dtR; b.r += dtR * 1.5; }
+    if (b.y < lv + 2 || S.VL <= 0.5) { b.el.remove(); return false; }
+    b.el.setAttribute('cx', (b.x + Math.sin(t * 6 + b.ph) * 2).toFixed(1)); b.el.setAttribute('cy', b.y.toFixed(1)); b.el.setAttribute('r', b.r.toFixed(1)); return true;
+  });
+  // flame, steam, thermometer, hot plate
+  V_.vFlame.setAttribute('opacity', (S.flash * (0.75 + 0.25 * Math.sin(t * 40))).toFixed(2));
+  var steam = S.VL > 0.5 ? clamp((S.T - 80) / 20, 0, 1) : 0;
+  V_.vSteam.setAttribute('opacity', (steam * 0.8).toFixed(2)); V_.vSteam.setAttribute('transform', 'translate(0,' + (12 - ((t * 20) % 12)).toFixed(1) + ')');
+  var ty = 266 - clamp(S.T, 0, 130) / 130 * 250; V_.vTcol.setAttribute('y', ty.toFixed(1)); V_.vTcol.setAttribute('height', (270 - ty).toFixed(1));
+  V_.vGlow.setAttribute('opacity', [0, 0.35, 0.8][S.heat]); V_.vPlate.setAttribute('fill', ['#6b717c', '#c9542a', '#ff3b1f'][S.heat]); V_.vLed.setAttribute('fill', S.heat ? '#ff3b1f' : '#333');
+  // pour stream
+  if (ui.pour && ui.pour.t > 0) {
+    ui.pour.t -= dtR; V_.vStream.setAttribute('y2', Math.max(0, S.VL > 0.5 ? lv : g.bottom - 6));
+    V_.vStream.setAttribute('stroke', ui.pour.color); V_.vStream.setAttribute('stroke-dasharray', ui.pour.kind === 'solid' ? '3 9' : ui.pour.kind === 'drops' ? '6 14' : ui.pour.kind === 'gas' ? '2 6' : 'none');
+    V_.vStream.setAttribute('opacity', clamp(ui.pour.t * 2, 0, 0.9));
+  } else V_.vStream.setAttribute('opacity', 0);
+  // gas label in headspace
+  var gl = []; ['CH4', 'O2', 'CO2'].forEach(function (k) { if (N(k) > 1e-7) gl.push(k.replace(/(\d)/g, function (m) { return '\u2080\u2081\u2082\u2083\u2084'[m]; }) + ' ' + Math.round(N(k) * GAS_ML_PER_MOL) + ' mL'); });
+  V_.vGasLbl.textContent = gl.join(' \u00b7 '); V_.vGasLbl.setAttribute('y', Math.max(g.top + 150, Math.min(lv - 12, 230)));
+  renderSolids();
+}
+/* =====================================================================
+   4. Adding and removing chemicals
+   ===================================================================== */
+function addChem(id, amt) {
+  var c = CAT[id]; if (!c) return false; // catalog only
+  if (amt === undefined) amt = amountFor(id);
+  amt = Number(amt); if (!(amt > 0)) return false;
+  if (c.kind === 'solution' || c.kind === 'liquid') {
+    if (S.VL + amt > cap() + 1e-9) { say(EV_MSG.overfill); return false; }
+    if (gasVolume() > cap() - S.VL - amt) { var sc = Math.max(0, cap() - S.VL - amt) / gasVolume(); for (var k in S.n) if (GASES[k]) S.n[k] *= sc; }
+    S.VL += amt;
+    if (c.formula) { var mol = c.M * amt / 1000; S.n[c.formula] = N(c.formula) + mol; S.stock[c.formula] = (S.stock[c.formula] || 0) + mol; }
+    if (S.VL > 0.5 && S.T > 100) S.T = 100;
+  } else if (c.kind === 'solid') {
+    S.n[c.formula] = N(c.formula) + amt / molarMass(c.formula);
+    if (c.formula === 'Fe') S.feStart += amt / AM.Fe;
+  } else if (c.kind === 'gas') {
+    if (gasVolume() + amt > cap() - S.VL + 1e-6) { say(EV_MSG.gasfull); return false; }
+    S.n[c.formula] = N(c.formula) + amt / GAS_ML_PER_MOL;
+  } else if (c.kind === 'indicator') {
+    if (S.VL + amt * 0.05 > cap()) { say(EV_MSG.overfill); return false; }
+    S.ind[id] += amt; S.VL += amt * 0.05;
+  } else if (c.kind === 'catalyst') { S.yeast += amt; }
+  ui.pour = { color: c.kind === 'solid' || c.kind === 'catalyst' ? '#ffffff' : c.kind === 'gas' ? '#fff59d' : (c.color === '#ffffff' || c.color === '#f4f4f4' ? '#bfe6ff' : c.color), t: 0.8, kind: c.kind === 'solid' || c.kind === 'catalyst' ? 'solid' : c.kind === 'indicator' ? 'drops' : c.kind === 'gas' ? 'gas' : 'liquid' };
+  var first = !ui.seen[id]; ui.seen[id] = true;
+  var before = events.length;
+  updateStatuses();
+  var startsRx = events.slice(before).some(function (e) { return e.type === 'rxstart'; });
+  if (!startsRx) {
+    if (c.kind === 'solid' && S.VL <= 0.5) say(EV_MSG.noLiquid);
+    else if (first) say(CHEM_MSG[id], { chem: true });
+    else if (c.kind === 'indicator') say(indicatorMsg(id), { chem: true });
+  } else if (first) RB.hist.push(CHEM_MSG[id]);
+  processEvents(); renderStatic(true);
+  return true;
+}
+function indicatorMsg(id) {
+  var pH = computePH(), txt = pH === null ? 'there is no liquid yet' : 'pH is about ' + pH.toFixed(1);
+  return M(CAT[id].name + ' check', 'Right now ' + txt + ', and the color shows it.', id === 'php' ? 'Phenolphthalein only turns pink above about pH 8.2, so it tells you \u201cbasic or not\u201d.' : 'Each dye in the mix switches at a different pH, painting the whole scale.', 'First add the indicator, then change the pH slowly and watch for the color jump.', 'Why does the color change so suddenly near the end point of a titration?');
+}
+function removeSpecies(key, all) {
+  var stopped = [], label = key;
+  function markStops(test) { REACTIONS.forEach(function (r) { var st = S.rx[r.id]; if ((st.status === 'running' || st.status === 'waiting') && test(r)) { st.stoppedBy = key; stopped.push(r); } }); }
+  if (key === 'liquid') {
+    if (all) {
+      for (var k in S.n) if (!SOLIDS[k] && !GASES[k]) { S.n[k] = 0; S.stock[k] = 0; }
+      S.VL = 0; S.ind.php = 0; S.ind.ui = 0; S.cloud = 0; S.foam = 0;
+      markStops(function (r) { return r.aq; }); label = 'the liquid';
+    } else {
+      var step = [5, 10, 25][ui.size], f = Math.min(1, step / Math.max(S.VL, 1e-9));
+      for (k in S.n) if (!SOLIDS[k] && !GASES[k]) { S.n[k] *= (1 - f); if (S.stock[k]) S.stock[k] *= (1 - f); }
+      S.VL *= (1 - f); S.ind.php *= (1 - f); S.ind.ui *= (1 - f); if (S.VL < 0.5) { S.VL = 0; markStops(function (r) { return r.aq; }); }
+      label = step + ' mL of the liquid';
+    }
+  } else if (key === 'yeast') { S.yeast = all ? 0 : Math.max(0, S.yeast - amountFor('yeast')); if (S.yeast <= 0) markStops(function (r) { return r.cat === 'yeast'; }); label = 'the yeast'; }
+  else if (key === 'php' || key === 'ui') { S.ind[key] = 0; label = CAT[key].name.toLowerCase(); }
+  else {
+    var sp = key, have = N(sp); if (!(have > 0)) return false;
+    var shelf = CAT[SHELF_BY_FORMULA[sp]], rem = have;
+    if (!all && shelf) {
+      var a = amountFor(shelf.id);
+      rem = Math.min(have, shelf.kind === 'solution' ? shelf.M * a / 1000 : shelf.kind === 'solid' ? a / molarMass(sp) : a / GAS_ML_PER_MOL);
+    }
+    if (shelf && shelf.kind === 'solution') { var fromStock = Math.min(rem, S.stock[sp] || 0); S.stock[sp] = (S.stock[sp] || 0) - fromStock; S.VL = Math.max(0, S.VL - fromStock / shelf.M * 1000); }
+    S.n[sp] = have - rem; if (S.n[sp] < 1e-9) S.n[sp] = 0;
+    if (PPT[sp] && S.n[sp] === 0) S.cloud = 0;
+    if (S.n[sp] === 0) markStops(function (r) { return r.reac.some(function (x) { return x.sp === sp; }); });
+    if (S.VL < 0.5 && S.VL > 0) S.VL = 0;
+    if (S.VL === 0) markStops(function (r) { return r.aq; });
+    label = (all || S.n[sp] === 0 ? 'all the ' : 'some ') + sp;
+  }
+  updateStatuses();
+  var names = stopped.map(function (r) { return r.b.text; });
+  say(M('Removed ' + label, 'You took ' + label + ' out of the vessel.', names.length ? 'Without it, ' + names.join(' and ') + ' can\u2019t continue: a reaction needs all of its reactants together at the same time.' : 'Nothing was reacting with it at the moment, so no running equation had to change.',
+    'First remove, then re-read the Live Equation panel: it always matches what\u2019s in the vessel right now.', names.length ? 'If you add it back, will the reaction pick up where it left off? Try it.' : 'What would you add next to start a new reaction?'));
+  processEvents(); renderStatic(true);
+  return true;
+}
+
+/* =====================================================================
+   5. Contents chips + suggestions
+   ===================================================================== */
+function speciesValue(sp) {
+  if (SOLIDS[sp]) return (N(sp) * molarMass(sp)).toFixed(N(sp) * molarMass(sp) < 0.1 ? 3 : 2) + ' g';
+  if (GASES[sp]) return Math.round(N(sp) * GAS_ML_PER_MOL) + ' mL';
+  if (sp === 'NaHCO3' && S.VL <= 0.5) return (N(sp) * molarMass(sp)).toFixed(2) + ' g';
+  return S.VL > 0.5 ? (N(sp) / (S.VL / 1000)).toFixed(3) + ' M' : (N(sp) * 1000).toFixed(1) + ' mmol';
+}
+function renderContents() {
+  var items = [];
+  if (S.VL > 0.5) items.push(['liquid', 'Liquid', S.VL.toFixed(1) + ' mL', true, 'Pour off some liquid', 'Decant all liquid']);
+  Object.keys(S.n).forEach(function (k) { if (N(k) > 1e-7) items.push([k, fHTML(k), speciesValue(k), !!SHELF_BY_FORMULA[k], 'Remove some ' + k, 'Remove all ' + k]); });
+  if (S.yeast > 0) items.push(['yeast', 'Yeast', S.yeast.toFixed(2) + ' g', false, '', 'Remove yeast']);
+  ['php', 'ui'].forEach(function (k) { if (S.ind[k] > 0) items.push([k, k === 'php' ? 'Phenolphthalein' : 'Universal ind.', Math.round(S.ind[k]) + ' dr', false, '', 'Remove indicator']); });
+  var host = $('contents'), keys = items.map(function (i) { return i[0] + (i[3] ? '+' : ''); }).join('|');
+  if (keys !== ui.lastSig.contentsKeys) {
+    // the set of chips changed: rebuild (rare). Otherwise only the numbers are updated in place,
+    // so buttons are never swapped out from under a finger or mouse.
+    ui.lastSig.contentsKeys = keys;
+    host.innerHTML = items.length ? items.map(function (i) {
+      return '<span class="chip" data-sp="' + esc(i[0]) + '" title="' + esc(NAMES[i[0]] || i[0]) + '"><span>' + i[1] + '</span><span class="v">' + i[2] + '</span>' +
+        (i[3] ? '<button type="button" data-dec="' + esc(i[0]) + '" aria-label="' + esc(i[4]) + '">&minus;</button>' : '') +
+        '<button type="button" class="x" data-rm="' + esc(i[0]) + '" aria-label="' + esc(i[5]) + '">&times;</button></span>';
+    }).join('') : '<span class="empty">The vessel is empty. Pick something from the shelf.</span>';
+    return;
+  }
+  Array.prototype.forEach.call(host.children, function (chip, idx) { var v = chip.querySelector('.v'); if (v && items[idx] && v.textContent !== items[idx][2]) v.textContent = items[idx][2]; });
+}
+function renderSuggest() {
+  var out = [], seen = {};
+  REACTIONS.forEach(function (r) {
+    var st = S.rx[r.id]; if (st.status === 'running') return;
+    var have = r.reac.filter(function (x) { return N(x.sp) > 0; }), miss = r.reac.filter(function (x) { return N(x.sp) <= 0; });
+    if (st.status === 'waiting' && r.cat && S.yeast <= 0 && !seen.yeast) { seen.yeast = 1; out.push(['yeast', 'Yeast']); }
+    if (have.length && miss.length && miss.every(function (x) { return SHELF_BY_FORMULA[x.sp]; }))
+      miss.forEach(function (x) { var id = SHELF_BY_FORMULA[x.sp]; if (!seen[id]) { seen[id] = 1; out.push([id, CAT[id].name]); } });
+  });
+  var spark = S.rx.comb.status === 'waiting';
+  var sig = out.map(function (o) { return o[0]; }).join() + spark;
+  if (sig === ui.lastSig.suggest) return; ui.lastSig.suggest = sig;
+  $('suggest').innerHTML = out.length || spark ? 'Could react with: ' + out.slice(0, 6).map(function (o) { return '<button type="button" data-add="' + o[0] + '">+ ' + esc(o[1]) + '</button>'; }).join('') + (spark ? '<button type="button" data-spark="1">Spark!</button>' : '') : '';
+}
+
+/* =====================================================================
+   6. Live equation panel + "show the math"
+   ===================================================================== */
+function eqCardHTML(r) {
+  var st = S.rx[r.id], b = r.b, skelBal = b.coef.every(function (c) { return c === 1; });
+  var arrow = r.cat ? '<span class="arr" data-over="' + r.cat + '">\u2192</span>' : '\u2192';
+  var label = { running: 'reacting now', waiting: r.spark ? 'waiting for a spark' : 'waiting for catalyst', done: 'finished', stopped: 'stopped: ' + (st.stoppedBy === 'liquid' ? 'liquid removed' : 'you removed ' + st.stoppedBy) }[st.status];
+  var cls = st.status === 'waiting' ? 'waiting' : st.status;
+  return '<div class="eq-card" data-rx="' + r.id + '" data-status="' + st.status + '">' +
+    '<div class="meta"><span>' + esc(r.name) + '</span><span class="st ' + cls + '">' + label + '</span></div>' +
+    '<div class="skel">Skeleton: ' + sideHTML(b.L) + ' \u2192 ' + sideHTML(b.R) + (skelBal ? ' <b style="color:#0a7a2a">\u2713 already balanced</b>' : ' <b style="color:#c0001a">\u2717 atoms don\u2019t match yet</b>') + '</div>' +
+    '<div class="eq-balanced" data-plain="' + esc(b.text) + '">' + sideHTML(b.L, b.cL) + ' ' + arrow + ' ' + sideHTML(b.R, b.cR) + '</div>' +
+    '<div class="obs">' + esc(r.obs) + ' \u0394H \u2248 ' + (r.dH > 0 ? '+' : '') + r.dH + ' kJ per mole of reaction as written.' + (r.cat ? ' Catalyst (yeast) goes over the arrow.' : '') + '</div></div>';
+}
+function renderEquation() {
+  var act = REACTIONS.filter(function (r) { var s = S.rx[r.id].status; return s === 'running' || s === 'waiting'; })
+    .sort(function (a, b) { return S.rx[b.id].startOrder - S.rx[a.id].startOrder; });
+  var past = REACTIONS.filter(function (r) { var s = S.rx[r.id].status; return s === 'done' || s === 'stopped'; })
+    .sort(function (a, b) { return S.rx[b.id].startOrder - S.rx[a.id].startOrder; });
+  var sig = act.map(function (r) { return r.id + S.rx[r.id].status; }).join() + '/' + past.slice(0, 1).map(function (r) { return r.id + S.rx[r.id].status; }).join() + (S.VL > 0.5) + Object.keys(S.n).filter(function (k) { return N(k) > 0; }).length;
+  if (sig === ui.lastSig.eq) return; ui.lastSig.eq = sig;
+  var h = act.slice(0, 3).map(eqCardHTML).join('');
+  if (!act.length) {
+    var anything = S.VL > 0.5 || Object.keys(S.n).some(function (k) { return N(k) > 0; });
+    h = '<div class="eq-none">' + (anything ? 'Nothing is reacting right now: nothing in the vessel has a partner from the reaction table. ' + (past.length ? 'Most recent reaction:' : 'Try one of the suggestions above.') : 'Empty vessel, empty equation. Add chemicals from the shelf and the balanced equation appears here, live.') + '</div>';
+    if (past.length) h += eqCardHTML(past[0]);
+  }
+  $('eqLive').innerHTML = h;
+  var main = act[0] || past[0];
+  ui.mathRx = main ? main.id : null;
+  renderMath(main);
+  var log = REACTIONS.filter(function (r) { return S.rx[r.id].extent > 0 || S.rx[r.id].status !== 'idle'; }).sort(function (a, b) { return S.rx[a.id].startOrder - S.rx[b.id].startOrder; });
+  $('eqLog').innerHTML = log.map(function (r) { return '<li>' + S.rx[r.id].status.toUpperCase() + ': ' + esc(r.b.text) + '</li>'; }).join('');
+}
+function renderMath(r) {
+  if (!r) { $('mathBody').innerHTML = '<p class="hint">Start a reaction to see the balancer at work.</p>'; return; }
+  var b = r.b, t0 = atomTally(b), t1 = atomTally(b, b.coef);
+  var th = '<tr><th></th>' + b.species.map(function (s) { return '<th>' + fHTML(s) + '</th>'; }).join('') + '</tr>';
+  var A = '<div class="mscroll"><table class="mtab">' + th + b.elements.map(function (e, i) { return '<tr><th>' + e + '</th>' + b.A[i].map(function (v) { return '<td>' + v + '</td>'; }).join('') + '</tr>'; }).join('') + '</table></div>';
+  var R = '<div class="mscroll"><table class="mtab">' + th + b.rref.map(function (row) { return '<tr><th></th>' + row.map(function (v) { return '<td>' + v + '</td>'; }).join('') + '</tr>'; }).join('') + '</table></div>';
+  function tally(t) { return '<div class="mscroll"><table class="mtab"><tr><th>atom</th><th>left</th><th>right</th></tr>' + t.map(function (x) { var ok = x.left === x.right; return '<tr><th>' + x.el + '</th><td class="' + (ok ? 'ok' : 'bad') + '">' + x.left + '</td><td class="' + (ok ? 'ok' : 'bad') + '">' + x.right + '</td></tr>'; }).join('') + '</table></div>'; }
+  $('mathBody').innerHTML =
+    '<p class="hint"><b>Step 1. Count atoms in the skeleton</b> (every coefficient = 1). Red means the sides disagree.</p>' + tally(t0) +
+    '<p class="hint"><b>Step 2. Build the composition matrix A.</b> Rows are elements, columns are species; products get a minus sign, so a balanced equation means A&middot;x = 0.</p>' + A +
+    '<p class="hint"><b>Step 3. Row-reduce A</b> with exact fractions (Gaussian elimination). One column has no pivot: that free variable is set to 1 and the rest follow.</p>' + R +
+    '<p class="hint">Nullspace vector x = (' + b.x.join(', ') + '). Multiply by the smallest number that clears the fractions: <b>(' + b.coef.join(', ') + ')</b>.</p>' +
+    '<p class="hint"><b>Step 4. Check.</b> Every atom now matches: ' + esc(b.text) + '</p>' + tally(t1);
+}
+
+/* =====================================================================
+   7. Cockpit dials
+   ===================================================================== */
+var DIALS = [];
+function Dial(el, o) {
+  var id = el.id, a0 = -135, a1 = 135, s = '';
+  var frac = function (v) { if (o.log) { v = Math.max(v, o.min); return (Math.log10(v) - Math.log10(o.min)) / (Math.log10(o.max) - Math.log10(o.min)); } return (v - o.min) / (o.max - o.min); };
+  var ang = function (v) { return a0 + (a1 - a0) * clamp(frac(v), 0, 1); };
+  var P = function (a, r) { var q = a * Math.PI / 180; return [(100 + r * Math.sin(q)).toFixed(2), (100 - r * Math.cos(q)).toFixed(2)]; };
+  function arc(v0, v1, r) { var p0 = P(ang(v0), r), p1 = P(ang(v1), r), big = ang(v1) - ang(v0) > 180 ? 1 : 0; return 'M' + p0 + ' A' + r + ',' + r + ' 0 ' + big + ' 1 ' + p1; }
+  s += '<svg viewBox="0 0 200 200" role="img" aria-label="' + o.label + ' gauge"><defs><linearGradient id="bz-' + id + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6b717c"/><stop offset=".5" stop-color="#3a3f48"/><stop offset="1" stop-color="#23262c"/></linearGradient></defs>' +
+    '<rect x="3" y="3" width="194" height="194" rx="26" fill="url(#bz-' + id + ')" stroke="#0a0b0d" stroke-width="3"/>';
+  [[18, 18], [182, 18], [18, 182], [182, 182]].forEach(function (p) { s += '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="5" fill="#9aa3b5" stroke="#111" stroke-width="1.5"/><path d="M' + (p[0] - 3) + ',' + (p[1] - 3) + ' l6,6" stroke="#222" stroke-width="1.6"/>'; });
+  s += '<circle cx="100" cy="100" r="86" fill="#0b0d10" stroke="#4d535e" stroke-width="3"/>';
+  (o.zones || []).forEach(function (z) { s += '<path d="' + arc(z[0], z[1], 76) + '" fill="none" stroke="' + z[2] + '" stroke-width="6" opacity=".9"/>'; });
+  if (o.log) {
+    for (var e = Math.log10(o.min); e < Math.log10(o.max); e++) for (var m = 2; m < 10; m++) { var v = m * Math.pow(10, e), p0 = P(ang(v), 81), p1 = P(ang(v), 74); s += '<line x1="' + p0[0] + '" y1="' + p0[1] + '" x2="' + p1[0] + '" y2="' + p1[1] + '" stroke="#cfd6e3" stroke-width="1.3"/>'; }
+  } else {
+    var step = (o.ticks[1] - o.ticks[0]) / (o.minor || 5);
+    for (v = o.min; v <= o.max + 1e-9; v += step) { p0 = P(ang(v), 81); p1 = P(ang(v), 74); s += '<line x1="' + p0[0] + '" y1="' + p0[1] + '" x2="' + p1[0] + '" y2="' + p1[1] + '" stroke="#cfd6e3" stroke-width="1.3"/>'; }
+  }
+  o.ticks.forEach(function (v, i) { var p0 = P(ang(v), 82), p1 = P(ang(v), 68), pt = P(ang(v), 56); s += '<line x1="' + p0[0] + '" y1="' + p0[1] + '" x2="' + p1[0] + '" y2="' + p1[1] + '" stroke="#fff" stroke-width="3"/><text x="' + pt[0] + '" y="' + (+pt[1] + 4.5) + '" text-anchor="middle" font-size="13" font-weight="800" fill="#f2f5fa" font-family="sans-serif">' + (o.tickLabels ? o.tickLabels[i] : v) + '</text>'; });
+  s += '<text x="100" y="128" text-anchor="middle" font-size="11" font-weight="900" letter-spacing="1.5" fill="#ffcf5c" font-family="sans-serif">' + o.label + '</text>' +
+    '<rect x="58" y="136" width="84" height="24" rx="5" fill="#06110a" stroke="#2c313b" stroke-width="2"/><text class="dial-read" x="100" y="153.5" text-anchor="middle" font-size="15" font-weight="800" fill="#8dff6f" font-family="ui-monospace,Menlo,Consolas,monospace">--</text>' +
+    '<g class="needle" transform="rotate(' + a0 + ' 100 100)"><path d="M100,24 L105,98 L100,114 L95,98 Z" fill="#ff7a1a" stroke="#3a1500" stroke-width="1.2"/></g>' +
+    '<circle cx="100" cy="100" r="9" fill="#2b2f37" stroke="#9aa3b5" stroke-width="2"/><ellipse cx="80" cy="56" rx="52" ry="22" fill="#fff" opacity=".05"/></svg>';
+  el.innerHTML = s;
+  var d = { el: el, o: o, target: null, cur: o.min, needle: el.querySelector('.needle'), read: el.querySelector('.dial-read'), lastTxt: '' };
+  d.set = function (v) { d.target = v; };
+  d.tick = function (dt) {
+    var tv = d.target === null || d.target === undefined ? o.min : d.target;
+    if (o.log) { var lc = Math.log10(Math.max(d.cur, o.min)), lt = Math.log10(Math.max(tv, o.min)); d.cur = Math.pow(10, lc + (lt - lc) * Math.min(1, dt * 5)); }
+    else d.cur += (tv - d.cur) * Math.min(1, dt * 5);
+    d.needle.setAttribute('transform', 'rotate(' + ang(d.cur).toFixed(2) + ' 100 100)');
+    var txt = d.target === null || d.target === undefined ? '--' : o.fmt(d.target);
+    if (txt !== d.lastTxt) { d.read.textContent = txt; d.lastTxt = txt; }
+  };
+  d.angle = function () { return ang(d.cur); };
+  DIALS.push(d); return d;
+}
+var dial = {};
+function buildDials() {
+  dial.ph = new Dial($('dialPH'), { label: 'pH', min: 0, max: 14, ticks: [0, 2, 4, 6, 8, 10, 12, 14], minor: 4, zones: [[0, 6, '#ff4d4d'], [6, 8, '#58ff7a'], [8, 14, '#56a8ff']], fmt: function (v) { return v.toFixed(2); } });
+  dial.t = new Dial($('dialT'), { label: 'TEMP \u00b0C', min: 0, max: 120, ticks: [0, 20, 40, 60, 80, 100, 120], minor: 4, zones: [[0, 60, '#58ff7a'], [60, 90, '#ffb300'], [90, 120, '#ff4d4d']], fmt: function (v) { return v.toFixed(1) + '\u00b0'; } });
+  dial.v = new Dial($('dialV'), { label: 'VOLUME mL', min: 0, max: 500, ticks: [0, 100, 200, 300, 400, 500], minor: 4, zones: [[0, 400, '#58ff7a'], [400, 450, '#ffb300'], [450, 500, '#ff4d4d']], fmt: function (v) { return v.toFixed(0) + '/' + cap(); } });
+  dial.rate = new Dial($('dialRate'), { label: 'RATE mM/s', min: 0.01, max: 10000, log: true, ticks: [0.01, 0.1, 1, 10, 100, 1000, 10000], tickLabels: ['.01', '.1', '1', '10', '100', '1k', '10k'], zones: [[0.01, 10, '#58ff7a'], [10, 1000, '#ffb300'], [1000, 10000, '#ff4d4d']], fmt: function (v) { return v < 0.01 ? '0.00' : v < 10 ? v.toFixed(2) : v < 1000 ? v.toFixed(0) : (v / 1000).toFixed(1) + 'k'; } });
+  dial.head = new Dial($('dialHead'), { label: 'HEAD \u00b0C', min: 0, max: 120, ticks: [0, 20, 40, 60, 80, 100, 120], minor: 4, zones: [[76, 80, '#ffb300'], [98, 102, '#58ff7a']], fmt: function (v) { return v.toFixed(1) + '\u00b0'; } });
+  dial.pot = new Dial($('dialPot'), { label: 'POT \u00b0C', min: 0, max: 120, ticks: [0, 20, 40, 60, 80, 100, 120], minor: 4, zones: [[100, 120, '#ff4d4d']], fmt: function (v) { return v.toFixed(1) + '\u00b0'; } });
+  dial.dist = new Dial($('dialDist'), { label: 'DISTILLATE mL', min: 0, max: 200, ticks: [0, 40, 80, 120, 160, 200], minor: 4, zones: [[160, 200, '#ffb300']], fmt: function (v) { return v.toFixed(1); } });
+  dial.vap = new Dial($('dialVap'), { label: 'mL / min', min: 0, max: 12, ticks: [0, 2, 4, 6, 8, 10, 12], minor: 4, zones: [[0, 12, '#56a8ff']], fmt: function (v) { return v.toFixed(2); } });
+}
+var ANN = [['EXO', 'exo', ''], ['ENDO', 'endo', 'b'], ['GAS', 'gas', 'g'], ['PPT', 'ppt', ''], ['BOIL', 'boil', 'r'], ['FLAME', 'flame', 'r'], ['FULL', 'full', 'r'], ['HEAT', 'heat', '']];
+var DANN = [['HEAT', 'heat', ''], ['BOIL', 'boil', 'r'], ['VAPOR', 'vapor', ''], ['COLLECT', 'collect', 'g'], ['PLATEAU', 'plateau', 'g'], ['COOLANT', 'cool', 'b'], ['LOW POT', 'low', 'r'], ['DONE', 'done', 'g']];
+function buildAnn(host, list) { host.innerHTML = list.map(function (a) { return '<div class="ann ' + a[2] + '" data-k="' + a[1] + '">' + a[0] + '</div>'; }).join(''); }
+function setAnn(host, state) { Array.prototype.forEach.call(host.children, function (d) { d.classList.toggle('on', !!state[d.dataset.k]); }); }
+
+/* =====================================================================
+   8. The Purple Rabbit
+   ===================================================================== */
+var RB = { hist: [], idx: -1, shownAt: 0, queue: [] };
+function say(msg, opts) {
+  if (!msg) return; opts = opts || {};
+  var cur = RB.hist[RB.idx];
+  if (cur && cur.t === msg.t && cur.what === msg.what) return;
+  if (opts.soft && cur && performance.now() - RB.shownAt < 4000) { RB.queue.push(msg); return; }
+  if (!opts.chem) RB.queue = RB.queue.filter(function (m) { return !m._chem; });
+  if (opts.chem) msg._chem = true;
+  showMsg(msg);
+}
+function showMsg(msg) {
+  RB.hist.push(msg); if (RB.hist.length > 40) RB.hist.shift(); RB.idx = RB.hist.length - 1; RB.shownAt = performance.now();
+  renderRabbit(true);
+}
+function renderRabbit(hop) {
+  var m = RB.hist[RB.idx]; if (!m) return;
+  $('rbTitle').textContent = m.t;
+  $('rbWhat').innerHTML = '<b>What\u2019s happening:</b> ' + esc(m.what);
+  $('rbWhy').innerHTML = '<b>Why:</b> ' + esc(m.why);
+  $('rbOrder').innerHTML = '<b>Order of operations:</b> ' + esc(m.order);
+  $('rbThink').innerHTML = '<b>Think about it:</b> ' + esc(m.think);
+  $('rbCount').textContent = (RB.idx + 1) + '/' + RB.hist.length;
+  if (hop) { var a = $('rbAva'); a.classList.remove('hop'); void a.offsetWidth; a.classList.add('hop'); $('rbImg').src = 'assets/rabbit-jump.png'; clearTimeout(RB.tm); RB.tm = setTimeout(function () { $('rbImg').src = 'assets/rabbit-idle.png'; }, 700); }
+}
+function doneMsg(r) {
+  var st = S.rx[r.id], lim = st.limiting, short = r.name.split(':').pop().trim();
+  if (r.reac.length === 1) return M('Finished: ' + short, 'All the ' + lim + ' is used up.', r.cat ? 'The yeast is still there, unchanged. That\u2019s what makes it a catalyst, not a reactant.' : 'With nothing left to react, the reaction stops.', 'First the reactant runs out, then the bubbles stop, then the temperature drifts back to room temperature.', 'If you add more peroxide now, do you need more yeast? Try it.');
+  var left = r.reac.filter(function (x) { return x.sp !== lim && N(x.sp) > 1e-7; }).map(function (x) { return x.sp; });
+  var ratio = r.reac.map(function (x) { return x.nu + ' ' + x.sp; }).join(' : ');
+  return M('Finished: ' + short, lim + ' (' + (NAMES[lim] || lim) + ') ran out first, so it was the limiting reagent. ' + (left.length ? 'Some ' + left.join(' and ') + ' is left over.' : 'Nothing was left over: a perfect match!'),
+    'A reaction stops as soon as any one reactant is used up. The coefficients say they\u2019re used in a ' + ratio + ' ratio by moles.',
+    'First convert each amount to moles, then divide each by its coefficient. The smallest result is the limiting reagent. Then predict what\u2019s left.',
+    left.length ? 'How many more moles of ' + lim + ' would you need to use up all the ' + left[0] + '?' : 'If you doubled just one of the reactants, would you get twice the product?');
+}
+function processEvents() {
+  var evs = events.splice(0);
+  evs.forEach(function (e) {
+    if (e.type === 'rxstart') say(RX_MSG[e.id]);
+    else if (e.type === 'rxdone') say(doneMsg(RXMAP[e.id]), { soft: true });
+    else if (e.type === 'rxwait') {
+      if (e.id === 'comb') say(M('Gas mix ready', 'Methane and oxygen are mixed in the headspace, but nothing happens yet.', 'Molecules need enough energy to break bonds before new ones can form: the activation energy.', 'First check the ratio (1 CH\u2084 : 2 O\u2082 is ideal), then press Spark.', 'Why doesn\u2019t a gas stove light itself when you turn on the gas?'));
+      else if (e.id === 'perox') say(M('Peroxide is just sitting there', 'H\u2082O\u2082 is decomposing, but so slowly you can\u2019t see it.', 'The uncatalyzed pathway has a high energy hill. Very few molecules make it over per second.', 'First notice how slow it is, then add yeast from the helpers shelf and compare.', 'Same reactant, same products. What could possibly change the speed so much?'));
+    }
+    else if (e.type === 'boiling') say(EV_MSG.boiling);
+    else if (e.type === 'dry') say(M('Boiled dry!', 'All the water boiled away and the hot plate switched itself off.', 'Without liquid to carry heat away, glass and residue overheat fast.', 'First turn the heat down before the liquid gets low, then top up or stop.', 'Why is \u201cnever heat to dryness\u201d a lab rule?'));
+  });
+}
+/* =====================================================================
+   9. Simple distillation (separate simplified model)
+   ===================================================================== */
+// Ethanol-water VLE at 1 atm (x liquid, y vapor mole fraction ethanol, T in C)
+var VLE = [[0, 0, 100], [0.019, 0.17, 95.5], [0.0721, 0.3891, 89.0], [0.0966, 0.4375, 86.7], [0.1238, 0.4704, 85.3], [0.1661, 0.5089, 84.1], [0.2337, 0.5445, 82.7], [0.2608, 0.558, 82.3], [0.3273, 0.5826, 81.5], [0.3965, 0.6122, 80.7], [0.5079, 0.6564, 79.8], [0.5198, 0.6599, 79.7], [0.5732, 0.6841, 79.3], [0.6763, 0.7385, 78.74], [0.7472, 0.7815, 78.41], [0.8943, 0.8943, 78.15], [1, 1, 78.3]];
+function interp(col, v) { for (var i = 1; i < VLE.length; i++) if (v <= VLE[i][col]) { var a = VLE[i - 1], b = VLE[i], f = (v - a[col]) / ((b[col] - a[col]) || 1); return a[2] + (b[2] - a[2]) * f; } return VLE[VLE.length - 1][2]; }
+var ALPHA_IDEAL = 30; // idealized relative volatility ("as if a short fractionating column were fitted")
+var D;
+function dFresh(mix) {
+  var sp = D ? D.speed : 20, pw = D ? D.power : 400;
+  D = { mix: mix, running: false, speed: sp, power: pw, t: 0, Tpot: 22, Thead: 22, vf: 0, boiling: false, mw: 0, me: 0, salt: 0, dye: 0,
+    recW: 0, recE: 0, pts: [], lastPt: -99, flags: {}, rate: 0, y: 0, done: false, hist: [] };
+  if (mix === 'salt') { D.mw = 193; D.salt = 7; }
+  else if (mix === 'dye') { D.mw = 199.4; D.dye = 1; }
+  else { D.mw = 99.7; D.me = 78.9; }
+  D.pts.push([0, 22, 22, 0]);
+}
+function potVolume() { return D.mw / 0.997 + D.me / 0.789 + D.salt / 2.16; }
+function recVolume() { return D.recW / 0.997 + D.recE / 0.789; }
+function dStep(dt) {
+  var amb = 22, nW = D.mw / 18.015, nE = D.me / 46.07, x = nE / Math.max(nW + nE, 1e-9);
+  var Tb = D.mix === 'eth' ? interp(0, x) : 100 + 0.512 * 2 * (D.salt / 58.44) / Math.max(D.mw / 1000, 1e-3);
+  var C = D.mw * 4.18 + D.me * 2.44 + 250, P = D.running ? D.power : 0, loss = 0.9 * (D.Tpot - amb);
+  var collected = 0;
+  if (D.Tpot < Tb - 0.01 || P <= loss) {
+    D.boiling = false; D.Tpot += (P - loss) * dt / C; if (D.Tpot > Tb) D.Tpot = Tb;
+  } else {
+    D.boiling = true; D.Tpot = Tb;
+    var y = D.mix === 'eth' ? ALPHA_IDEAL * x / (1 + (ALPHA_IDEAL - 1) * x) : 0; D.y = y;
+    var dn = (P - loss) * dt / (y * 38600 + (1 - y) * 40650);
+    var dE = Math.min(nE, dn * y), dW = Math.min(nW, dn * (1 - y));
+    D.me = Math.max(0, D.me - dE * 46.07); D.mw = Math.max(0, D.mw - dW * 18.015);
+    if (D.vf >= 1) { D.recE += dE * 46.07; D.recW += dW * 18.015; collected = dE * 46.07 / 0.789 + dW * 18.015 / 0.997; }
+  }
+  D.vf = D.boiling ? Math.min(1, D.vf + dt / 30) : Math.max(0, D.vf - dt / 60);
+  var Tvap = D.mix === 'eth' ? interp(1, D.boiling ? D.y : Math.min(1, ALPHA_IDEAL * x / (1 + (ALPHA_IDEAL - 1) * x))) : 100;
+  var sm = D.vf * D.vf * (3 - 2 * D.vf);
+  var target = amb + (Tvap - amb) * sm;
+  D.Thead += (target - D.Thead) * Math.min(1, dt / 4);
+  D.rate += (collected / dt * 60 - D.rate) * Math.min(1, dt / 8);
+  D.t += dt;
+  D.hist.push([D.t, D.Thead]); while (D.hist.length && D.hist[0][0] < D.t - 40) D.hist.shift();
+  if (D.t - D.lastPt >= 2) { D.pts.push([D.t, D.Thead, D.Tpot, recVolume()]); D.lastPt = D.t; }
+  if (D.running && D.mw + D.me < 15) { D.running = false; D.done = true; say(D_MSG.dry); setDStart(); }
+  dFlags();
+}
+function dPlateau() { if (D.hist.length < 20 || D.rate < 0.2) return false; var mn = 1e9, mx = -1e9; D.hist.forEach(function (h) { mn = Math.min(mn, h[1]); mx = Math.max(mx, h[1]); }); return mx - mn < 0.5 && D.t - D.hist[0][0] > 30; }
+function dFlags() {
+  var f = D.flags;
+  if (!f.vapor && D.vf > 0.6) { f.vapor = 1; say(D_MSG.vapor); }
+  if (D.mix !== 'eth' && !f.plat && D.rate > 0.2 && D.Thead > 99.5) { f.plat = 1; say(D.mix === 'dye' ? D_MSG.plateauDye : D_MSG.plateau); }
+  if (D.mix === 'eth') {
+    if (!f.eth && D.rate > 0.2 && D.Thead < 80.5 && D.Thead > 76) { f.eth = 1; say(D_MSG.eth); }
+    if (f.eth && !f.mid && D.Thead > 83) { f.mid = 1; say(D_MSG.mid); }
+    if (f.eth && !f.water && D.Thead > 99.3) { f.water = 1; say(D_MSG.water); }
+  }
+}
+var DS = {};
+function thermoY(T) { return 46 - clamp(T, 0, 120) / 120 * 34; } // scale sits above the stopper; the column rises from the bulb
+function buildDistill() {
+  var o = '#140a18';
+  var L = Math.hypot(270, 108), ang = Math.atan2(108, 270) * 180 / Math.PI;
+  var ticks = ''; [0, 20, 40, 60, 80, 100, 120].forEach(function (T) { var y = thermoY(T); ticks += '<line x1="144" y1="' + y.toFixed(1) + '" x2="' + (T % 50 === 0 ? 152 : 149) + '" y2="' + y.toFixed(1) + '" stroke="' + o + '" stroke-width="1.5"/>' + (T % 50 === 0 ? '<text x="155" y="' + (y + 3.5).toFixed(1) + '" font-size="9" font-weight="800" fill="' + o + '" font-family="sans-serif">' + T + '</text>' : ''); });
+  $('distSvg').innerHTML =
+    '<defs><clipPath id="potClip"><circle cx="140" cy="250" r="59"/></clipPath><clipPath id="recClip"><path d="M491,282 L454,334 Q450,340 460,340 H540 Q550,340 546,334 L509,282 Z"/></clipPath>' +
+    '<filter id="dglow"><feGaussianBlur stdDeviation="5"/></filter><linearGradient id="dbg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff8e7"/><stop offset="1" stop-color="#ffe7b8"/></linearGradient></defs>' +
+    '<rect width="640" height="360" fill="url(#dbg)"/><rect y="344" width="640" height="16" fill="#8a5a3c"/><line x1="0" y1="344" x2="640" y2="344" stroke="' + o + '" stroke-width="3"/>' +
+    '<rect x="20" y="40" width="10" height="304" fill="#9aa3b5" stroke="' + o + '" stroke-width="2"/><rect x="20" y="150" width="112" height="7" fill="#9aa3b5" stroke="' + o + '" stroke-width="2"/>' +
+    // heating mantle
+    '<path id="dGlow" d="M72,258 Q72,326 140,326 Q208,326 208,258" fill="none" stroke="#ff4a1a" stroke-width="10" opacity="0" filter="url(#dglow)"/>' +
+    '<path d="M62,256 Q62,338 140,338 Q218,338 218,256 L206,256 Q206,322 140,322 Q74,322 74,256 Z" fill="#50555f" stroke="' + o + '" stroke-width="3"/>' +
+    '<text x="140" y="356" text-anchor="middle" font-size="10" font-weight="800" fill="#fff" font-family="sans-serif">heating mantle</text>' +
+    // pot
+    '<g clip-path="url(#potClip)"><rect id="dPotLiq" x="70" y="250" width="140" height="80" fill="#bfe6ff"/><g id="dPotBub"></g><g id="dSalt"></g></g>' +
+    '<circle cx="140" cy="250" r="62" fill="rgba(255,255,255,.18)" stroke="' + o + '" stroke-width="4"/>' +
+    '<path d="M128,192 V150 M152,192 V150" stroke="' + o + '" stroke-width="4"/><rect x="125" y="146" width="30" height="8" rx="2" fill="#dfe6f3" stroke="' + o + '" stroke-width="2"/>' +
+    // still head
+    '<rect id="dVap" x="130" y="64" width="20" height="130" fill="#fff" opacity="0"/>' +
+    '<path d="M128,150 V62 M152,150 V104 M152,90 V62" stroke="' + o + '" stroke-width="4" fill="none"/>' +
+    '<rect x="122" y="50" width="36" height="13" rx="3" fill="#3a3f48" stroke="' + o + '" stroke-width="2"/>' +
+    // side arm
+    '<line x1="150" y1="97" x2="205" y2="120" stroke="' + o + '" stroke-width="18" stroke-linecap="round"/><line id="dArm" x1="150" y1="97" x2="205" y2="120" stroke="#f7fdff" stroke-width="11" stroke-linecap="round"/>' +
+    // thermometer
+    '<rect x="136" y="10" width="8" height="90" rx="4" fill="#f4f8ff" stroke="#555" stroke-width="1.5"/><circle cx="140" cy="100" r="6" fill="#e3162b" stroke="' + o + '" stroke-width="1.5"/><rect id="dCol" x="138.5" y="80" width="3" height="20" fill="#e3162b"/>' + ticks +
+    '<text x="12" y="22" font-size="11" font-weight="900" fill="' + o + '" font-family="sans-serif">STILL HEAD</text><text id="dHeadTxt" x="12" y="44" font-size="22" font-weight="900" fill="#d4001f" font-family="ui-monospace,Menlo,monospace">22.0\u00b0C</text>' +
+    '<text x="12" y="198" font-size="11" font-weight="900" fill="' + o + '" font-family="sans-serif">POT</text><text id="dPotTxt" x="12" y="216" font-size="16" font-weight="900" fill="#b35a00" font-family="ui-monospace,Menlo,monospace">22.0\u00b0C</text>' +
+    // condenser
+    '<g transform="translate(200,118) rotate(' + ang.toFixed(2) + ')">' +
+    '<rect x="18" y="-19" width="' + (L - 36).toFixed(1) + '" height="38" rx="14" fill="#cdefff" stroke="' + o + '" stroke-width="3"/>' +
+    '<line class="cflow" x1="24" y1="-11" x2="' + (L - 24).toFixed(1) + '" y2="-11" stroke="#2f9be0" stroke-width="3" stroke-dasharray="8 8"/><line class="cflow" x1="24" y1="11" x2="' + (L - 24).toFixed(1) + '" y2="11" stroke="#2f9be0" stroke-width="3" stroke-dasharray="8 8"/>' +
+    '<line x1="0" y1="0" x2="' + L.toFixed(1) + '" y2="0" stroke="' + o + '" stroke-width="13"/><line x1="0" y1="0" x2="' + L.toFixed(1) + '" y2="0" stroke="#f7fdff" stroke-width="8"/><g id="dDrops"></g>' +
+    '<rect x="' + (L - 52).toFixed(1) + '" y="17" width="12" height="18" fill="#2f9be0" stroke="' + o + '" stroke-width="2"/><rect x="40" y="-35" width="12" height="18" fill="#2f9be0" stroke="' + o + '" stroke-width="2"/>' +
+    '<text x="' + (L / 2).toFixed(1) + '" y="-25" text-anchor="middle" font-size="12" font-weight="900" fill="' + o + '" font-family="sans-serif">Liebig condenser</text></g>' +
+    '<text x="428" y="262" font-size="10" font-weight="800" fill="#1b6fb0" font-family="sans-serif" text-anchor="end">cooling water IN</text><text x="236" y="92" font-size="10" font-weight="800" fill="#1b6fb0" font-family="sans-serif">water OUT</text>' +
+    // adapter + receiver
+    '<path d="M468,225 L500,246 V268" fill="none" stroke="' + o + '" stroke-width="13" stroke-linejoin="round"/><path d="M468,225 L500,246 V268" fill="none" stroke="#f7fdff" stroke-width="8" stroke-linejoin="round"/>' +
+    '<g clip-path="url(#recClip)"><rect id="dRecLiq" x="440" y="340" width="120" height="0" fill="#9fd8ff"/></g>' +
+    '<path d="M489,262 V282 L452,334 Q448,342 460,342 H540 Q552,342 548,334 L511,282 V262" fill="rgba(255,255,255,.25)" stroke="' + o + '" stroke-width="4" stroke-linejoin="round"/>' +
+    '<circle id="dDrip" cx="500" cy="270" r="3.5" fill="#56b4ff" opacity="0"/>' +
+    '<text x="630" y="292" text-anchor="end" font-size="11" font-weight="900" fill="' + o + '" font-family="sans-serif">DISTILLATE</text><text id="dDistTxt" x="630" y="312" text-anchor="end" font-size="16" font-weight="900" fill="#1b6fb0" font-family="ui-monospace,Menlo,monospace">0.0 mL</text>' +
+    '<text x="500" y="356" text-anchor="middle" font-size="10" font-weight="800" fill="#fff" font-family="sans-serif">receiver</text>';
+  ['dPotLiq', 'dPotBub', 'dSalt', 'dVap', 'dCol', 'dHeadTxt', 'dPotTxt', 'dDrops', 'dRecLiq', 'dDrip', 'dDistTxt', 'dGlow', 'dArm'].forEach(function (id) { DS[id] = $(id); });
+  DS.flows = document.querySelectorAll('#distSvg .cflow');
+  var db = ''; for (var i = 0; i < 4; i++) db += '<circle r="3" fill="#56b4ff" opacity="0"/>'; DS.dDrops.innerHTML = db;
+  var pb = ''; for (i = 0; i < 12; i++) pb += '<circle r="3" fill="rgba(255,255,255,.8)" stroke="rgba(20,10,24,.5)" opacity="0"/>'; DS.dPotBub.innerHTML = pb;
+}
+function potLevel(vol) { // spherical flask, 500 mL, radius 59 px
+  var f = clamp(vol / 500, 0, 1), lo = 0, hi = 118;
+  for (var i = 0; i < 40; i++) { var h = (lo + hi) / 2, fr = h * h * (3 * 59 - h) / (4 * 59 * 59 * 59); if (fr < f) lo = h; else hi = h; }
+  return 309 - (lo + hi) / 2;
+}
+function renderDistill() {
+  var t = performance.now() / 1000, pv = potVolume(), lv = potLevel(pv);
+  DS.dPotLiq.setAttribute('y', lv.toFixed(1)); DS.dPotLiq.setAttribute('height', (320 - lv).toFixed(1));
+  var potCol = D.mix === 'dye' ? rgb([176, 74, 216], clamp(0.35 + 40 / Math.max(pv, 1), 0.35, 0.95)) : D.mix === 'salt' ? 'rgba(190,225,250,.8)' : 'rgba(220,240,255,.8)';
+  DS.dPotLiq.setAttribute('fill', potCol);
+  DS.dGlow.setAttribute('opacity', D.running ? (0.35 + D.power / 600 * 0.6).toFixed(2) : 0);
+  Array.prototype.forEach.call(DS.dPotBub.children, function (c, i) {
+    if (!D.boiling || !D.running) { c.setAttribute('opacity', 0); return; }
+    var ph = (t * 0.8 + i / 12) % 1, y = 305 - ph * (305 - lv); c.setAttribute('cx', 100 + (i * 23) % 80); c.setAttribute('cy', y.toFixed(1)); c.setAttribute('opacity', y > lv + 2 ? 0.9 : 0);
+  });
+  DS.dSalt.innerHTML = D.mix === 'salt' && pv < 60 ? '<path d="M104,306 l8,-8 l8,8 l7,-6 l7,6 l8,-9 l8,9 l9,-7 l8,7 l8,-5 l7,5 Z" fill="#fff" stroke="#999"/>' : '';
+  var vapOp = D.vf * 0.75; DS.dVap.setAttribute('opacity', vapOp.toFixed(2)); DS.dVap.setAttribute('fill', D.vf > 0 ? '#fff4c2' : '#fff');
+  DS.dArm.setAttribute('stroke', D.vf >= 1 ? '#fff4c2' : '#f7fdff');
+  var cy = thermoY(D.Thead); DS.dCol.setAttribute('y', cy.toFixed(1)); DS.dCol.setAttribute('height', (100 - cy).toFixed(1));
+  DS.dHeadTxt.textContent = D.Thead.toFixed(1) + '\u00b0C'; DS.dPotTxt.textContent = D.Tpot.toFixed(1) + '\u00b0C'; DS.dDistTxt.textContent = recVolume().toFixed(1) + ' mL';
+  var rv = recVolume(), rl = 340 - Math.min(58, Math.sqrt(rv / 250) * 58);
+  DS.dRecLiq.setAttribute('y', rl.toFixed(1)); DS.dRecLiq.setAttribute('height', (340 - rl).toFixed(1));
+  var flowing = D.running || D.vf > 0;
+  Array.prototype.forEach.call(DS.flows, function (f, i) { f.setAttribute('stroke-dashoffset', flowing ? ((i ? 1 : -1) * t * 30).toFixed(1) : 0); });
+  var collecting = D.rate > 0.05;
+  var L = Math.hypot(270, 108);
+  Array.prototype.forEach.call(DS.dDrops.children, function (c, i) { if (!collecting) { c.setAttribute('opacity', 0); return; } var ph = (t * 0.5 + i / 4) % 1; c.setAttribute('cx', (ph * L).toFixed(1)); c.setAttribute('cy', 0); c.setAttribute('opacity', 0.9); });
+  if (collecting) { var dp = (t * Math.min(3, 0.6 + D.rate / 3)) % 1; DS.dDrip.setAttribute('cy', (270 + dp * (rl - 270)).toFixed(1)); DS.dDrip.setAttribute('opacity', 0.95); } else DS.dDrip.setAttribute('opacity', 0);
+}
+function renderChart() {
+  var x0 = 46, x1 = 372, y0 = 22, y1 = 256, tmax = Math.max(600, Math.ceil(D.t * 1.1 / 300) * 300);
+  var X = function (t) { return x0 + (x1 - x0) * t / tmax; }, Y = function (T) { return y1 - (y1 - y0) * (T - 20) / 90; }, YV = function (v) { return y1 - (y1 - y0) * v / 200; };
+  var o = '#140a18', s = '<rect width="420" height="300" fill="#fffdf6"/>';
+  [20, 40, 60, 80, 100].forEach(function (T) { s += '<line x1="' + x0 + '" y1="' + Y(T) + '" x2="' + x1 + '" y2="' + Y(T) + '" stroke="#e4dccb"/><text x="' + (x0 - 5) + '" y="' + (Y(T) + 4) + '" text-anchor="end" font-size="10" font-weight="700" fill="#b0001a" font-family="sans-serif">' + T + '</text>'; });
+  [0, 50, 100, 150, 200].forEach(function (v) { s += '<text x="' + (x1 + 5) + '" y="' + (YV(v) + 4) + '" font-size="10" font-weight="700" fill="#1b6fb0" font-family="sans-serif">' + v + '</text>'; });
+  for (var tt = 0; tt <= tmax; tt += tmax / 4) s += '<text x="' + X(tt) + '" y="' + (y1 + 15) + '" text-anchor="middle" font-size="10" font-weight="700" fill="' + o + '" font-family="sans-serif">' + Math.round(tt) + '</text>';
+  s += '<line x1="' + x0 + '" y1="' + Y(100) + '" x2="' + x1 + '" y2="' + Y(100) + '" stroke="#18a34a" stroke-width="1.5" stroke-dasharray="5 4"/><text x="' + (x0 + 4) + '" y="' + (Y(100) - 4) + '" font-size="10" font-weight="800" fill="#18a34a" font-family="sans-serif">water 100 \u00b0C</text>';
+  if (D.mix === 'eth') s += '<line x1="' + x0 + '" y1="' + Y(78.4) + '" x2="' + x1 + '" y2="' + Y(78.4) + '" stroke="#b36b00" stroke-width="1.5" stroke-dasharray="5 4"/><text x="' + (x0 + 4) + '" y="' + (Y(78.4) - 4) + '" font-size="10" font-weight="800" fill="#b36b00" font-family="sans-serif">ethanol 78.4 \u00b0C</text>';
+  var pts = D.pts.concat([[D.t, D.Thead, D.Tpot, recVolume()]]), k = Math.max(1, Math.ceil(pts.length / 400));
+  function line(i, f) { var d = ''; for (var j = 0; j < pts.length; j += k) d += (d ? ' ' : '') + X(pts[j][0]).toFixed(1) + ',' + f(pts[j][i]).toFixed(1); var l = pts[pts.length - 1]; d += ' ' + X(l[0]).toFixed(1) + ',' + f(l[i]).toFixed(1); return d; }
+  s += '<polyline points="' + line(2, Y) + '" fill="none" stroke="#ff8a00" stroke-width="2" stroke-dasharray="6 4"/>' +
+    '<polyline points="' + line(3, YV) + '" fill="none" stroke="#2f7dff" stroke-width="2.5"/>' +
+    '<polyline id="headLine" points="' + line(1, Y) + '" fill="none" stroke="#d4001f" stroke-width="3"/>';
+  s += '<rect x="' + x0 + '" y="' + y0 + '" width="' + (x1 - x0) + '" height="' + (y1 - y0) + '" fill="none" stroke="' + o + '" stroke-width="2"/>' +
+    '<text x="' + x0 + '" y="14" font-size="11" font-weight="900" fill="#d4001f" font-family="sans-serif">\u2014 head \u00b0C</text><text x="' + (x0 + 84) + '" y="14" font-size="11" font-weight="900" fill="#ff8a00" font-family="sans-serif">- - pot \u00b0C</text><text x="' + (x0 + 160) + '" y="14" font-size="11" font-weight="900" fill="#2f7dff" font-family="sans-serif">\u2014 distillate mL</text>' +
+    '<text x="' + ((x0 + x1) / 2) + '" y="292" text-anchor="middle" font-size="10.5" font-weight="800" fill="' + o + '" font-family="sans-serif">time (simulated seconds)</text>';
+  $('chartSvg').innerHTML = s;
+}
+function renderDBars() {
+  var ethPct = recVolume() > 0.05 ? (D.recE / 0.789) / recVolume() * 100 : 0;
+  var rows = [['pot water', D.mw / 0.997, 200, D.mw / 0.997 < 0.05 ? '0 mL' : (D.mw / 0.997).toFixed(1) + ' mL']];
+  if (D.mix === 'eth') rows.push(['pot ethanol', D.me / 0.789, 200, (D.me / 0.789).toFixed(1) + ' mL']);
+  if (D.mix === 'salt') rows.push(['pot salt', D.salt, 10, D.salt.toFixed(1) + ' g']);
+  if (D.mix === 'dye') rows.push(['pot dye', 1, 1, 'stays']);
+  rows.push(['receiver', recVolume(), 200, recVolume().toFixed(1) + ' mL']);
+  if (D.mix === 'eth') rows.push(['recv ethanol', ethPct, 100, ethPct.toFixed(0) + ' %']);
+  barsHTML($('dBars'), 'POT AND RECEIVER', rows);
+}
+function barsHTML(host, title, rows) {
+  host.innerHTML = '<h3>' + title + '</h3>' + (rows.length ? rows.map(function (r) { return '<div class="bar"><span class="nm">' + r[0] + '</span><span class="trk"><span class="fill" style="width:' + clamp(r[1] / r[2] * 100, 0, 100).toFixed(1) + '%;display:block"></span></span><span class="val">' + r[3] + '</span></div>'; }).join('') : '<div class="bar"><span class="nm">(empty)</span><span class="trk"></span><span class="val">--</span></div>');
+}
+function setDStart() { $('dStart').textContent = D.done ? 'Finished (Reset)' : D.running ? 'Stop heating' : (D.t > 0 ? 'Resume heating' : 'Start heating'); }
+/* =====================================================================
+   10. Rendering glue, controls, main loop, test API
+   ===================================================================== */
+var lastPH = null;
+function benchGauges() {
+  var pH = computePH(); lastPH = pH;
+  dial.ph.set(pH); dial.t.set(S.T); dial.v.set(S.VL); dial.rate.set(S.rateDisp);
+  dial.v.o.max = cap();
+  return pH;
+}
+function renderStatic(force) {
+  var pH = benchGauges();
+  renderContents(); renderSuggest(); renderEquation(); renderReadouts(pH, true);
+  if (force) renderVessel(0, pH);
+}
+function renderReadouts(pH, force) {
+  $('roV').textContent = S.VL.toFixed(1) + ' mL';
+  $('roT').textContent = S.T.toFixed(1) + ' \u00b0C';
+  $('roPH').textContent = pH === null ? '--' : pH.toFixed(2);
+  var gas = (S.released.CO2 + S.released.H2 + S.released.O2) * GAS_ML_PER_MOL;
+  $('roGas').textContent = (gas < 10 ? gas.toFixed(1) : Math.round(gas)) + ' mL';
+  $('simClock').textContent = 't = ' + S.time.toFixed(1) + ' s' + (S.speed > 1 ? ' (' + S.speed + '\u00d7)' : '') + (S.paused ? ' paused' : '');
+  var rows = [];
+  Object.keys(S.n).filter(function (k) { return N(k) > 1e-7; }).sort(function (a, b) { return N(b) - N(a); }).forEach(function (k) {
+    if (SOLIDS[k] || (k === 'NaHCO3' && S.VL <= 0.5)) { var g = N(k) * molarMass(k); rows.push([fHTML(k) + ' (s)', g, 3, g.toFixed(3) + ' g']); }
+    else if (GASES[k]) { var ml = N(k) * GAS_ML_PER_MOL; rows.push([fHTML(k) + ' (g)', ml, 250, Math.round(ml) + ' mL']); }
+    else if (S.VL > 0.5) { var M_ = N(k) / (S.VL / 1000); rows.push(['[' + fHTML(k) + ']', M_, 1, M_.toFixed(3) + ' M']); }
+  });
+  if (S.VL > 0.5) rows.push(['H<sub>2</sub>O (solvent)', S.VL, cap(), S.VL.toFixed(0) + ' mL']);
+  barsHTML($('molBars'), 'SPECIES IN THE VESSEL (MOLARITY)', rows.slice(0, 9));
+}
+var lastFrame = performance.now(), roAcc = 0, chartAcc = 0;
+function frame(now) {
+  var dtR = Math.min(0.1, Math.max(0, (now - lastFrame) / 1000)); lastFrame = now;
+  if (ui.mode === 'bench') {
+    if (!S.paused) {
+      var sim = dtR * S.speed, steps = Math.max(1, Math.ceil(sim / 0.02)), peak = 0;
+      for (var i = 0; i < steps; i++) { simStep(sim / steps); peak = Math.max(peak, S.rateInst); }
+      updateStatuses(); processEvents();
+      S.rateDisp = Math.max(peak, S.rateDisp * Math.exp(-dtR / 1.5)); if (S.rateDisp < 0.005) S.rateDisp = 0;
+      S.flash = S.burning ? 1 : S.flash * Math.exp(-dtR * 2.5);
+      S.dTdt += (((S.T - S.lastT) / Math.max(sim, 1e-6)) - S.dTdt) * Math.min(1, dtR * 2); S.lastT = S.T;
+    }
+    var pH = benchGauges();
+    renderVessel(dtR, pH);
+    roAcc += dtR;
+    if (roAcc > 0.15) {
+      roAcc = 0; renderReadouts(pH); renderContents(); renderSuggest(); renderEquation();
+      var ppt = N('AgCl') + N('CaCO3') + N('Cu(OH)2') > 0;
+      setAnn($('annun'), { exo: S.dTdt > 0.03, endo: S.dTdt < -0.01 && S.T < 21.95, gas: S.gasRate > 1e-6, ppt: ppt, boil: S.VL > 0.5 && S.T >= 99.9, flame: S.flash > 0.1, full: S.VL > cap() * 0.9, heat: S.heat > 0 });
+    }
+    [dial.ph, dial.t, dial.v, dial.rate].forEach(function (d) { d.tick(dtR); });
+  } else {
+    if (D.running || D.vf > 0 || D.Tpot > 22.05) { var ds = dtR * D.speed, n = Math.max(1, Math.ceil(ds / 0.1)); for (var j = 0; j < n; j++) dStep(ds / n); }
+    renderDistill();
+    dial.head.set(D.Thead); dial.pot.set(D.Tpot); dial.dist.set(recVolume()); dial.vap.set(D.rate);
+    [dial.head, dial.pot, dial.dist, dial.vap].forEach(function (d) { d.tick(dtR); });
+    chartAcc += dtR;
+    if (chartAcc > 0.25) { chartAcc = 0; renderChart(); renderDBars(); setAnn($('dAnnun'), { heat: D.running, boil: D.boiling, vapor: D.vf > 0.5, collect: D.rate > 0.05, plateau: dPlateau(), cool: D.running || D.vf > 0, low: potVolume() < 40, done: D.done }); }
+  }
+  if (RB.queue.length && performance.now() - RB.shownAt > 4500) showMsg(RB.queue.shift());
+  requestAnimationFrame(frame);
+}
+
+function setMode(m) {
+  ui.mode = m; var dist = m === 'distill';
+  document.body.classList.toggle('mode-distill', dist);
+  $('tabBench').setAttribute('aria-selected', String(!dist)); $('tabDistill').setAttribute('aria-selected', String(dist));
+  $('stagePanel').hidden = dist; $('eqPanel').hidden = dist; $('dashPanel').hidden = dist;
+  $('distillPanel').hidden = !dist; $('dDashPanel').hidden = !dist;
+  if (dist) { if (!ui.seenDist) { ui.seenDist = true; say(D_MSG.intro); } renderChart(); renderDBars(); renderDistill(); }
+  lastFrame = performance.now();
+}
+function wire() {
+  $('tabBench').addEventListener('click', function () { setMode('bench'); });
+  $('tabDistill').addEventListener('click', function () { setMode('distill'); });
+  $('shelf').addEventListener('click', function (e) { var b = e.target.closest('.chem'); if (!b || b.dataset.noclick) return; if (addChem(b.dataset.id)) { b.classList.remove('flash'); void b.offsetWidth; b.classList.add('flash'); } });
+  enableDrag($('shelf'), '.chem', function (el) { return icon(CAT[el.dataset.id]); }, function (el, target) { if (target && target.closest('#stage')) addChem(el.dataset.id); });
+  enableDrag($('contents'), '.chip', function (el) { return '<svg viewBox="0 0 40 44"><circle cx="20" cy="22" r="16" fill="#fff" stroke="#140a18" stroke-width="3"/><text x="20" y="27" text-anchor="middle" font-size="12" font-weight="900" font-family="sans-serif">' + esc(el.dataset.sp).slice(0, 6) + '</text></svg>'; },
+    function (el, target) { if (target && target.closest('#shelfPanel')) removeSpecies(el.dataset.sp, true); });
+  document.querySelector('.sizes').addEventListener('click', function (e) { var b = e.target.closest('[data-size]'); if (!b) return; ui.size = +b.dataset.size; Array.prototype.forEach.call(document.querySelectorAll('[data-size]'), function (x) { x.classList.toggle('on', x === b); }); refreshAmts(); });
+  $('contents').addEventListener('click', function (e) { var b = e.target.closest('button'); if (!b) return; if (b.dataset.rm) removeSpecies(b.dataset.rm, true); else if (b.dataset.dec) removeSpecies(b.dataset.dec, false); });
+  $('suggest').addEventListener('click', function (e) { var b = e.target.closest('button'); if (!b) return; if (b.dataset.add) addChem(b.dataset.add); else if (b.dataset.spark) spark(); });
+  Array.prototype.forEach.call(document.querySelectorAll('[data-heat]'), function (b) { b.addEventListener('click', function () { setHeat(+b.dataset.heat); }); });
+  $('sparkBtn').addEventListener('click', spark);
+  $('speedBtn').addEventListener('click', function () { S.speed = S.speed === 1 ? 4 : S.speed === 4 ? 16 : 1; $('speedBtn').innerHTML = 'Speed ' + S.speed + '&times;'; });
+  $('pauseBtn').addEventListener('click', function () { S.paused = !S.paused; $('pauseBtn').textContent = S.paused ? 'Resume' : 'Pause'; $('pauseBtn').classList.toggle('on', S.paused); });
+  $('emptyBtn').addEventListener('click', emptyVessel);
+  $('vesBeaker').addEventListener('click', function () { setVessel('beaker'); });
+  $('vesFlask').addEventListener('click', function () { setVessel('flask'); });
+  $('rbPrev').addEventListener('click', function () { if (RB.idx > 0) { RB.idx--; renderRabbit(false); } });
+  $('rbNext').addEventListener('click', function () { if (RB.idx < RB.hist.length - 1) { RB.idx++; renderRabbit(false); } else if (RB.queue.length) showMsg(RB.queue.shift()); });
+  // distillation controls
+  $('dStart').addEventListener('click', function () {
+    if (D.done) { dFresh(D.mix); renderChart(); setDStart(); return; }
+    D.running = !D.running; if (D.running && !D.flags.start) { D.flags.start = 1; say(D_MSG.start); } setDStart();
+  });
+  $('dMix').addEventListener('change', function () { dFresh($('dMix').value); setDStart(); renderChart(); renderDBars(); say(D_MSG.intro); });
+  $('dHeat').addEventListener('input', function () { D.power = +$('dHeat').value; $('dHeatV').textContent = D.power + ' W'; });
+  $('dSpeed').addEventListener('click', function () { D.speed = D.speed === 5 ? 20 : D.speed === 20 ? 60 : 5; $('dSpeed').innerHTML = 'Speed ' + D.speed + '&times;'; });
+  $('dReset').addEventListener('click', function () { dFresh($('dMix').value); setDStart(); renderChart(); renderDBars(); });
+}
+function setHeat(h) {
+  S.heat = h; Array.prototype.forEach.call(document.querySelectorAll('[data-heat]'), function (x) { x.classList.toggle('on', +x.dataset.heat === h); });
+  if (h > 0) say(EV_MSG.heatOn, { soft: true });
+}
+function spark() {
+  var ch = N('CH4') > 0, ox = N('O2') > 0;
+  S.flash = Math.max(S.flash, 0.25);
+  if (ch && ox) { S.burning = true; updateStatuses(); processEvents(); }
+  else say(ch || ox ? EV_MSG.sparkHalf : EV_MSG.sparkNone);
+  renderStatic(true);
+}
+function emptyVessel() { freshState(true); ui.bubbles.forEach(function (b) { b.el.remove(); }); ui.bubbles = []; setHeat(0); say(EV_MSG.empty); ui.lastSig = {}; renderStatic(true); }
+function setVessel(v) {
+  if (v === S.vessel) return;
+  if (S.VL + gasVolume() > VESSELS[v].cap) { say(EV_MSG.overfill); return; }
+  S.vessel = v; $('vesBeaker').classList.toggle('on', v === 'beaker'); $('vesFlask').classList.toggle('on', v === 'flask');
+  buildVessel(); say(EV_MSG.vessel, { soft: true }); renderStatic(true);
+}
+
+/* Test/automation hook (read-mostly; it only drives the same catalog-limited functions as the buttons). */
+window.FALab = {
+  catalog: function () { return CATALOG.map(function (c) { return c.id; }); },
+  add: function (id, amt) { return addChem(id, amt); },
+  remove: function (key, all) { return removeSpecies(key, all !== false); },
+  balance: function (skel) { var b = balance(skel); return { ok: b.ok, text: b.text, coef: b.coef, reason: b.reason }; },
+  step: function (sec) { advance(sec); processEvents(); renderStatic(true); },
+  spark: spark, setHeat: setHeat, empty: emptyVessel, setVessel: setVessel, setMode: setMode,
+  pause: function (p) { S.paused = p !== false; },
+  state: function () {
+    return { VL: S.VL, T: S.T, pH: computePH(), time: S.time, n: JSON.parse(JSON.stringify(S.n)),
+      statuses: REACTIONS.reduce(function (a, r) { if (S.rx[r.id].status !== 'idle') a[r.id] = S.rx[r.id].status; return a; }, {}),
+      live: Array.prototype.map.call(document.querySelectorAll('#eqLive .eq-balanced'), function (e) { return e.textContent.replace(/\s+/g, ' ').trim(); }),
+      dials: { ph: dial.ph.lastTxt, t: dial.t.lastTxt, v: dial.v.lastTxt, rate: dial.rate.lastTxt, phAngle: dial.ph.angle(), tAngle: dial.t.angle(), vAngle: dial.v.angle(), rateAngle: dial.rate.angle() },
+      rabbit: $('rbTitle').textContent };
+  },
+  distill: {
+    reset: function (mix) { $('dMix').value = mix || 'salt'; dFresh(mix || 'salt'); setDStart(); },
+    start: function () { if (!D.running) $('dStart').click(); },
+    step: function (sec) { var n = Math.ceil(sec / 0.1); for (var i = 0; i < n; i++) dStep(sec / n); renderDistill(); renderChart(); renderDBars(); },
+    state: function () { return { t: D.t, head: D.Thead, pot: D.Tpot, distillate: recVolume(), pot_mL: potVolume(), running: D.running, boiling: D.boiling, plateau: dPlateau(), dials: { head: dial.head.lastTxt, pot: dial.pot.lastTxt, dist: dial.dist.lastTxt } }; }
+  }
+};
+
+/* ---------- init ---------- */
+renderShelf(); buildVessel(); buildDials(); buildAnn($('annun'), ANN); buildAnn($('dAnnun'), DANN); buildDistill(); dFresh('salt');
+wire(); say(EV_MSG.welcome); renderStatic(true); renderChart(); renderDBars();
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
