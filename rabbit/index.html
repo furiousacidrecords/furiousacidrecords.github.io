@@ -32,10 +32,10 @@ h1{margin:0 0 10px;font-size:34px;line-height:1.1;color:var(--purple-dark)}
 <main>
 <section class="intro">
 <h1>Ask the Purple Rabbit</h1>
-<p class="m">Ask the Rabbit anything (even chemistry math), or let it point you to the right book. EN · ES · IT. Short answers come from Wikipedia. <a href="/">← Home</a></p>
-<p class="d">Ask the Rabbit anything: why the sky is blue, who discovered penicillin, how fireworks get their colors. It even does quick math and chemistry calculations (molar mass, moles, molarity, dilutions, pH), step by step. It answers in a few lines, and when you're curious to go deeper, it points you to the right Furious Acid book, whether that's eerie art, the story of medicine, or growing plants.</p>
+<p class="m">Ask the Rabbit anything, or let it point you to the right book. EN · ES · IT. Short answers come from Wikipedia. <a href="/">← Home</a></p>
+<p class="d">Ask the Rabbit anything: why the sky is blue, who discovered penicillin, how fireworks get their colors. It answers in a few lines, and when you're curious to go deeper, it points you to the right Furious Acid book, whether that's eerie art, the story of medicine, or growing plants.</p>
 <p class="d">Habla español · Parla italiano. Use the EN / ES / IT buttons in the chat.</p>
-<p class="muted d">The Rabbit is an automated helper, not a person. Short answers to general questions come from Wikipedia's free public API (text by Wikipedia contributors, CC BY-SA); a question is sent to Wikipedia only to look it up. Math and chemistry are worked out right in your browser. The Rabbit uses no cookies and tracks nothing; if you tell it your first name, it remembers only that and your last topic, in your own browser's storage on this device, never sent anywhere (type “forget me” to erase it). Read-aloud uses your browser's own voice. Links open your local Amazon store. <a href="/">← Back to furiousacid.com</a></p>
+<p class="muted d">The Rabbit is an automated helper, not a person. Short answers to general questions come from Wikipedia's free public API (text by Wikipedia contributors, CC BY-SA); a question is sent to Wikipedia only to look it up; everything else runs right in your browser. The Rabbit uses no cookies and tracks nothing; if you tell it your first name, it remembers only that and your last topic, in your own browser's storage on this device, never sent anywhere (type “forget me” to erase it). Read-aloud uses your browser's own voice. Links open your local Amazon store. <a href="/">← Back to furiousacid.com</a></p>
 </section>
 <div id="chat"></div>
 </main>
@@ -54,7 +54,7 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
 </script>
 <script>
 /* =========================================================================
-   Rabbit v4 ("Ask me anything" + calculator): book-finder chat for furiousacid.com/rabbit/
+   Rabbit v5 ("Ask me anything" + scientific calculator): book-finder chat for furiousacid.com/rabbit/
    English · Español · Italiano. No backend, no API keys, no cookies,
    no storage, no tracking. Everything runs in the visitor's browser.
    The ONLY network call it makes: short answers from Wikipedia's free
@@ -564,8 +564,12 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
         listen: 'greeting' },
 
       /* ---------- CALCULATOR + CHEMISTRY MATH (answers are built by the engine, section 4b) ---------- */
+      // after EVERY calculation: this question + the topic chips (never after normal chat)
+      calc_follow: { stage: 'Discovery', listen: 'calc',
+        say: { en: 'What interests you about chemistry? 😀', es: '¿Qué te interesa de la química? 😀', it: 'Cosa ti interessa della chimica? 😀' },
+        doors: true, doorsOnly: ['medicine', 'art', 'plants', 'everyday'] },
       calc_thanks: { stage: 'Discovery', listen: 'calc',
-        say: { en: 'Anytime. 🐇 Got another one? Numbers, formulas, or anything you’re curious about.', es: 'Cuando quieras. 🐇 ¿Tienes otra? Números, fórmulas o lo que te dé curiosidad.', it: 'Quando vuoi. 🐇 Ne hai un’altra? Numeri, formule o qualunque curiosità.' } },
+        say: { en: 'Anytime. 🐇 Numbers, formulas, or anything you’re curious about: just ask.', es: 'Cuando quieras. 🐇 Números, fórmulas o lo que te dé curiosidad: solo pregunta.', it: 'Quando vuoi. 🐇 Numeri, formule o qualunque curiosità: chiedi pure.' } },
       calc_dose: { stage: 'Discovery', listen: 'calc',
         say: { en: 'Doses are one for a pharmacist or a doctor, not a rabbit. 🐇 I’m happy to do the chemistry math, though: molar mass, moles, molarity, dilutions, pH…',
                es: 'Las dosis son cosa de un farmacéutico o un médico, no de un conejo. 🐇 Pero encantado de hacer las cuentas de química: masa molar, moles, molaridad, diluciones, pH…',
@@ -724,7 +728,7 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
     function commas(s) { return s.replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
     function sci(x, sig) {
       var e = x.toExponential(sig - 1).split('e'), m = e[0].replace(/(\.\d*?)0+$/, '$1').replace(/\.$/, '');
-      return m + ' \u00d7 10' + sups(+e[1]);
+      return m.replace(/^-/, '\u2212') + ' \u00d7 10' + sups(+e[1]);
     }
     function fmt(x, sig) { // 500,000 · 0.1711 · 6.022 × 10²³
       sig = sig || 10;
@@ -737,26 +741,45 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
       if (/e/.test(s)) return sci(x, Math.min(sig, 6));
       var neg = s.charAt(0) === '-'; if (neg) s = s.slice(1);
       var p = s.split('.');
-      return (neg ? '-' : '') + commas(p[0]) + (p[1] ? '.' + p[1] : '');
+      return (neg ? '\u2212' : '') + commas(p[0]) + (p[1] ? '.' + p[1] : '');
     }
-    function fx(x, d) { return String(Number(x.toFixed(d))); }         // fixed decimals, trailing zeros trimmed
+    function fx(x, d) { return String(Number(x.toFixed(d))).replace(/^-/, '\u2212'); }         // fixed decimals, trailing zeros trimmed
     function fmass(x) { return x < 20 ? x.toFixed(3) : x.toFixed(2); } // molar masses: 18.015 · 98.08
 
-    /* ---------- 1) plain math: a tiny recursive-descent parser (NO eval) ---------- */
-    var FUNCS = { sqrt: Math.sqrt, cbrt: function (x) { return x < 0 ? -Math.pow(-x, 1 / 3) : Math.pow(x, 1 / 3); }, log: function (x) { return Math.log(x) / Math.LN10; },
-      ln: Math.log, exp: Math.exp, abs: Math.abs };
+    /* ---------- 1) scientific calculator: parser -> tree -> evaluator that RECORDS every step (NO eval) ---------- */
+    var CONSTS = { // usable inside expressions
+      pi: { v: Math.PI, sym: '\u03c0', unit: '', implicit: 1 }, e: { v: Math.E, sym: 'e', unit: '', implicit: 1 },
+      na: { v: 6.02214076e23, sym: 'N\u2090', unit: 'per mol', name: 'Avogadro\u2019s number' },
+      r: { v: 8.314462618, sym: 'R', unit: 'J/(mol\u00b7K)', name: 'the gas constant' },
+      h: { v: 6.62607015e-34, sym: 'h', unit: 'J\u00b7s', name: 'Planck\u2019s constant' },
+      c: { v: 299792458, sym: 'c', unit: 'm/s', name: 'the speed of light' },
+      g: { v: 9.80665, sym: 'g', unit: 'm/s\u00b2', name: 'gravity at Earth\u2019s surface' },
+      k: { v: 1.380649e-23, sym: 'k', unit: 'J/K', name: 'Boltzmann\u2019s constant' } };
+    var FN = { sin: 'the sine', cos: 'the cosine', tan: 'the tangent', asin: 'the inverse sine', acos: 'the inverse cosine', atan: 'the inverse tangent',
+      sqrt: 'the square root', cbrt: 'the cube root', root: 'the root', log: 'the log', ln: 'the natural log', abs: 'the absolute value', exp: 'the exponential' };
+    var FN_ALIAS = { arcsin: 'asin', arccos: 'acos', arctan: 'atan', log10: 'log' };
+    function Oops(msg) { this.msg = msg; }
     function mathText(raw) {
-      var s = ' ' + String(raw).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '') + ' ';
+      var s = ' ' + String(raw).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '') + ' ', mode = 'deg';
       s = s.replace(/[\u00d7\u2715\u2716\u22c5\u00b7\u2219\u2217]/g, '*').replace(/[\u00f7\u2236]/g, '/').replace(/[\u2212\u2013\u2014]/g, '-')
-        .replace(/\*\*/g, '^').replace(/\u00b2/g, '^2').replace(/\u00b3/g, '^3').replace(/\u221a/g, ' sqrt ').replace(/\u03c0/g, ' pi ').replace(/[\u2018\u2019]/g, "'");
-      s = s.replace(/[?!=.\s]+$/, ' ');
+        .replace(/\*\*/g, '^').replace(/\u00b2/g, '^2').replace(/\u00b3/g, '^3').replace(/\u221b/g, ' cbrt ').replace(/\u221a/g, ' sqrt ').replace(/\u03c0/g, ' pi ').replace(/[\u2018\u2019]/g, "'");
+      if (/\b(in )?(radians?|rad)\b/.test(s)) { mode = 'rad'; s = s.replace(/\b(in )?(radians?|rad)\b/g, ' '); }
+      s = s.replace(/\b(in )?(degrees?|deg)\b|\u00b0/g, ' ');
+      s = s.replace(/!{2,}\s*$|\?+!+\s*$/, ' ').replace(/[?=.\s]+$/, ' ');
       var lead = /^\s*(hey|hi|ok|okay|so|um|rabbit|please|pls|quick question|can you|could you|would you|will you|tell me|help me|do|what'?s|what is|whats|wat is|wats|wht is|how much is|how much|calculate|calc|compute|solve|evaluate|work out|figure out|find|the answer to|the value of|the result of|the|cuanto es|cuanto son|cuanto da|calcula|calcular|quanto fa|quanto e|quant'e|calcola|calcolare)\b[\s,:]*/;
       for (var r = 0; r < 6; r++) { var b = s; s = s.replace(lead, ' '); if (b === s) break; }
       s = s.replace(/\s*(please|pls|thanks|thank you|for me|por favor|per favore)\s*$/, ' ');
+      s = s.replace(/\bavogadro'?s?( number| constant)?\b/g, ' na ').replace(/\bplanck'?s?( constant)?\b/g, ' h ').replace(/\bboltzmann'?s?( constant)?\b/g, ' k ')
+        .replace(/\b(the )?speed of light\b/g, ' c ').replace(/\b(the )?(ideal )?gas constant\b/g, ' r ');
       s = s.replace(/\bper ?cent\b|\bpercent\b|\bpor ?ciento\b|\bper ?cento\b/g, '%')
+        .replace(/\b(the )?(\d+)(st|nd|rd|th) root of\b/g, ' root_$2 ')
         .replace(/\b(the )?square root of\b|\bsquare root\b|\bsqrt of\b|\braiz cuadrada de\b|\bradice quadrata di\b/g, ' sqrt ')
-        .replace(/\b(the )?cube root of\b/g, ' cbrt ')
+        .replace(/\b(the )?cube root of\b|\bcube root\b/g, ' cbrt ')
+        .replace(/\b(the )?log(arithm)? base (\d+(?:\.\d+)?) of\b|\blog(arithm)? base (\d+(?:\.\d+)?)\b/g, function (m, a, b2, n1, c2, n2) { return ' log_' + (n1 || n2) + ' '; })
         .replace(/\b(the )?(natural log|natural logarithm|ln) of\b/g, ' ln ').replace(/\b(the )?(log|logarithm) of\b/g, ' log ')
+        .replace(/\b(the )?(sine|sin) of\b|\bsine\b/g, ' sin ').replace(/\b(the )?(cosine|cos) of\b|\bcosine\b/g, ' cos ').replace(/\b(the )?(tangent|tan) of\b|\btangent\b/g, ' tan ')
+        .replace(/\b(the )?absolute value of\b/g, ' abs ')
+        .replace(/\b(the )?factorial of (\d+)\b/g, ' $2! ').replace(/(\d+) factorial\b/g, '$1!')
         .replace(/\bmultiplied by\b|\btimes\b|\bpor\b|\bper\b/g, ' * ')
         .replace(/\bdivided by\b|\bover\b|\bdividido (por|entre)\b|\bentre\b|\bdiviso( per)?\b/g, ' / ')
         .replace(/\bplus\b|\bmas\b|\bpiu\b/g, ' + ').replace(/\bminus\b|\bmenos\b|\bmeno\b/g, ' - ')
@@ -766,7 +789,9 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
         .replace(/%\s*(of|de|di)\b/g, '% *');
       s = s.replace(/(\d|\))\s*x\s*(?=[\d(.])/g, '$1*');
       for (r = 0; r < 5 && /\d,\d{3}(?!\d)/.test(s); r++) s = s.replace(/(\d),(\d{3})(?!\d)/g, '$1$2');
-      return s.trim();
+      // "1000 * 500!" : a big number with "!" at the very end is excitement, not a factorial
+      s = s.replace(/(\d+(?:\.\d+)?)\s*!\s*$/, function (m, d) { return +d > 20 || /\./.test(d) ? d : d + '!'; });
+      return { s: s.trim(), mode: mode };
     }
     function tokenize(s) {
       var toks = [], i = 0, m;
@@ -774,67 +799,151 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
         var c = s.charAt(i), rest = s.slice(i);
         if (/\s/.test(c)) { i++; continue; }
         if ((m = /^(\d+\.?\d*|\.\d+)(e[-+]?\d+)?/.exec(rest))) { toks.push({ t: 'n', v: parseFloat(m[0]), raw: m[0] }); i += m[0].length; continue; }
+        if ((m = /^log_?(\d+(?:\.\d+)?)/.exec(rest)) && +m[1] > 0 && +m[1] !== 1) { toks.push({ t: 'f', v: +m[1] === 10 ? 'log' : 'logb', base: +m[1] }); i += m[0].length; continue; }
+        if ((m = /^root_(\d+)/.exec(rest)) && +m[1] >= 2) { toks.push({ t: 'f', v: 'root', n: +m[1] }); i += m[0].length; continue; }
         if ((m = /^[a-z]+/.exec(rest))) {
-          if (FUNCS[m[0]]) toks.push({ t: 'f', v: m[0] });
-          else if (m[0] === 'pi') toks.push({ t: 'n', v: Math.PI, raw: '\u03c0', k: 1 });
+          var w = FN_ALIAS[m[0]] || m[0];
+          if (FN[w] && w !== 'root') toks.push({ t: 'f', v: w });
+          else if (CONSTS[w]) toks.push({ t: 'c', v: w });
           else return null;
           i += m[0].length; continue;
         }
-        if ('+-*/^()%'.indexOf(c) > -1) { toks.push({ t: c }); i++; continue; }
+        if ('+-*/^()%!'.indexOf(c) > -1) { toks.push({ t: c }); i++; continue; }
         return null;
       }
       return toks;
     }
-    function evaluate(toks) {
-      var p = 0, real = 0, kinds = {};
+    function parseTree(toks) { // grammar: expr = term (+|- term)* ; term = unary (*|/ unary | implicit)* ; unary = -unary | power ; power = postfix (^ unary)? ; postfix = primary (%|!)*
+      var p = 0;
       function peek() { return toks[p]; }
       function eat(t) { if (toks[p] && toks[p].t === t) { p++; return true; } return false; }
-      function expr() { var v = term(); while (peek() && (peek().t === '+' || peek().t === '-')) { var o = toks[p++].t; real++; kinds.add = 1; var r2 = term(); v = o === '+' ? v + r2 : v - r2; } return v; }
+      function expr() { var a = term(); while (peek() && (peek().t === '+' || peek().t === '-')) { var o = toks[p++].t; a = { t: 'bin', op: o, a: a, b: term() }; } return a; }
       function term() {
-        var v = unary();
+        var a = unary();
         for (;;) {
           var k = peek(); if (!k) break;
-          if (k.t === '*' || k.t === '/') { p++; real++; kinds.mul = 1; var r2 = unary(); v = k.t === '*' ? v * r2 : v / r2; }
-          else if (k.t === '(' || k.t === 'f' || (k.t === 'n' && k.k)) { real++; kinds.mul = 1; v *= unary(); }
+          if (k.t === '*' || k.t === '/') { p++; a = { t: 'bin', op: k.t, a: a, b: unary() }; }
+          else if (k.t === '(' || k.t === 'f' || (k.t === 'c' && CONSTS[k.v].implicit)) a = { t: 'bin', op: '*', a: a, b: unary(), implicit: 1 };
           else break;
         }
-        return v;
+        return a;
       }
-      function unary() { if (eat('-')) return -unary(); if (eat('+')) return unary(); return power(); }
-      function power() { var b = postfix(); if (eat('^')) { real++; kinds.pow = 1; return Math.pow(b, unary()); } return b; }
-      function postfix() { var v = primary(); while (eat('%')) v /= 100; return v; }
+      function unary() { if (eat('-')) return { t: 'neg', a: unary() }; if (eat('+')) return unary(); return power(); }
+      function power() { var b = postfix(); if (eat('^')) return { t: 'bin', op: '^', a: b, b: unary() }; return b; }
+      function postfix() { var a = primary(); for (;;) { if (eat('%')) a = { t: 'pct', a: a }; else if (eat('!')) a = { t: 'fact', a: a }; else break; } return a; }
       function primary() {
         var k = toks[p++]; if (!k) throw 0;
-        if (k.t === 'n') return k.v;
-        if (k.t === '(') { kinds.par = 1; var v = expr(); if (!eat(')')) throw 0; return v; }
-        if (k.t === 'f') { real++; kinds.fn = 1; var a = peek() && peek().t === '(' ? primary() : power(); return FUNCS[k.v](a); }
+        if (k.t === 'n') return { t: 'num', v: k.v, raw: k.raw };
+        if (k.t === 'c') return { t: 'const', name: k.v };
+        if (k.t === '(') { var inner = expr(); if (!eat(')')) throw 0; return { t: 'paren', a: inner }; }
+        if (k.t === 'f') return { t: 'fn', name: k.v, base: k.base, n: k.n, a: peek() && peek().t === '(' ? primary() : power() };
         throw 0;
       }
-      try { var v = expr(); if (p !== toks.length) return null; return { v: v, real: real, kinds: kinds }; } catch (e) { return null; }
+      try { var tree = expr(); return p === toks.length ? tree : null; } catch (e) { return null; }
     }
+    function hasOp(n) { return n && (n.t === 'bin' || n.t === 'fn' || n.t === 'fact' || (n.t === 'pct' && hasOp(n.a) ) || (n.t === 'neg' && hasOp(n.a)) || (n.t === 'paren' && hasOp(n.a)) || (n.t === 'pct' && n.a.t !== 'num')); }
+    function sub2(d) { return String(d).replace(/[0-9]/g, function (c) { return '\u2080\u2081\u2082\u2083\u2084\u2085\u2086\u2087\u2088\u2089'.charAt(+c); }); }
+    function clean(x) { return Math.abs(x) < 1e-12 ? 0 : Number(x.toPrecision(13)); }
+    function evalTrace(tree, mode) { // walks the tree in order-of-operations order and records each step AS it computes it
+      var steps = [], seenC = {}, depth = 0, V = function (x) { return fmt(x, 10); };
+      function rec(kind, label, text) { steps.push({ kind: kind, label: label, text: text, inParen: depth > 0 && kind !== 'const' }); }
+      function ang(x) { return mode === 'rad' ? x : x * Math.PI / 180; }
+      function unang(x) { return mode === 'rad' ? x : x * 180 / Math.PI; }
+      var U = mode === 'rad' ? ' rad' : '\u00b0';
+      function ev(n) {
+        var x, y, r;
+        switch (n.t) {
+          case 'num': return n.v;
+          case 'const':
+            var C = CONSTS[n.name];
+            if (!seenC[n.name]) { seenC[n.name] = 1; rec('const', 'use ' + (C.name || 'the constant ' + C.sym), C.sym + ' = ' + V(C.v) + (C.unit ? ' ' + C.unit : '')); }
+            return C.v;
+          case 'paren': depth++; x = ev(n.a); depth--; return x;
+          case 'neg': x = ev(n.a); r = -x; if (hasOp(n.a)) rec('neg', 'apply the minus sign', '\u2212(' + V(x) + ') = ' + V(r)); return r;
+          case 'pct': x = ev(n.a); r = x / 100; rec('pct', 'turn the percent into a number', V(x) + '% = ' + V(x) + ' \u00f7 100 = ' + V(r)); return r;
+          case 'fact':
+            x = ev(n.a);
+            if (x < 0 || Math.floor(x) !== x) throw new Oops('Factorials only work on whole numbers 0 and up, so ' + V(x) + '! isn\u2019t defined.');
+            if (x > 170) throw new Oops(V(x) + '! is too big to show (it has more than 300 digits).');
+            r = 1; for (var i = 2; i <= x; i++) r *= i;
+            var ex = x >= 2 && x <= 10 ? Array.apply(null, Array(x)).map(function (u, j) { return x - j; }).join(' \u00d7 ') + ' = ' : '';
+            rec('fact', 'the factorial', V(x) + '! = ' + ex + V(r)); return r;
+          case 'fn':
+            x = ev(n.a); var nm = n.name;
+            if (nm === 'sin' || nm === 'cos' || nm === 'tan') {
+              if (nm === 'tan' && mode === 'deg' && Math.abs(((x % 180) + 180) % 180 - 90) < 1e-9) throw new Oops('tan(' + V(x) + '\u00b0) is undefined: the tangent shoots off to infinity at 90\u00b0.');
+              r = clean(Math[nm](ang(x))); rec('fn', FN[nm], nm + '(' + V(x) + U + ') = ' + V(r)); return r;
+            }
+            if (nm === 'asin' || nm === 'acos' || nm === 'atan') {
+              if (nm !== 'atan' && (x < -1 || x > 1)) throw new Oops(nm + '(' + V(x) + ') is undefined: the input has to be between \u22121 and 1.');
+              r = clean(unang(Math[nm](x))); rec('fn', FN[nm], nm + '(' + V(x) + ') = ' + V(r) + U); return r;
+            }
+            if (nm === 'sqrt') { if (x < 0) throw new Oops('\u221a(' + V(x) + ') isn\u2019t a real number: no real number squared gives a negative.'); r = clean(Math.sqrt(x)); rec('fn', FN.sqrt, '\u221a' + (x < 0 ? '(' + V(x) + ')' : V(x)) + ' = ' + V(r)); return r; }
+            if (nm === 'cbrt') { r = clean(x < 0 ? -Math.pow(-x, 1 / 3) : Math.pow(x, 1 / 3)); rec('fn', FN.cbrt, '\u221b' + (x < 0 ? '(' + V(x) + ')' : V(x)) + ' = ' + V(r)); return r; }
+            if (nm === 'root') {
+              if (x < 0 && n.n % 2 === 0) throw new Oops('An even root of a negative number isn\u2019t a real number.');
+              r = clean(x < 0 ? -Math.pow(-x, 1 / n.n) : Math.pow(x, 1 / n.n)); rec('fn', 'the ' + n.n + ordinal(n.n) + ' root', n.n + ordinal(n.n) + ' root of ' + V(x) + ' = ' + V(r)); return r;
+            }
+            if (nm === 'log' || nm === 'ln' || nm === 'logb') {
+              if (x <= 0) throw new Oops('Logs are only defined for numbers above zero, so that one has no answer.');
+              if (nm === 'log') { r = clean(Math.log(x) / Math.LN10); rec('fn', FN.log, 'log\u2081\u2080(' + V(x) + ') = ' + V(r)); }
+              else if (nm === 'ln') { r = clean(Math.log(x)); rec('fn', FN.ln, 'ln(' + V(x) + ') = ' + V(r)); }
+              else { r = clean(Math.log(x) / Math.log(n.base)); rec('fn', 'the log base ' + n.base, 'log' + sub2(n.base) + '(' + V(x) + ') = ln(' + V(x) + ') \u00f7 ln(' + n.base + ') = ' + V(r)); }
+              return r;
+            }
+            if (nm === 'abs') { r = Math.abs(x); rec('fn', FN.abs, '|' + V(x) + '| = ' + V(r)); return r; }
+            if (nm === 'exp') { r = clean(Math.exp(x)); rec('fn', FN.exp, 'e^' + V(x) + ' = ' + V(r)); return r; }
+            throw 0;
+          case 'bin':
+            x = ev(n.a); y = ev(n.b);
+            if (n.op === '/' && y === 0) throw new Oops('Dividing by zero doesn\u2019t give a number, even for a rabbit.');
+            r = n.op === '+' ? x + y : n.op === '-' ? x - y : n.op === '*' ? x * y : n.op === '/' ? x / y : Math.pow(x, y);
+            if (n.op === '^' && isNaN(r)) throw new Oops('A negative number to a fractional power isn\u2019t a real number.');
+            if (!isFinite(r)) throw new Oops('That number is too big for me to show (past 10\u00b3\u2070\u2078).');
+            r = Math.abs(r) < 1e-300 ? r : Number(r.toPrecision(15));
+            var L = { '+': 'add', '-': 'subtract', '*': 'multiply', '/': 'divide', '^': 'the exponent' }[n.op];
+            var O = { '+': ' + ', '-': ' \u2212 ', '*': ' \u00d7 ', '/': ' \u00f7 ', '^': '^' }[n.op];
+            rec('bin', L, (n.op === '^' && x < 0 ? '(' + V(x) + ')' : V(x)) + O + (y < 0 && n.op !== '^' ? '(' + V(y) + ')' : V(y)) + ' = ' + V(r)); return r;
+        }
+        throw 0;
+      }
+      try { return { v: ev(tree), steps: steps }; } catch (e) { if (e instanceof Oops) return { error: e.msg, steps: steps }; return null; }
+    }
+    function ordinal(n) { var t = n % 100; return (t >= 11 && t <= 13) ? 'th' : ({ 1: 'st', 2: 'nd', 3: 'rd' })[n % 10] || 'th'; }
+    function stepLines(steps) { // "Parentheses first: 2 + 3 = 5", "Then the exponent: 5^2 = 25"
+      return steps.map(function (st, i) {
+        if (steps.length === 1) return (st.inParen ? 'Parentheses: ' : cap(st.label.replace(/^the /, '')) + ': ') + st.text;
+        if (i === 0) return (st.inParen ? 'Parentheses first: ' : (/^the /.test(st.label) ? 'First ' + st.label : cap(st.label)) + ': ') + st.text;
+        return (st.inParen ? 'Then inside the parentheses, ' + st.label : 'Then ' + st.label) + ': ' + st.text;
+      });
+    }
+    function cap(x) { return x.charAt(0).toUpperCase() + x.slice(1); }
     function pretty(toks) {
       var out = '', prev = null;
       toks.forEach(function (k) {
         if (k.t === 'n') out += /^\d{5,}$/.test(k.raw) ? commas(k.raw) : k.raw;
-        else if (k.t === 'f') out += (prev && prev.t === 'n' ? ' ' : '') + k.v + ' ';
+        else if (k.t === 'c') out += (prev && (prev.t === 'n' || prev.t === ')') ? '' : '') + CONSTS[k.v].sym;
+        else if (k.t === 'f') out += (k.v === 'logb' ? 'log' + sub2(k.base) + ' ' : k.v === 'root' ? sups(k.n) + '\u221a' : k.v === 'sqrt' ? '\u221a' : k.v === 'cbrt' ? '\u221b' : k.v + ' ');
         else if (k.t === '-' && (!prev || /^[-+*/^(]$/.test(prev.t))) out += '\u2212';
         else if (/^[-+*/]$/.test(k.t)) out += ' ' + { '+': '+', '-': '\u2212', '*': '\u00d7', '/': '\u00f7' }[k.t] + ' ';
         else out += k.t;
         prev = k;
       });
-      return out.replace(/\s+/g, ' ').replace(/\(\s/g, '(').replace(/\s\)/g, ')').replace(/\b(sqrt|cbrt|log|ln|exp|abs) \(/g, '$1(').trim();
+      return out.replace(/\s+/g, ' ').replace(/\(\s/g, '(').replace(/\s\)/g, ')').replace(/\b(sin|cos|tan|asin|acos|atan|sqrt|cbrt|log|ln|abs|exp|log[\u2080-\u2089]+) \(/g, '$1(').trim();
     }
     function math(raw) {
-      var s = mathText(raw); if (!s || s.length > 200) return null;
+      var mt = mathText(raw), s = mt.s; if (!s || s.length > 200) return null;
       var toks = tokenize(s); if (!toks || !toks.length) return null;
-      var r = evaluate(toks); if (!r || !r.real) return null;
-      var shown = pretty(toks), res;
-      if (isNaN(r.v)) res = { result: shown + ': that one isn\u2019t a real number (like the square root of a negative, or the log of zero or less).' };
-      else if (!isFinite(r.v)) res = { result: shown + ': dividing by zero doesn\u2019t give a number, even for a rabbit.' };
-      else res = { result: shown + ' = ' + fmt(r.v, 12), value: r.v };
-      var many = (r.kinds.add ? 1 : 0) + (r.kinds.mul ? 1 : 0) + (r.kinds.pow ? 1 : 0) + (r.kinds.par ? 1 : 0);
-      res.kind = 'math'; res.steps = [];
-      if (many >= 2 && isFinite(r.v)) res.think = 'Order matters: brackets first, then powers, then \u00d7 and \u00f7, then + and \u2212.';
+      var tree = parseTree(toks); if (!tree || !hasOp(tree)) return null;
+      var run = evalTrace(tree, mt.mode); if (!run) return null;
+      var shown = pretty(toks), trig = toks.some(function (k) { return k.t === 'f' && /^(a?(sin|cos|tan))$/.test(k.v); });
+      var res = { kind: 'math', steps: stepLines(run.steps), trace: run.steps };
+      var th = [];
+      if (run.steps.length > 1) th.push('Order of operations: parentheses, then exponents, then \u00d7 and \u00f7, then + and \u2212, left to right.');
+      if (trig) th.push(mt.mode === 'rad' ? 'Angles are in radians.' : 'Angles are in degrees (add \u201crad\u201d for radians).');
+      if (th.length) res.think = th.join(' ');
+      if (run.error) { res.result = shown + ': ' + run.error; res.error = true; }
+      else { res.result = shown + ' = ' + fmt(run.v, 12) + (tree.t === 'fn' && /^a(sin|cos|tan)$/.test(tree.name) ? (mt.mode === 'rad' ? ' rad' : '\u00b0') : ''); res.value = run.v; }
       return res;
     }
 
@@ -939,7 +1048,10 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
       pf.order.forEach(function (el) { var n = pf.counts[el]; lines.push(el + ': ' + n + ' \u00d7 ' + AW[el] + ' = ' + fx(n * AW[el], 3)); });
       return lines;
     }
-    function mmLine(sub) { return 'Molar mass of ' + show(sub.formula) + ' = ' + fmass(molar(sub.pf)) + ' g/mol'; }
+    function mmLine(sub) { // "Molar mass of NaCl: 22.99 + 35.453 = 58.44 g/mol" (every atom counted, shown)
+      var pf = sub.pf, parts = pf.order.map(function (el) { var n = pf.counts[el]; return (n > 1 ? n + ' \u00d7 ' : '') + AW[el]; });
+      return 'Molar mass of ' + show(sub.formula) + ': ' + (parts.length > 1 || pf.counts[pf.order[0]] > 1 ? parts.join(' + ') + ' = ' : '') + fmass(molar(pf)) + ' g/mol';
+    }
     function readAs(sub) { return sub.guessed && sub.guessed !== sub.formula ? 'Reading "' + sub.guessed + '" as ' + show(sub.formula) + '. ' : ''; }
 
     /* ---------- numbers with units ---------- */
@@ -1190,8 +1302,7 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
       var thG = 'Moles = grams \u00f7 molar mass. So first find the molar mass, then divide (or multiply to go back to grams).';
       if (masses.length && askMol && !mols.length) {
         var s6 = S(); if (!s6 || !s6.pf) return needSub(s6, 'the moles');
-        var g6 = toG(parseFloat(masses[0][1]), masses[0][2]), mm6 = molar(s6.pf), n6 = g6 / mm6, st6 = [readAs(s6) + mmLine(s6) + '  (' + mmSteps(s6).join(' + ').replace(/[A-Z][a-z]?: /g, '') + ')'];
-        if (s6.pf.order.length === 1 && s6.pf.counts[s6.pf.order[0]] === 1) st6 = [readAs(s6) + mmLine(s6)];
+        var g6 = toG(parseFloat(masses[0][1]), masses[0][2]), mm6 = molar(s6.pf), n6 = g6 / mm6, st6 = [readAs(s6) + mmLine(s6)];
         st6.push('Moles: ' + fmt(g6, 4) + ' g \u00f7 ' + fmass(mm6) + ' g/mol = ' + fmt(n6, 4) + ' mol');
         return done('chem', thG, st6, fmt(g6, 4) + ' g of ' + show(s6.formula) + ' \u2248 ' + fmt(n6, 4) + ' mol', { sub: s6 });
       }
@@ -1203,7 +1314,7 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
 
       // percent composition
       if (/percent|%|percentage|porcentaje|porcentual|percentuale/i.test(s) && /composition|by mass|mass percent|\bin\b|\bof\b|composici|composizion/i.test(s) && !/\d\s*%/.test(s)) {
-        var s8 = S(); if (!s8 || !s8.pf) return needSub(s8, 'the percent composition');
+        var s8 = S(); if (!s8 || !s8.pf) return null;
         var mm8 = molar(s8.pf), rows = s8.pf.order.map(function (e) { var part = AW[e] * s8.pf.counts[e]; return e + ': ' + fx(part, 3) + ' \u00f7 ' + fmass(mm8) + ' \u00d7 100 = ' + fx(part / mm8 * 100, 2) + '%'; });
         return done('chem', 'Each element\u2019s share = the mass it brings to the formula \u00f7 the whole molar mass \u00d7 100.', [readAs(s8) + mmLine(s8)].concat(rows),
           'By mass, ' + show(s8.formula) + ' is ' + s8.pf.order.map(function (e) { return fx(AW[e] * s8.pf.counts[e] / mm8 * 100, 2) + '% ' + e; }).join(', ') + '.', { sub: s8 });
@@ -1211,7 +1322,7 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
 
       // molar mass
       var mmWord = /molar mass|molecular (weight|mass)|formula (weight|mass)|molar weight|atomic (mass|weight)|masa (molar|at[o\u00f3]mica)|peso (molecular|at[o\u00f3]mico)|massa (molare|atomica)|peso (molecolare|atomico)|g\s*\/\s*mol\b/i.test(s);
-      var bare = /^\s*[A-Z(][A-Za-z0-9()[\]\u00b7\u2022*.]*\s*\??\s*$/.test(s) && /[\d()\u00b7\u2022*]/.test(s) && parseFormula(s.replace(/[?\s]/g, ''));
+      var bare = false; // a formula on its own ("H2O") is not a calculation request: it goes to the normal flow
       if (mmWord || bare) {
         var s9 = bare ? { label: s.trim(), formula: s.replace(/[?\s]/g, ''), pf: parseFormula(s.replace(/[?\s]/g, '')) } : S();
         if (!s9 || !s9.pf) return mmWord ? needSub(s9, 'the molar mass') : null;
@@ -1242,16 +1353,13 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
       }
       return r;
     }
-    return { answer: answer, DOSE: DOSE, math: math, chem: chem, parseFormula: parseFormula, molar: function (f) { var p = parseFormula(f); return p ? molar(p) : null; }, fmt: fmt, smartCase: smartCase, BLOCK_WORDS: BLOCK_WORDS, AW: AW };
+    return { answer: answer, DOSE: DOSE, math: math, CONSTS: CONSTS, chem: chem, parseFormula: parseFormula, molar: function (f) { var p = parseFormula(f); return p ? molar(p) : null; }, fmt: fmt, smartCase: smartCase, BLOCK_WORDS: BLOCK_WORDS, AW: AW };
   })();
   /* CALC-END */
 
   // after a calculation: ONE light, optional book nudge now and then (2nd calc, then every 3rd), never pushy
   var CALC_TEXT = {
     math: { en: 'Calculator', es: 'Calculadora', it: 'Calcolatrice' }, chem: { en: 'Chemistry math', es: 'Química', it: 'Chimica' },
-    follow: { en: ['Got another one?', 'What else should we work out?', 'Anything else to calculate?'],
-              es: ['¿Tienes otra?', '¿Qué más calculamos?', '¿Algo más que calcular?'],
-              it: ['Ne hai un’altra?', 'Cos’altro calcoliamo?', 'Altro da calcolare?'] },
     nudge: { hidden: { en: 'If you like seeing how the chemistry really works, Hidden Passages goes much deeper: the real stories behind the molecules in medicine.',
                        es: 'Si te gusta ver cómo funciona de verdad la química, Hidden Passages va mucho más a fondo: las historias reales detrás de las moléculas de la medicina.',
                        it: 'Se ti piace vedere come funziona davvero la chimica, Hidden Passages va molto più a fondo: le storie vere dietro le molecole della medicina.' },
@@ -1263,19 +1371,19 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
 
   var UI_TEXT = {
     en: { title: 'The Purple Rabbit', sub: 'Ask me anything · finds the right book', ph: 'Ask the Rabbit anything…', send: 'Send', tip: 'Psst… ask the Rabbit',
-          hint: 'Ask me anything: why the sky is blue, who discovered penicillin, even chemistry math (try “molar mass of H2SO4”)… or let me help you find the right book.',
+          hint: 'Ask me anything: why the sky is blue, who discovered penicillin… or let me help you find the right book.',
           wiki: 'Read more on Wikipedia', voiceOn: 'Read replies aloud', voiceOff: 'Stop reading replies aloud',
           notice: 'An automated helper, not a person. It remembers only your name and last topic, on this device (say “forget me” to clear). Short answers come from Wikipedia.', open: 'Open Ask the Purple Rabbit chat', close: 'Close chat', langs: 'Language',
           rec: 'The Rabbit recommends', gentle: 'A lighter option', taste: 'A free sample', amazon: 'See it on Amazon.', sampleLink: 'Read a free sample',
           restart: 'Start over', back: 'Back to the lab', told: 'You told me: %s.' },
     es: { title: 'El Conejo Púrpura', sub: 'Pregúntame lo que quieras · encuentra tu libro', ph: 'Pregúntale lo que quieras al Conejo…', send: 'Enviar', tip: 'Psst… pregúntale al Conejo',
-          hint: 'Pregúntame lo que quieras: por qué el cielo es azul, quién descubrió la penicilina, hasta cálculos de química (prueba «masa molar de H2SO4»)… o te ayudo a encontrar el libro adecuado.',
+          hint: 'Pregúntame lo que quieras: por qué el cielo es azul, quién descubrió la penicilina… o te ayudo a encontrar el libro adecuado.',
           wiki: 'Leer más en Wikipedia', voiceOn: 'Leer las respuestas en voz alta', voiceOff: 'Dejar de leer en voz alta',
           notice: 'Un asistente automático, no una persona. Solo recuerda tu nombre y tu último tema, en este dispositivo (di «olvídame» para borrarlo). Las respuestas breves vienen de Wikipedia.', open: 'Abrir el chat del Conejo Púrpura', close: 'Cerrar el chat', langs: 'Idioma',
           rec: 'El Conejo recomienda', gentle: 'Una opción más ligera', taste: 'Una muestra gratis', amazon: 'Ver en Amazon.', sampleLink: 'Leer una muestra gratis (en inglés)',
           restart: 'Empezar de nuevo', back: 'Volver al laboratorio', told: 'Me contaste: %s.' },
     it: { title: 'Il Coniglio Viola', sub: 'Chiedimi quello che vuoi · trova il tuo libro', ph: 'Chiedi quello che vuoi al Coniglio…', send: 'Invia', tip: 'Psst… chiedi al Coniglio',
-          hint: 'Chiedimi quello che vuoi: perché il cielo è blu, chi ha scoperto la penicillina, perfino calcoli di chimica (prova “massa molare di H2SO4”)… oppure ti aiuto a trovare il libro giusto.',
+          hint: 'Chiedimi quello che vuoi: perché il cielo è blu, chi ha scoperto la penicillina… oppure ti aiuto a trovare il libro giusto.',
           wiki: 'Leggi di più su Wikipedia', voiceOn: 'Leggi le risposte ad alta voce', voiceOff: 'Smetti di leggere ad alta voce',
           notice: 'Un assistente automatico, non una persona. Ricorda solo il tuo nome e l’ultimo argomento, su questo dispositivo (scrivi «dimenticami» per cancellarli). Le risposte brevi vengono da Wikipedia.', open: 'Apri la chat del Coniglio Viola', close: 'Chiudi la chat', langs: 'Lingua',
           rec: 'Il Coniglio consiglia', gentle: 'Un’opzione più leggera', taste: 'Un estratto gratuito', amazon: 'Vedi su Amazon.', sampleLink: 'Leggi un estratto gratuito (in inglese)',
@@ -1666,7 +1774,7 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
     '.notice{font-size:10.5px;color:#a88fcc;text-align:center;padding:6px 10px 8px;background:#110919}.panel.ask .notice{background:transparent}' +
     '@media (max-width:480px){.panel{right:8px;left:8px;width:auto;max-width:none;bottom:84px;height:calc(100vh - 100px);height:calc(100dvh - 100px)}.bubble{right:14px;bottom:14px}.tip{display:none}.t span{display:none}.logo{width:60px;height:38px}.hero h2{font-size:23px}.panel.ask .main{padding:0 14px 6%}}' +
     '.msg.calc{white-space:normal}.msg.calc span{display:block}.msg.calc .src{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#ff8cf3;margin-bottom:3px}.msg.calc .think{color:#d9c3ff;font-style:italic;margin-bottom:5px}' +
-    '.msg.calc .step{padding-left:1.25em;text-indent:-1.25em;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}.msg.calc .ans{margin-top:6px;font-weight:800;color:#fff;font-size:15px}.msg.calc .note{margin-top:5px;font-size:12.5px;color:#cdb6f0}.msg.calc .fol{margin-top:8px}' +
+    '.msg.calc .step{padding-left:1.25em;text-indent:-1.25em;margin:2px 0;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}.msg.calc .ans{margin-top:7px;font-weight:800;color:#fff;font-size:15px;background:rgba(253,242,0,.12);border-left:3px solid #fdf200;border-radius:8px;padding:6px 9px}.msg.calc .note{margin-top:5px;font-size:12.5px;color:#cdb6f0}.msg.calc .fol{margin-top:8px}' +
     '.msg.calc a.wk{display:inline-block;margin-top:6px;font-size:12.5px;font-weight:700;color:#ffb3f7;text-decoration:none;border-bottom:1px dashed #ff5cf0;word-break:normal}' +
     '.opt.door{border-style:dashed}.msg a{color:#ffb3f7;word-break:break-all}' +
     '@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}' +
@@ -1828,8 +1936,8 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
   function showChoices(st) {
     var wrap = el('div', 'opts'), u = UI_TEXT[lang], list = choicesOf(st).slice();
     if (st.doors) {
-      for (var k in CALL_FLOW.interests) { var it = CALL_FLOW.interests[k]; if (it.door && state.interests.indexOf(k) < 0) list.push({ label: it.label, door: k }); }
-      if (state.rounds > 0) list.push({ label: CALL_FLOW.phrases.thatsIt, next: '@recommend' });
+      for (var k in CALL_FLOW.interests) { var it = CALL_FLOW.interests[k]; if (st.doorsOnly ? st.doorsOnly.indexOf(k) > -1 : (it.door && state.interests.indexOf(k) < 0)) list.push({ label: it.label, door: k }); }
+      if (state.rounds > 0 && !st.doorsOnly) list.push({ label: CALL_FLOW.phrases.thatsIt, next: '@recommend' });
     }
     if (st.stage === 'Close') list.push({ label: { en: u.restart, es: u.restart, it: u.restart }, restart: true });
     list.forEach(function (c) {
@@ -2053,17 +2161,15 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
       (res.steps || []).forEach(function (st, i) { box.appendChild(el('span', 'step', (res.steps.length > 1 ? (i + 1) + '. ' : '') + st)); });
       box.appendChild(el('span', 'ans', res.result));
       if (res.note) box.appendChild(el('span', 'note', res.note));
-      var fl = T(CALC_TEXT.follow), fol = nudge || res.unknown ? '' : fl[(state.calcs - 1) % fl.length];
-      if (fol) box.appendChild(el('span', 'fol', fol));
       log.appendChild(botRow(box)); scroll();
-      speak(speakCalc([res.think, res.result, res.note, fol].filter(Boolean).join(' ')));
+      speak(speakCalc([res.think, res.result, res.note].filter(Boolean).join(' ')));
       current = 'calc_answer';
-      if (nudge) calcNudge();
+      if (nudge) calcNudge(function () { run('calc_follow'); }); else run('calc_follow');
     });
   }
-  function calcNudge() { // one light book mention (Hidden Passages or the Coloring Book only), in the usual Amazon link style
+  function calcNudge(next) { // one light book mention (Hidden Passages or the Coloring Book only), in the usual Amazon link style
     var key = (state.calcNudges++ % 2) ? 'coloring' : 'hidden', url = linkFor(key), my = runId;
-    if (!url) return;
+    if (!url) return next();
     busy = true;
     typingFor(SETTINGS.typingDelay, function () {
       if (my !== runId) return;
@@ -2072,6 +2178,7 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
       d.appendChild(el('span', 'txt', line));
       var a = el('a', 'wk', UI_TEXT[lang].amazon + store + ' \u2197'); a.href = url; tagLink(a, key, 'amazon', 'calc'); d.appendChild(a);
       log.appendChild(botRow(d)); scroll(); speak(line);
+      next();
     });
   }
   CALL_FLOW.steps.calc_answer = { stage: 'Discovery', listen: 'calc' }; // after a calculation: thanks -> short reply, else the normal flow
@@ -2150,9 +2257,9 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
     // ---- a general question: free answer from Wikipedia (then maybe a pivot) ----
     if (q) return wikiAnswer(t, f, found);
     if (drugTalk) { if (!state.drugCurious) state.lead = T(SAFE_TEXT.drugOnly)[0] + ' '; if (!found.length) found = ['medicine']; }
-    if (st.listen === 'calc') {
+    if (st.listen === 'calc') { // after "What interests you about chemistry?": thanks -> short reply, anything else is their answer
       if (!found.length && wc <= 6 && THANKS.test(f)) return run('calc_thanks');
-      return greetingReply(fr, f, found, drugTalk);
+      return discoveryAnswer(fr, f, found, drugTalk ? labelsText(found) : null);
     }
     if (st.listen === 'greeting') return greetingReply(fr, f, found, drugTalk);
     if (st.listen === 'discovery') return discoveryAnswer(fr, f, found, drugTalk ? labelsText(found) : null);
