@@ -32,10 +32,10 @@ h1{margin:0 0 10px;font-size:34px;line-height:1.1;color:var(--purple-dark)}
 <main>
 <section class="intro">
 <h1>Ask the Purple Rabbit</h1>
-<p class="m">Ask the Rabbit anything, or let it point you to the right book. EN · ES · IT. Short answers come from Wikipedia. <a href="/">← Home</a></p>
-<p class="d">Ask the Rabbit anything: why the sky is blue, who discovered penicillin, how fireworks get their colors. It answers in a few lines, and when you're curious to go deeper, it points you to the right Furious Acid book, whether that's eerie art, the story of medicine, or growing plants.</p>
+<p class="m">Ask the Rabbit anything (even chemistry math), or let it point you to the right book. EN · ES · IT. Short answers come from Wikipedia. <a href="/">← Home</a></p>
+<p class="d">Ask the Rabbit anything: why the sky is blue, who discovered penicillin, how fireworks get their colors. It even does quick math and chemistry calculations (molar mass, moles, molarity, dilutions, pH), step by step. It answers in a few lines, and when you're curious to go deeper, it points you to the right Furious Acid book, whether that's eerie art, the story of medicine, or growing plants.</p>
 <p class="d">Habla español · Parla italiano. Use the EN / ES / IT buttons in the chat.</p>
-<p class="muted d">The Rabbit is an automated helper, not a person. Short answers to general questions come from Wikipedia's free public API (text by Wikipedia contributors, CC BY-SA); a question is sent to Wikipedia only to look it up. The Rabbit doesn't save what you type, uses no cookies and tracks nothing. Read-aloud uses your browser's own voice. Links open your local Amazon store. <a href="/">← Back to furiousacid.com</a></p>
+<p class="muted d">The Rabbit is an automated helper, not a person. Short answers to general questions come from Wikipedia's free public API (text by Wikipedia contributors, CC BY-SA); a question is sent to Wikipedia only to look it up. Math and chemistry are worked out right in your browser. The Rabbit uses no cookies and tracks nothing; if you tell it your first name, it remembers only that and your last topic, in your own browser's storage on this device, never sent anywhere (type “forget me” to erase it). Read-aloud uses your browser's own voice. Links open your local Amazon store. <a href="/">← Back to furiousacid.com</a></p>
 </section>
 <div id="chat"></div>
 </main>
@@ -54,11 +54,14 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
 </script>
 <script>
 /* =========================================================================
-   Rabbit v3 ("Ask me anything"): book-finder chat for furiousacid.com/rabbit/
+   Rabbit v4 ("Ask me anything" + calculator): book-finder chat for furiousacid.com/rabbit/
    English · Español · Italiano. No backend, no API keys, no cookies,
    no storage, no tracking. Everything runs in the visitor's browser.
    The ONLY network call it makes: short answers from Wikipedia's free
    public API (https://{lang}.wikipedia.org) for general questions.
+   Math and chemistry calculations run locally (section 4b). The only thing
+   ever kept is in the visitor's OWN browser (localStorage, never sent):
+   that they've visited, the first name they gave, and their last topic key.
 
    WHAT TO EDIT
      1) SETTINGS   small switches (timings, store, links)
@@ -538,6 +541,36 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
                es: 'Mi conexión con la biblioteca va un poco lenta ahora mismo, así que no puedo buscarlo. Pero tengo curiosidad: ¿qué te hizo pensar en {topic}?',
                it: 'Il mio collegamento con la biblioteca è un po’ lento in questo momento, quindi non riesco a cercarlo. Però sono curioso: cosa ti ha fatto pensare a {topic}?' } },
 
+      /* ---------- MEMORY (only on the visitor's own device) ---------- */
+      // a returning visitor (replaces "Hey, what's up?")
+      greeting_back: { stage: 'Greeting',
+        say: { en: 'Welcome back{nameComma}! What’s up?', es: '¡Bienvenido de nuevo{nameComma}! ¿Qué tal?', it: 'Bentornato{nameComma}! Come va?' },
+        listen: 'greeting', nudge: 'greet_none' },
+      // "do you remember me?": always yes (owner's line)
+      remember_me: { stage: 'Greeting',
+        say: { en: 'Of course I remember you{nameComma}, how could I forget you? How have you been?',
+               es: '¡Claro que me acuerdo de ti{nameComma}! ¿Cómo podría olvidarte? ¿Cómo has estado?',
+               it: 'Certo che mi ricordo di te{nameComma}, come potrei dimenticarti? Come stai?' },
+        listen: 'greeting' },
+      remember_me_topic: { stage: 'Greeting', say: 'remember_me',
+        after: { en: 'Still into {lastTopic}?', es: '¿Sigues con {lastTopic}?', it: 'Ancora voglia di {lastTopic}?' },
+        listen: 'greeting' },
+      // they told the Rabbit their name ("I'm Zach", "my name is Zach", "call me Zach")
+      name_nice: { stage: 'Greeting',
+        say: { en: 'Nice to meet you, {name}! 🐇 {discovery}', es: '¡Encantado de conocerte, {name}! 🐇 {discovery}', it: 'Piacere di conoscerti, {name}! 🐇 {discovery}' },
+        listen: 'discovery', doors: true },
+      forget_me: { stage: 'Greeting',
+        say: { en: 'Done: I’ve forgotten your name and topics on this device. Fresh start! 🐇', es: 'Hecho: he olvidado tu nombre y tus temas en este dispositivo. ¡Borrón y cuenta nueva! 🐇', it: 'Fatto: ho dimenticato il tuo nome e i tuoi argomenti su questo dispositivo. Si riparte da zero! 🐇' },
+        listen: 'greeting' },
+
+      /* ---------- CALCULATOR + CHEMISTRY MATH (answers are built by the engine, section 4b) ---------- */
+      calc_thanks: { stage: 'Discovery', listen: 'calc',
+        say: { en: 'Anytime. 🐇 Got another one? Numbers, formulas, or anything you’re curious about.', es: 'Cuando quieras. 🐇 ¿Tienes otra? Números, fórmulas o lo que te dé curiosidad.', it: 'Quando vuoi. 🐇 Ne hai un’altra? Numeri, formule o qualunque curiosità.' } },
+      calc_dose: { stage: 'Discovery', listen: 'calc',
+        say: { en: 'Doses are one for a pharmacist or a doctor, not a rabbit. 🐇 I’m happy to do the chemistry math, though: molar mass, moles, molarity, dilutions, pH…',
+               es: 'Las dosis son cosa de un farmacéutico o un médico, no de un conejo. 🐇 Pero encantado de hacer las cuentas de química: masa molar, moles, molaridad, diluciones, pH…',
+               it: 'Le dosi sono roba da farmacista o medico, non da coniglio. 🐇 Però faccio volentieri i conti di chimica: massa molare, moli, molarità, diluizioni, pH…' } },
+
       fallback: { stage: 'Greeting',
         say: { en: 'Hmm, the Rabbit’s ears twitched, but I didn’t quite catch that. {discovery}',
                es: 'Mmm, al Conejo se le movieron las orejas, pero no lo he entendido del todo. {discovery}',
@@ -637,23 +670,614 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
               it: ['Sono un assistente automatico, ma la tua sicurezza conta più di ogni altra cosa. 💜', 'Se tu o qualcuno vicino a te siete in pericolo, chiama il numero di emergenza (112 in Italia e in Europa, 911 negli Stati Uniti). In Italia puoi chiamare Telefono Amico al 02 2327 2327, attivo 24 ore su 24.'] },
   };
 
+  /* =====================================================================
+     4b) CALCULATOR + CHEMISTRY MATH: runs in the visitor's browser only.
+         A small hand-written expression parser (no eval, no Function),
+         a full periodic table, and short step-by-step chemistry answers.
+         The SAFETY checks always run BEFORE this (see handleText).
+     ===================================================================== */
+  /* CALC-BEGIN */
+  var FA_CALC = (function () {
+    // standard atomic weights (g/mol); S and Cl use the common textbook values 32.065 and 35.453
+    var AW = { H: 1.008, He: 4.0026, Li: 6.94, Be: 9.0122, B: 10.81, C: 12.011, N: 14.007, O: 15.999, F: 18.998, Ne: 20.180,
+      Na: 22.990, Mg: 24.305, Al: 26.982, Si: 28.085, P: 30.974, S: 32.065, Cl: 35.453, Ar: 39.948, K: 39.098, Ca: 40.078,
+      Sc: 44.956, Ti: 47.867, V: 50.942, Cr: 51.996, Mn: 54.938, Fe: 55.845, Co: 58.933, Ni: 58.693, Cu: 63.546, Zn: 65.38,
+      Ga: 69.723, Ge: 72.630, As: 74.922, Se: 78.971, Br: 79.904, Kr: 83.798, Rb: 85.468, Sr: 87.62, Y: 88.906, Zr: 91.224,
+      Nb: 92.906, Mo: 95.95, Tc: 98, Ru: 101.07, Rh: 102.91, Pd: 106.42, Ag: 107.87, Cd: 112.41, In: 114.82, Sn: 118.71,
+      Sb: 121.76, Te: 127.60, I: 126.90, Xe: 131.29, Cs: 132.91, Ba: 137.33, La: 138.91, Ce: 140.12, Pr: 140.91, Nd: 144.24,
+      Pm: 145, Sm: 150.36, Eu: 151.96, Gd: 157.25, Tb: 158.93, Dy: 162.50, Ho: 164.93, Er: 167.26, Tm: 168.93, Yb: 173.05,
+      Lu: 174.97, Hf: 178.49, Ta: 180.95, W: 183.84, Re: 186.21, Os: 190.23, Ir: 192.22, Pt: 195.08, Au: 196.97, Hg: 200.59,
+      Tl: 204.38, Pb: 207.2, Bi: 208.98, Po: 209, At: 210, Rn: 222, Fr: 223, Ra: 226, Ac: 227, Th: 232.04, Pa: 231.04,
+      U: 238.03, Np: 237, Pu: 244, Am: 243, Cm: 247, Bk: 247, Cf: 251, Es: 252, Fm: 257, Md: 258, No: 259, Lr: 266,
+      Rf: 267, Db: 268, Sg: 269, Bh: 270, Hs: 269, Mt: 278, Ds: 281, Rg: 282, Cn: 285, Nh: 286, Fl: 289, Mc: 290, Lv: 293, Ts: 294, Og: 294 };
+    var COMMON = ' H C N O F Na Mg Al Si P S Cl K Ca Fe Cu Zn Br I Ag Li B Mn Au Pb Hg Sn Ni Cr Ba Sr ';
+    var R = 0.08206, NA = 6.02214076e23;
+    // everyday names (safe, ordinary chemicals only)
+    var NAMES = [
+      ['table salt', 'NaCl'], ['sodium chloride', 'NaCl'], ['salt', 'NaCl'], ['sal', 'NaCl'], ['sale', 'NaCl'],
+      ['water', 'H2O'], ['agua', 'H2O'], ['acqua', 'H2O'],
+      ['baking soda', 'NaHCO3'], ['sodium bicarbonate', 'NaHCO3'], ['bicarbonate of soda', 'NaHCO3'], ['bicarbonato', 'NaHCO3'],
+      ['table sugar', 'C12H22O11'], ['sucrose', 'C12H22O11'], ['sugar', 'C12H22O11'], ['azucar', 'C12H22O11'], ['zucchero', 'C12H22O11'],
+      ['glucose', 'C6H12O6'], ['glucosa', 'C6H12O6'], ['glucosio', 'C6H12O6'],
+      ['acetic acid', 'CH3COOH', 'vinegar'], ['vinegar', 'CH3COOH', 'vinegar'], ['vinagre', 'CH3COOH', 'vinegar'], ['aceto', 'CH3COOH', 'vinegar'], ['acido acetico', 'CH3COOH', 'vinegar'],
+      ['carbon dioxide', 'CO2'], ['ammonia', 'NH3'], ['sulfuric acid', 'H2SO4'], ['sulphuric acid', 'H2SO4'], ['hydrochloric acid', 'HCl'],
+      ['nitric acid', 'HNO3'], ['sodium hydroxide', 'NaOH'], ['lye', 'NaOH'], ['potassium hydroxide', 'KOH'], ['calcium carbonate', 'CaCO3'], ['chalk', 'CaCO3'],
+      ['ethanol', 'C2H5OH'], ['methane', 'CH4'], ['hydrogen peroxide', 'H2O2'], ['citric acid', 'C6H8O7'], ['caffeine', 'C8H10N4O2'],
+      ['copper sulfate', 'CuSO4'], ['calcium hydroxide', 'Ca(OH)2'], ['potassium chloride', 'KCl'], ['aspirin', 'C9H8O4']
+    ];
+    var ELEMENTS = { hydrogen: 'H', helium: 'He', lithium: 'Li', beryllium: 'Be', boron: 'B', carbon: 'C', nitrogen: 'N', oxygen: 'O', fluorine: 'F', neon: 'Ne',
+      sodium: 'Na', magnesium: 'Mg', aluminum: 'Al', aluminium: 'Al', silicon: 'Si', phosphorus: 'P', sulfur: 'S', sulphur: 'S', chlorine: 'Cl', argon: 'Ar',
+      potassium: 'K', calcium: 'Ca', titanium: 'Ti', chromium: 'Cr', manganese: 'Mn', iron: 'Fe', cobalt: 'Co', nickel: 'Ni', copper: 'Cu', zinc: 'Zn',
+      bromine: 'Br', krypton: 'Kr', silver: 'Ag', tin: 'Sn', iodine: 'I', xenon: 'Xe', tungsten: 'W', platinum: 'Pt', gold: 'Au', mercury: 'Hg', lead: 'Pb', uranium: 'U', radon: 'Rn' };
+    var DIATOMIC = { H: 1, N: 1, O: 1, F: 1, Cl: 1, Br: 1, I: 1 };
+    // Formulas the Rabbit will not do math on, whatever they're called (controlled drugs, their precursors, explosives)
+    var BLOCK_DRUG = ['C10H15N', 'C11H15NO2', 'C17H21NO4', 'C21H23NO5', 'C20H25N3O', 'C12H17N2O4P', 'C12H16N2O', 'C22H28N2O', 'C13H16ClNO', 'C12H16N2',
+      'C9H13N', 'C10H15NO', 'C10H10O2', 'C9H10O', 'C10H10O3', 'C4H8O3', 'C4H6O2', 'C17H19NO3', 'C18H21NO3', 'C18H21NO4', 'C17H25N', 'C11H17NO3',
+      'C21H30O2', 'C17H13ClN4', 'C16H13ClN2O', 'C11H15NO', 'C13H14N2O', 'C11H15NO3', 'C8H12N2', 'C21H27NO', 'C9H11NO', 'C10H13NO2', 'C19H21NO4', 'C21H29N3O',
+      'C23H30N2O', 'C21H25NO', 'C18H21NO', 'C16H23NO2', 'C14H19NO2', 'C8H11NO2', 'C8H10O4', 'C8H7NO', 'C6H6O3'];
+    var BLOCK_BOOM = ['C7H5N3O6', 'C3H5N3O9', 'C9H18O6', 'C3H6N6O6', 'C5H8N4O12', 'C6H12N2O6', 'C4H8N8O8', 'C6H3N3O7', 'CH3NO2N', 'C2H4N2O6'];
+    var BLOCK_WORDS = /\b(phenylacetone|piperonal|isosafrol\w*|mdp2p|pmk|bmk|gbl|butyrolactone|butanediol|ergotamin\w*|norephedrin\w*|phenylpropanolamin\w*|anthranil\w*|methylamin\w*|nitroethan\w*|nitrostyren\w*|benzyl cyanide|phenylacetic|acetic anhydride|red phosphorus|hydriodic|anpp|npp|norfentanyl|propionyl chloride|hydrocodone|methadone|buprenorphin\w*|carfentanil|nitazen\w*|alprazolam|diazepam|clonazepam|lorazepam|methylphenidate|ritalin|modafinil|tramadol|dextromethorphan|dxm|2c-?[bie]|nbome|psilocin|ibogain\w*|salvinorin|mdpv|pvp|flakka|spice|k2|jwh|cannabinoid\w*|barbiturat\w*|phenobarbital|anabolic|steroids?|testosterone|nandrolone|trenbolone|scopolamin\w*|lsd|dmt|mdma|mda|thc|ghb)\b/i;
+    var DOSE = /\b(doses?|dosage|dosing|dosis|dosi|mg\/kg|mg per kg|per kilo|how much (should|can|do) (i|you|we) take|how many (pills|tablets|capsules))\b/i;
+
+    function subs(d) { return String(d).replace(/[0-9]/g, function (c) { return '\u2080\u2081\u2082\u2083\u2084\u2085\u2086\u2087\u2088\u2089'.charAt(+c); }); }
+    function sups(d) { return String(d).replace(/[0-9-]/g, function (c) { return c === '-' ? '\u207b' : '\u2070\u00b9\u00b2\u00b3\u2074\u2075\u2076\u2077\u2078\u2079'.charAt(+c); }); }
+    function commas(s) { return s.replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+    function sci(x, sig) {
+      var e = x.toExponential(sig - 1).split('e'), m = e[0].replace(/(\.\d*?)0+$/, '$1').replace(/\.$/, '');
+      return m + ' \u00d7 10' + sups(+e[1]);
+    }
+    function fmt(x, sig) { // 500,000 · 0.1711 · 6.022 × 10²³
+      sig = sig || 10;
+      if (!isFinite(x)) return String(x);
+      if (x === 0) return '0';
+      var a = Math.abs(x);
+      if (a >= 1e15 || a < 1e-6) return sci(x, Math.min(sig, 6));
+      if (sig < 7 && (a >= 1e7 || a < 1e-4)) return sci(x, sig);
+      var s = String(Number(x.toPrecision(sig)));
+      if (/e/.test(s)) return sci(x, Math.min(sig, 6));
+      var neg = s.charAt(0) === '-'; if (neg) s = s.slice(1);
+      var p = s.split('.');
+      return (neg ? '-' : '') + commas(p[0]) + (p[1] ? '.' + p[1] : '');
+    }
+    function fx(x, d) { return String(Number(x.toFixed(d))); }         // fixed decimals, trailing zeros trimmed
+    function fmass(x) { return x < 20 ? x.toFixed(3) : x.toFixed(2); } // molar masses: 18.015 · 98.08
+
+    /* ---------- 1) plain math: a tiny recursive-descent parser (NO eval) ---------- */
+    var FUNCS = { sqrt: Math.sqrt, cbrt: function (x) { return x < 0 ? -Math.pow(-x, 1 / 3) : Math.pow(x, 1 / 3); }, log: function (x) { return Math.log(x) / Math.LN10; },
+      ln: Math.log, exp: Math.exp, abs: Math.abs };
+    function mathText(raw) {
+      var s = ' ' + String(raw).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '') + ' ';
+      s = s.replace(/[\u00d7\u2715\u2716\u22c5\u00b7\u2219\u2217]/g, '*').replace(/[\u00f7\u2236]/g, '/').replace(/[\u2212\u2013\u2014]/g, '-')
+        .replace(/\*\*/g, '^').replace(/\u00b2/g, '^2').replace(/\u00b3/g, '^3').replace(/\u221a/g, ' sqrt ').replace(/\u03c0/g, ' pi ').replace(/[\u2018\u2019]/g, "'");
+      s = s.replace(/[?!=.\s]+$/, ' ');
+      var lead = /^\s*(hey|hi|ok|okay|so|um|rabbit|please|pls|quick question|can you|could you|would you|will you|tell me|help me|do|what'?s|what is|whats|wat is|wats|wht is|how much is|how much|calculate|calc|compute|solve|evaluate|work out|figure out|find|the answer to|the value of|the result of|the|cuanto es|cuanto son|cuanto da|calcula|calcular|quanto fa|quanto e|quant'e|calcola|calcolare)\b[\s,:]*/;
+      for (var r = 0; r < 6; r++) { var b = s; s = s.replace(lead, ' '); if (b === s) break; }
+      s = s.replace(/\s*(please|pls|thanks|thank you|for me|por favor|per favore)\s*$/, ' ');
+      s = s.replace(/\bper ?cent\b|\bpercent\b|\bpor ?ciento\b|\bper ?cento\b/g, '%')
+        .replace(/\b(the )?square root of\b|\bsquare root\b|\bsqrt of\b|\braiz cuadrada de\b|\bradice quadrata di\b/g, ' sqrt ')
+        .replace(/\b(the )?cube root of\b/g, ' cbrt ')
+        .replace(/\b(the )?(natural log|natural logarithm|ln) of\b/g, ' ln ').replace(/\b(the )?(log|logarithm) of\b/g, ' log ')
+        .replace(/\bmultiplied by\b|\btimes\b|\bpor\b|\bper\b/g, ' * ')
+        .replace(/\bdivided by\b|\bover\b|\bdividido (por|entre)\b|\bentre\b|\bdiviso( per)?\b/g, ' / ')
+        .replace(/\bplus\b|\bmas\b|\bpiu\b/g, ' + ').replace(/\bminus\b|\bmenos\b|\bmeno\b/g, ' - ')
+        .replace(/\bto the power of\b|\bto the\b|\braised to( the power of)?\b|\belevado a\b|\balla\b/g, ' ^ ')
+        .replace(/(\^\s*\d+)(st|nd|rd|th)\b( power)?/g, '$1')
+        .replace(/\bsquared\b|\bal cuadrado\b|\bal quadrato\b/g, ' ^2 ').replace(/\bcubed\b|\bal cubo\b/g, ' ^3 ')
+        .replace(/%\s*(of|de|di)\b/g, '% *');
+      s = s.replace(/(\d|\))\s*x\s*(?=[\d(.])/g, '$1*');
+      for (r = 0; r < 5 && /\d,\d{3}(?!\d)/.test(s); r++) s = s.replace(/(\d),(\d{3})(?!\d)/g, '$1$2');
+      return s.trim();
+    }
+    function tokenize(s) {
+      var toks = [], i = 0, m;
+      while (i < s.length) {
+        var c = s.charAt(i), rest = s.slice(i);
+        if (/\s/.test(c)) { i++; continue; }
+        if ((m = /^(\d+\.?\d*|\.\d+)(e[-+]?\d+)?/.exec(rest))) { toks.push({ t: 'n', v: parseFloat(m[0]), raw: m[0] }); i += m[0].length; continue; }
+        if ((m = /^[a-z]+/.exec(rest))) {
+          if (FUNCS[m[0]]) toks.push({ t: 'f', v: m[0] });
+          else if (m[0] === 'pi') toks.push({ t: 'n', v: Math.PI, raw: '\u03c0', k: 1 });
+          else return null;
+          i += m[0].length; continue;
+        }
+        if ('+-*/^()%'.indexOf(c) > -1) { toks.push({ t: c }); i++; continue; }
+        return null;
+      }
+      return toks;
+    }
+    function evaluate(toks) {
+      var p = 0, real = 0, kinds = {};
+      function peek() { return toks[p]; }
+      function eat(t) { if (toks[p] && toks[p].t === t) { p++; return true; } return false; }
+      function expr() { var v = term(); while (peek() && (peek().t === '+' || peek().t === '-')) { var o = toks[p++].t; real++; kinds.add = 1; var r2 = term(); v = o === '+' ? v + r2 : v - r2; } return v; }
+      function term() {
+        var v = unary();
+        for (;;) {
+          var k = peek(); if (!k) break;
+          if (k.t === '*' || k.t === '/') { p++; real++; kinds.mul = 1; var r2 = unary(); v = k.t === '*' ? v * r2 : v / r2; }
+          else if (k.t === '(' || k.t === 'f' || (k.t === 'n' && k.k)) { real++; kinds.mul = 1; v *= unary(); }
+          else break;
+        }
+        return v;
+      }
+      function unary() { if (eat('-')) return -unary(); if (eat('+')) return unary(); return power(); }
+      function power() { var b = postfix(); if (eat('^')) { real++; kinds.pow = 1; return Math.pow(b, unary()); } return b; }
+      function postfix() { var v = primary(); while (eat('%')) v /= 100; return v; }
+      function primary() {
+        var k = toks[p++]; if (!k) throw 0;
+        if (k.t === 'n') return k.v;
+        if (k.t === '(') { kinds.par = 1; var v = expr(); if (!eat(')')) throw 0; return v; }
+        if (k.t === 'f') { real++; kinds.fn = 1; var a = peek() && peek().t === '(' ? primary() : power(); return FUNCS[k.v](a); }
+        throw 0;
+      }
+      try { var v = expr(); if (p !== toks.length) return null; return { v: v, real: real, kinds: kinds }; } catch (e) { return null; }
+    }
+    function pretty(toks) {
+      var out = '', prev = null;
+      toks.forEach(function (k) {
+        if (k.t === 'n') out += /^\d{5,}$/.test(k.raw) ? commas(k.raw) : k.raw;
+        else if (k.t === 'f') out += (prev && prev.t === 'n' ? ' ' : '') + k.v + ' ';
+        else if (k.t === '-' && (!prev || /^[-+*/^(]$/.test(prev.t))) out += '\u2212';
+        else if (/^[-+*/]$/.test(k.t)) out += ' ' + { '+': '+', '-': '\u2212', '*': '\u00d7', '/': '\u00f7' }[k.t] + ' ';
+        else out += k.t;
+        prev = k;
+      });
+      return out.replace(/\s+/g, ' ').replace(/\(\s/g, '(').replace(/\s\)/g, ')').replace(/\b(sqrt|cbrt|log|ln|exp|abs) \(/g, '$1(').trim();
+    }
+    function math(raw) {
+      var s = mathText(raw); if (!s || s.length > 200) return null;
+      var toks = tokenize(s); if (!toks || !toks.length) return null;
+      var r = evaluate(toks); if (!r || !r.real) return null;
+      var shown = pretty(toks), res;
+      if (isNaN(r.v)) res = { result: shown + ': that one isn\u2019t a real number (like the square root of a negative, or the log of zero or less).' };
+      else if (!isFinite(r.v)) res = { result: shown + ': dividing by zero doesn\u2019t give a number, even for a rabbit.' };
+      else res = { result: shown + ' = ' + fmt(r.v, 12), value: r.v };
+      var many = (r.kinds.add ? 1 : 0) + (r.kinds.mul ? 1 : 0) + (r.kinds.pow ? 1 : 0) + (r.kinds.par ? 1 : 0);
+      res.kind = 'math'; res.steps = [];
+      if (many >= 2 && isFinite(r.v)) res.think = 'Order matters: brackets first, then powers, then \u00d7 and \u00f7, then + and \u2212.';
+      return res;
+    }
+
+    /* ---------- 2) formulas: Ca(OH)2, CuSO4·5H2O, case-sensitive ---------- */
+    function parseFormula(f) {
+      var s = String(f).replace(/\s+/g, '').replace(/[\u2080-\u2089]/g, function (c) { return String(c.charCodeAt(0) - 0x2080); });
+      if (!s || s.length > 60 || !/^[A-Za-z0-9()[\]\u00b7\u2022*.]+$/.test(s)) return null;
+      var parts = s.split(/[\u00b7\u2022*]|\.(?=\d*[A-Z(])/), total = {}, order = [];
+      for (var q = 0; q < parts.length; q++) {
+        var m = /^(\d*)(.+)$/.exec(parts[q]); if (!m) return null;
+        var coef = m[1] ? +m[1] : 1; if (!coef) return null;
+        var g = group(m[2]); if (!g) return null;
+        for (var j = 0; j < g.k.length; j++) { var el = g.k[j]; if (!(el in total)) { total[el] = 0; order.push(el); } total[el] += g.c[el] * coef; }
+      }
+      return { counts: total, order: order, parts: parts.length, hydrate: parts.length > 1, paren: /[([]/.test(s), text: s };
+    }
+    function group(s) {
+      var i = 0;
+      function num() { var m = /^\d+/.exec(s.slice(i)); if (!m) return 1; i += m[0].length; return +m[0]; }
+      function add(acc, el, n) { if (!(el in acc.c)) { acc.c[el] = 0; acc.k.push(el); } acc.c[el] += n; }
+      function grp(close) {
+        var acc = { c: {}, k: [] };
+        while (i < s.length) {
+          var ch = s.charAt(i);
+          if (ch === '(' || ch === '[') {
+            var want = ch === '(' ? ')' : ']'; i++;
+            var inner = grp(want); if (!inner || s.charAt(i) !== want) return null; i++;
+            var n = num(); if (!n) return null;
+            for (var j = 0; j < inner.k.length; j++) add(acc, inner.k[j], inner.c[inner.k[j]] * n);
+          } else if (ch === ')' || ch === ']') { return close === ch ? acc : null; }
+          else if (/[A-Z]/.test(ch)) {
+            var el = ch; i++;
+            if (i < s.length && /[a-z]/.test(s.charAt(i))) { el += s.charAt(i); i++; }
+            if (!AW.hasOwnProperty(el)) return null;
+            var n2 = num(); if (!n2) return null; add(acc, el, n2);
+          } else return null;
+        }
+        return close ? null : acc;
+      }
+      var out = grp(null);
+      return out && out.k.length ? out : null;
+    }
+    function smartCase(s) { // "nacl" -> NaCl, "co2" -> CO2, "caco3" -> CaCO3 (common elements preferred)
+      if (!/^[a-z0-9()]+$/.test(s) || s.length > 16) return null;
+      var best = null;
+      (function walk(i, acc, rare, n) {
+        if (i >= s.length) { if (!best || rare < best.rare || (rare === best.rare && n < best.n)) best = { f: acc, rare: rare, n: n }; return; }
+        var ch = s.charAt(i);
+        if (/[0-9()]/.test(ch)) return walk(i + 1, acc + ch, rare, n);
+        var one = ch.toUpperCase(), two = one + (s.charAt(i + 1) || '');
+        if (AW.hasOwnProperty(one)) walk(i + 1, acc + one, rare + (COMMON.indexOf(' ' + one + ' ') < 0 ? 1 : 0), n + 1);
+        if (/[a-z]/.test(s.charAt(i + 1) || '') && AW.hasOwnProperty(two)) walk(i + 2, acc + two, rare + (COMMON.indexOf(' ' + two + ' ') < 0 ? 1 : 0), n + 1);
+      })(0, '', 0, 0);
+      return best && best.rare === 0 && parseFormula(best.f) ? best.f : null;
+    }
+    function canon(counts) { return Object.keys(counts).sort().map(function (k) { return k + counts[k]; }).join(''); }
+    var BLOCKED = {};
+    BLOCK_DRUG.forEach(function (f) { var p = parseFormula(f); if (p) BLOCKED[canon(p.counts)] = 'drug'; });
+    BLOCK_BOOM.forEach(function (f) { var p = parseFormula(f); if (p) BLOCKED[canon(p.counts)] = 'weapon'; });
+    function blockedFormula(pf) {
+      if (!pf) return null;
+      var hit = BLOCKED[canon(pf.counts)];
+      if (hit) return hit;
+      var parts = pf.text.split(/[\u00b7\u2022*]|\.(?=\d*[A-Z(])/);  // e.g. a hydrochloride salt: check each part too
+      for (var i = 0; i < parts.length; i++) { var p = parseFormula(parts[i].replace(/^\d+/, '')); if (p && BLOCKED[canon(p.counts)]) return BLOCKED[canon(p.counts)]; }
+      return null;
+    }
+    function molar(pf) { var m = 0; pf.order.forEach(function (el) { m += AW[el] * pf.counts[el]; }); return m; }
+    function show(f) { // H2SO4 -> H₂SO₄, CuSO4*5H2O -> CuSO₄·5H₂O
+      return String(f).split(/[\u00b7\u2022*]|\.(?=\d*[A-Z(])/).map(function (p) {
+        var m = /^(\d*)(.*)$/.exec(p); return m[1] + m[2].replace(/([A-Za-z)\]])(\d+)/g, function (x, a, d) { return a + subs(d); });
+      }).join('\u00b7');
+    }
+
+    /* ---------- finding the substance in a sentence ---------- */
+    function low(s) { return String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''); }
+    function substance(text) {
+      var l = low(text), i, m;
+      var names = NAMES.slice().sort(function (a, b) { return b[0].length - a[0].length; });
+      for (i = 0; i < names.length; i++) if (new RegExp('\\b' + names[i][0] + '\\b').test(l)) {
+        var pf = parseFormula(names[i][1]); return { label: names[i][0], formula: names[i][1], pf: pf, vinegar: names[i][2] === 'vinegar' };
+      }
+      var re = /[A-Z(\[][A-Za-z0-9()[\]]*(?:[\u00b7\u2022*.]\d*[A-Z(][A-Za-z0-9()[\]]*)*/g, best = null;
+      while ((m = re.exec(text))) {
+        var tok = m[0].replace(/[.*\u00b7]+$/, ''), before = text.slice(0, m.index);
+        var p = parseFormula(tok); if (!p) continue;
+        var caps = (tok.match(/[A-Z]/g) || []).length, strong = /[\d()[\]\u00b7\u2022*]/.test(tok) || caps >= 2;
+        if (/\d\s*[\u00b0\u00ba]?\s*$/.test(before) && !/\d/.test(tok)) continue;             // "300 K", "100 C" are units
+        if (!strong && !(/\b(of|de|di|del|della)\s*$/i.test(before) || text.trim() === tok)) continue; // "I", "In", "As" are words
+        if (!best || tok.length > best.tok.length) best = { tok: tok, pf: p };
+      }
+      if (best) return { label: best.tok, formula: best.tok, pf: best.pf };
+      m = /\b(?:of|de|di|for)\s+([a-z][a-z0-9()]{0,15})\s*[?.!]?\s*$/i.exec(text) || /^\s*([a-z][a-z0-9()]{0,15})\s*$/.exec(text);
+      if (m && /[0-9]/.test(m[1])) { var sc = smartCase(m[1].toLowerCase()); if (sc) return { label: sc, formula: sc, pf: parseFormula(sc), guessed: m[1] }; }
+      for (var en in ELEMENTS) if (new RegExp('\\b' + en + '\\b').test(l)) { var sy = ELEMENTS[en]; return { label: en, formula: sy, pf: parseFormula(sy), element: true }; }
+      m = /\b(?:of|de|di|for)\s+([a-z][a-z0-9()]{1,15})\s*[?.!]?\s*$/i.exec(text);
+      if (m && m[1].length <= 4) { var sc2 = smartCase(m[1].toLowerCase()); if (sc2 && /[A-Z].*[A-Z]/.test(sc2)) return { label: sc2, formula: sc2, pf: parseFormula(sc2), guessed: m[1] }; }
+      return null;
+    }
+    function mmSteps(sub) { // the molar-mass working, one line per element
+      var pf = sub.pf, lines = [];
+      pf.order.forEach(function (el) { var n = pf.counts[el]; lines.push(el + ': ' + n + ' \u00d7 ' + AW[el] + ' = ' + fx(n * AW[el], 3)); });
+      return lines;
+    }
+    function mmLine(sub) { return 'Molar mass of ' + show(sub.formula) + ' = ' + fmass(molar(sub.pf)) + ' g/mol'; }
+    function readAs(sub) { return sub.guessed && sub.guessed !== sub.formula ? 'Reading "' + sub.guessed + '" as ' + show(sub.formula) + '. ' : ''; }
+
+    /* ---------- numbers with units ---------- */
+    var N = '(-?(?:\\d+\\.?\\d*|\\.\\d+)(?:[eE][-+]?\\d+)?)';
+    function pre(raw) {
+      var SUP = { '\u2070': '0', '\u00b9': '1', '\u00b2': '2', '\u00b3': '3', '\u2074': '4', '\u2075': '5', '\u2076': '6', '\u2077': '7', '\u2078': '8', '\u2079': '9', '\u207b': '-' };
+      var s = String(raw).replace(/[\u2212\u2013]/g, '-').replace(/[\u2018\u2019]/g, "'")
+        .replace(/[\u2080-\u2089]/g, function (c) { return String(c.charCodeAt(0) - 0x2080); })
+        .replace(/10([\u207b\u2070\u00b9\u00b2\u00b3\u2074-\u2079]+)/g, function (m, e) { return '10^' + e.split('').map(function (c) { return SUP[c]; }).join(''); })
+        .replace(/(\d+(?:\.\d+)?)\s*(?:x|X|\u00d7|\*|\u00b7)\s*10\s*\^\s*([-+]?\d+)/g, '$1e$2')
+        .replace(/(^|[^\d.eE])10\s*\^\s*([-+]?\d+)/g, '$11e$2');
+      for (var r = 0; r < 5 && /\d,\d{3}(?!\d)/.test(s); r++) s = s.replace(/(\d),(\d{3})(?!\d)/g, '$1$2');
+      return s;
+    }
+    function all(re, s) { var out = [], m; re.lastIndex = 0; while ((m = re.exec(s))) out.push(m); return out; }
+    var RE = {
+      mass: new RegExp(N + '\\s*(kg|kilograms?|mg|milligrams?|\u00b5g|ug|micrograms?|g|grams?|gramos?|grammi)\\b(?!\\s*\\/)', 'gi'),
+      mol: new RegExp(N + '\\s*(mmol|millimoles?|mol|moles?|mols)\\b(?!\\s*\\/)', 'gi'),
+      vol: new RegExp(N + '\\s*(mL|ml|mls|milliliters?|millilitres?|mililitros?|millilitri|\u00b5L|uL|microliters?|L|l|liters?|litres?|litros?|litri|cm3|cm\u00b3|dm3|dm\u00b3|cc)\\b(?!\\s*\\/)', 'g'),
+      conc: new RegExp(N + '\\s*(mM|M|[Mm]olar|mol\\s*\\/\\s*[Ll]|mol\\s*\\/\\s*dm3|mol per (?:liter|litre))(?![A-Za-z])', 'g'),
+      pres: new RegExp(N + '\\s*(atm|atmospheres?|kPa|kpa|Pa|mmHg|mm Hg|torr|Torr|bar|psi)\\b', 'g'),
+      temp: new RegExp(N + '\\s*(?:\u00b0|\u00ba|degrees?\\s*)?\\s*(C|K|celsius|kelvin|centigrade)\\b', 'g'),
+      tempAny: new RegExp(N + '\\s*(?:\u00b0|\u00ba|degrees?\\s*)?\\s*(c|f|k|celsius|fahrenheit|kelvin|centigrade)\\b', 'gi'),
+      particles: new RegExp(N + '\\s*(molecules?|atoms?|particles?|ions?|formula units?)\\b', 'gi')
+    };
+    function toG(v, u) { u = u.toLowerCase(); return /^(kg|kilogram)/.test(u) ? v * 1000 : /^(mg|milligram)/.test(u) ? v / 1000 : /^(\u00b5g|ug|microgram)/.test(u) ? v / 1e6 : v; }
+    function toMol(v, u) { return /^(mmol|millimol)/i.test(u) ? v / 1000 : v; }
+    function toL(v, u) { return /^(ml|mls|millil|milil|cm|cc)/i.test(u) ? v / 1000 : /^(\u00b5l|ul|microl)/i.test(u) ? v / 1e6 : v; }
+    function toM(v, u) { return u === 'mM' ? v / 1000 : v; }
+    function toAtm(v, u) { u = u.toLowerCase().replace(/\s/g, ''); return u === 'kpa' ? v / 101.325 : u === 'pa' ? v / 101325 : (u === 'mmhg' || u === 'torr') ? v / 760 : u === 'bar' ? v / 1.01325 : u === 'psi' ? v / 14.696 : v; }
+    function toK(v, u) { return /^k/i.test(u) ? v : v + 273.15; }
+    function volText(v, u) { return fmt(v, 6) + ' ' + (/^(ml|mls|millil|milil)/i.test(u) ? 'mL' : /^(l|liter|litre|litro|litri)/i.test(u) ? 'L' : u); }
+    function Lshow(L) { return L < 1 ? fmt(L * 1000, 4) + ' mL' : fmt(L, 4) + ' L'; }
+    function gShow(g) { return g < 0.1 ? fmt(g * 1000, 4) + ' mg' : fmt(g, 4) + ' g'; }
+    function done(kind, think, steps, result, extra) { var o = { kind: kind || 'chem', think: think, steps: steps, result: result }; for (var k in extra || {}) o[k] = extra[k]; return o; }
+    function needSub(sub, what) {
+      return done('chem', null, [], 'I can work out ' + what + ' once I know the substance. Give me its formula (like NaCl or C6H12O6) or a common name (water, table salt, baking soda, sugar, vinegar).', { unknown: true });
+    }
+
+    /* ---------- 3) chemistry intents (first match wins) ---------- */
+    function chem(raw) {
+      var s = pre(raw), l = low(s), m;
+      var masses = all(RE.mass, s), mols = all(RE.mol, s), vols = all(RE.vol, s), concs = all(RE.conc, s), press = all(RE.pres, s), temps = all(RE.temp, s);
+      var parts = all(RE.particles, s);
+      var hasNum = /\d/.test(s);
+      var sub = null, subDone = false;
+      function S() { if (!subDone) { var t = s; [masses, mols, vols, concs, press, temps].forEach(function (a) { a.forEach(function (x) { t = t.replace(x[0], ' '); }); }); sub = substance(t); subDone = true; } return sub; }
+
+      // Avogadro's number on its own
+      if (/avogadro/.test(l) && !mols.length && !masses.length) return done('chem', 'Avogadro\u2019s number is how many particles are in one mole.', [], 'N\u2090 = 6.022 \u00d7 10\u00b2\u00b3 particles per mole (exactly 6.02214076 \u00d7 10\u00b2\u00b3).');
+
+      // temperature: 100 C to F, 98.6 F in celsius, 300 K to C
+      m = new RegExp(N + '\\s*(?:\u00b0|\u00ba|degrees?\\s*)?\\s*(c|f|k|celsius|fahrenheit|kelvin|centigrade)\\b\\s*(?:to|in|into|as|=|a|en|in)?\\s*(?:\u00b0|\u00ba|degrees?\\s*)?\\s*(c|f|k|celsius|fahrenheit|kelvin|centigrade)?\\b', 'i').exec(s);
+      if (m && (m[3] || /\b(convert|temperature|temp|degrees|celsius|fahrenheit|kelvin)\b/.test(l) || /\u00b0|\u00ba/.test(s)) && !concs.length && !masses.length && !vols.length) {
+        var tv = parseFloat(m[1]), fu = m[2].charAt(0).toUpperCase(), tu = m[3] ? m[3].charAt(0).toUpperCase() : null;
+        if (tu !== fu && !(fu === 'K' && !m[3] && !/kelvin|\u00b0/.test(l))) {
+          var c = fu === 'C' ? tv : fu === 'F' ? (tv - 32) * 5 / 9 : tv - 273.15;
+          if (c < -273.15 - 1e-9) return done('chem', null, [], 'Nothing gets colder than absolute zero (0 K = \u2212273.15 \u00b0C = \u2212459.67 \u00b0F), so that temperature can\u2019t exist.');
+          var F = c * 9 / 5 + 32, K = c + 273.15, U = { C: '\u00b0C', F: '\u00b0F', K: 'K' }, VAL = { C: c, F: F, K: K };
+          var st = [];
+          if (fu === 'F') st.push('\u00b0C = (\u00b0F \u2212 32) \u00d7 5/9 = (' + fmt(tv) + ' \u2212 32) \u00d7 5/9 = ' + fx(c, 2) + ' \u00b0C');
+          if (fu === 'K') st.push('\u00b0C = K \u2212 273.15 = ' + fmt(tv) + ' \u2212 273.15 = ' + fx(c, 2) + ' \u00b0C');
+          if (tu === 'F' || !tu) st.push('\u00b0F = \u00b0C \u00d7 9/5 + 32 = ' + fx(c, 2) + ' \u00d7 9/5 + 32 = ' + fx(F, 2) + ' \u00b0F');
+          if (tu === 'K' || (!tu && fu !== 'K')) st.push('K = \u00b0C + 273.15 = ' + fx(c, 2) + ' + 273.15 = ' + fx(K, 2) + ' K');
+          if (!tu) return done('chem', 'Go through Celsius: it\u2019s the bridge between all three scales.', st, fmt(tv) + ' ' + U[fu] + ' = ' + (fu !== 'C' ? fx(c, 2) + ' \u00b0C = ' : '') + (fu !== 'F' ? fx(F, 2) + ' \u00b0F' : '') + (fu !== 'K' ? (fu !== 'F' ? ' = ' : '') + fx(K, 2) + ' K' : ''));
+          return done('chem', 'Go through Celsius: it\u2019s the bridge between all three scales.', st, fmt(tv) + ' ' + U[fu] + ' = ' + fx(VAL[tu], 2) + ' ' + U[tu]);
+        }
+      }
+
+      // simple unit conversion: 500 mL to L, 2.5 kg in g, how many mL in 2 L
+      var UV = '(mL|ml|milliliters?|millilitres?|L|l|liters?|litres?|\u00b5L|uL|microliters?|cm3|dm3)', UM = '(kg|kilograms?|mg|milligrams?|\u00b5g|ug|micrograms?|g|grams?)';
+      m = new RegExp('^\\D*?' + N + '\\s*' + UV + '\\s*(?:to|in|into|=|as|en|a)\\s*' + UV + '\\s*[?.!]?\\s*$').exec(s) || new RegExp('^\\D*?' + N + '\\s*' + UM + '\\s*(?:to|in|into|=|as|en|a)\\s*' + UM + '\\s*[?.!]?\\s*$', 'i').exec(s);
+      var mr = new RegExp('how many\\s+' + UV + '\\s+(?:are |is )?(?:in|per)\\s+(?:a |one )?' + N + '?\\s*' + UV, 'i').exec(s) || new RegExp('how many\\s+' + UM + '\\s+(?:are |is )?(?:in|per)\\s+(?:a |one )?' + N + '?\\s*' + UM, 'i').exec(s);
+      if (mr) m = [mr[0], mr[2] || '1', mr[3], mr[1]];
+      if (m) {
+        var uv = parseFloat(m[1]), a = m[2], b = m[3], isVol = new RegExp('^' + UV + '$').test(a);
+        if (isVol === new RegExp('^' + UV + '$').test(b)) {
+          var base = isVol ? toL(uv, a) : toG(uv, a), per = isVol ? toL(1, b) : toG(1, b), outv = base / per;
+          var ua = isVol ? volText(uv, a).replace(/^[\d.,e+-]+\s/, '') : a.toLowerCase().replace(/rams?$|ilograms?$|illigrams?$|icrograms?$/, function (x) { return ''; }), ub = isVol ? volText(1, b).replace(/^1\s/, '') : b.toLowerCase().replace(/rams?$|ilograms?$|illigrams?$|icrograms?$/, '');
+          ua = ua === 'k' ? 'kg' : ua === 'm' ? 'mg' : ua === 'u' || ua === '\u00b5' ? '\u00b5g' : ua; ub = ub === 'k' ? 'kg' : ub === 'm' ? 'mg' : ub === 'u' || ub === '\u00b5' ? '\u00b5g' : ub;
+          if (ua !== ub) {
+            var ratio = per / (isVol ? toL(1, a) : toG(1, a));
+            var hint = isVol ? '1 L = 1000 mL (and 1 mL = 1 cm\u00b3)' : '1 kg = 1000 g and 1 g = 1000 mg';
+            return done('chem', 'Know the ladder: ' + hint + '.', [ratio >= 1 ? fmt(uv, 10) + ' ' + ua + ' \u00f7 ' + fmt(ratio, 10) + ' = ' + fmt(outv, 10) + ' ' + ub : fmt(uv, 10) + ' ' + ua + ' \u00d7 ' + fmt(1 / ratio, 10) + ' = ' + fmt(outv, 10) + ' ' + ub],
+              fmt(uv, 10) + ' ' + ua + ' = ' + fmt(outv, 10) + ' ' + ub);
+          }
+        }
+      }
+
+      // pH / pOH / [H+] / [OH-]
+      var phWord = /\bp\s?(h|oh)\b/i.test(s), bracket = /\[\s*(h\+?|h3o\+?|oh-?)\s*\]/i.test(s), ionWord = /\b(h\+|h3o\+|oh-|oh\u2212|hydrogen ions?|hydronium|hydroxide ions?|protons?)/i.test(s);
+      if ((phWord || bracket || ionWord) && hasNum) {
+        var num = function (re) { var x = re.exec(s); return x ? parseFloat(x[1]) : null; };
+        var H = num(new RegExp('\\[\\s*(?:h\\+?|h3o\\+?)\\s*\\]\\s*(?:=|is|of|:|equals|at)?\\s*' + N, 'i')) || num(new RegExp(N + '\\s*(?:M\\b|mol\\s*\\/\\s*L)?\\s*(?:of\\s*)?(?:h\\+|h3o\\+|hydrogen ions?|hydronium|protons?)', 'i'));
+        var OH = num(new RegExp('\\[\\s*oh-?\\s*\\]\\s*(?:=|is|of|:|equals|at)?\\s*' + N, 'i')) || num(new RegExp(N + '\\s*(?:M\\b|mol\\s*\\/\\s*L)?\\s*(?:of\\s*)?(?:oh-|oh\u2212|hydroxide)', 'i'));
+        var phv = num(new RegExp('\\bp\\s?h\\s*(?:=|is|of|:|at|equals|was)?\\s*' + N + '(?!\\s*(?:M\\b|mol|mM|e))', 'i'));
+        var pohv = num(new RegExp('\\bp\\s?oh\\s*(?:=|is|of|:|at|equals)?\\s*' + N + '(?!\\s*(?:M\\b|mol|mM))', 'i'));
+        var strong = null, factor = 1, cval = null, cs = S();
+        if (H == null && OH == null && concs.length && cs && cs.pf) {
+          var key = canon(cs.pf.counts), ACIDS = { Cl1H1: 1, H1N1O3: 1, Br1H1: 1, H1I1: 1, Cl1H1O4: 1, H2O4S1: 2 }, BASES = { H1Na1O1: 1, H1K1O1: 1, H1Li1O1: 1, Ca1H2O2: 2, Ba1H2O2: 2, Sr1H2O2: 2 };
+          cval = toM(parseFloat(concs[0][1]), concs[0][2]);
+          if (ACIDS[key]) { strong = 'acid'; factor = ACIDS[key]; H = cval * factor; }
+          else if (BASES[key]) { strong = 'base'; factor = BASES[key]; OH = cval * factor; }
+          else if (/acetic|vinegar|citric/.test(l) || key === 'C2H4O2' || /C2H4O2|C6H8O7/.test(canon(cs.pf.counts))) return done('chem', 'Careful: ' + show(cs.formula) + ' is a weak acid, so it only partly gives up its H\u207a.', [], 'For a weak acid you also need its Ka (acetic acid: Ka \u2248 1.8 \u00d7 10\u207b\u2075), so the simple pH = \u2212log[H\u207a] shortcut with the full concentration doesn\u2019t apply.');
+        }
+        if (H == null && OH == null && phWord && !/\bp\s?oh\b/i.test(s) && concs.length && !cs) H = toM(parseFloat(concs[0][1]), concs[0][2]);
+        if (H == null && OH == null && phv == null && pohv == null) { var lone = new RegExp('\\bp\\s?h\\s*(?:of|for)\\s*(?:a\\s*)?' + N, 'i').exec(s); if (lone && parseFloat(lone[1]) < 1) H = parseFloat(lone[1]); }
+        var sst = [], th = 'pH = \u2212log[H\u207a], pOH = \u2212log[OH\u207b], and at 25 \u00b0C pH + pOH = 14.';
+        if (H != null && H > 0) {
+          var ph = -Math.log(H) / Math.LN10;
+          if (strong) sst.push(show(cs.formula) + ' is a strong acid: it gives up ' + (factor === 2 ? 'both H\u207a (a common textbook simplification)' : 'all its H\u207a') + ', so [H\u207a] = ' + (factor === 2 ? '2 \u00d7 ' + fmt(cval, 4) + ' = ' : '') + fmt(H, 4) + ' M');
+          sst.push('pH = \u2212log(' + fmt(H, 4) + ') = ' + fx(ph, 2));
+          if (/\bp\s?oh\b|\[\s*oh|oh-|hydroxide/i.test(s)) sst.push('pOH = 14 \u2212 ' + fx(ph, 2) + ' = ' + fx(14 - ph, 2));
+          return done('chem', th, sst, 'pH = ' + fx(ph, 2) + (ph < 7 ? ' (acidic)' : ph > 7 ? ' (basic)' : ' (neutral)'));
+        }
+        if (OH != null && OH > 0) {
+          var poh = -Math.log(OH) / Math.LN10;
+          if (strong) sst.push(show(cs.formula) + ' is a strong base: [OH\u207b] = ' + (factor === 2 ? '2 \u00d7 ' + fmt(cval, 4) + ' = ' : '') + fmt(OH, 4) + ' M');
+          sst.push('pOH = \u2212log(' + fmt(OH, 4) + ') = ' + fx(poh, 2), 'pH = 14 \u2212 ' + fx(poh, 2) + ' = ' + fx(14 - poh, 2));
+          return done('chem', th, sst, 'pH = ' + fx(14 - poh, 2) + ' (pOH = ' + fx(poh, 2) + ')');
+        }
+        if (pohv != null && !(phv != null)) {
+          var ph2 = 14 - pohv;
+          return done('chem', th, ['pH = 14 \u2212 ' + fmt(pohv) + ' = ' + fx(ph2, 2), '[OH\u207b] = 10\u207b\u1d56\u1d52\u1d34 = 10' + sups('-' + fmt(pohv)) + ' = ' + fmt(Math.pow(10, -pohv), 4) + ' M'], 'pH = ' + fx(ph2, 2) + ', [OH\u207b] = ' + fmt(Math.pow(10, -pohv), 4) + ' M');
+        }
+        if (phv != null && (bracket || ionWord || /concentration|\bpoh\b|how acidic|how many/i.test(s))) {
+          var h = Math.pow(10, -phv), oh = Math.pow(10, phv - 14);
+          return done('chem', 'Undo the log: [H\u207a] = 10\u207b\u1d56\u1d34. Then pOH = 14 \u2212 pH for the hydroxide side.', ['[H\u207a] = 10' + sups('-' + fmt(phv)) + ' = ' + fmt(h, 4) + ' M', 'pOH = 14 \u2212 ' + fmt(phv) + ' = ' + fx(14 - phv, 2), '[OH\u207b] = 10' + sups('-' + fx(14 - phv, 2)) + ' = ' + fmt(oh, 4) + ' M'],
+            'At pH ' + fmt(phv) + ': [H\u207a] = ' + fmt(h, 4) + ' M and [OH\u207b] = ' + fmt(oh, 4) + ' M');
+        }
+      }
+
+      // dilution C1V1 = C2V2
+      var cv = {}; ['c1', 'v1', 'c2', 'v2', 'm1', 'm2'].forEach(function (k) { var x = new RegExp('\\b' + k + '\\s*[=:]\\s*' + N + '\\s*([a-zA-Z]*)', 'i').exec(s); if (x) cv[k.replace('m', 'c')] = { v: parseFloat(x[1]), u: x[2] }; });
+      var dil = /dilut|c1\s*v1|m1\s*v1|diluir|diluci|diluire|diluizion/i.test(s) || Object.keys(cv).length >= 3 || (concs.length === 2 && vols.length >= 1);
+      if (dil && hasNum) {
+        var C1, V1, C2, V2, vu = 'mL', stockFirst;
+        if (Object.keys(cv).length >= 3) {
+          C1 = cv.c1 && cv.c1.v; V1 = cv.v1 && cv.v1.v; C2 = cv.c2 && cv.c2.v; V2 = cv.v2 && cv.v2.v; vu = (cv.v1 && cv.v1.u) || (cv.v2 && cv.v2.u) || 'mL';
+        } else if (concs.length === 2 && vols.length >= 1) {
+          var ca = toM(parseFloat(concs[0][1]), concs[0][2]), cb = toM(parseFloat(concs[1][1]), concs[1][2]);
+          var hi = Math.max(ca, cb), lo = Math.min(ca, cb);
+          // which concentration does the volume belong to? the one right after it ("50 mL of 2 M"), else the one right before it
+          var vv = vols[0], vIdx = vv.index, pairC = null;
+          concs.forEach(function (c) { if (c.index > vIdx && c.index - (vIdx + vv[0].length) <= 6) pairC = toM(parseFloat(c[1]), c[2]); });
+          if (pairC == null) concs.forEach(function (c) { if (c.index < vIdx && vIdx - (c.index + c[0].length) <= 12) pairC = toM(parseFloat(c[1]), c[2]); });
+          if (pairC == null) pairC = /\b(make|prepare|final|need|want|obtain|end up|hacer|preparar|fare|preparare)\b/i.test(s) ? lo : hi;
+          vu = /^(ml|mls|millil)/i.test(vv[2]) ? 'mL' : /^(l|liter|litre)/i.test(vv[2]) ? 'L' : vv[2];
+          var vval = parseFloat(vv[1]);
+          if (vols.length >= 2) { // both volumes: find the missing concentration... not needed; treat as stock/final pair
+            C1 = hi; V1 = null; C2 = lo; V2 = null;
+          }
+          if (pairC === hi) { C1 = hi; V1 = vval; C2 = lo; V2 = null; } else { C1 = hi; V1 = null; C2 = lo; V2 = vval; }
+        } else return null;
+        var known = [C1, V1, C2, V2].filter(function (x) { return x != null && !isNaN(x); }).length;
+        if (known !== 3) return null;
+        var th2 = 'Adding water doesn\u2019t change how much solute there is, only how spread out it is. So C\u2081V\u2081 = C\u2082V\u2082.';
+        var acid = /\b(acid|acido|HCl|H2SO4|HNO3)\b/i.test(s) ? ' Safety: always add acid to water, never water to acid.' : '';
+        var cU = cv.c1 ? (cv.c1.u || 'M') : 'M';
+        if (V2 == null) {
+          V2 = C1 * V1 / C2;
+          return done('chem', th2, ['C\u2081 = ' + fmt(C1, 4) + ' ' + cU + ', V\u2081 = ' + fmt(V1, 4) + ' ' + vu + ', C\u2082 = ' + fmt(C2, 4) + ' ' + cU, 'V\u2082 = C\u2081V\u2081 \u00f7 C\u2082 = ' + fmt(C1, 4) + ' \u00d7 ' + fmt(V1, 4) + ' \u00f7 ' + fmt(C2, 4) + ' = ' + fmt(V2, 4) + ' ' + vu],
+            'Final volume V\u2082 = ' + fmt(V2, 4) + ' ' + vu + ': start with ' + fmt(V1, 4) + ' ' + vu + ' and add about ' + fmt(V2 - V1, 4) + ' ' + vu + ' of water.' + acid);
+        }
+        if (V1 == null) {
+          V1 = C2 * V2 / C1;
+          return done('chem', th2, ['C\u2081 = ' + fmt(C1, 4) + ' ' + cU + ' (stock), C\u2082 = ' + fmt(C2, 4) + ' ' + cU + ', V\u2082 = ' + fmt(V2, 4) + ' ' + vu, 'V\u2081 = C\u2082V\u2082 \u00f7 C\u2081 = ' + fmt(C2, 4) + ' \u00d7 ' + fmt(V2, 4) + ' \u00f7 ' + fmt(C1, 4) + ' = ' + fmt(V1, 4) + ' ' + vu],
+            'Take ' + fmt(V1, 4) + ' ' + vu + ' of the stock and add water up to ' + fmt(V2, 4) + ' ' + vu + ' total (about ' + fmt(V2 - V1, 4) + ' ' + vu + ' of water).' + acid);
+        }
+        if (C2 == null) { C2 = C1 * V1 / V2; return done('chem', th2, ['C\u2082 = C\u2081V\u2081 \u00f7 V\u2082 = ' + fmt(C1, 4) + ' \u00d7 ' + fmt(V1, 4) + ' \u00f7 ' + fmt(V2, 4)], 'C\u2082 = ' + fmt(C2, 4) + ' ' + cU); }
+        C1 = C2 * V2 / V1; return done('chem', th2, ['C\u2081 = C\u2082V\u2082 \u00f7 V\u2081 = ' + fmt(C2, 4) + ' \u00d7 ' + fmt(V2, 4) + ' \u00f7 ' + fmt(V1, 4)], 'C\u2081 = ' + fmt(C1, 4) + ' ' + cU);
+      }
+
+      // ideal gas PV = nRT
+      var stp = /\bstp\b/i.test(s), gasy = /ideal gas|pv\s*=\s*nrt|gas law|\bgas\b|ley de los gases|legge dei gas|\bgases?\b|\bgas\b/i.test(s);
+      if ((/ideal gas|pv\s*=\s*nrt|gas law|ley de los gases|legge dei gas/i.test(s) || stp || (press.length && temps.length) || (gasy && (press.length || temps.length))) && hasNum) {
+        var P = press.length ? toAtm(parseFloat(press[0][1]), press[0][2]) : stp ? 1 : null;
+        var T = temps.length ? toK(parseFloat(temps[0][1]), temps[0][2]) : stp ? 273.15 : null;
+        var V = vols.length ? toL(parseFloat(vols[0][1]), vols[0][2]) : null;
+        var n = mols.length ? toMol(parseFloat(mols[0][1]), mols[0][2]) : null, gst = [], gsub = null;
+        if (n == null && masses.length) { gsub = S(); if (gsub && gsub.pf) { var gm = molar(gsub.pf); n = toG(parseFloat(masses[0][1]), masses[0][2]) / gm; gst.push('n = ' + fmt(toG(parseFloat(masses[0][1]), masses[0][2]), 4) + ' g \u00f7 ' + fmass(gm) + ' g/mol = ' + fmt(n, 4) + ' mol'); } }
+        var have = [P, V, n, T].filter(function (x) { return x != null; }).length;
+        if (have === 3) {
+          var th3 = 'PV = nRT. Put everything in atm, liters, moles and kelvin first (R = 0.08206 L\u00b7atm/mol\u00b7K), then solve for the missing one.';
+          if (press.length && !/^atm/i.test(press[0][2])) gst.push('P = ' + press[0][1] + ' ' + press[0][2] + ' = ' + fmt(P, 4) + ' atm');
+          if (temps.length && !/^k/i.test(temps[0][2])) gst.push('T = ' + temps[0][1] + ' \u00b0C + 273.15 = ' + fx(T, 2) + ' K');
+          if (vols.length && toL(1, vols[0][2]) !== 1) gst.push('V = ' + volText(parseFloat(vols[0][1]), vols[0][2]) + ' = ' + fmt(V, 4) + ' L');
+          if (stp && !press.length) gst.push('STP: P = 1 atm, T = 273.15 K');
+          if (V == null) { V = n * R * T / P; gst.push('V = nRT \u00f7 P = ' + fmt(n, 4) + ' \u00d7 0.08206 \u00d7 ' + fx(T, 2) + ' \u00f7 ' + fmt(P, 4)); return done('chem', th3, gst, 'V \u2248 ' + fmt(V, 4) + ' L'); }
+          if (P == null) { P = n * R * T / V; gst.push('P = nRT \u00f7 V = ' + fmt(n, 4) + ' \u00d7 0.08206 \u00d7 ' + fx(T, 2) + ' \u00f7 ' + fmt(V, 4)); return done('chem', th3, gst, 'P \u2248 ' + fmt(P, 4) + ' atm (' + fmt(P * 101.325, 4) + ' kPa)'); }
+          if (n == null) { n = P * V / (R * T); gst.push('n = PV \u00f7 RT = ' + fmt(P, 4) + ' \u00d7 ' + fmt(V, 4) + ' \u00f7 (0.08206 \u00d7 ' + fx(T, 2) + ')'); return done('chem', th3, gst, 'n \u2248 ' + fmt(n, 4) + ' mol'); }
+          T = P * V / (n * R); gst.push('T = PV \u00f7 nR = ' + fmt(P, 4) + ' \u00d7 ' + fmt(V, 4) + ' \u00f7 (' + fmt(n, 4) + ' \u00d7 0.08206)'); return done('chem', th3, gst, 'T \u2248 ' + fx(T, 2) + ' K (' + fx(T - 273.15, 2) + ' \u00b0C)');
+        }
+      }
+
+      // molarity family
+      var askMass = /\b(grams?|mass|weigh\w*|how much|gramos|grammi|masa|massa)\b/i.test(s), askMol = /\b(moles?|mol|mols|how many moles)\b/i.test(s.replace(RE.mol, ' ').replace(RE.conc, ' ')), askVol = /\b(volume|how many (ml|mL|liters?|litres?)|what volume|how much solution)\b/i.test(s), askM = /\b(molarity|molaridad|molarit\u00e0|molarita|concentration|concentraci\u00f3n|concentrazione)\b/i.test(s);
+      var thM = 'Molarity is moles per liter: M = mol \u00f7 L. So work in liters, then moles, then grams.';
+      if (concs.length === 1 && vols.length >= 1) {
+        var Mv = toM(parseFloat(concs[0][1]), concs[0][2]), Lv = toL(parseFloat(vols[0][1]), vols[0][2]), st2 = [];
+        if (toL(1, vols[0][2]) !== 1) st2.push('Volume: ' + volText(parseFloat(vols[0][1]), vols[0][2]) + ' = ' + fmt(Lv, 4) + ' L');
+        var nn = Mv * Lv;
+        st2.push('Moles: ' + fmt(Mv, 4) + ' mol/L \u00d7 ' + fmt(Lv, 4) + ' L = ' + fmt(nn, 4) + ' mol');
+        if (askMass || masses.length === 0 && S()) {
+          var ms = S(); if (!ms || !ms.pf) return askMass ? needSub(ms, 'the grams') : done('chem', thM, st2, 'You need ' + fmt(nn, 4) + ' mol of solute.');
+          var mm = molar(ms.pf), g = nn * mm;
+          st2.push(readAs(ms) + mmLine(ms), 'Grams: ' + fmt(nn, 4) + ' mol \u00d7 ' + fmass(mm) + ' g/mol = ' + fmt(g, 4) + ' g');
+          return done('chem', thM, st2, 'Weigh out \u2248 ' + gShow(g) + ' of ' + show(ms.formula) + ', dissolve it, then top up to ' + volText(parseFloat(vols[0][1]), vols[0][2]) + ' total (don\u2019t just add ' + volText(parseFloat(vols[0][1]), vols[0][2]) + ' of water).', { sub: ms });
+        }
+        return done('chem', thM, st2, fmt(nn, 4) + ' mol of solute in ' + volText(parseFloat(vols[0][1]), vols[0][2]) + '.');
+      }
+      if (concs.length === 1 && (mols.length || masses.length) && (askVol || /\bvolume|how many (ml|l)\b/i.test(s))) {
+        var Mv2 = toM(parseFloat(concs[0][1]), concs[0][2]), n2, st3 = [];
+        if (mols.length) n2 = toMol(parseFloat(mols[0][1]), mols[0][2]);
+        else { var s3 = S(); if (!s3 || !s3.pf) return needSub(s3, 'the volume'); var mm3 = molar(s3.pf); n2 = toG(parseFloat(masses[0][1]), masses[0][2]) / mm3; st3.push(readAs(s3) + mmLine(s3), 'Moles: ' + fmt(toG(parseFloat(masses[0][1]), masses[0][2]), 4) + ' g \u00f7 ' + fmass(mm3) + ' g/mol = ' + fmt(n2, 4) + ' mol'); }
+        var L3 = n2 / Mv2; st3.push('Volume: ' + fmt(n2, 4) + ' mol \u00f7 ' + fmt(Mv2, 4) + ' mol/L = ' + fmt(L3, 4) + ' L');
+        return done('chem', thM, st3, 'V \u2248 ' + Lshow(L3));
+      }
+      if (!concs.length && vols.length === 1 && (mols.length || masses.length) && (askM || /\bin\b|\bdissolved\b/i.test(s)) && (askM || /\bM\b|molar/.test(s))) {
+        var L4 = toL(parseFloat(vols[0][1]), vols[0][2]), n4, st4 = [];
+        if (mols.length) n4 = toMol(parseFloat(mols[0][1]), mols[0][2]);
+        else { var s4 = S(); if (!s4 || !s4.pf) return needSub(s4, 'the molarity'); var mm4 = molar(s4.pf); n4 = toG(parseFloat(masses[0][1]), masses[0][2]) / mm4; st4.push(readAs(s4) + mmLine(s4), 'Moles: ' + fmt(toG(parseFloat(masses[0][1]), masses[0][2]), 4) + ' g \u00f7 ' + fmass(mm4) + ' g/mol = ' + fmt(n4, 4) + ' mol'); }
+        if (toL(1, vols[0][2]) !== 1) st4.push('Volume: ' + volText(parseFloat(vols[0][1]), vols[0][2]) + ' = ' + fmt(L4, 4) + ' L');
+        st4.push('M = ' + fmt(n4, 4) + ' mol \u00f7 ' + fmt(L4, 4) + ' L = ' + fmt(n4 / L4, 4) + ' M');
+        return done('chem', thM, st4, 'Molarity \u2248 ' + fmt(n4 / L4, 4) + ' M');
+      }
+
+      // particles (Avogadro): 2 mol -> molecules, 18 g water -> molecules, 3.01e23 molecules -> mol
+      var partWord = /\b(molecules?|atoms?|particles?|ions?|formula units?|mol[e\u00e9]culas?|[a\u00e1]tomos?|molecole|atomi)\b/i.test(s);
+      var thA = 'One mole is 6.022 \u00d7 10\u00b2\u00b3 particles (Avogadro\u2019s number), so particles = moles \u00d7 6.022 \u00d7 10\u00b2\u00b3.';
+      if (parts.length && askMol && !mols.length) { var Np = parseFloat(parts[0][1]); return done('chem', thA, ['moles = ' + fmt(Np, 4) + ' \u00f7 6.022 \u00d7 10\u00b2\u00b3 = ' + fmt(Np / NA, 4) + ' mol'], fmt(Np / NA, 4) + ' mol'); }
+      if (partWord && (mols.length || masses.length) && !parts.length) {
+        var n5, st5 = [], s5 = S();
+        if (mols.length) n5 = toMol(parseFloat(mols[0][1]), mols[0][2]);
+        else { if (!s5 || !s5.pf) return needSub(s5, 'the number of particles'); var mm5 = molar(s5.pf); n5 = toG(parseFloat(masses[0][1]), masses[0][2]) / mm5; st5.push(readAs(s5) + mmLine(s5), 'Moles: ' + fmt(toG(parseFloat(masses[0][1]), masses[0][2]), 4) + ' g \u00f7 ' + fmass(mm5) + ' g/mol = ' + fmt(n5, 4) + ' mol'); }
+        var Nn = n5 * NA, what = (/atoms?|[a\u00e1]tomos?|atomi/i.exec(s) || /ions?/i.exec(s) || ['molecules'])[0].toLowerCase();
+        what = /^at|^\u00e1t/.test(what) ? 'atoms' : /^ion/.test(what) ? 'ions' : /particle/.test(what) ? 'particles' : 'molecules';
+        var per5 = 0; if (s5 && s5.pf && !s5.element) s5.pf.order.forEach(function (e) { per5 += s5.pf.counts[e]; });
+        if (what === 'atoms' && per5 > 1) {
+          st5.push('Molecules: ' + fmt(n5, 4) + ' mol \u00d7 6.022 \u00d7 10\u00b2\u00b3 = ' + fmt(Nn, 4), 'Atoms: each ' + show(s5.formula) + ' has ' + per5 + ' atoms, so ' + fmt(Nn, 4) + ' \u00d7 ' + per5 + ' = ' + fmt(Nn * per5, 4));
+          return done('chem', thA, st5, '\u2248 ' + fmt(Nn * per5, 4) + ' atoms (in ' + fmt(Nn, 4) + ' molecules)');
+        }
+        st5.push(what.charAt(0).toUpperCase() + what.slice(1) + ': ' + fmt(n5, 4) + ' mol \u00d7 6.022 \u00d7 10\u00b2\u00b3 = ' + fmt(Nn, 4));
+        return done('chem', thA, st5, '\u2248 ' + fmt(Nn, 4) + ' ' + what);
+      }
+
+      // grams <-> moles
+      var thG = 'Moles = grams \u00f7 molar mass. So first find the molar mass, then divide (or multiply to go back to grams).';
+      if (masses.length && askMol && !mols.length) {
+        var s6 = S(); if (!s6 || !s6.pf) return needSub(s6, 'the moles');
+        var g6 = toG(parseFloat(masses[0][1]), masses[0][2]), mm6 = molar(s6.pf), n6 = g6 / mm6, st6 = [readAs(s6) + mmLine(s6) + '  (' + mmSteps(s6).join(' + ').replace(/[A-Z][a-z]?: /g, '') + ')'];
+        if (s6.pf.order.length === 1 && s6.pf.counts[s6.pf.order[0]] === 1) st6 = [readAs(s6) + mmLine(s6)];
+        st6.push('Moles: ' + fmt(g6, 4) + ' g \u00f7 ' + fmass(mm6) + ' g/mol = ' + fmt(n6, 4) + ' mol');
+        return done('chem', thG, st6, fmt(g6, 4) + ' g of ' + show(s6.formula) + ' \u2248 ' + fmt(n6, 4) + ' mol', { sub: s6 });
+      }
+      if (mols.length && (askMass || /\bto (g|grams?)\b|\bin (g|grams?)\b/i.test(s)) && !masses.length) {
+        var s7 = S(); if (!s7 || !s7.pf) return needSub(s7, 'the grams');
+        var n7 = toMol(parseFloat(mols[0][1]), mols[0][2]), mm7 = molar(s7.pf), g7 = n7 * mm7;
+        return done('chem', thG, [readAs(s7) + mmLine(s7), 'Grams: ' + fmt(n7, 4) + ' mol \u00d7 ' + fmass(mm7) + ' g/mol = ' + fmt(g7, 4) + ' g'], fmt(n7, 4) + ' mol of ' + show(s7.formula) + ' \u2248 ' + gShow(g7), { sub: s7 });
+      }
+
+      // percent composition
+      if (/percent|%|percentage|porcentaje|porcentual|percentuale/i.test(s) && /composition|by mass|mass percent|\bin\b|\bof\b|composici|composizion/i.test(s) && !/\d\s*%/.test(s)) {
+        var s8 = S(); if (!s8 || !s8.pf) return needSub(s8, 'the percent composition');
+        var mm8 = molar(s8.pf), rows = s8.pf.order.map(function (e) { var part = AW[e] * s8.pf.counts[e]; return e + ': ' + fx(part, 3) + ' \u00f7 ' + fmass(mm8) + ' \u00d7 100 = ' + fx(part / mm8 * 100, 2) + '%'; });
+        return done('chem', 'Each element\u2019s share = the mass it brings to the formula \u00f7 the whole molar mass \u00d7 100.', [readAs(s8) + mmLine(s8)].concat(rows),
+          'By mass, ' + show(s8.formula) + ' is ' + s8.pf.order.map(function (e) { return fx(AW[e] * s8.pf.counts[e] / mm8 * 100, 2) + '% ' + e; }).join(', ') + '.', { sub: s8 });
+      }
+
+      // molar mass
+      var mmWord = /molar mass|molecular (weight|mass)|formula (weight|mass)|molar weight|atomic (mass|weight)|masa (molar|at[o\u00f3]mica)|peso (molecular|at[o\u00f3]mico)|massa (molare|atomica)|peso (molecolare|atomico)|g\s*\/\s*mol\b/i.test(s);
+      var bare = /^\s*[A-Z(][A-Za-z0-9()[\]\u00b7\u2022*.]*\s*\??\s*$/.test(s) && /[\d()\u00b7\u2022*]/.test(s) && parseFormula(s.replace(/[?\s]/g, ''));
+      if (mmWord || bare) {
+        var s9 = bare ? { label: s.trim(), formula: s.replace(/[?\s]/g, ''), pf: parseFormula(s.replace(/[?\s]/g, '')) } : S();
+        if (!s9 || !s9.pf) return mmWord ? needSub(s9, 'the molar mass') : null;
+        var mm9 = molar(s9.pf), th9 = 'Add up the atomic masses of every atom in the formula.';
+        if (s9.pf.paren) th9 += ' Whatever is inside brackets gets multiplied by the number after them.';
+        if (s9.pf.hydrate && /[\u00b7\u2022*.]\d*H2O\b/.test(s9.formula)) th9 += ' In a hydrate the water in the crystal counts too.';
+        var note9 = '';
+        if (s9.vinegar) note9 = 'Vinegar itself is mostly water; this is its acid, acetic acid (CH\u2083COOH), usually about 5% of it.';
+        if (s9.element && DIATOMIC[s9.formula]) note9 = 'As a gas it travels in pairs (' + show(s9.formula + '2') + '), so that\u2019s ' + fmass(mm9 * 2) + ' g/mol.';
+        var st9 = mmSteps(s9); if (st9.length > 1) st9.push('Total: ' + st9.map(function (x) { return x.split('= ')[1]; }).join(' + ') + ' = ' + fmass(mm9) + ' g/mol');
+        if (readAs(s9)) st9.unshift(readAs(s9).trim());
+        return done('chem', th9, st9, 'Molar mass of ' + (s9.label && !/[A-Z0-9]/.test(s9.label) ? s9.label + ' (' + show(s9.formula) + ')' : show(s9.formula)) + ' \u2248 ' + fmass(mm9) + ' g/mol', { sub: s9, note: note9 });
+      }
+      return null;
+    }
+
+    function answer(raw) {
+      var t = String(raw || '').trim(); if (!t || t.length > 300) return null;
+      var r = math(t);
+      if (!r) r = chem(t);
+      if (!r) return null;
+      if (DOSE.test(t)) return { kind: 'dose' };
+      if (BLOCK_WORDS.test(low(t))) r.blocked = 'drug';
+      else if (r.sub && r.sub.pf) r.blocked = blockedFormula(r.sub.pf);
+      if (!r.blocked) { // any other formula in the sentence
+        var re = /[A-Z(][A-Za-z0-9()[\]]*(?:[\u00b7\u2022*.]\d*[A-Z(][A-Za-z0-9()[\]]*)*/g, m;
+        while ((m = re.exec(t))) { var b = blockedFormula(parseFormula(m[0])); if (b) { r.blocked = b; break; } }
+      }
+      return r;
+    }
+    return { answer: answer, DOSE: DOSE, math: math, chem: chem, parseFormula: parseFormula, molar: function (f) { var p = parseFormula(f); return p ? molar(p) : null; }, fmt: fmt, smartCase: smartCase, BLOCK_WORDS: BLOCK_WORDS, AW: AW };
+  })();
+  /* CALC-END */
+
+  // after a calculation: ONE light, optional book nudge now and then (2nd calc, then every 3rd), never pushy
+  var CALC_TEXT = {
+    math: { en: 'Calculator', es: 'Calculadora', it: 'Calcolatrice' }, chem: { en: 'Chemistry math', es: 'Química', it: 'Chimica' },
+    follow: { en: ['Got another one?', 'What else should we work out?', 'Anything else to calculate?'],
+              es: ['¿Tienes otra?', '¿Qué más calculamos?', '¿Algo más que calcular?'],
+              it: ['Ne hai un’altra?', 'Cos’altro calcoliamo?', 'Altro da calcolare?'] },
+    nudge: { hidden: { en: 'If you like seeing how the chemistry really works, Hidden Passages goes much deeper: the real stories behind the molecules in medicine.',
+                       es: 'Si te gusta ver cómo funciona de verdad la química, Hidden Passages va mucho más a fondo: las historias reales detrás de las moléculas de la medicina.',
+                       it: 'Se ti piace vedere come funziona davvero la chimica, Hidden Passages va molto più a fondo: le storie vere dietro le molecole della medicina.' },
+             coloring: { en: 'And if your brain wants a break from numbers, the Coloring Book{coloringPrice} is sixty eerie pages to color at your own pace.',
+                         es: 'Y si tu cerebro pide un descanso de tanto número, el Coloring Book{coloringPrice} son sesenta páginas inquietantes para colorear a tu ritmo.',
+                         it: 'E se il cervello chiede una pausa dai numeri, il Coloring Book{coloringPrice} sono sessanta pagine inquietanti da colorare con calma.' } },
+    nudgeEvery: 3, nudgeFirst: 2
+  };
+
   var UI_TEXT = {
     en: { title: 'The Purple Rabbit', sub: 'Ask me anything · finds the right book', ph: 'Ask the Rabbit anything…', send: 'Send', tip: 'Psst… ask the Rabbit',
-          hint: 'Ask me anything: why the sky is blue, who discovered penicillin… or let me help you find the right book.',
+          hint: 'Ask me anything: why the sky is blue, who discovered penicillin, even chemistry math (try “molar mass of H2SO4”)… or let me help you find the right book.',
           wiki: 'Read more on Wikipedia', voiceOn: 'Read replies aloud', voiceOff: 'Stop reading replies aloud',
-          notice: 'An automated helper, not a person. It doesn’t save what you type. Short answers come from Wikipedia.', open: 'Open Ask the Purple Rabbit chat', close: 'Close chat', langs: 'Language',
+          notice: 'An automated helper, not a person. It remembers only your name and last topic, on this device (say “forget me” to clear). Short answers come from Wikipedia.', open: 'Open Ask the Purple Rabbit chat', close: 'Close chat', langs: 'Language',
           rec: 'The Rabbit recommends', gentle: 'A lighter option', taste: 'A free sample', amazon: 'See it on Amazon.', sampleLink: 'Read a free sample',
           restart: 'Start over', back: 'Back to the lab', told: 'You told me: %s.' },
     es: { title: 'El Conejo Púrpura', sub: 'Pregúntame lo que quieras · encuentra tu libro', ph: 'Pregúntale lo que quieras al Conejo…', send: 'Enviar', tip: 'Psst… pregúntale al Conejo',
-          hint: 'Pregúntame lo que quieras: por qué el cielo es azul, quién descubrió la penicilina… o te ayudo a encontrar el libro adecuado.',
+          hint: 'Pregúntame lo que quieras: por qué el cielo es azul, quién descubrió la penicilina, hasta cálculos de química (prueba «masa molar de H2SO4»)… o te ayudo a encontrar el libro adecuado.',
           wiki: 'Leer más en Wikipedia', voiceOn: 'Leer las respuestas en voz alta', voiceOff: 'Dejar de leer en voz alta',
-          notice: 'Un asistente automático, no una persona. No guarda lo que escribes. Las respuestas breves vienen de Wikipedia.', open: 'Abrir el chat del Conejo Púrpura', close: 'Cerrar el chat', langs: 'Idioma',
+          notice: 'Un asistente automático, no una persona. Solo recuerda tu nombre y tu último tema, en este dispositivo (di «olvídame» para borrarlo). Las respuestas breves vienen de Wikipedia.', open: 'Abrir el chat del Conejo Púrpura', close: 'Cerrar el chat', langs: 'Idioma',
           rec: 'El Conejo recomienda', gentle: 'Una opción más ligera', taste: 'Una muestra gratis', amazon: 'Ver en Amazon.', sampleLink: 'Leer una muestra gratis (en inglés)',
           restart: 'Empezar de nuevo', back: 'Volver al laboratorio', told: 'Me contaste: %s.' },
     it: { title: 'Il Coniglio Viola', sub: 'Chiedimi quello che vuoi · trova il tuo libro', ph: 'Chiedi quello che vuoi al Coniglio…', send: 'Invia', tip: 'Psst… chiedi al Coniglio',
-          hint: 'Chiedimi quello che vuoi: perché il cielo è blu, chi ha scoperto la penicillina… oppure ti aiuto a trovare il libro giusto.',
+          hint: 'Chiedimi quello che vuoi: perché il cielo è blu, chi ha scoperto la penicillina, perfino calcoli di chimica (prova “massa molare di H2SO4”)… oppure ti aiuto a trovare il libro giusto.',
           wiki: 'Leggi di più su Wikipedia', voiceOn: 'Leggi le risposte ad alta voce', voiceOff: 'Smetti di leggere ad alta voce',
-          notice: 'Un assistente automatico, non una persona. Non salva ciò che scrivi. Le risposte brevi vengono da Wikipedia.', open: 'Apri la chat del Coniglio Viola', close: 'Chiudi la chat', langs: 'Lingua',
+          notice: 'Un assistente automatico, non una persona. Ricorda solo il tuo nome e l’ultimo argomento, su questo dispositivo (scrivi «dimenticami» per cancellarli). Le risposte brevi vengono da Wikipedia.', open: 'Apri la chat del Coniglio Viola', close: 'Chiudi la chat', langs: 'Lingua',
           rec: 'Il Coniglio consiglia', gentle: 'Un’opzione più leggera', taste: 'Un estratto gratuito', amazon: 'Vedi su Amazon.', sampleLink: 'Leggi un estratto gratuito (in inglese)',
           restart: 'Ricomincia', back: 'Torna al laboratorio', told: 'Mi hai detto: %s.' }
   };
@@ -681,6 +1305,7 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
     direct: rx(CALL_FLOW.greetingWords.direct), warmAsked: rx(CALL_FLOW.greetingWords.warmAsked), warm: rx(CALL_FLOW.greetingWords.warm),
     done: rx(CALL_FLOW.doneWords), unsure: rx(CALL_FLOW.unsureWords), medicine: rx(CALL_FLOW.interests.medicine.words),
     restart: rx('restart|start over|reset|empezar de nuevo|reiniciar|volver a empezar|ricominci\\w*|da capo'),
+    forget: rx('forget me|forget my name|forget about me|forget everything|forget who i am|olvidame|olvida mi nombre|olvidate de mi|dimenticami|dimentica il mio nome|dimenticati di me'),
     askStart: new RegExp('^(' + deaccent(ASK.starts) + ')\\b'), askWeak: new RegExp('^(' + deaccent(ASK.weakStarts) + ')\\b'),
     notWiki: rx(ASK.notWiki), filler: new RegExp('^(' + ASK.filler + ')$'),
     expensive: rx(CALL_FLOW.retentionWords.too_expensive), notNow: rx(CALL_FLOW.retentionWords.not_now)
@@ -840,7 +1465,10 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
     if (keys.length > 1) keys = keys.filter(function (k) { return k !== 'science'; }); // "chemistry" alone is not a preference
     return keys;
   }
-  function addFound(keys) { keys.forEach(function (k) { if (state.interests.indexOf(k) < 0) state.interests.push(k); }); }
+  function addFound(keys) {
+    keys.forEach(function (k) { if (state.interests.indexOf(k) < 0) state.interests.push(k); });
+    if (keys.length && !memBlocked) { memory.topic = keys[keys.length - 1]; memWrite(); } // last topic, on this device only
+  }
   function addPhrase(p) {
     if (!p) return; var low = p.toLowerCase();
     for (var i = 0; i < state.phrases.length; i++) if (state.phrases[i].toLowerCase() === low) return;
@@ -916,14 +1544,77 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
         case 'asin': return (PRODUCTS[state.product || 'hidden'] || {}).asin || '';
         case 'title': return T((PRODUCTS[state.product || 'hidden'] || PRODUCTS.hidden).short);
         case 'topic': return state.topic || T(CALL_FLOW.phrases.that);
+        case 'name': return memory.name || '';
+        case 'nameComma': return memory.name ? ', ' + memory.name : '';
+        case 'lastTopic': return memory.topic && CALL_FLOW.interests[memory.topic] ? labelFor(memory.topic) : '';
       }
       return m;
     });
   }
 
+  /* ---------- memory: ONLY in the visitor's own browser (localStorage), never sent anywhere ----------
+     Keeps at most three things: that they've been here, the first name they told the Rabbit, and
+     their last topic (a key like "medicine", never their words). No cookies, no analytics.
+     Nothing is kept from a conversation that touched the drug / weapon / crisis guardrails
+     (it's rolled back to how it was when the page opened), and "forget me" erases everything.       */
+  var MEM_KEY = 'faRabbitMemory', memBlocked = false, memAtLoad = null;
+  function memParse(raw) {
+    var j = null; try { j = raw ? JSON.parse(raw) : null; } catch (e) { j = null; }
+    var o = {}; if (!j || typeof j !== 'object') return o;
+    if (j.seen) o.seen = 1;
+    if (typeof j.name === 'string' && /^[A-Za-z\u00C0-\u017F][A-Za-z\u00C0-\u017F'-]{0,19}$/.test(j.name)) o.name = j.name;
+    if (typeof j.topic === 'string' && CALL_FLOW.interests.hasOwnProperty(j.topic)) o.topic = j.topic;
+    return o;
+  }
+  try { memAtLoad = window.localStorage.getItem(MEM_KEY); } catch (e) { memAtLoad = null; }
+  var memory = memParse(memAtLoad), returning = !!memory.seen;
+  function memWrite() {
+    if (memBlocked) return;
+    var o = { seen: 1 }; if (memory.name) o.name = memory.name; if (memory.topic) o.topic = memory.topic; memory.seen = 1;
+    try { window.localStorage.setItem(MEM_KEY, JSON.stringify(o)); } catch (e) { /* storage off: fine */ }
+  }
+  function memGuard() { // a guardrail fired: keep nothing from this conversation
+    if (memBlocked) return; memBlocked = true;
+    try { if (memAtLoad == null) window.localStorage.removeItem(MEM_KEY); else window.localStorage.setItem(MEM_KEY, memAtLoad); } catch (e) { /* ignore */ }
+    memory = memParse(memAtLoad);
+  }
+  function memForget() { memBlocked = true; memAtLoad = null; memory = {}; try { window.localStorage.removeItem(MEM_KEY); } catch (e) { /* ignore */ } }
+  function startStep() { return returning ? 'greeting_back' : CALL_FLOW.start; }
+  // "do you remember me" / "remember me?" / "do u remember me" / "rember me" (typos forgiven), ES + IT too
+  function isRememberMe(n) {
+    var s = String(n).replace(/[^a-z\s']/g, ' ').replace(/\s+/g, ' ').trim();
+    if (/\b(te acuerdas de mi|te acordas de mi|me recuerdas|ti ricordi di me|ti ricordi me|mi ricordi)\b/.test(s)) return true;
+    var w = s.split(' ');
+    if (w.length > 8) return false;
+    for (var i = 0; i < w.length - 1; i++) {
+      var x = w[i];
+      if (w[i + 1] === 'me' && x.charAt(0) === 'r' && (x === 'rmbr' || (x.length >= 5 && x.length <= 10 && (osa(x, 'remember') <= 2 || osa(x, 'rember') <= 1)))) return true;
+    }
+    return false;
+  }
+  var NAME_STOP = /^(not|no|a|an|the|so|very|really|just|good|fine|ok|okay|great|well|bored|tired|new|back|here|there|curious|interested|sorry|sure|done|ready|looking|trying|doing|feeling|alright|cool|happy|sad|confused|lost|home|in|into|at|from|on|with|gonna|going|still|also|kind|kinda|super|pretty|too|lol|ha|haha|hungry|high|stoned|drunk|nobody|none|nothing|secret|anonymous|unknown|what|why|who|how|asking|wondering|student|teacher|chemist|doctor|nurse|rabbit|bot|human|robot|male|female|man|woman|guy|girl|boy|later|maybe|anytime|whatever|bien|bene|aqui|qui|yo|io|tu|you|me|it|that|this)$/;
+  function nameFrom(t) { // "my name is Zach", "call me Zach", "I'm Zach" (the last one only when it's clearly a name)
+    var s = String(t).replace(/[\u2018\u2019]/g, "'").trim(), strict = false;
+    var m = /\b(?:my name is|my name's|name's|call me|me llamo|mi nombre es|mi chiamo|il mio nome (?:e|\u00e8))\s+([A-Za-z\u00C0-\u017F][A-Za-z\u00C0-\u017F'-]{0,19})/i.exec(s);
+    if (!m) {
+      m = /^(?:(?:hi|hey|hello|yo|hola|ciao|hiya)[\s,!.]+)?(?:i'?m|i am|this is|soy|sono)\s+([A-Za-z\u00C0-\u017F][A-Za-z\u00C0-\u017F'-]{1,19})\s*(?:[,.!?]|$|\s+(?:here|by the way|btw)\b)/i.exec(s);
+      if (!m || !/^[A-Z\u00C0-\u00DD]/.test(m[1])) return null;
+      strict = true;
+    }
+    var w = m[1].replace(/['-]+$/, ''), k = norm(w);
+    if (w.length < 2 || NAME_STOP.test(k)) return null;
+    if (strict && knownWord(k)) return null;
+    var chk = [k, fixTypos(k), squash(k)];
+    if (anyRx(SAFE.drug, chk) || anyRx(SAFE.drugNamed, chk) || anyRx(SAFE.precursor, chk) || anyRx(SAFE.cannabis, chk) || anyRx(SAFE.weapon, chk) || anyRx(SAFE.crisis, chk) || NO_ECHO.test(k)) return null;
+    var name = (w === w.toLowerCase() || w === w.toUpperCase()) ? w.charAt(0).toUpperCase() + w.slice(1).toLowerCase() : w.charAt(0).toUpperCase() + w.slice(1);
+    var rest = norm(s.slice(0, m.index) + ' ' + s.slice(m.index + m[0].length))
+      .replace(/\b(hi|hey|hello|yo|hola|ciao|hiya|there|rabbit|and|by the way|btw|here|nice to meet you)\b/g, ' ').replace(/[^a-z0-9]+/g, '');
+    return { name: name, only: !rest };
+  }
+
   /* ---------- the chat window ---------- */
   var state; function resetState() { state = { interests: [], phrases: [], latest: '', rounds: 0, product: null, recommended: false, redirected: false, gateOk: false, gateNo: false, gateAsked: false, lead: '', replied: false, nudged: false,
-    drugAsks: 0, pushes: 0, drugCurious: false, answers: 0, lastPivotAt: 0, pivotPending: false, pivotBook: null, topicInterests: [], topic: '', shown: {} }; }
+    drugAsks: 0, pushes: 0, drugCurious: false, answers: 0, lastPivotAt: 0, pivotPending: false, pivotBook: null, topicInterests: [], topic: '', shown: {}, calcs: 0, calcNudges: 0 }; }
   resetState();
   var mount = SETTINGS.embed && document.querySelector(SETTINGS.embed);
   var host = document.getElementById('fa-rabbit-host');
@@ -974,6 +1665,9 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
     '.send{background:linear-gradient(135deg,#ff2bd6,#6d28ff);color:#fff;border:0;border-radius:12px;width:46px;padding:0;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;flex:none}.send svg{width:20px;height:20px}' +
     '.notice{font-size:10.5px;color:#a88fcc;text-align:center;padding:6px 10px 8px;background:#110919}.panel.ask .notice{background:transparent}' +
     '@media (max-width:480px){.panel{right:8px;left:8px;width:auto;max-width:none;bottom:84px;height:calc(100vh - 100px);height:calc(100dvh - 100px)}.bubble{right:14px;bottom:14px}.tip{display:none}.t span{display:none}.logo{width:60px;height:38px}.hero h2{font-size:23px}.panel.ask .main{padding:0 14px 6%}}' +
+    '.msg.calc{white-space:normal}.msg.calc span{display:block}.msg.calc .src{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#ff8cf3;margin-bottom:3px}.msg.calc .think{color:#d9c3ff;font-style:italic;margin-bottom:5px}' +
+    '.msg.calc .step{padding-left:1.25em;text-indent:-1.25em;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}.msg.calc .ans{margin-top:6px;font-weight:800;color:#fff;font-size:15px}.msg.calc .note{margin-top:5px;font-size:12.5px;color:#cdb6f0}.msg.calc .fol{margin-top:8px}' +
+    '.msg.calc a.wk{display:inline-block;margin-top:6px;font-size:12.5px;font-weight:700;color:#ffb3f7;text-decoration:none;border-bottom:1px dashed #ff5cf0;word-break:normal}' +
     '.opt.door{border-style:dashed}.msg a{color:#ffb3f7;word-break:break-all}' +
     '@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}' +
     (mount ? ':host{display:block;height:100%}.panel{position:relative!important;inset:auto!important;width:100%!important;max-width:none!important;height:100%!important;z-index:auto}.bubble,.tip,.x{display:none!important}' : '') +
@@ -1147,6 +1841,7 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
   }
   function linesOf(st, key) {
     var src = (key === 'say' && lastShort && st.short) ? st.short : st[key];
+    if (typeof src === 'string' && CALL_FLOW.steps[src]) src = CALL_FLOW.steps[src][key];
     var v = T(src); if (!v) return [];
     if (typeof v === 'string') v = [v];
     return v.map(fill).filter(function (x) { return x; });
@@ -1211,21 +1906,21 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
     run(state.rounds === 1 ? 'what_else_1' : state.rounds === 2 ? 'what_else_2' : 'what_else_more');
   }
   function refuse(textObj) { // SAFETY: refuse, then redirect to the medicine-history book
-    state.redirected = true; state.lead = ''; state.pivotPending = false; leaveAsk(); clearOpts();
+    memGuard(); state.redirected = true; state.lead = ''; state.pivotPending = false; leaveAsk(); clearOpts();
     say(T(textObj), function () { state.product = 'hidden'; state.recommended = true; run('recommend_redirect'); });
   }
 
   // SAFETY, the warm way: asked how to make/get a drug (or a drug topic came up in a lookup).
   // Curiosity first, then the normal call flow; the drug is never named back, no how-to, ever.
   function drugCurious(wikiVariant) {
-    var first = !state.drugCurious;
+    var first = !state.drugCurious; memGuard();
     state.drugCurious = true; state.pivotPending = false; state.lead = ''; busy = false; clearOpts();
     if (wikiVariant) return run(first ? 'drug_curious_wiki' : 'drug_wiki_again'); // a question is not "pushing"
     if (++state.drugAsks > 1) return pushBack();
     run('drug_curious');
   }
   function pushBack() { // they keep pushing for instructions: gentle, no lecture, back to the books
-    state.drugCurious = true; state.pivotPending = false; state.lead = '';
+    memGuard(); state.drugCurious = true; state.pivotPending = false; state.lead = '';
     if (state.pushes++ >= 1) { state.product = 'hidden'; state.recommended = true; return run('drug_push_again'); }
     if (state.shown.hidden) { state.product = 'hidden'; state.recommended = true; return run('drug_push_light'); }
     run('drug_push');
@@ -1338,6 +2033,51 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
   }
   CALL_FLOW.steps.wiki_answer = { stage: 'Discovery', listen: 'discovery' }; // after a free answer, a statement feeds the discovery
 
+  /* ---------- calculator + chemistry answers ---------- */
+  function speakCalc(s) { // subscripts/superscripts read as plain numbers
+    var SUP = '\u2070\u00b9\u00b2\u00b3\u2074\u2075\u2076\u2077\u2078\u2079';
+    return String(s).replace(/[\u2080-\u2089]/g, function (c) { return String(c.charCodeAt(0) - 0x2080); })
+      .replace(/10([\u207b]?)([\u2070\u00b9\u00b2\u00b3\u2074-\u2079]+)/g, function (m, neg, d) { return '10 to the ' + (neg ? 'minus ' : '') + d.split('').map(function (c) { return SUP.indexOf(c); }).join(''); })
+      .replace(/\u00d7/g, ' times ').replace(/\u00f7/g, ' divided by ').replace(/\u2212/g, ' minus ').replace(/\u2248/g, ' about ');
+  }
+  function calcReply(res) {
+    var my = runId; clearOpts(); busy = true;
+    if (!res.unknown) state.calcs++;
+    var nudge = !res.unknown && (state.calcs === CALC_TEXT.nudgeFirst || (state.calcs > CALC_TEXT.nudgeFirst && (state.calcs - CALC_TEXT.nudgeFirst) % CALC_TEXT.nudgeEvery === 0));
+    typingFor(Math.round(SETTINGS.typingDelay * 1.1), function () {
+      if (my !== runId) return;
+      busy = false;
+      var box = el('div', 'msg bot calc');
+      box.appendChild(el('span', 'src', T(res.kind === 'math' ? CALC_TEXT.math : CALC_TEXT.chem)));
+      if (res.think) box.appendChild(el('span', 'think', res.think));
+      (res.steps || []).forEach(function (st, i) { box.appendChild(el('span', 'step', (res.steps.length > 1 ? (i + 1) + '. ' : '') + st)); });
+      box.appendChild(el('span', 'ans', res.result));
+      if (res.note) box.appendChild(el('span', 'note', res.note));
+      var fl = T(CALC_TEXT.follow), fol = nudge || res.unknown ? '' : fl[(state.calcs - 1) % fl.length];
+      if (fol) box.appendChild(el('span', 'fol', fol));
+      log.appendChild(botRow(box)); scroll();
+      speak(speakCalc([res.think, res.result, res.note, fol].filter(Boolean).join(' ')));
+      current = 'calc_answer';
+      if (nudge) calcNudge();
+    });
+  }
+  function calcNudge() { // one light book mention (Hidden Passages or the Coloring Book only), in the usual Amazon link style
+    var key = (state.calcNudges++ % 2) ? 'coloring' : 'hidden', url = linkFor(key), my = runId;
+    if (!url) return;
+    busy = true;
+    typingFor(SETTINGS.typingDelay, function () {
+      if (my !== runId) return;
+      busy = false;
+      var line = fill(T(CALC_TEXT.nudge[key])), d = el('div', 'msg bot calc nudge');
+      d.appendChild(el('span', 'txt', line));
+      var a = el('a', 'wk', UI_TEXT[lang].amazon + store + ' \u2197'); a.href = url; tagLink(a, key, 'amazon', 'calc'); d.appendChild(a);
+      log.appendChild(botRow(d)); scroll(); speak(line);
+    });
+  }
+  CALL_FLOW.steps.calc_answer = { stage: 'Discovery', listen: 'calc' }; // after a calculation: thanks -> short reply, else the normal flow
+  var CALC_DRUG_MATH = /\b(grams?|gramos?|grammi|mg|milligrams?|kg|ml|mls|moles?|mols?|molar\w*|molarity|yield\w*|how many|how much|calculat\w*|ratio|percent|purity|concentrat\w*|cuantos?|cuantas?|quanti|quante|quanto)\b/;
+  var THANKS = /\b(thanks|thank you|thank u|thx|ty|cool|nice|awesome|great|perfect|got it|ok|okay|wow|gracias|genial|perfecto|vale|grazie|perfetto|ottimo)\b/;
+
   function productNamed(f) { for (var k in CALL_FLOW.productNames) if (rx(CALL_FLOW.productNames[k].words).test(f)) return k; return null; }
 
   function handleText(raw) {
@@ -1349,7 +2089,7 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
     lastShort = n.split(/\s+/).length <= SETTINGS.shortReplyWords;
     // ---- safety first, at every step (all languages, typos included) ----
     if (anyRx(SAFE.crisis, V)) {
-      clearOpts(); current = null;
+      memGuard(); clearOpts(); current = null;
       say(T(SAFE_TEXT.crisis), function () { showChoices({ choices: [{ label: { en: UI_TEXT.en.back, es: UI_TEXT.es.back, it: UI_TEXT.it.back }, restart: true }] }); });
       return;
     }
@@ -1361,9 +2101,27 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
     }
     if (anyRx(SAFE.otherPlant, V)) return refuse(SAFE_TEXT.plant);
     var drugTalk = anyRx(SAFE.drug, V) || anyRx(SAFE.precursor, V); // mentioned, not asking to make/get: never echoed back
+    if (drugTalk || anyRx(SAFE.drugNamed, V) || anyRx(SAFE.cannabis, V)) memGuard();       // nothing from this conversation is remembered
+    // a controlled drug + doses / amounts / yields / "math": never calculated, the warm redirect instead
+    if ((drugTalk || anyRx(SAFE.drugNamed, V)) && (FA_CALC.DOSE.test(n) || CALC_DRUG_MATH.test(n))) return drugCurious(false);
     // still pushing for instructions after the warm redirect
     if (state.drugAsks && anyRx(SAFE.push, V) && !RX.expensive.test(f) && !productNamed(f) && !findInterests(f).some(function (k) { return k === 'plants'; })) return pushBack();
     if (RX.restart.test(f)) return restartAll();
+    if (!drugTalk) memWrite();
+    // ---- memory (this device only): "forget me", "my name is ...", "do you remember me?" ----
+    if (RX.forget.test(n)) { memForget(); return run('forget_me'); }
+    var nm = drugTalk ? null : nameFrom(t);
+    if (nm) { memory.name = nm.name; memWrite(); }
+    if (isRememberMe(n)) return run(memory.topic ? 'remember_me_topic' : 'remember_me');
+    if (nm && nm.only) return run('name_nice');
+    // ---- calculator + chemistry math (only ever reached AFTER all the safety checks above) ----
+    var calc = FA_CALC.answer(t);
+    if (calc) {
+      if (calc.blocked === 'weapon' || anyRx(SAFE.weapon, V)) return refuse(SAFE_TEXT.topic);
+      if (calc.blocked || drugTalk || anyRx(SAFE.drugNamed, V) || anyRx(SAFE.cannabis, V) || anyRx(SAFE.otherPlant, V)) return drugCurious(false);
+      if (calc.kind === 'dose') return run('calc_dose');
+      return calcReply(calc);
+    }
     var st = CALL_FLOW.steps[current] || {}, list = choicesOf(st), i;
     var q = SETTINGS.wikipedia && !list.some(function (c) { return c.set && (c.set.gateOk || c.set.gateNo); }) && isQuestion(f, t) && !anyRx(SAFE.cannabis, V);
     // a controlled-drug topic is never looked up: warm curiosity instead (no summary)
@@ -1392,6 +2150,10 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
     // ---- a general question: free answer from Wikipedia (then maybe a pivot) ----
     if (q) return wikiAnswer(t, f, found);
     if (drugTalk) { if (!state.drugCurious) state.lead = T(SAFE_TEXT.drugOnly)[0] + ' '; if (!found.length) found = ['medicine']; }
+    if (st.listen === 'calc') {
+      if (!found.length && wc <= 6 && THANKS.test(f)) return run('calc_thanks');
+      return greetingReply(fr, f, found, drugTalk);
+    }
     if (st.listen === 'greeting') return greetingReply(fr, f, found, drugTalk);
     if (st.listen === 'discovery') return discoveryAnswer(fr, f, found, drugTalk ? labelsText(found) : null);
     if (st.listen === 'end') {
@@ -1404,9 +2166,18 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
     run('fallback');
   }
 
-  function restartAll() { runId++; busy = false; cancelNudge(); stopSpeaking(); log.innerHTML = ''; resetState(); lastShort = false; enterAsk(); run(CALL_FLOW.start, true); }
+  function restartAll() { runId++; busy = false; cancelNudge(); stopSpeaking(); log.innerHTML = ''; resetState(); lastShort = false; enterAsk(); run(startStep(), true); }
+  // Optional deep link: /rabbit/?q=1000*500 asks that question for the visitor (up to 3 q= values).
+  // Nothing from a deep-linked visit is remembered on the device.
+  var AUTO_Q = [];
+  try { if (mount && window.URLSearchParams) AUTO_Q = new URLSearchParams(window.location.search).getAll('q').map(function (x) { return String(x).trim().slice(0, 300); }).filter(Boolean).slice(0, 3); } catch (e) { AUTO_Q = []; }
+  function autoAsk() {
+    if (!AUTO_Q.length) return;
+    memBlocked = true;
+    (function nx() { if (!AUTO_Q.length) return; if (busy) return setTimeout(nx, 150); handleText(AUTO_Q.shift()); setTimeout(nx, 400); })();
+  }
   function setLanguage(l) { if (!UI_TEXT[l] || l === lang) return; lang = l; applyUI(); if (started) restartAll(); }
-  function open() { panel.classList.add('open'); bubble.setAttribute('aria-expanded', 'true'); tip.style.display = 'none'; if (!started) { started = true; run(CALL_FLOW.start, true); } if (!mount) setTimeout(function () { inp.focus({ preventScroll: true }); }, 50); }
+  function open() { panel.classList.add('open'); bubble.setAttribute('aria-expanded', 'true'); tip.style.display = 'none'; if (!started) { started = true; run(startStep(), true); if (AUTO_Q.length) setTimeout(autoAsk, 350); } if (!mount) setTimeout(function () { inp.focus({ preventScroll: true }); }, 50); }
   function close() { if (mount) return; stopSpeaking(); panel.classList.remove('open'); bubble.setAttribute('aria-expanded', 'false'); bubble.focus(); }
 
   applyUI();
@@ -1419,7 +2190,7 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
   setTimeout(function () { tip.style.display = 'none'; }, 9000);
   if (mount) open();
   window.FARabbit = { open: open, close: close, setLanguage: setLanguage, store: function () { return store; }, language: function () { return lang; },
-    fixTypos: function (s) { return fixTypos(norm(s)); } };
+    fixTypos: function (s) { return fixTypos(norm(s)); }, calc: function (s) { return FA_CALC.answer(s); } };
 })();
 </script>
 </body>
