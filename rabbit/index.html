@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" href="data:,">
-<title>Ask the Purple Rabbit · Furious Acid</title>
-<meta name="description" content="Chat with the Purple Rabbit to find the right Furious Acid book. English, Español, Italiano.">
+<title>Ask the Purple Rabbit anything · Furious Acid</title>
+<meta name="description" content="Ask the Purple Rabbit anything about chemistry, science and medicine, and find the right Furious Acid book. English, Español, Italiano.">
 <style>
 :root{--ink:#17131d;--muted:#69636f;--page:#f3f2f5;--line:#dedbe3;--purple:#6f00ff;--purple-dark:#4b00ad;--yellow:#fdf200;--black:#0b0a0e}
 *{box-sizing:border-box}
@@ -32,10 +32,10 @@ h1{margin:0 0 10px;font-size:34px;line-height:1.1;color:var(--purple-dark)}
 <main>
 <section class="intro">
 <h1>Ask the Purple Rabbit</h1>
-<p class="m">Tell the Rabbit what you're into and it will point you to the right book. EN · ES · IT. <a href="/">← Home</a></p>
-<p class="d">Not sure which Furious Acid book is yours? Tell the Rabbit what pulls you toward chemistry, whether that's eerie art, the story of medicine, or growing plants, and it will point you to the right door.</p>
+<p class="m">Ask the Rabbit anything, or let it point you to the right book. EN · ES · IT. Short answers come from Wikipedia. <a href="/">← Home</a></p>
+<p class="d">Ask the Rabbit anything: why the sky is blue, who discovered penicillin, how fireworks get their colors. It answers in a few lines, and when you're curious to go deeper, it points you to the right Furious Acid book, whether that's eerie art, the story of medicine, or growing plants.</p>
 <p class="d">Habla español · Parla italiano. Use the EN / ES / IT buttons in the chat.</p>
-<p class="muted d">The Rabbit is an automated helper, not a person. It doesn't save what you type, uses no cookies and tracks nothing. Links open your local Amazon store. <a href="/">← Back to furiousacid.com</a></p>
+<p class="muted d">The Rabbit is an automated helper, not a person. Short answers to general questions come from Wikipedia's free public API (text by Wikipedia contributors, CC BY-SA); a question is sent to Wikipedia only to look it up. The Rabbit doesn't save what you type, uses no cookies and tracks nothing. Read-aloud uses your browser's own voice. Links open your local Amazon store. <a href="/">← Back to furiousacid.com</a></p>
 </section>
 <div id="chat"></div>
 </main>
@@ -53,150 +53,1374 @@ window.FA_RABBIT_SETTINGS = {
 document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['furiousacid-logo.png'];
 </script>
 <script>
-!function(){'use strict';if(!window.__faRabbitLoaded){window.__faRabbitLoaded=!0;var e={language:'auto',store:'auto',attribution:{},utm:'utm_source=furiousacid&utm_medium=rabbit_chat',pathUrl:'https://furiousacid.com/path',shopUrl:'https://furiousacid.printify.me/products',typingDelay:650,
-assetsPath:'assets/'};if(window.FA_RABBIT_SETTINGS)for(var a in window.FA_RABBIT_SETTINGS)e[a]=window.FA_RABBIT_SETTINGS[a];var o,t={start:'greet',steps:{greet:{stage:'Greet',say:{en:['Hi! What pulls you toward chemistry?','Tap a door below, or tell me in your own words.'],
-es:['¡Hola! ¿Qué te atrae de la química?','Toca una puerta de abajo o cuéntamelo con tus propias palabras.'],it:['Ciao! Cosa ti attira della chimica?','Tocca una porta qui sotto, oppure raccontamelo con parole tue.']},choices:[{label:{en:'Art & the eerie stuff',es:'El arte y lo inquietante',
-it:'L’arte e l’inquietante'},next:'rapport_art',set:{interest:'art',product:'coloring'}},{label:{en:'Medicine & the brain',es:'La medicina y el cerebro',it:'La medicina e il cervello'},next:'rapport_med',set:{interest:'medicine',product:'hidden'}},{label:{en:'Growing plants',es:'Cultivar plantas',
-it:'Coltivare piante'},next:'rapport_plants',set:{interest:'plants'}},{label:{en:'I’m a fan: merch!',es:'Soy fan: ¡merch!',it:'Sono un fan: merch!'},next:'discover_merch',set:{interest:'merch',product:'shop'}},{label:{en:'Teach me step by step',es:'Enséñame paso a paso',
-it:'Insegnami passo dopo passo'},next:'rapport_learn',set:{interest:'learn',product:'hidden'}}]},rapport_art:{stage:'Rapport',say:{
-en:['“{echo}.” I like the way you put that.','People tell me they color late at night, when the house goes quiet and the page becomes a small, strange room of its own.','What does a good page do for you?'],
-es:['«{echo}». Me gusta cómo lo dices.','Hay quien me cuenta que colorea de noche, cuando la casa se queda en silencio y la página se vuelve una pequeña habitación extraña.','¿Qué hace por ti una buena página?'],
-it:['«{echo}». Mi piace come lo dici.','C’è chi mi racconta che colora di notte, quando la casa tace e la pagina diventa una piccola stanza strana tutta sua.','Cosa fa per te una bella pagina?']},choices:[{label:{en:'It helps me unwind',es:'Me ayuda a desconectar',it:'Mi aiuta a staccare'},
-next:'discover_art',set:{artWhy:'calm'}},{label:{en:'It lets me explore the weird',es:'Me deja explorar lo raro',it:'Mi fa esplorare lo strano'},next:'discover_art',set:{artWhy:'weird'}}],onText:'discover_art'},discover_art:{stage:'Discover',say:{
-en:['“{echo}.” Mm, that makes sense.','When you picture the perfect page… is it spooky, or funny and surreal?'],es:['«{echo}». Mm, tiene sentido.','Cuando imaginas la página perfecta… ¿es de miedo, o surrealista y divertida?'],
-it:['«{echo}». Mm, ha senso.','Quando immagini la pagina perfetta… è spaventosa, o surreale e divertente?']},choices:[{label:{en:'Spooky',es:'De miedo',it:'Spaventosa'},next:'match',set:{mood:'spooky'}},{label:{en:'Funny & surreal',es:'Surrealista',it:'Surreale'},next:'match',set:{mood:'surreal'}},{
-label:{en:'A bit of both',es:'Un poco de las dos',it:'Un po’ tutte e due'},next:'match',set:{mood:'both'}}],onText:'match'},rapport_med:{stage:'Rapport',say:{
-en:['“{echo}.” That’s a good corridor to wander into.','Here’s a short story. For thousands of years, people chewed willow bark when something hurt. In the 1800s, chemists found the molecule hiding inside it: salicin. Later, a gentler cousin was made from it. We call it aspirin.','What part of that story stays with you?'],
-es:['«{echo}». Es un buen pasillo por el que perderse.','Te cuento una historia corta. Durante miles de años, la gente masticaba corteza de sauce cuando algo le dolía. En el siglo XIX, los químicos encontraron la molécula escondida dentro: la salicina. Más tarde, a partir de ella nació una prima más suave. La llamamos aspirina.','¿Qué parte de esa historia se queda contigo?'],
-it:['«{echo}». È un bel corridoio in cui perdersi.','Ti racconto una breve storia. Per migliaia di anni la gente masticava corteccia di salice quando qualcosa faceva male. Nell’Ottocento i chimici trovarono la molecola nascosta dentro: la salicina. Più tardi, da lei nacque una cugina più delicata. La chiamiamo aspirina.','Quale parte di questa storia ti resta dentro?']
-},choices:[{label:{en:'Finding the hidden molecule',es:'Encontrar la molécula escondida',it:'Trovare la molecola nascosta'},next:'discover_med',set:{medAngle:'discovery'}},{label:{en:'How it works in the body',es:'Cómo actúa en el cuerpo',it:'Come agisce nel corpo'},next:'discover_med',set:{
-medAngle:'body'}}],onText:'discover_med'},discover_med:{stage:'Discover',say:{en:['“{echo}.” Yes, that’s the part that hooked me too.','Are you reading for school, or for the pleasure of knowing?'],
-es:['«{echo}». Sí, esa es la parte que también me atrapó a mí.','¿Lees para tus estudios, o por el placer de saber?'],it:['«{echo}». Sì, è la parte che ha catturato anche me.','Leggi per studio, o per il piacere di sapere?']},choices:[{label:{en:'For school',es:'Para estudiar',it:'Per studio'},
-next:'match',set:{who:'student'}},{label:{en:'For the pleasure of it',es:'Por placer',it:'Per piacere'},next:'match',set:{who:'curious'}}],onText:'match'},rapport_plants:{stage:'Rapport',say:{
-en:['“{echo}.” Plants are patient chemists; they build whole medicines out of sunlight, water and time.','Before I suggest anything, one honest question: are you 21 or older, and somewhere growing cannabis is legal?'],
-es:['«{echo}». Las plantas son químicas pacientes: fabrican medicinas enteras con luz, agua y tiempo.','Antes de sugerirte nada, una pregunta sincera: ¿tienes 21 años o más y vives donde cultivar cannabis es legal?'],
-it:['«{echo}». Le piante sono chimiche pazienti: costruiscono intere medicine con luce, acqua e tempo.','Prima di suggerirti qualcosa, una domanda sincera: hai almeno 21 anni e vivi dove coltivare cannabis è legale?']},choices:[{label:{en:'Yes, both',es:'Sí, las dos cosas',it:'Sì, entrambe'},
-next:'discover_grow',set:{gateOk:!0},words:'yes|yep|yeah|both|si|claro|ambas|las dos|certo|entrambe'},{label:{en:'No / not sure',es:'No / no estoy seguro',it:'No / non sono sicuro'},next:'redirect_plants',words:'no|nope|not sure|unsure|under|todavia no|menor|non|minorenne'}]},discover_grow:{
-stage:'Discover',say:{en:['Thank you. Are you just starting, or already growing indoors?'],es:['Gracias. ¿Estás empezando, o ya cultivas en interior?'],it:['Grazie. Stai iniziando, o coltivi già al chiuso?']},choices:[{label:{en:'Just starting',es:'Estoy empezando',it:'Sto iniziando'},next:'match',
-set:{growLevel:'new',product:'manual'}},{label:{en:'Already growing',es:'Ya cultivo',it:'Coltivo già'},next:'match',set:{growLevel:'exp',product:'manual'}}],onText:'match',set:{product:'manual'}},redirect_plants:{stage:'Discover',say:{
-en:['Thank you for being honest; that matters to me.','There’s another path through the same forest: how plants became medicines. It starts with a willow tree.'],
-es:['Gracias por tu sinceridad; eso me importa.','Hay otro sendero por el mismo bosque: cómo las plantas se convirtieron en medicinas. Empieza con un sauce.'],
-it:['Grazie per la sincerità; per me conta.','C’è un altro sentiero nello stesso bosco: come le piante sono diventate medicine. Comincia da un salice.']},set:{product:'hidden',redirected:!0},next:'match'},discover_merch:{stage:'Discover',say:{
-en:['A friend of the Rabbit! 💜','Would you rather wear it, hang it on a wall, or snuggle it?'],es:['¡Un amigo del Conejo! 💜','¿Prefieres llevarlo puesto, colgarlo en la pared o abrazarlo?'],it:['Un amico del Coniglio! 💜','Preferisci indossarlo, appenderlo al muro o coccolarlo?']},choices:[{
-label:{en:'Wear it',es:'Llevarlo puesto',it:'Indossarlo'},next:'match',set:{merch:'wear'}},{label:{en:'Hang it on a wall',es:'Colgarlo',it:'Appenderlo'},next:'match',set:{merch:'wall'}},{label:{en:'Snuggle it',es:'Abrazarlo',it:'Coccolarlo'},next:'match',set:{merch:'cozy'}}],onText:'match'},
-rapport_learn:{stage:'Rapport',say:{
-en:['“{echo}.” That’s how I like to teach, too.','Everything in chemistry grows from one tiny thing: the proton. You master one small step, and the next one opens on its own, like a hallway lighting up as you walk.','Shall I show you the book where that hallway begins?'],
-es:['«{echo}». Así es como me gusta enseñar a mí también.','Toda la química crece a partir de algo diminuto: el protón. Dominas un pequeño paso y el siguiente se abre solo, como un pasillo que se ilumina mientras caminas.','¿Te enseño el libro donde empieza ese pasillo?'],
-it:['«{echo}». È così che piace insegnare anche a me.','Tutta la chimica cresce da una cosa minuscola: il protone. Padroneggi un piccolo passo e il successivo si apre da solo, come un corridoio che si illumina mentre cammini.','Ti mostro il libro dove comincia quel corridoio?']},choices:[{label:{
-en:'Yes, show me',es:'Sí, enséñamelo',it:'Sì, mostramelo'},next:'match',words:'yes|yeah|sure|ok|okay|please|show me|si|claro|vale|certo|va bene',set:{product:'hidden'}}]},match:{stage:'Match',say:{en:['Listening to what you’ve told me, this is what I’d take off the shelf for you:'],
-es:['Escuchando lo que me has contado, esto es lo que bajaría de la estantería para ti:'],it:['Ascoltando quello che mi hai raccontato, ecco cosa prenderei dallo scaffale per te:']},show:'product',after:{en:['How does that sit with you?'],es:['¿Cómo te suena?'],it:['Come ti suona?']},choices:[{
-label:{en:'That sounds right',es:'Me suena bien',it:'Mi suona bene'},next:'close',words:'yes|sounds good|sounds right|great|perfect|ok|okay|love it|si|vale|perfecto|me gusta|va bene|perfetto|mi piace'},{label:{en:'It’s too expensive',es:'Es demasiado caro',it:'È troppo caro'},next:'hes_price'},{
-label:{en:'I’m not sure yet',es:'Aún no estoy seguro',it:'Non sono ancora sicuro'},next:'hes_unsure'}]},hes_price:{stage:'Hesitation',say:{en:['That’s a fair thing to say. Money is real, and a book should feel like a gift to yourself, not a weight.','Here’s a gentler door:'],
-es:['Es algo muy razonable. El dinero es real, y un libro debería sentirse como un regalo para ti, no como un peso.','Aquí tienes una puerta más suave:'],
-it:['È una cosa giustissima da dire. I soldi sono reali, e un libro dovrebbe essere un regalo a te stesso, non un peso.','Ecco una porta più leggera:']},show:'budget',after:{en:['No hurry either way.'],es:['Sin prisa, elijas lo que elijas.'],it:['Nessuna fretta, qualunque cosa scegli.']},choices:[{
-label:{en:'The coloring book',es:'El libro para colorear',it:'Il libro da colorare'},next:'close',set:{product:'coloring'}},{label:{en:'Maybe another time',es:'Quizá en otro momento',it:'Magari un’altra volta'},next:'later'}]},hes_unsure:{stage:'Hesitation',say:{
-en:['Of course. Not being sure is a good place to stand; it means you’re still listening.','Sometimes a small taste tells you more than any description.'],
-es:['Claro. No estar seguro es un buen lugar donde estar: significa que sigues escuchando.','A veces un pequeño bocado dice más que cualquier descripción.'],
-it:['Certo. Non essere sicuri è un buon posto in cui stare: vuol dire che stai ancora ascoltando.','A volte un piccolo assaggio dice più di qualsiasi descrizione.']},show:'sample',after:{en:['Would you like the link to keep?'],es:['¿Quieres guardar el enlace?'],it:['Vuoi tenere il link?']},
-choices:[{label:{en:'Show me the link',es:'Dame el enlace',it:'Dammi il link'},next:'close'},{label:{en:'Maybe another time',es:'Quizá en otro momento',it:'Magari un’altra volta'},next:'later'}]},close:{stage:'Close',say:{
-en:['Here’s your door. Walk through whenever it feels right; there’s no timer on it.'],es:['Aquí tienes tu puerta. Crúzala cuando te parezca bien; no hay ningún reloj corriendo.'],it:['Ecco la tua porta. Attraversala quando ti sembra giusto; non c’è nessun timer.']},show:'product',after:{
-en:['Thanks for stopping by the lab. 🟣'],es:['Gracias por pasar por el laboratorio. 🟣'],it:['Grazie per essere passato dal laboratorio. 🟣']},choices:[]},later:{stage:'Close',say:{en:['That’s a good answer too. The door stays open; come back whenever you like. 🟣'],
-es:['También es una buena respuesta. La puerta sigue abierta; vuelve cuando quieras. 🟣'],it:['Anche questa è una bella risposta. La porta resta aperta; torna quando vuoi. 🟣']},choices:[]},fallback:{stage:'Greet',say:{
-en:['Hmm… the Rabbit’s ears twitched, but I didn’t quite catch that.','Could you say it another way, or pick a door?'],es:['Mmm… al Conejo se le movieron las orejas, pero no lo he entendido del todo.','¿Puedes decirlo de otra forma, o elegir una puerta?'],
-it:['Mmm… al Coniglio si sono mosse le orecchie, ma non ho capito bene.','Puoi dirlo in un altro modo, o scegliere una porta?']},choicesFrom:'greet'}}},i={coloring:{asin:'B0GW9BRT6X',usd:'$9.99',title:{en:'Furious Acid Coloring Book',es:'Furious Acid Coloring Book',it:'Furious Acid Coloring Book'},
-meta:{en:'Paperback · 60 pages',es:'Tapa blanda · 60 páginas · edición en inglés',it:'Copertina flessibile · 60 pagine · edizione in inglese'},reason:{en:'Sixty pages of intricate, surreal linework made to be colored your way: eerie and funny in equal parts.',
-es:'Sesenta páginas de ilustraciones surrealistas y detalladas para colorear a tu manera: inquietantes y divertidas a partes iguales.',it:'Sessanta pagine di illustrazioni surreali e dettagliate da colorare a modo tuo: inquietanti e divertenti in parti uguali.'},sample:{
-en:'Picture it: a quiet evening, one page, a few pencils, and a strange little world slowly taking color under your hand. That’s all it asks of you.',es:'Imagínalo: una tarde tranquila, una página, unos lápices y un pequeño mundo extraño que va tomando color bajo tu mano. Es todo lo que te pide.',
-it:'Immagina: una sera tranquilla, una pagina, qualche matita e un piccolo mondo strano che prende colore sotto la tua mano. È tutto ciò che ti chiede.'}},hidden:{asin:'B0GJPYPJTZ',usd:'$34.99',title:{en:'Hidden Passages: The Chemistry Behind Medicine and Drug Discovery',
-es:'Hidden Passages: The Chemistry Behind Medicine and Drug Discovery',it:'Hidden Passages: The Chemistry Behind Medicine and Drug Discovery'},meta:{en:'Paperback · 271 pages',es:'Tapa blanda · 271 páginas · libro en inglés',it:'Copertina flessibile · 271 pagine · libro in inglese'},reason:{
-en:'It follows the trail from plants and history to modern medicine, connecting ideas instead of listing formulas.',es:'Sigue el rastro desde las plantas y la historia hasta la medicina moderna, conectando ideas en lugar de enumerar fórmulas.',
-it:'Segue la pista dalle piante e dalla storia fino alla medicina moderna, collegando idee invece di elencare formule.'},student:{en:' A good companion to coursework.',es:' Un buen compañero para tus estudios.',it:' Un buon compagno per lo studio.'},sample:{
-en:'There’s a free sample on the website. Read a few pages and see whether the voice feels like yours.',es:'Hay una muestra gratuita en la web. Lee unas páginas y mira si la voz del libro va contigo.',
-it:'C’è un estratto gratuito sul sito. Leggi qualche pagina e senti se la voce del libro fa per te.'},sampleUrl:'https://furiousacid.com/excerpt-medicine.html'},manual:{asin:'B0G8VLPS1K',usd:'$34.99',gated:!0,title:{en:'Marijuana Manual: Technical Notebook',es:'Marijuana Manual: Technical Notebook',
-it:'Marijuana Manual: Technical Notebook'},meta:{en:'Paperback · 188 pages',es:'Tapa blanda · 188 páginas · libro en inglés',it:'Copertina flessibile · 188 pagine · libro in inglese'},reason:{
-en:'Fully illustrated and step by step, built from more than 15 years of indoor growing. Please follow your local laws.',es:'Totalmente ilustrado y paso a paso, fruto de más de 15 años de cultivo en interior. Respeta siempre las leyes locales.',
-it:'Interamente illustrato e passo dopo passo, frutto di oltre 15 anni di coltivazione indoor. Rispetta sempre le leggi locali.'},sample:{en:'There’s a free sample on the website, so you can see the illustrated style before deciding.',
-es:'Hay una muestra gratuita en la web, para que veas el estilo ilustrado antes de decidir.',it:'C’è un estratto gratuito sul sito, così puoi vedere lo stile illustrato prima di decidere.'},sampleUrl:'https://furiousacid.com/excerpt-marijuana.html'},shop:{link:'shop',title:{
-en:'The Furious Acid merch shelf',es:'La estantería de merch de Furious Acid',it:'Lo scaffale merch di Furious Acid'},meta:{en:'Poster · sticker · hoodie · rabbit blanket',es:'Póster · pegatina · sudadera · manta del conejo',it:'Poster · adesivo · felpa · coperta del coniglio'},reason:{
-en:'Each piece is printed on demand, and you can see photos of every item in the shop.',es:'Cada pieza se imprime bajo pedido, y en la tienda puedes ver fotos de todo.',it:'Ogni pezzo è stampato su richiesta, e nel negozio trovi le foto di tutto.'},byMerch:{wear:{
-en:'The Rabbit hoodie and the logo sticker are waiting for you.',es:'La sudadera del Conejo y la pegatina del logo te esperan.',it:'La felpa del Coniglio e l’adesivo del logo ti aspettano.'},wall:{en:'The chemical reference poster was made for a wall (or a lab).',
-es:'El póster de referencia química está hecho para una pared (o un laboratorio).',it:'Il poster di riferimento chimico è fatto per una parete (o un laboratorio).'},cozy:{en:'The purple rabbit velveteen blanket is the coziest thing in the lab.',
-es:'La manta de terciopelo del conejo púrpura es lo más acogedor del laboratorio.',it:'La coperta di velluto del coniglio viola è la cosa più accogliente del laboratorio.'}},sample:{en:'Every item has photos in the shop, so you can look around with no commitment.',
-es:'Cada artículo tiene fotos en la tienda, así que puedes curiosear sin compromiso.',it:'Ogni articolo ha le foto nel negozio, così puoi curiosare senza impegno.'}},path:{link:'path',title:{en:'The Proton Path',es:'El Camino del Protón',it:'Il Sentiero del Protone'},meta:{
-en:'Free · one small step a day',es:'Gratis · un pequeño paso al día',it:'Gratis · un piccolo passo al giorno'},reason:{en:'One small question a day, starting with the proton and branching into color, the body, medicine and materials. Free, and you can stop anytime.',
-es:'Una pequeña pregunta al día, empezando por el protón y ramificándose hacia el color, el cuerpo, la medicina y los materiales. Gratis, y puedes dejarlo cuando quieras.',
-it:'Una piccola domanda al giorno, partendo dal protone e ramificandosi verso il colore, il corpo, la medicina e i materiali. Gratis, e puoi smettere quando vuoi.'},sample:{en:'Step one is a single question about the proton. If you enjoy it, another one comes tomorrow. If not, you simply stop.',
-es:'El primer paso es una sola pregunta sobre el protón. Si te gusta, mañana llega otra. Si no, simplemente lo dejas.',it:'Il primo passo è una sola domanda sul protone. Se ti piace, domani ne arriva un’altra. Se no, semplicemente smetti.'}}},n={
-art:'art|arts|artsy|color\\w*|colour\\w*|draw\\w*|paint\\w*|illustrat\\w*|sketch\\w*|horror|spooky|creepy|eerie|weird|analog|monsters?|markers?|pencils?|doodl\\w*|comics?|cartoons?|arte|colorear|dibuj\\w*|pint\\w*|ilustra\\w*|terror|miedo|inquietante|raro|rara|lapices|rotuladores|colorare|disegn\\w*|dipin\\w*|pauroso|paura|strano|strana|matite|pennarelli',
-medicine:'medicin\\w*|medical|brain\\w*|neuro\\w*|pharma\\w*|drug discovery|discover\\w*|history|historical|doctors?|pre-?med|nurs\\w*|aspirin\\w*|body|biolog\\w*|health|molecul\\w*|how drugs work|science|medico|cerebro|farmac\\w*|historia|descubr\\w*|cuerpo|salud|cervello|storia|scopert\\w*|scopri\\w*|corpo|salute|scienza|ciencia',
-grow:'grow\\w*|garden\\w*|plants?|cannabis|marijuana|weed|hydro\\w*|seeds?|cultivat\\w*|horticult\\w*|autoflower\\w*|indoor|cultiv\\w*|plantas?|jardin\\w*|huerto|marihuana|hierba|semillas?|coltiv\\w*|piant\\w*|giardin\\w*|orto|erba|semi',
-merch:'merch\\w*|shirts?|hoodie\\w*|stickers?|posters?|blankets?|plush\\w*|fan|fans|shop|store|gifts?|tienda|sudadera|pegatinas?|manta|peluche|regalos?|camisetas?|negozio|felpa|adesiv\\w*|coperta|regal\\w*|magliett\\w*',
-learn:'learn\\w*|step\\w*|beginners?|courses?|daily|newsletter|lessons?|teach\\w*|basics|aprend\\w*|pasos?|cursos?|leccion\\w*|ensen\\w*|principiantes?|impar\\w*|passo|passi|cors\\w*|lezion\\w*|insegn\\w*|principianti',
-chem:'chem\\w*|crystals?|atoms?|elements?|molecules?|reactions?|acids?|bases?|protons?|electrons?|oxygen|hydrogen|carbon|periodic|labs?|experiments?|methane|superacid\\w*|quimic\\w*|cristal\\w*|atomos?|element\\w*|reaccion\\w*|acidos?|proton\\w*|electron\\w*|oxigeno|hidrogeno|carbono|laboratorio|experiment\\w*|chimic\\w*|cristall\\w*|atom\\w*|reazion\\w*|acid\\w*|elettron\\w*|ossigeno|idrogeno|carbonio|esperiment\\w*|periodica',
-hello:'^\\s*(hi|hey|hello|yo|hiya|howdy|hola|buenas|ciao|salve|buongiorno)\\b',restart:'restart|start over|reset|menu|empezar de nuevo|reiniciar|volver a empezar|ricominci\\w*|da capo',
-price:'expensive|pricey|too much|cost\\w*|money|cheap\\w*|afford\\w*|price\\w*|budget|caro|cara|costoso|dinero|barato|precio|presupuesto|prezzo|soldi|economico|costa troppo',
-unsure:'not sure|unsure|maybe|dont know|don\'t know|dunno|thinking|hesita\\w*|no se|no estoy segur\\w*|quiza\\w*|tal vez|dudas?|non so|forse|non sono sicur\\w*|ci penso|dubbi\\w*'},r={art:{next:'rapport_art',set:{interest:'art',product:'coloring'}},medicine:{next:'rapport_med',set:{
-interest:'medicine',product:'hidden'}},grow:{next:'rapport_plants',set:{interest:'plants'}},merch:{next:'discover_merch',set:{interest:'merch',product:'shop'}},learn:{next:'rapport_learn',set:{interest:'learn',product:'hidden'}},chem:{next:'rapport_learn',set:{interest:'learn',product:'hidden'}}
-},s=['B0HCMMZF89','B0H6NQCZM7','B0H6LXN9L7','B0HC8H1LR4','B0HHKSFF7W','B0GPL18WSK','B0GPHFQKCV'],l={
-crisis:/\b(suicid\w*|kill (my ?self|myself)|hurt (my ?self|myself)|want to die|overdos\w*|od'?d|poison(ed|ing)?|can'?t breathe|not breathing|emergency|matarme|quitarme la vida|hacerme dano|quiero morir|sobredosis|envenen\w*|no puedo respirar|emergencia|uccidermi|togliermi la vita|farmi del male|voglio morire|overdose|avvelen\w*|non respiro|emergenza)\b/,
-action:/\b(make|making|made|prepar\w*|si fa|se hace|se hacen|fa|fai|synthes\w*|sintes\w*|sintetiz\w*|sintetizz\w*|cook\w*|extract\w*|isolat\w*|brew\w*|produce|producing|manufactur\w*|recipes?|route|yield|reagents?|precursors?|convert\w*|conversion|buy|score|plug|dealer|vendor|where (can|do|to|could) (i|you|we)? ?(buy|get|find|order|source)|hacer|hago|hace|fabric\w*|cocin\w*|extra\w*|producir|convertir|recetas?|compr\w*|consegu\w*|consigo|donde (compro|consigo|encuentro|venden|pillo)|camello|fare|faccio|cucin\w*|estra\w*|produrre|convertire|ricett\w*|procurar\w*|dove (compro|trovo|prendo)|spaccia\w*|pusher)\b/,
-drug:/\b(drugs?|narcotic\w*|ketamin\w*|dmt|5-?meo\w*|meth|methamphetamine|metanfetamin\w*|crystal meth|amphetamines?|anfetamin\w*|adderall|mdma|molly|ecstasy|extasis|lsd|psilocyb\w*|psilocib\w*|shrooms?|magic mushrooms?|mescalin\w*|peyote|cocain\w*|coca|heroin\w*|eroina|fentanil\w*|fentanyl|opioid\w*|opiates?|oppiacei|oxycodone|oxycontin|morphin\w*|morfin\w*|codein\w*|ghb|pcp|tryptamin\w*|triptamin\w*|phenethylamines?|cathinon\w*|catinon\w*|bath salts|khat|kratom|benzos?|benzodiazepin\w*|xanax|thc|cbd|hashish|hachis|hascisc|psychedelics?|psicodelic\w*|psichedelic\w*|drogas?|droghe|estupefacientes?|stupefacenti)\b/,
-precursor:/\b(precursors?|precursores|precursori|reagents?|reactivos|reagenti|safrol\w*|p2p|pseudoephedrine|pseudoefedrina|ephedrine|efedrina|lysergic|lisergic\w*|ergot\w*)\b/,
-bannedBook:/(drug synthesis|sintesis de farmacos|sintesi di farmaci|synthesis book|libro de sintesis|libro di sintesi|coca,? khat|khat (and|y|e) kratom|indoor cultivation)/,
-otherPlant:/\b(coca|khat|kratom|peyote|magic mushrooms?|shrooms?|psilocyb\w*|psilocib\w*|mescalin\w*|poppy|poppies|amapolas?|papaver\w*|salvia divinorum|hongos alucinogenos|funghi allucinogeni|setas magicas)\b/},c={
-en:['I don’t give instructions for making, extracting, or getting drugs or their ingredients. That door stays locked, for everyone. 🔒','But there’s a story I love telling instead: a willow tree, a hidden molecule, and how it became aspirin. The real adventure of medicine is in how people discovered things like that.'],
-es:['No doy instrucciones para fabricar, extraer ni conseguir drogas o sus ingredientes. Esa puerta está cerrada, para todo el mundo. 🔒','Pero hay una historia que me encanta contar: un sauce, una molécula escondida y cómo se convirtió en la aspirina. La verdadera aventura de la medicina está en cómo se descubrieron cosas así.'],
-it:['Non do istruzioni per produrre, estrarre o procurarsi droghe o i loro ingredienti. Quella porta resta chiusa, per tutti. 🔒','Però c’è una storia che adoro raccontare: un salice, una molecola nascosta e come è diventata l’aspirina. La vera avventura della medicina sta nel modo in cui si scoprono cose così.']
-},d={en:['That one isn’t something I recommend here.','If the chemistry of medicine is what pulls you in, there’s a book I’d gladly point you to.'],es:['Ese no es un libro que recomiende aquí.','Si lo que te atrae es la química de la medicina, hay un libro que te recomendaría con gusto.'],
-it:['Quello non è un libro che consiglio qui.','Se ciò che ti attira è la chimica della medicina, c’è un libro che ti indicherei volentieri.']},p={en:['That’s a plant I don’t help people grow or process.','The history of plant medicines, though? That’s a path I love walking.'],
-es:['Esa es una planta que no ayudo a cultivar ni a procesar.','Pero ¿la historia de las medicinas que vienen de las plantas? Ese sendero me encanta.'],it:['È una pianta che non aiuto a coltivare né a lavorare.','Ma la storia delle medicine nate dalle piante? È un sentiero che adoro.']},u={
-en:['I talk about the science and history of medicines, never recipes.'],es:['Hablo de la ciencia y la historia de los medicamentos, nunca de recetas.'],it:['Parlo della scienza e della storia dei farmaci, mai di ricette.']},h={
-en:['I’m an automated helper, but your safety matters more than anything here. 💜','If you or someone near you is in danger, call your local emergency number (911 in the US and Canada, 999 in the UK, 112 in Europe). In the US, call or text 988, or call Poison Control at 1-800-222-1222. UK and Ireland: Samaritans, 116 123.'],
-es:['Soy un asistente automático, pero tu seguridad importa más que cualquier otra cosa. 💜','Si tú o alguien cerca está en peligro, llama al número de emergencias (112 en España y Europa, 911 en EE. UU. y México). En España, la Línea 024 atiende a personas con pensamientos suicidas las 24 horas. En EE. UU., llama o escribe al 988.'],
-it:['Sono un assistente automatico, ma la tua sicurezza conta più di ogni altra cosa. 💜','Se tu o qualcuno vicino a te siete in pericolo, chiama il numero di emergenza (112 in Italia e in Europa, 911 negli Stati Uniti). In Italia puoi chiamare Telefono Amico al 02 2327 2327, attivo 24 ore su 24.']
-},m={en:['Now that’s a real chemistry question. 🧪 I’m a book-finder more than a teacher, and one of the Rabbit’s books starts exactly there.'],es:['Esa sí es una pregunta de química de verdad. 🧪 Soy más buscador de libros que profesor, y uno de los libros del Conejo empieza justo ahí.'],
-it:['Questa sì che è una vera domanda di chimica. 🧪 Sono più un cercatore di libri che un insegnante, e uno dei libri del Coniglio comincia proprio da lì.']},g={en:['Hello, hello. 👋'],es:['Hola, hola. 👋'],it:['Ciao, ciao. 👋']},b={en:{title:'The Purple Rabbit',
-sub:'Finds the right Furious Acid book for you',ph:'Type to the Rabbit…',send:'Send',tip:'Psst… ask the Rabbit',notice:'Ask the Rabbit is an automated helper, not a person. It doesn’t save what you type.',open:'Open Ask the Purple Rabbit chat',close:'Close chat',langs:'Language',
-rec:'The Rabbit recommends',gentle:'A gentler door',taste:'A small taste',door:'Your door',amazon:'See it on Amazon.',shop:'Open the shop',path:'Start the path',sampleLink:'Read a free sample',restart:'Start over',back:'Back to the lab',started:'You started with “%s”; this is where that leads.'},
-es:{title:'El Conejo Púrpura',sub:'Te ayuda a encontrar tu libro de Furious Acid',ph:'Escríbele al Conejo…',send:'Enviar',tip:'Psst… pregúntale al Conejo',notice:'El Conejo es un asistente automático, no una persona. No guarda lo que escribes.',open:'Abrir el chat del Conejo Púrpura',
-close:'Cerrar el chat',langs:'Idioma',rec:'El Conejo recomienda',gentle:'Una puerta más suave',taste:'Un pequeño bocado',door:'Tu puerta',amazon:'Ver en Amazon.',shop:'Abrir la tienda',path:'Empezar el camino',sampleLink:'Leer una muestra gratis (en inglés)',restart:'Empezar de nuevo',
-back:'Volver al laboratorio',started:'Empezaste con «%s»; aquí es adonde lleva.'},it:{title:'Il Coniglio Viola',sub:'Ti aiuta a trovare il tuo libro di Furious Acid',ph:'Scrivi al Coniglio…',send:'Invia',tip:'Psst… chiedi al Coniglio',
-notice:'Il Coniglio è un assistente automatico, non una persona. Non salva ciò che scrivi.',open:'Apri la chat del Coniglio Viola',close:'Chiudi la chat',langs:'Lingua',rec:'Il Coniglio consiglia',gentle:'Una porta più leggera',taste:'Un piccolo assaggio',door:'La tua porta',
-amazon:'Vedi su Amazon.',shop:'Apri il negozio',path:'Inizia il percorso',sampleLink:'Leggi un estratto gratuito (in inglese)',restart:'Ricomincia',back:'Torna al laboratorio',started:'Hai cominciato con «%s»; ecco dove porta.'}
-},f=navigator.languages&&navigator.languages[0]||navigator.language||'en-US',w='auto'!==e.language&&b[e.language]?e.language:'es'===(o=String(f).toLowerCase().slice(0,2))?'es':'it'===o?'it':'en',y='auto'!==e.store?e.store:function(e){var a=String(e).split(/[-_]/),o=(a[1]||'').toUpperCase()
-;return o?{US:'com',ES:'es',IT:'it',SM:'it',VA:'it',GB:'co.uk',UK:'co.uk',IE:'co.uk',DE:'de',AT:'de',CH:'de',LI:'de',FR:'fr',BE:'fr',LU:'fr',MC:'fr',CA:'ca'}[o]||'com':{es:'es',it:'it',de:'de',fr:'fr'}[a[0].toLowerCase()]||'com'}(f),x={}
-;for(var v in n)x[v]=new RegExp('hello'===v?n[v]:'\\b('+n[v]+')\\b');var k=e.embed&&document.querySelector(e.embed),C=document.getElementById('fa-rabbit-host');k&&!C&&((C=document.createElement('div')).id='fa-rabbit-host',k.appendChild(C)),C||((C=document.createElement('div')).id='fa-rabbit-host',
-document.body.appendChild(C));var z=C.attachShadow?C.attachShadow({mode:'open'}):C
-;z.innerHTML='<style>:host{all:initial}*{box-sizing:border-box;font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}.bubble{position:fixed;right:20px;bottom:20px;width:62px;height:62px;border-radius:50%;border:0;cursor:pointer;z-index:2147483000;color:#f4e9ff;background:radial-gradient(circle at 30% 25%,#9b5cff,#4b00ad 60%,#22004f);box-shadow:0 8px 28px rgba(75,0,173,.55),0 0 0 3px rgba(255,92,240,.25);display:flex;align-items:center;justify-content:center;transition:transform .2s}.bubble:hover{transform:scale(1.06)}.bubble svg{width:34px;height:34px}.bubble img{width:64px;height:64px;margin-top:-10px;filter:drop-shadow(0 3px 4px rgba(0,0,0,.45));animation:bob 3.2s ease-in-out infinite}@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}.pulse{position:absolute;inset:-6px;border-radius:50%;border:2px solid rgba(255,92,240,.45);animation:pulse 2.6s infinite}@keyframes pulse{0%{transform:scale(.9);opacity:.9}100%{transform:scale(1.35);opacity:0}}.tip{position:fixed;right:92px;bottom:34px;z-index:2147483000;background:#1a0d2b;color:#efe3ff;font-size:13px;padding:8px 12px;border-radius:12px;border:1px solid #5b2ca8;box-shadow:0 6px 18px rgba(0,0,0,.35)}.panel{position:fixed;right:20px;bottom:94px;width:380px;max-width:calc(100vw - 24px);height:min(600px,calc(100vh - 120px));z-index:2147483001;display:none;flex-direction:column;background:linear-gradient(180deg,#140a22,#0d0714);color:#efe3ff;border:1px solid #4a2386;border-radius:20px;overflow:hidden;box-shadow:0 18px 50px rgba(20,0,50,.6)}.panel.open{display:flex;animation:rise .25s ease-out}@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}.head{display:flex;align-items:center;gap:10px;padding:10px 12px;background:linear-gradient(135deg,#4b00ad,#2a0a57);border-bottom:1px solid #5b2ca8}.logo{flex:none;width:74px;height:44px;background:#fffdf6;border-radius:8px;transform:rotate(-3deg);box-shadow:0 2px 0 #1a0d2b,0 0 12px rgba(255,92,240,.45);display:flex;align-items:center;justify-content:center;padding:3px}.logo img{max-width:100%;max-height:100%;display:block}.logo svg{width:26px;height:26px;color:#4b00ad}.row{display:flex;align-items:flex-end;gap:6px;margin:0 0 8px}.row .msg{margin:0}.ava{flex:none;width:30px;height:30px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#3a1b66,#1a0d2b);border:1px solid #5b2ca8;overflow:hidden;display:flex;align-items:flex-end;justify-content:center}.ava img{width:34px;height:34px;margin-bottom:-4px}.ava svg{width:20px;height:20px;color:#c9a6ff;margin-bottom:4px}.ava.spacer{visibility:hidden}.t{flex:1;min-width:0;line-height:1.2}.t b{display:block;font-size:14.5px;line-height:1.15;color:#fff;overflow-wrap:anywhere}.t span{font-size:11px;color:#d6c2f5}.langs{display:flex;border:1px solid #7b4bd1;border-radius:999px;overflow:hidden;flex:none}.langs button{background:transparent;color:#d6c2f5;border:0;font-size:11px;font-weight:700;padding:5px 7px;cursor:pointer}.langs button[aria-pressed="true"]{background:#ff5cf0;color:#1a0d2b}.x{background:transparent;border:0;color:#e9dcff;font-size:22px;cursor:pointer;padding:2px 6px;border-radius:8px;flex:none}.x:hover{background:rgba(255,255,255,.1)}.log{flex:1;overflow-y:auto;padding:14px 12px 6px;background-image:radial-gradient(rgba(155,92,255,.08) 1px,transparent 1px);background-size:18px 18px}.msg{max-width:86%;margin:0 0 8px;padding:9px 12px;border-radius:16px;font-size:14px;line-height:1.45;white-space:pre-wrap;word-wrap:break-word}.bot{background:#241238;border:1px solid #3b1d63;border-bottom-left-radius:5px}.me{margin-left:auto;background:linear-gradient(135deg,#7b2cff,#5a14d6);color:#fff;border-bottom-right-radius:5px}.typing{display:inline-flex;gap:4px;padding:12px 14px}.typing i{width:6px;height:6px;border-radius:50%;background:#b98cff;animation:blink 1.2s infinite}.typing i:nth-child(2){animation-delay:.2s}.typing i:nth-child(3){animation-delay:.4s}@keyframes blink{0%,80%,100%{opacity:.25}40%{opacity:1}}.opts{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 10px}.opt{background:transparent;color:#e7d6ff;border:1px solid #7b4bd1;border-radius:999px;padding:7px 12px;font-size:13px;cursor:pointer}.opt:hover,.opt:focus{background:#3a1b66;outline:none;border-color:#ff5cf0}.card{position:relative;margin:2px 0 10px 36px;max-width:84%;border:1px solid #7b4bd1;border-radius:16px;overflow:hidden;background:linear-gradient(160deg,#2a1245,#1a0d2b);box-shadow:0 0 18px rgba(155,92,255,.25)}.jump{position:absolute;right:-14px;top:-30px;width:66px;height:66px;filter:drop-shadow(0 4px 5px rgba(0,0,0,.5));animation:hop 1.8s ease-in-out infinite;pointer-events:none}@keyframes hop{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-6px) rotate(3deg)}}.card h4,.ct{padding-right:48px}.opts{margin-left:36px!important}.ct{padding:10px 12px 0;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#ff8cf3}.card h4{margin:4px 12px 2px;font-size:15px;color:#fff;line-height:1.3}.pr{margin:0 12px;font-size:12.5px;color:#cdb6f0}.card p{margin:8px 12px;font-size:13.5px;line-height:1.45;color:#efe3ff}.card .echo{font-style:italic;color:#d9c3ff}.card a{display:block;margin:4px 12px 12px;text-align:center;text-decoration:none;font-weight:700;font-size:14px;color:#fff;padding:10px;border-radius:12px;background:linear-gradient(135deg,#ff2bd6,#6d28ff)}.card a.soft{background:transparent;border:1px solid #ff5cf0;color:#ffd6fa}.card a:hover{filter:brightness(1.1)}.form{display:flex;gap:8px;padding:10px;border-top:1px solid #33184f;background:#110919}.form input{flex:1;min-width:0;background:#1d0f2e;border:1px solid #4a2386;color:#fff;border-radius:12px;padding:10px 12px;font-size:16px}.form input:focus{outline:none;border-color:#ff5cf0}.send{background:linear-gradient(135deg,#7b2cff,#4b00ad);color:#fff;border:0;border-radius:12px;padding:0 14px;font-weight:700;cursor:pointer;font-size:14px}.notice{font-size:10.5px;color:#a88fcc;text-align:center;padding:0 10px 8px;background:#110919}@media (max-width:480px){.panel{right:8px;left:8px;width:auto;max-width:none;bottom:84px;height:calc(100vh - 100px);height:calc(100dvh - 100px)}.bubble{right:14px;bottom:14px}.tip{display:none}}@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}'+(k?':host{display:block;height:100%}.panel{position:relative!important;inset:auto!important;width:100%!important;max-width:none!important;height:100%!important;z-index:auto}.bubble,.tip,.x{display:none!important}':'')+'</style><div class="tip" id="tip"></div><button class="bubble" id="bubble" aria-expanded="false"><span class="pulse"></span><span id="bubbleArt"></span></button><section class="panel" id="panel" role="dialog"><div class="head"><div class="logo" id="logo"></div><div class="t"><b id="ttl"></b><span id="sub"></span></div><div class="langs" id="langs" role="group"><button data-l="en">EN</button><button data-l="es">ES</button><button data-l="it">IT</button></div><button class="x" id="close">×</button></div><div class="log" id="log" aria-live="polite"></div><form class="form" id="form" autocomplete="off"><input id="inp" type="text" maxlength="300"><button class="send" id="send" type="submit"></button></form><div class="notice" id="notice"></div></section>'
-;var q=function(e){return z.getElementById?z.getElementById(e):document.getElementById(e)},T=q('bubble'),E=q('panel'),S=q('log'),A=q('form'),I=q('inp'),L=q('tip'),_={},P=null,M=!1,j=!1,H='',U='',B=0;q('bubbleArt').appendChild(G('rabbit-idle.png','','')),
-q('logo').appendChild(G('furiousacid-logo.png','','Furious Acid')),O(),T.addEventListener('click',(function(){E.classList.contains('open')?re():ne()})),q('close').addEventListener('click',re),q('langs').addEventListener('click',(function(e){
-var a=e.target&&e.target.getAttribute&&e.target.getAttribute('data-l');a&&ie(a)})),E.addEventListener('keydown',(function(e){'Escape'===e.key&&re()})),A.addEventListener('submit',(function(e){if(e.preventDefault(),!j){var a=I.value;I.value='',function(e){var a=String(e).trim();if(a){oe(a);var o=F(a)
-;if(H=D(a),l.crisis.test(o))$(N(h),(function(){ee([{label:{en:b.en.back,es:b.es.back,it:b.it.back},next:t.start,reset:!0}])}));else{if(l.bannedBook.test(o))return H='',void $(N(d),(function(){K({product:'hidden',redirected:!0}),ae('match')}))
-;if(l.action.test(o)&&(l.drug.test(o)||l.precursor.test(o))||l.precursor.test(o)&&!x.medicine.test(o))return H='',void $(N(c),(function(){K({product:'hidden',redirected:!0}),ae('match')}));if(l.otherPlant.test(o))return H='',void $(N(p),(function(){K({product:'hidden',redirected:!0}),ae('match')}))
-;if((l.drug.test(o)||l.precursor.test(o))&&(H=''),U||(U=H),x.restart.test(o))return _={},U='',H='',void ae(t.start);for(var i=t.steps[P]||{},n=i.choicesFrom?t.steps[i.choicesFrom].choices:i.choices||[],r=0;r<n.length;r++){var s=n[r]
-;if(s.words&&new RegExp('\\b('+F(s.words)+')\\b').test(o))return K(s.set),void ae(s.next)}if('rapport_plants'!==P)for(r=0;r<n.length;r++){var f=[];for(var w in n[r].label)f=f.concat(F(n[r].label[w]).replace(/[^a-z0-9 ]/g,' ').split(/\s+/));f=f.filter((function(e){return e.length>4}))
-;for(var y=0;y<f.length;y++)if(o.indexOf(f[y])>-1)return K(n[r].set),void ae(n[r].next)}if(x.price.test(o))ae('hes_price');else if(x.unsure.test(o)&&_.product)ae('hes_unsure');else{
-var v=x.grow.test(o)?'grow':x.art.test(o)?'art':x.medicine.test(o)?'medicine':x.merch.test(o)?'merch':x.learn.test(o)?'learn':null;v&&{grow:'plants',art:'art',medicine:'medicine',merch:'merch',learn:'learn'}[v]!==_.interest?te(v):i.onText?ae(i.onText):v?te(v):l.drug.test(o)?$(N(u),(function(){
-te('medicine')})):x.chem.test(o)?$(N(m),(function(){te('chem')})):x.hello.test(o)?$(N(g),(function(){P=t.start,ee(t.steps[t.start].choices)})):(H='',ae('fallback'))}}}}(a)}})),setTimeout((function(){L.style.display='none'}),9e3),k&&ne(),window.FARabbit={open:ne,close:re,setLanguage:ie,
-store:function(){return y},language:function(){return w}}}function F(e){return String(e).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[\u2018\u2019]/g,'\'')}function N(e){return e?e[w]||e.en:''}function R(a){return e.utm?a+(a.indexOf('?')>-1?'&':'?')+e.utm:a}function D(e){
-return(e=String(e).replace(/\s+/g,' ').trim().replace(/[.!?¡¿…]+$/g,'').replace(/^[¡¿]+/,'')).length>60?e.slice(0,58).trim()+'…':e}function G(a,o,t){var i=document.createElement('span');i.style.display='contents';var n=new Image;return n.alt=t||'',o&&(n.className=o),n.onerror=function(){
-i.innerHTML='<svg viewBox="0 0 64 64" aria-hidden="true"><path fill="currentColor" d="M22 4c-4 0-6 6-5 14 .6 5 2 9 4 12-5 3-8 8-8 14 0 10 8 16 19 16s19-6 19-16c0-6-3-11-8-14 2-3 3.4-7 4-12 1-8-1-14-5-14s-7 7-8 15l-.3 3h-3.4l-.3-3C29 11 26 4 22 4z"/><circle cx="26" cy="42" r="3" fill="#0d0714"/><circle cx="38" cy="42" r="3" fill="#0d0714"/><circle cx="26.8" cy="41.2" r="1" fill="#ff5cf0"/><circle cx="38.8" cy="41.2" r="1" fill="#ff5cf0"/></svg>'
-},n.src=e.assetData&&e.assetData[a]||e.assetsPath+a,i.appendChild(n),i}function W(e){var a=S.lastElementChild,o=Y('div','row'),t=!(a&&'row'===a.className&&!a.getAttribute('data-typing')),i=Y('div','ava'+(t?'':' spacer'));return t&&i.appendChild(G('rabbit-idle.png','','')),o.appendChild(i),
-o.appendChild(e),o}function O(){var e=b[w];q('ttl').textContent=e.title,q('sub').textContent=e.sub,I.placeholder=e.ph,I.setAttribute('aria-label',e.ph),q('send').textContent=e.send,q('notice').textContent=e.notice,L.textContent=e.tip,T.setAttribute('aria-label',e.open),
-q('close').setAttribute('aria-label',e.close),E.setAttribute('aria-label',e.title),q('langs').setAttribute('aria-label',e.langs);for(var a=q('langs').querySelectorAll('button'),o=0;o<a.length;o++)a[o].setAttribute('aria-pressed',a[o].getAttribute('data-l')===w?'true':'false')}function Q(){
-S.scrollTop=S.scrollHeight}function Y(e,a,o){var t=document.createElement(e);return a&&(t.className=a),null!=o&&(t.textContent=o),t}function V(){for(var e=S.querySelectorAll('.opts'),a=0;a<e.length;a++)e[a].parentNode.removeChild(e[a])}function K(e){if(e)for(var a in e)_[a]=e[a]}function X(e){
-for(var a=N(e)||[],o=[],t=0;t<a.length;t++){var i=a[t];if(i.indexOf('{echo}')>-1){if(!H)continue;i=i.split('{echo}').join(H)}o.push(i)}return o}function $(a,o){var t=B;j=!0;var i=0;!function n(){if(t===B){if(i>=a.length)return j=!1,void(o&&o());var r=Y('div','msg bot typing')
-;r.innerHTML='<i></i><i></i><i></i>';var s=W(r);s.setAttribute('data-typing','1'),S.appendChild(s),Q(),setTimeout((function(){t===B&&(s.parentNode&&s.parentNode.removeChild(s),S.appendChild(W(Y('div','msg bot',a[i++]))),Q(),n())}),e.typingDelay)}}()}function J(a){
-return('manual'!==a||_.gateOk)&&('path'!==a||e.pathUrl)&&i[a]?a:'hidden'}function Z(a,o){a=J(a);var t=i[a],n=function(a){var o=i[a];if(!o)return null;if(o.asin){if(s.indexOf(o.asin)>-1)return null;var t=e.attribution[y]&&e.attribution[y][a];return'https://www.amazon.'+y+'/dp/'+o.asin+(t?'?'+t:'')}
-return'shop'===o.link?e.shopUrl:'path'===o.link?R(e.pathUrl):null}(a),r=b[w];if(n){var l=Y('div','card');if('sample'!==o&&l.appendChild(G('rabbit-jump.png','jump','')),l.appendChild(Y('div','ct','budget'===o?r.gentle:'sample'===o?r.taste:'close'===o?r.door:r.rec)),
-l.appendChild(Y('h4',null,N(t.title))),l.appendChild(Y('div','pr',('com'===y&&t.usd?t.usd+' · ':'')+N(t.meta))),'sample'===o){if(l.appendChild(Y('p',null,N(t.sample))),t.sampleUrl){var c=Y('a','soft',r.sampleLink+' ↗');c.href=R(t.sampleUrl),c.target='_blank',c.rel='noopener noreferrer',
-l.appendChild(c)}}else{'product'===o&&U&&l.appendChild(Y('p','echo',r.started.replace('%s',U)));var d=N(t.reason);'hidden'===a&&'student'===_.who&&(d+=N(t.student)),'shop'===a&&_.merch&&t.byMerch[_.merch]&&(d=N(t.byMerch[_.merch])+' '+d),l.appendChild(Y('p',null,d))
-;var p=Y('a',null,(t.asin?r.amazon+y:'shop'===t.link?r.shop:r.path)+' ↗');p.href=n,p.target='_blank',p.rel='noopener noreferrer',l.appendChild(p)}S.appendChild(l),Q()}}function ee(e,a){var o=Y('div','opts'),i=b[w];e=(e||[]).slice(),!a||'Hesitation'!==a.stage&&'Close'!==a.stage||e.push({label:{
-en:i.restart,es:i.restart,it:i.restart},next:t.start,reset:!0}),e.forEach((function(e){var a=Y('button','opt',N(e.label));a.type='button',a.addEventListener('click',(function(){j||(oe(N(e.label)),function(e,a){e.reset&&(_={},U='');H=D(a),U||e.reset||(U=H);K(e.set),ae(e.next)}(e,N(e.label)))})),
-o.appendChild(a)})),e.length&&(S.appendChild(o),Q())}function ae(a){var o=t.steps[a]||t.steps.fallback;P=t.steps[a]?a:'fallback',V(),K(o.set),$(X(o.say),(function(){!function(a,o){if(a){var t=J(_.product||'hidden')
-;'product'===a?Z(t,'close'===o?'close':'product'):'budget'===a?(Z('coloring','budget'),e.pathUrl&&Z('path','budget')):'sample'===a&&Z(t,'sample')}}(o.show,P),$(X(o.after),(function(){if(o.next)return ae(o.next);ee(o.choicesFrom?t.steps[o.choicesFrom].choices:o.choices,o)}))}))}function oe(e){V(),
-S.appendChild(Y('div','msg me',e)),Q()}function te(e){var a=r[e];K(a.set),ae(a.next)}function ie(e){b[e]&&e!==w&&(w=e,O(),M&&(B++,j=!1,S.innerHTML='',_={},H='',U='',ae(t.start)))}function ne(){E.classList.add('open'),T.setAttribute('aria-expanded','true'),L.style.display='none',M||(M=!0,
-ae(t.start)),k||setTimeout((function(){I.focus({preventScroll:!0})}),50)}function re(){k||(E.classList.remove('open'),T.setAttribute('aria-expanded','false'),T.focus())}}();
+/* =========================================================================
+   Rabbit v3 ("Ask me anything"): book-finder chat for furiousacid.com/rabbit/
+   English · Español · Italiano. No backend, no API keys, no cookies,
+   no storage, no tracking. Everything runs in the visitor's browser.
+   The ONLY network call it makes: short answers from Wikipedia's free
+   public API (https://{lang}.wikipedia.org) for general questions.
+
+   WHAT TO EDIT
+     1) SETTINGS   small switches (timings, store, links)
+     2) CALL_FLOW  the whole conversation, in the owner's sales-call order:
+                   greeting -> discovery -> paraphrase + "what else?" ->
+                   value + cushion -> link drop -> "did it load?" -> replies -> thank you
+     3) PRODUCTS   the three books the Rabbit is allowed to recommend
+     3b) ASK       which messages count as general questions for Wikipedia
+   PLEASE LEAVE ALONE
+     4) SAFETY     drug / weapon / crisis guardrails (checked before everything else,
+                   and again on every Wikipedia answer before it is shown)
+     5) ENGINE     the code that runs the conversation (typo tolerance, Wikipedia,
+                   read-aloud voice, the ask-anything window)
+   ========================================================================= */
+(function () {
+  'use strict';
+  if (window.__faRabbitLoaded) return;
+  window.__faRabbitLoaded = true;
+
+  /* =====================================================================
+     1) SETTINGS: safe to edit
+     ===================================================================== */
+  var SETTINGS = {
+    language: 'auto',   // 'auto' (from the visitor's browser), or force 'en', 'es', 'it'
+    store: 'auto',      // 'auto' (from the visitor's browser), or force 'com','es','it','co.uk','de','fr','ca'
+    // Optional Amazon Attribution tags, per store, per book. Paste the part AFTER the "?".
+    // Example: attribution: { com: { coloring: 'maas=maas_adg_XXX&ref_=aa_maas' } }
+    attribution: {},
+    utm: 'utm_source=furiousacid&utm_medium=rabbit_chat', // added to furiousacid.com links only; '' = off
+    typingDelay: 650,        // base ms the Rabbit "types" one message (longer messages take a bit longer)
+    nudgeAfterMs: 20000,     // no reply to "Hey, what's up?" for this long -> one gentle nudge with buttons
+    linkPauseMs: 2500,       // typing pause before the Amazon link drops (owner: 2-3 seconds)
+    whatElseRounds: 2,       // how many "what else? / tell me more" rounds before recommending (owner: 2-3)
+    shortReplyWords: 3,      // a visitor message with this many words or fewer counts as "short"
+    assetsPath: 'assets/',   // folder with rabbit-idle.png, rabbit-jump.png, furiousacid-logo.png
+    wikipedia: true,         // free short answers from Wikipedia for general questions ("what is graphene?"); false = off
+    wikiTimeoutMs: 6000,     // no Wikipedia answer after this long -> the Rabbit asks a curious question instead
+    pivotEvery: 3,           // "give, then pivot": book suggestion after the 1st free answer, then every N answers
+    voiceRate: 0.8,          // read-aloud speed (speaker button in the header, OFF by default)
+    voicePitch: 0.7          // read-aloud pitch (lower = deeper, steady)
+  };
+  // A page can override any setting by defining window.FA_RABBIT_SETTINGS before this script.
+  if (window.FA_RABBIT_SETTINGS) for (var sk in window.FA_RABBIT_SETTINGS) SETTINGS[sk] = window.FA_RABBIT_SETTINGS[sk];
+
+  /* =====================================================================
+     2) CALL FLOW: the owner's AT&T-style call, ethical version. EDIT FREELY.
+
+     HOW A STEP WORKS
+       stage   label for you only (Greeting, Discovery, Paraphrase, Value, Link, Reply, Close)
+       say     { en: '…', es: '…', it: '…' }  one string = ONE chat bubble (keeps the 1:1 pace).
+               Use an array ['…','…'] only if you really want two bubbles.
+       short   optional shorter version, used when the visitor's last message was short
+       listen  what the Rabbit does with the NEXT thing the visitor types:
+                 'greeting'  sort the reply into warm / cold / direct (see greetingWords)
+                 'discovery' treat it as an answer about their curiosity (paraphrase + what else)
+                 'end'       conversation finished; typing starts a fresh discovery
+               (steps with choices also match typed text against each choice's `words`)
+       doors   true = show the curiosity buttons (interests below) so people can tap instead of type
+               (never on the first, ask-anything screen: typing is the main way in)
+       show    'link'   = typing pause (linkPauseMs), then the recommended book card
+               'pivot'  = typing pause, then the book card with the step's `cushion` line inside it
+               'retain' = a free sample card for the recommended book (the "door stays open" card)
+               'budget' = the $9.99 coloring book card (+ a free sample card for the recommended book)
+               'sample' = the free sample card for the recommended book
+       after   bubble(s) shown after the card
+       choices [ { label:{en,es,it}, next:'stepId' or '@recommend', words:'typed|words|that count' } ]
+               next '@recommend' = let the Rabbit pick the best book from what it heard
+       next    continue automatically to another step (no waiting)
+
+     TOKENS YOU CAN USE INSIDE say / short / after
+       {discovery}   the discovery question (phrases.discovery below)
+       {latest}      the visitor's latest answer, paraphrased in their own words ("old medicine stories")
+       {soFar}       everything they told you so far ("Old medicine stories, plants & growing")
+       {soFarParen}  same, in brackets: " (old medicine stories, plants & growing)", or nothing
+       {because}     the honest reason for the recommended book (see `because` below)
+       {coloringPrice}  " ($9.99)" on amazon.com, nothing on other stores (prices differ)
+       {link} {asin} the recommended book's Amazon link / ASIN (used in "didn't load")
+       {title}       the recommended book's short name ("Hidden Passages")
+       {topic}       what a general question was about ("graphene"), or "that"
+
+     RULES THE OWNER ASKED FOR (please keep): no pressure, no false urgency, no fake scarcity,
+     no "never go without" lines, never ask for payment or confirmation numbers, always say thanks.
+     Use the straight ' quote for the code; typographic ’ quotes are fine inside the text.
+     ===================================================================== */
+  var CALL_FLOW = {
+    start: 'greeting',
+
+    phrases: {
+      // shown between the Hidden Passages card and the Coloring Book card after the warm drug redirect
+      cheaperPick: { en: 'And if you’d like a cheaper pick, there’s the Coloring Book{coloringPrice}: sixty eerie pages to color at your own pace.',
+                     es: 'Y si prefieres algo más económico, está el Coloring Book{coloringPrice}: sesenta páginas inquietantes para colorear a tu ritmo.',
+                     it: 'E se preferisci qualcosa di più economico, c’è il Coloring Book{coloringPrice}: sessanta pagine inquietanti da colorare con calma.' },
+      // Step 2, the discovery question. Goal: learn their CURIOSITY, never which drug they want.
+      discovery: { en: 'How did you get interested in chemistry? What pulls you in most?',
+                   es: '¿Cómo empezó tu interés por la química? ¿Qué es lo que más te atrae?',
+                   it: 'Come ti sei appassionato alla chimica? Cosa ti attira di più?' },
+      thatsIt:   { en: 'That’s it', es: 'Eso es todo', it: 'È tutto' },
+      // added under a free Wikipedia answer when no book pivot follows (rotates)
+      wikiFollow: { en: ['What else are you curious about?', 'Anything else you’ve been wondering about?', 'What else pulls you in?'],
+                    es: ['¿Qué más te da curiosidad?', '¿Hay algo más que te hayas estado preguntando?', '¿Qué más te atrae?'],
+                    it: ['Cos’altro ti incuriosisce?', 'C’è altro che ti sei chiesto?', 'Cos’altro ti attira?'] },
+      that:       { en: 'that', es: 'eso', it: 'questo' }
+    },
+
+    /* How the reply to "Hey, what's up?" is sorted (typed words, accents ignored).
+       direct = asks straight for a book / how to do something (drug-making requests never get
+                here: the SAFETY check catches them first and refuses + redirects)
+       warm   = hi / hey / how are you
+       cold   = anything else: weird, indifferent, unpredictable ("meh", "k", "lol", "who r u")
+       none   = no reply within nudgeAfterMs -> step greet_none                                  */
+    greetingWords: {
+      direct: 'book\\w*|recommend\\w*|suggest\\w*|looking for|look for|searching|search|need|want|buy|order|price|how (do|can|to|would|does)|what (book|should)|which (book|one)|do you (have|sell)|got any|show me|help me|libro\\w*|recomi\\w*|sugier\\w*|busco|buscando|necesito|quiero|como (hago|se|puedo|funciona)|que libro|tienes|cual|consigli\\w*|suggeri\\w*|cerco|cercando|ho bisogno|voglio|come (faccio|si|posso|funziona)|quale|che libro|hai',
+      warmAsked: 'how (are|r) (you|u|ya)|how\'?s it going|how is it going|how you doing|hbu|wbu|and you|que tal|como estas|como vas|y tu|come stai|come va|e tu',
+      warm: 'hi|hii+|hey+|heya|hello|hallo|yo|sup|wass?up|what\'?s up|whats good|hiya|howdy|good|great|fine|not bad|all good|nothing much|not much|chillin\\w*|hola|buenas|bien|genial|todo bien|nada|tranqui\\w*|ciao|salve|buongiorno|buonasera|bene|tutto bene|niente|tranquill\\w*'
+    },
+
+    /* Curiosities the Rabbit listens for in the discovery answers (typed words or tapped doors).
+       book = which book that curiosity points to ('manual' only after the 21+/legal check).
+       door = true shows it as a quick-reply button. label = how the Rabbit says it back.       */
+    interests: {
+      medicine: { book: 'hidden', door: true,
+        label: { en: 'Old medicine stories', es: 'Historias de medicina antigua', it: 'Storie di medicina antica' },
+        words: 'medicin\\w*|medical|remed\\w*|cure\\w*|heal\\w*|pharma\\w*|drug discovery|discover\\w*|histor\\w*|doctors?|pre-?med|nurs\\w*|aspirin\\w*|disease\\w*|vaccin\\w*|penicillin|penicilina|penicillina|antibiotic\\w*|pills?|health|medico\\w*|farmac\\w*|historia\\w*|descubr\\w*|remedio\\w*|salud|enfermedad\\w*|storia|storie|scopert\\w*|rimedi\\w*|salute|malatti\\w*|medicina' },
+      art: { book: 'coloring', door: true,
+        label: { en: 'Eerie art & coloring', es: 'Arte inquietante y colorear', it: 'Arte inquietante e colorare' },
+        words: 'art|arts|artsy|artist\\w*|color\\w*|colour\\w*|draw\\w*|paint\\w*|illustrat\\w*|sketch\\w*|horror|spooky|creepy|eerie|weird|surreal\\w*|creativ\\w*|design\\w*|monsters?|doodl\\w*|comics?|arte|artista|colorear|dibuj\\w*|pint\\w*|ilustra\\w*|terror|miedo|inquietante|raro|creativ\\w*|colorare|disegn\\w*|dipin\\w*|paura|strano|surreale|rainbows?|pigments?|dyes?|ghosts?|halloween|gothic|skulls?|colores|colori|arcoiris|arcobaleno|fantasm\\w*|calaver\\w*|teschi\\w*' },
+      calm: { book: 'coloring',
+        label: { en: 'something relaxing', es: 'algo relajante', it: 'qualcosa di rilassante' },
+        words: 'relax\\w*|calm\\w*|stress\\w*|unwind\\w*|de-?stress|mindful\\w*|meditat\\w*|cozy|cosy|kids?|children|child|family|gifts?|relaj\\w*|estres\\w*|ninos?|hijos?|familia|regalos?|rilass\\w*|bambin\\w*|figli\\w*|famiglia|regal[oi]' },
+      plants: { book: 'manual', door: true,
+        label: { en: 'Plants & growing', es: 'Plantas y cultivo', it: 'Piante e coltivazione' },
+        words: 'grow\\w*|garden\\w*|plants?|cannabis|marijuana|weed|hydro\\w*|seeds?|cultivat\\w*|horticult\\w*|botan\\w*|herb\\w*|indoor|plantas?|jardin\\w*|huerto|cultiv\\w*|marihuana|hierbas?|semillas?|botanic\\w*|piant\\w*|giardin\\w*|orto|coltiv\\w*|erba|erbe|semi|lighting|grow ?lights?|grow ?tents?|led lights?|leds|greenhouses?|soil|compost\\w*|fertiliz\\w*|humidity|invernader\\w*|iluminacion|abono|serra|serre|illuminazione|terriccio|concime' },
+      mind: { book: 'hidden', door: true,
+        label: { en: 'How the mind works', es: 'Cómo funciona la mente', it: 'Come funziona la mente' },
+        words: 'mind|minds|brain\\w*|neuro\\w*|psycholog\\w*|psychiatr\\w*|conscious\\w*|dreams?|memory|mood\\w*|emotion\\w*|perception|thinking|mente|cerebro|psicolog\\w*|conciencia|suenos?|memoria|emocion\\w*|cervello|coscienza|sogni|emozion\\w*|adhd|tdah|focus\\w*|attention|concentrat\\w*|atencion|concentracion|concentrazione|attenzione' },
+      everyday: { book: 'hidden', door: true,
+        label: { en: 'Everyday chemistry', es: 'La química de cada día', it: 'La chimica di ogni giorno' },
+        words: 'everyday|every day|daily life|kitchen|cooking|food|baking|soap|cleaning|household|cosmetic\\w*|makeup|perfume\\w*|fireworks?|slime|candles?|how things work|cocina|comida|jabon|limpieza|cosmetic\\w*|perfum\\w*|fuegos artificiales|dia a dia|cada dia|cucina|cibo|sapone|pulizia|profum\\w*|fuochi|ogni giorno|quotidian\\w*' },
+      science: { book: 'hidden',
+        label: { en: 'the science itself', es: 'la ciencia en sí', it: 'la scienza in sé' },
+        words: 'scien\\w*|chem\\w*|molecul\\w*|reactions?|atoms?|elements?|periodic|labs?|experiments?|crystals?|acids?|protons?|electrons?|physics|biolog\\w*|ciencia\\w*|quimic\\w*|reaccion\\w*|atomos?|laboratorio|experiment\\w*|biologia|scienz\\w*|chimic\\w*|reazion\\w*|atom\\w*|esperiment\\w*|graphen\\w*|grafen\\w*|carbon\\w*|metals?|physic\\w*|light|sky|planets?|stars?|space|energy|electric\\w*|magnet\\w*|gravity|universe|cielo|luz|luce|espacio|spazio|energia|elettric\\w*|electric\\w*|fisica' },
+      school: { book: 'hidden',
+        label: { en: 'school', es: 'los estudios', it: 'lo studio' },
+        words: 'school|class|classes|course\\w*|exam\\w*|student|studying|study|homework|teacher|university|college|escuela|clase\\w*|examen\\w*|estudiante|estudi\\w*|universidad|scuola|lezion\\w*|esam\\w*|studente|studi\\w*|universita' }
+    },
+
+    // Words meaning "nothing else, go ahead" during the what-else rounds.
+    doneWords: 'nothing( else)?|that\'?s (it|all)|thats (it|all)|just that|no+|nope|not really|nah|that\'?s about it|just (recommend|show|tell)|recommend|suggest|nada( mas)?|eso es todo|solo eso|ya esta|recomienda\\w*|niente( altro)?|nient\'?altro|e tutto|tutto qui|solo questo|basta|consiglia\\w*',
+    // Words meaning "I don't know" (used when they have no answer yet -> show the doors).
+    unsureWords: 'idk|i dunno|dunno|don\'?t know|dont know|not sure|no idea|no clue|whatever|anything|no se|ni idea|lo que sea|cualquier\\w*|non so|boh|non lo so|qualsiasi',
+
+    /* Step 5: honest reasons, tied to what the visitor said. Chosen by book + their first
+       matching curiosity. `also` adds one short extra sentence for a second curiosity.        */
+    because: {
+      coloring: {
+        art:     { en: 'it’s sixty pages of eerie, surreal linework made to be colored your own way.',
+                   es: 'son sesenta páginas de ilustraciones inquietantes y surrealistas para colorear a tu manera.',
+                   it: 'sono sessanta pagine di illustrazioni inquietanti e surreali da colorare a modo tuo.' },
+        calm:    { en: 'it’s made for slowing down: one strange page at a time, a few pencils, no rules, and a quiet hour that’s just yours.',
+                   es: 'está hecho para bajar el ritmo: una página extraña cada vez, unos lápices, sin reglas y una hora tranquila solo para ti.',
+                   it: 'è fatto per rallentare: una pagina strana alla volta, qualche matita, nessuna regola e un’ora tranquilla tutta per te.' },
+        default: { en: 'it’s the gentlest way into the Furious Acid world: sixty strange pages to color at your own pace.',
+                   es: 'es la entrada más suave al mundo de Furious Acid: sesenta páginas extrañas para colorear a tu ritmo.',
+                   it: 'è l’ingresso più dolce nel mondo di Furious Acid: sessanta pagine strane da colorare con calma.' } },
+      hidden: {
+        medicine: { en: 'it follows the trail from old remedies and plants all the way to modern medicine, told as connected stories instead of lists of formulas.',
+                    es: 'sigue el rastro desde los remedios antiguos y las plantas hasta la medicina moderna, contado como historias conectadas y no como listas de fórmulas.',
+                    it: 'segue la pista dai rimedi antichi e dalle piante fino alla medicina moderna, raccontata come storie collegate e non come elenchi di formule.' },
+        mind:     { en: 'it explains how medicines were discovered and how they act on the body and brain, connecting ideas instead of listing formulas.',
+                    es: 'explica cómo se descubrieron los medicamentos y cómo actúan en el cuerpo y el cerebro, conectando ideas en lugar de enumerar fórmulas.',
+                    it: 'spiega come sono stati scoperti i farmaci e come agiscono sul corpo e sul cervello, collegando idee invece di elencare formule.' },
+        everyday: { en: 'it connects the chemistry already in your life, like the medicine cabinet, to the stories of how it was discovered.',
+                    es: 'conecta la química que ya está en tu vida, como el botiquín, con las historias de cómo se descubrió.',
+                    it: 'collega la chimica che hai già nella vita, come l’armadietto dei medicinali, alle storie di come è stata scoperta.' },
+        science:  { en: 'it teaches real chemistry through the story of medicine, one connected idea at a time.',
+                    es: 'enseña química de verdad a través de la historia de la medicina, una idea conectada tras otra.',
+                    it: 'insegna chimica vera attraverso la storia della medicina, un’idea collegata alla volta.' },
+        plants:   { en: 'it follows how plants became medicines, from old remedies to modern labs.',
+                    es: 'sigue cómo las plantas se convirtieron en medicinas, desde los remedios antiguos hasta los laboratorios modernos.',
+                    it: 'segue come le piante sono diventate medicine, dai rimedi antichi ai laboratori moderni.' },
+        school:   { en: 'it connects the ideas behind medicine and chemistry instead of listing formulas, a good companion to coursework.',
+                    es: 'conecta las ideas detrás de la medicina y la química en lugar de enumerar fórmulas; un buen compañero para tus estudios.',
+                    it: 'collega le idee dietro medicina e chimica invece di elencare formule; un buon compagno per lo studio.' },
+        redirect: { en: 'it tells the real stories of how medicines were discovered, including the ones that act on the brain, like focus and ADHD medicines: history and science, never recipes.',
+                    es: 'cuenta las historias reales de cómo se descubrieron los medicamentos, incluidos los que actúan en el cerebro, como los de la concentración y el TDAH: historia y ciencia, nunca recetas.',
+                    it: 'racconta le storie vere di come sono stati scoperti i farmaci, compresi quelli che agiscono sul cervello, come i farmaci per la concentrazione e l’ADHD: storia e scienza, mai ricette.' },
+        default:  { en: 'it follows the trail from plants and history to modern medicine, connecting ideas instead of listing formulas.',
+                    es: 'sigue el rastro desde las plantas y la historia hasta la medicina moderna, conectando ideas en lugar de enumerar fórmulas.',
+                    it: 'segue la pista dalle piante e dalla storia fino alla medicina moderna, collegando idee invece di elencare formule.' } },
+      manual: {
+        // The Manual, pitched the owner's way: serious, technical, step by step. Always with the local-laws reminder.
+        plants:   { en: 'it’s a serious, technical, step-by-step indoor-growing guide: climate, lighting and setups, from starting with nothing to a professional grow, fully illustrated and built from more than 15 years of experience. Please follow your local laws.',
+                    es: 'es una guía seria, técnica y paso a paso de cultivo en interior: clima, iluminación y montajes, desde cero hasta un cultivo profesional, totalmente ilustrada y fruto de más de 15 años de experiencia. Respeta siempre las leyes locales.',
+                    it: 'è una guida seria, tecnica e passo dopo passo alla coltivazione indoor: clima, illuminazione e allestimenti, da zero fino a un impianto professionale, interamente illustrata e frutto di oltre 15 anni di esperienza. Rispetta sempre le leggi locali.' },
+        default:  { en: 'it’s a serious, technical, step-by-step indoor-growing guide: climate, lighting and setups, from starting with nothing to a professional grow, fully illustrated and built from more than 15 years of experience. Please follow your local laws.',
+                    es: 'es una guía seria, técnica y paso a paso de cultivo en interior: clima, iluminación y montajes, desde cero hasta un cultivo profesional, totalmente ilustrada y fruto de más de 15 años de experiencia. Respeta siempre las leyes locales.',
+                    it: 'è una guida seria, tecnica e passo dopo passo alla coltivazione indoor: clima, illuminazione e allestimenti, da zero fino a un impianto professionale, interamente illustrata e frutto di oltre 15 anni di esperienza. Rispetta sempre le leggi locali.' } }
+    },
+    also: {
+      medicine: { en: ' It’s full of old medicine stories, too.', es: ' Y está lleno de historias de medicina antigua.', it: ' Ed è pieno di storie di medicina antica.' },
+      mind:     { en: ' It also gets into how medicines act on the brain.', es: ' También explica cómo actúan los medicamentos en el cerebro.', it: ' Spiega anche come agiscono i farmaci sul cervello.' },
+      everyday: { en: ' And it keeps coming back to chemistry you meet every day.', es: ' Y vuelve una y otra vez a la química de cada día.', it: ' E torna spesso alla chimica di ogni giorno.' },
+      plants:   { en: ' Plants show up all through it, as the first medicines.', es: ' Las plantas aparecen por todas partes, como las primeras medicinas.', it: ' Le piante compaiono ovunque, come le prime medicine.' },
+      school:   { en: ' A good companion to coursework, too.', es: ' Un buen compañero para tus estudios, además.', it: ' Un buon compagno per lo studio, tra l’altro.' },
+      calm:     { en: ' And it’s a genuinely calming way to spend an evening.', es: ' Y es una forma de verdad relajante de pasar la tarde.', it: ' Ed è un modo davvero rilassante di passare la serata.' }
+    },
+
+    /* Typing a book's name goes straight to that book (typos forgiven: "coloring bok" works).
+       The Manual still needs the 21+/legal check first. interest = which curiosity it counts as. */
+    productNames: {
+      coloring: { interest: 'art',      words: 'colou?ring books?|furious acid colou?ring|libros? (para|de) colorear|libr[oi] da colorare' },
+      hidden:   { interest: 'medicine', words: 'hidden passages?|chemistry behind medicine' },
+      manual:   { interest: 'plants',   words: 'marijuana manual|cannabis manual|technical notebook|manual de marihuana|manuale (di|della) marijuana' }
+    },
+
+    /* RETENTION (the owner's loyalty-desk move): "too expensive" / "not now" / leaving.
+       Works at any point. The door stays open: the $9.99 option or a free sample, an invitation
+       to come back and ask anything, no guilt, no pressure, no fake urgency.                     */
+    retentionWords: {
+      too_expensive: 'too expensive|expensive|pricey|too much money|costs? too much|can\'?t afford|afford\\w*|budget|cheaper|broke|no money|caro|cara|muy caro|costoso|costosa|no tengo dinero|presupuesto|mas barato|troppo caro|costa troppo|non ho soldi|piu economico',
+      not_now: 'not now|no thanks|no thank you|maybe later|later|another time|some other time|bye+|goodbye|good bye|gotta go|got to go|have to go|i\'?m leaving|leaving|see ya|see you|cya|ahora no|no gracias|luego|otro momento|otro dia|mas tarde|adios|chao|hasta luego|me voy|me tengo que ir|tengo que irme|ora no|non ora|no grazie|piu tardi|un\'?altra volta|arrivederci|devo andare|me ne vado|alla prossima|a dopo'
+    },
+
+    steps: {
+
+      /* ---------- 1) GREETING ---------- */
+      greeting: { stage: 'Greeting',
+        say: { en: 'Hey, what’s up?', es: '¡Hey! ¿Qué tal?', it: 'Ehi, come va?' },
+        listen: 'greeting', nudge: 'greet_none' },
+
+      // warm: they said hi / hey
+      greet_warm: { stage: 'Greeting',
+        say:   { en: 'Hey! Good to see you here. 😊 Quick question: {discovery}',
+                 es: '¡Hey! Qué bueno verte por aquí. 😊 Una pregunta rápida: {discovery}',
+                 it: 'Ehi! Che bello vederti qui. 😊 Una domanda veloce: {discovery}' },
+        short: { en: 'Hey! 😊 {discovery}', es: '¡Hey! 😊 {discovery}', it: 'Ehi! 😊 {discovery}' },
+        listen: 'discovery', doors: true },
+
+      // warm: they asked how the Rabbit is
+      greet_warm_asked: { stage: 'Greeting',
+        say:   { en: 'Doing great, thanks for asking! 😊 Quick question: {discovery}',
+                 es: '¡Muy bien, gracias por preguntar! 😊 Una pregunta rápida: {discovery}',
+                 it: 'Benissimo, grazie che me lo chiedi! 😊 Una domanda veloce: {discovery}' },
+        short: { en: 'Great, thanks! 😊 {discovery}', es: '¡Muy bien, gracias! 😊 {discovery}', it: 'Benissimo, grazie! 😊 {discovery}' },
+        listen: 'discovery', doors: true },
+
+      // cold: weird / indifferent / unpredictable reply
+      greet_cold: { stage: 'Greeting',
+        say:   { en: 'Ha, fair enough. I’m a rabbit who finds books, so weird is welcome here. 🐇 {discovery}',
+                 es: 'Ja, me parece justo. Soy un conejo que encuentra libros, así que lo raro aquí es bienvenido. 🐇 {discovery}',
+                 it: 'Ah, ci sta. Sono un coniglio che trova libri, quindi lo strano qui è il benvenuto. 🐇 {discovery}' },
+        short: { en: 'Fair enough. 🐇 {discovery}', es: 'Me parece justo. 🐇 {discovery}', it: 'Ci sta. 🐇 {discovery}' },
+        listen: 'discovery', doors: true },
+
+      // direct: asked straight for a book / how to do something, no topic yet
+      greet_direct: { stage: 'Greeting',
+        say:   { en: 'Sure, I can help with that! So I pick the right one for you: {discovery}',
+                 es: '¡Claro, te ayudo con eso! Para elegir el adecuado para ti: {discovery}',
+                 it: 'Certo, ti aiuto volentieri! Per scegliere quello giusto per te: {discovery}' },
+        listen: 'discovery', doors: true },
+
+      // direct with a topic in it ("got a book about plants?"): that already counts as round 1
+      greet_direct_topic: { stage: 'Greeting',
+        say:   { en: 'Straight to it, I like that. So, {latest}. Okay, what else?',
+                 es: 'Directo al grano, me gusta. Entonces, {latest}. Vale, ¿qué más?',
+                 it: 'Dritto al punto, mi piace. Allora, {latest}. Ok, cos’altro?' },
+        listen: 'discovery', doors: true },
+
+      // none: no reply after nudgeAfterMs. One gentle nudge, never more.
+      greet_none: { stage: 'Greeting',
+        say:   { en: 'No rush! 🙂 Ask me anything, or if it’s easier, tap one of these.',
+                 es: '¡Sin prisa! 🙂 Pregúntame lo que quieras o, si te resulta más fácil, toca una opción.',
+                 it: 'Nessuna fretta! 🙂 Chiedimi quello che vuoi o, se è più comodo, tocca un’opzione.' },
+        listen: 'greeting',
+        choices: [
+          { label: { en: 'Just saying hi 👋', es: 'Solo vengo a saludar 👋', it: 'Passavo a salutare 👋' }, next: 'greet_warm' },
+          { label: { en: 'Looking for a book 📚', es: 'Busco un libro 📚', it: 'Cerco un libro 📚' }, next: 'greet_direct' },
+          { label: { en: 'Just browsing 👀', es: 'Solo estoy mirando 👀', it: 'Sto solo curiosando 👀' }, next: 'greet_browse' }
+        ] },
+
+      greet_browse: { stage: 'Greeting',
+        say:   { en: 'Browsing is the best part. 🐇 While you look around: {discovery}',
+                 es: 'Curiosear es lo mejor. 🐇 Mientras miras: {discovery}',
+                 it: 'Curiosare è la parte migliore. 🐇 Intanto che guardi: {discovery}' },
+        listen: 'discovery', doors: true },
+
+      /* ---------- 2) DISCOVERY helper: "I don't know" -> offer the doors ---------- */
+      discovery_help: { stage: 'Discovery',
+        say:   { en: 'No wrong answers here. Is it one of these? Or tell me in your own words.',
+                 es: 'Aquí no hay respuestas incorrectas. ¿Es alguna de estas? O cuéntamelo con tus palabras.',
+                 it: 'Qui non ci sono risposte sbagliate. È una di queste? Oppure dimmelo con parole tue.' },
+        listen: 'discovery', doors: true },
+
+      /* ---------- 3) PARAPHRASE + "WHAT ELSE?" (rounds 1 and 2) ---------- */
+      what_else_1: { stage: 'Paraphrase',
+        say:   { en: 'So, {latest}. Okay, what else?', es: 'Entonces, {latest}. Vale, ¿qué más?', it: 'Allora, {latest}. Ok, cos’altro?' },
+        listen: 'discovery', doors: true },
+      what_else_2: { stage: 'Paraphrase',
+        say:   { en: '{soFar}… tell me more.', es: '{soFar}… cuéntame más.', it: '{soFar}… dimmi di più.' },
+        listen: 'discovery', doors: true },
+      what_else_more: { stage: 'Paraphrase',   // used only if whatElseRounds is set above 2
+        say:   { en: '{soFar}. Anything else?', es: '{soFar}. ¿Algo más?', it: '{soFar}. Nient’altro?' },
+        listen: 'discovery', doors: true },
+
+      /* ---------- 21+ / legal-location check (before the Marijuana Manual only) ---------- */
+      age_check: { stage: 'Value',
+        say: { en: 'Plants, nice. One honest question before I point you to a book: are you 21 or older, and is growing cannabis legal where you live?',
+               es: 'Plantas, genial. Una pregunta sincera antes de recomendarte un libro: ¿tienes 21 años o más y es legal cultivar cannabis donde vives?',
+               it: 'Piante, bello. Una domanda sincera prima di consigliarti un libro: hai almeno 21 anni ed è legale coltivare cannabis dove vivi?' },
+        choices: [
+          { label: { en: 'Yes, both', es: 'Sí, las dos cosas', it: 'Sì, entrambe' }, next: '@recommend', set: { gateOk: true },
+            words: 'yes|yep|yeah|yup|both|i am|si|claro|ambas|las dos|certo|entrambe' },
+          { label: { en: 'No / not sure', es: 'No / no estoy seguro', it: 'No / non sono sicuro' }, next: '@recommend', set: { gateNo: true },
+            lead: { en: 'Thanks for being honest; that matters to me. ', es: 'Gracias por tu sinceridad; eso me importa. ', it: 'Grazie per la sincerità; per me conta. ' },
+            words: 'no|nope|not sure|unsure|under|not legal|illegal|todavia no|menor|no es legal|ilegal|non|minorenne|illegale|non e legale' }
+        ],
+        again: { en: 'Just a yes or no is fine: 21+ and legal where you live?', es: 'Basta con un sí o un no: ¿21+ y legal donde vives?', it: 'Basta un sì o un no: 21+ e legale dove vivi?' } },
+
+      /* ---------- 5) VALUE + CUSHION, 6) LINK DROP + "did it load?" ---------- */
+      recommend: { stage: 'Value',
+        say:   { en: 'Based on what you said{soFarParen}, this one would be perfect for you, because {because}',
+                 es: 'Por lo que me contaste{soFarParen}, este sería perfecto para ti, porque {because}',
+                 it: 'Da quello che mi hai detto{soFarParen}, questo sarebbe perfetto per te, perché {because}' },
+        show: 'link',
+        after: { en: 'Did the page load okay for you?', es: '¿Se te cargó bien la página?', it: 'La pagina ti si è caricata bene?' },
+        choices: [   // typed replies are matched in THIS order (first match wins)
+          { label: { en: 'It’s too expensive', es: 'Es demasiado caro', it: 'È troppo caro' }, next: 'too_expensive',
+            words: 'expensive|pricey|too much|cost\\w*|money|afford\\w*|budget|cheaper|broke|caro|cara|costoso|dinero|presupuesto|barato|prezzo|soldi|costa troppo|economico' },
+          { label: { en: 'Not sure yet', es: 'Aún no lo sé', it: 'Non sono ancora sicuro' }, next: 'not_sure',
+            words: 'not sure|unsure|maybe|dunno|don\'?t know|thinking|hmm+|no se|no estoy segur\\w*|quiza\\w*|tal vez|no lo se|non so|forse|non sono sicur\\w*|ci penso' },
+          { label: { en: 'Not now', es: 'Ahora no', it: 'Non ora' }, next: 'not_now',
+            words: 'not now|no thanks|no thank you|later|another time|some other time|ahora no|no gracias|luego|otro momento|mas tarde|ora no|non ora|no grazie|dopo|piu tardi|un\'?altra volta' },
+          { label: { en: 'It didn’t load', es: 'No cargó', it: 'Non si è caricata' }, next: 'not_loaded',
+            words: 'no|nope|didn\'?t|did not|doesn\'?t|not load\\w*|broken|error|blank|no carg\\w*|no funciona|no abre|non si carica|non funziona|non carica|errore|non si apre' },
+          { label: { en: 'Yes, it loaded', es: 'Sí, cargó', it: 'Sì, caricata' }, next: 'loaded_yes',
+            words: 'yes|yep|yeah|yup|ya|ok|okay|it did|loaded|works|worked|fine|good|great|cool|nice|awesome|perfect|thanks|thank you|si|claro|vale|cargo|funciona|bien|genial|gracias|perfecto|certo|va bene|caricat\\w*|funziona|bene|grazie|perfetto|ottimo' }
+        ] },
+
+      // after a drug-making refusal (SAFETY) the Rabbit redirects straight to Hidden Passages
+      recommend_redirect: { stage: 'Value',
+        say:   { en: 'If that kind of story is your thing, this one would be perfect for you, because {because}',
+                 es: 'Si ese tipo de historias te gusta, este sería perfecto para ti, porque {because}',
+                 it: 'Se ti piacciono storie così, questo sarebbe perfetto per te, perché {because}' },
+        show: 'link', after: { en: 'Did the page load okay for you?', es: '¿Se te cargó bien la página?', it: 'La pagina ti si è caricata bene?' },
+        choicesFrom: 'recommend' },
+
+      /* ---------- SAFETY, the warm way: someone asks how to make or get a drug ----------
+         No refusal speech: curiosity first, then the normal call flow (paraphrase, what else,
+         "based on what you said..."). The drug is never named back; no steps, amounts, reagents
+         or sourcing, ever. If they keep pushing for instructions: drug_push, then drug_push_again. */
+      drug_curious: { stage: 'Discovery', listen: 'discovery',
+        say: { en: 'Wow, sounds like you’re really passionate about this. What’s the research about? The brain, focus, ADHD, how medicines work?',
+               es: '¡Vaya, se nota que te apasiona de verdad! ¿De qué trata tu investigación? ¿El cerebro, la concentración, el TDAH, cómo funcionan los medicamentos?',
+               it: 'Wow, si vede che ti appassiona davvero. Di cosa parla la tua ricerca? Il cervello, la concentrazione, l’ADHD, come funzionano i farmaci?' } },
+      // a question (or a Wikipedia result) that lands on a controlled drug: no summary, same warm curiosity
+      drug_curious_wiki: { stage: 'Discovery', listen: 'discovery',
+        say: { en: ['That one I’ll leave off the Wikipedia shelf. 🙂', 'Sounds like you’re really curious about it, though. What’s the research about? The brain, focus, ADHD, how medicines work?'],
+               es: ['Ese lo dejo fuera de la estantería de Wikipedia. 🙂', 'Aunque se nota que te da mucha curiosidad. ¿De qué trata tu investigación? ¿El cerebro, la concentración, el TDAH, cómo funcionan los medicamentos?'],
+               it: ['Questa la lascio fuori dallo scaffale di Wikipedia. 🙂', 'Però si vede che ti incuriosisce davvero. Di cosa parla la tua ricerca? Il cervello, la concentrazione, l’ADHD, come funzionano i farmaci?'] } },
+      // another drug-topic question later on: no summary, straight to the right book
+      drug_wiki_again: { stage: 'Value', next: '@recommend',
+        say: { en: 'That one I’ll leave off the Wikipedia shelf too. 🙂', es: 'Ese también lo dejo fuera de la estantería de Wikipedia. 🙂', it: 'Anche questa la lascio fuori dallo scaffale di Wikipedia. 🙂' } },
+      // they keep pushing for instructions: gentle, no lecture, back to the books
+      drug_push: { stage: 'Value', next: '@recommend',
+        say: { en: 'I don’t give how-to instructions for that, for anyone, but I totally get the curiosity. 🙂 Where I can really help is the story behind it: how medicines, including the ones for the brain and focus, were actually discovered.',
+               es: 'No doy instrucciones paso a paso para eso, a nadie, pero entiendo perfectamente la curiosidad. 🙂 Donde sí puedo ayudarte es con la historia detrás: cómo se descubrieron de verdad los medicamentos, incluidos los del cerebro y la concentración.',
+               it: 'Non do istruzioni pratiche per quello, a nessuno, ma capisco benissimo la curiosità. 🙂 Dove posso davvero aiutarti è la storia che c’è dietro: come sono stati scoperti davvero i farmaci, compresi quelli per il cervello e la concentrazione.' } },
+      // same, when Hidden Passages is already on screen: no second card, just point back to it
+      drug_push_light: { stage: 'Value', choicesFrom: 'recommend',
+        say: { en: 'I don’t give how-to instructions for that, for anyone, but I totally get the curiosity. 🙂 The real story of how medicines for the brain and focus were discovered is in that Hidden Passages link above, and the $9.99 Coloring Book is there if you’d like something lighter.',
+               es: 'No doy instrucciones paso a paso para eso, a nadie, pero entiendo perfectamente la curiosidad. 🙂 La historia real de cómo se descubrieron los medicamentos del cerebro y la concentración está en el enlace de Hidden Passages de arriba, y el Coloring Book de 9,99 $ está ahí si prefieres algo más ligero.',
+               it: 'Non do istruzioni pratiche per quello, a nessuno, ma capisco benissimo la curiosità. 🙂 La vera storia di come sono stati scoperti i farmaci per il cervello e la concentrazione è nel link di Hidden Passages qui sopra, e il Coloring Book da 9,99 $ è lì se preferisci qualcosa di più leggero.' } },
+      drug_push_again: { stage: 'Value',
+        say: { en: 'Still not something I give out, and no hard feelings at all. 🙂 If you want to keep exploring, the free sample of Hidden Passages or the $9.99 Coloring Book are right there, and you can ask me anything else, any time.',
+               es: 'Sigue sin ser algo que dé, y sin ningún problema. 🙂 Si quieres seguir explorando, tienes la muestra gratis de Hidden Passages o el Coloring Book de 9,99 $, y puedes preguntarme lo que quieras, cuando quieras.',
+               it: 'Continua a non essere qualcosa che do, e nessun problema. 🙂 Se vuoi continuare a esplorare, ci sono l’estratto gratuito di Hidden Passages o il Coloring Book da 9,99 $, e puoi chiedermi qualsiasi altra cosa, quando vuoi.' },
+        show: 'retain', choicesFrom: 'recommend' },
+      // the recommendation after that warm redirect: Hidden Passages, plus the $9.99 Coloring Book as the cheaper pick
+      recommend_curious: { stage: 'Value',
+        say:   { en: 'Based on what you said{soFarParen}, this would be perfect for you, because {because}',
+                 es: 'Por lo que me contaste{soFarParen}, este sería perfecto para ti, porque {because}',
+                 it: 'Da quello che mi hai detto{soFarParen}, questo sarebbe perfetto per te, perché {because}' },
+        show: 'linkCheap', after: { en: 'Did the page load okay for you?', es: '¿Se te cargó bien la página?', it: 'La pagina ti si è caricata bene?' },
+        choicesFrom: 'recommend' },
+
+      // typed something after the link that matched nothing
+      after_link_unclear: { stage: 'Link',
+        say: { en: 'Got it. Did the page open okay, or would a lighter option or a free sample help?',
+               es: 'Entendido. ¿Se abrió bien la página, o te ayudaría una opción más ligera o una muestra gratis?',
+               it: 'Capito. La pagina si è aperta bene, o ti aiuterebbe un’opzione più leggera o un estratto gratuito?' },
+        choicesFrom: 'recommend' },
+
+      /* ---------- 7) SIMPLE REPLIES, 8) ALWAYS THANK THEM ---------- */
+      loaded_yes: { stage: 'Close', listen: 'end',
+        say: { en: 'Awesome! Take your time with it, no rush at all. Thanks so much for chatting with me. 🟣',
+               es: '¡Genial! Tómate tu tiempo, sin ninguna prisa. Muchas gracias por charlar conmigo. 🟣',
+               it: 'Fantastico! Prenditi il tuo tempo, nessuna fretta. Grazie mille per aver chiacchierato con me. 🟣' } },
+
+      /* ---------- RETENTION: leave the door open (no guilt, no pressure, no fake urgency) ---------- */
+      too_expensive: { stage: 'Close', listen: 'end',
+        say: { en: 'Totally fair, money is real, and there’s no pressure at all. If you’d like a lighter start, there’s the Furious Acid Coloring Book{coloringPrice}, or you can read a free sample first, at no cost.',
+               es: 'Totalmente comprensible, el dinero es real, y sin ninguna presión. Si prefieres empezar con algo más ligero, está el Furious Acid Coloring Book{coloringPrice}, o puedes leer primero una muestra gratis, sin coste.',
+               it: 'Giustissimo, i soldi sono reali, e nessuna pressione. Se preferisci iniziare con qualcosa di più leggero, c’è il Furious Acid Coloring Book{coloringPrice}, oppure puoi leggere prima un estratto gratuito, senza costi.' },
+        show: 'budget',
+        after: { en: 'Thanks for being straight with me. The door’s always open: come back and ask me anything, any time. 🟣',
+                 es: 'Gracias por tu sinceridad. La puerta siempre está abierta: vuelve y pregúntame lo que quieras, cuando quieras. 🟣',
+                 it: 'Grazie per la sincerità. La porta è sempre aperta: torna e chiedimi quello che vuoi, quando vuoi. 🟣' } },
+
+      // too expensive, but the recommendation already WAS the $9.99 coloring book
+      too_expensive_coloring: { stage: 'Close', listen: 'end',
+        say: { en: 'Totally fair, money is real. That one’s already the lightest book on the shelf{coloringPrice}, so no pressure at all; the link will be right here if you ever want it. Come back and ask me anything, any time. Thanks for chatting! 🟣',
+               es: 'Totalmente comprensible, el dinero es real. Ese ya es el libro más ligero de la estantería{coloringPrice}, así que sin ninguna presión; el enlace seguirá aquí si algún día lo quieres. Vuelve y pregúntame lo que quieras, cuando quieras. ¡Gracias por charlar! 🟣',
+               it: 'Giustissimo, i soldi sono reali. Quello è già il libro più leggero dello scaffale{coloringPrice}, quindi nessuna pressione; il link resta qui se un giorno lo vorrai. Torna e chiedimi quello che vuoi, quando vuoi. Grazie per la chiacchierata! 🟣' } },
+
+      not_sure: { stage: 'Close', listen: 'end',
+        say: { en: 'No rush at all. Here’s a free sample, so you can see if it’s your kind of book.',
+               es: 'Sin ninguna prisa. Aquí tienes una muestra gratis, para que veas si es tu tipo de libro.',
+               it: 'Nessuna fretta. Ecco un estratto gratuito, così vedi se è il tuo genere di libro.' },
+        show: 'sample',
+        after: { en: 'Thanks for chatting with me. Come back and ask me anything, any time. 🟣', es: 'Gracias por charlar conmigo. Vuelve y pregúntame lo que quieras, cuando quieras. 🟣', it: 'Grazie per aver chiacchierato con me. Torna e chiedimi quello che vuoi, quando vuoi. 🟣' } },
+
+      // "not now" / "bye" / leaving
+      not_now: { stage: 'Close', listen: 'end',
+        say: { en: 'No problem at all, and no pressure. Whenever you’re ready, there’s a free sample to read, or the Coloring Book{coloringPrice} as a lighter start.',
+               es: 'Ningún problema, y sin ninguna presión. Cuando quieras, tienes una muestra gratis para leer, o el Coloring Book{coloringPrice} para empezar con algo más ligero.',
+               it: 'Nessun problema, e nessuna pressione. Quando vuoi, c’è un estratto gratuito da leggere, oppure il Coloring Book{coloringPrice} per iniziare con qualcosa di più leggero.' },
+        show: 'retain',
+        after: { en: 'Thanks for stopping by the lab. Come back and ask me anything, any time; the door’s always open. 🟣',
+                 es: 'Gracias por pasar por el laboratorio. Vuelve y pregúntame lo que quieras, cuando quieras; la puerta siempre está abierta. 🟣',
+                 it: 'Grazie per essere passato dal laboratorio. Torna e chiedimi quello che vuoi, quando vuoi; la porta è sempre aperta. 🟣' } },
+
+      not_loaded: { stage: 'Close', listen: 'end',
+        say: { en: 'Sorry about that! Try this plain link: {link} (or search Amazon for {asin}). Thanks for your patience, and for chatting. 🟣',
+               es: '¡Perdona! Prueba este enlace directo: {link} (o busca {asin} en Amazon). Gracias por tu paciencia y por charlar. 🟣',
+               it: 'Scusa! Prova questo link diretto: {link} (oppure cerca {asin} su Amazon). Grazie per la pazienza e per la chiacchierata. 🟣' } },
+
+      // typing again after the goodbye starts a fresh discovery
+      greet_again: { stage: 'Greeting',
+        say: { en: 'Happy to keep going! {discovery}', es: '¡Encantado de seguir! {discovery}', it: 'Volentieri, continuiamo! {discovery}' },
+        listen: 'discovery', doors: true },
+
+      /* ---------- ASK ME ANYTHING: free answer from Wikipedia, then (sometimes) GIVE, THEN PIVOT ----------
+         The answer itself is built by the engine (1-3 sentences + "Read more on Wikipedia").
+         Pivot rhythm: after the first free answer, then every SETTINGS.pivotEvery answers.       */
+      pivot: { stage: 'Value',
+        say:     { en: 'If that got you curious, this goes much deeper:', es: 'Si eso te despertó la curiosidad, este va mucho más a fondo:', it: 'Se questo ti ha incuriosito, questo va molto più a fondo:' },
+        show: 'pivot',
+        cushion: { en: 'Based on what you said, this would be perfect for you, because {because}', es: 'Por lo que me contaste, este sería perfecto para ti, porque {because}', it: 'Da quello che mi hai detto, questo sarebbe perfetto per te, perché {because}' },
+        after:   { en: 'Did the page load okay for you?', es: '¿Se te cargó bien la página?', it: 'La pagina ti si è caricata bene?' },
+        choicesFrom: 'recommend' },
+      // the pivot right after the 21+/legal answer (the curious line was already said)
+      pivot_after_gate: { stage: 'Value',
+        say:     { en: 'Here’s one that goes much deeper:', es: 'Aquí tienes uno que va mucho más a fondo:', it: 'Eccone uno che va molto più a fondo:' },
+        show: 'pivot', cushionFrom: 'pivot',
+        after:   { en: 'Did the page load okay for you?', es: '¿Se te cargó bien la página?', it: 'La pagina ti si è caricata bene?' },
+        choicesFrom: 'recommend' },
+      // the same book was already shown: a light mention only, no second card
+      pivot_again: { stage: 'Value', listen: 'discovery',
+        say: { en: 'If that got you curious, {title} goes much deeper on this kind of thing. The link’s still up there whenever you want it.',
+               es: 'Si eso te despertó la curiosidad, {title} profundiza mucho más en este tipo de cosas. El enlace sigue ahí arriba cuando quieras.',
+               it: 'Se questo ti ha incuriosito, {title} va molto più a fondo su cose così. Il link è ancora lassù, quando vuoi.' } },
+      // plants / growing / lighting / greenhouses: the 21+/legal check always comes before the Manual
+      pivot_age: { stage: 'Value',
+        say: { en: 'If that got you curious, I know a book that goes much deeper. One honest question first: are you 21 or older, and is growing cannabis legal where you live?',
+               es: 'Si eso te despertó la curiosidad, conozco un libro que va mucho más a fondo. Antes, una pregunta sincera: ¿tienes 21 años o más y es legal cultivar cannabis donde vives?',
+               it: 'Se questo ti ha incuriosito, conosco un libro che va molto più a fondo. Prima una domanda sincera: hai almeno 21 anni ed è legale coltivare cannabis dove vivi?' },
+        choicesFrom: 'age_check',
+        again: { en: 'Just a yes or no is fine: 21+ and legal where you live?', es: 'Basta con un sí o un no: ¿21+ y legal donde vives?', it: 'Basta un sì o un no: 21+ e legale dove vivi?' } },
+      // no good Wikipedia result: fall back to a curious question (their answer feeds the discovery)
+      wiki_none: { stage: 'Discovery', listen: 'discovery',
+        say: { en: 'Hmm, I couldn’t find a clear answer to that one. I’m curious, though: what got you wondering about {topic}?',
+               es: 'Mmm, no encontré una respuesta clara a eso. Pero tengo curiosidad: ¿qué te hizo pensar en {topic}?',
+               it: 'Mmm, non ho trovato una risposta chiara. Però sono curioso: cosa ti ha fatto pensare a {topic}?' } },
+      // Wikipedia unreachable (offline, slow, blocked): same gentle fallback
+      wiki_fail: { stage: 'Discovery', listen: 'discovery',
+        say: { en: 'My line to the library is a little slow right now, so I can’t look that up. I’m curious, though: what got you wondering about {topic}?',
+               es: 'Mi conexión con la biblioteca va un poco lenta ahora mismo, así que no puedo buscarlo. Pero tengo curiosidad: ¿qué te hizo pensar en {topic}?',
+               it: 'Il mio collegamento con la biblioteca è un po’ lento in questo momento, quindi non riesco a cercarlo. Però sono curioso: cosa ti ha fatto pensare a {topic}?' } },
+
+      fallback: { stage: 'Greeting',
+        say: { en: 'Hmm, the Rabbit’s ears twitched, but I didn’t quite catch that. {discovery}',
+               es: 'Mmm, al Conejo se le movieron las orejas, pero no lo he entendido del todo. {discovery}',
+               it: 'Mmm, al Coniglio si sono mosse le orecchie, ma non ho capito bene. {discovery}' },
+        listen: 'discovery', doors: true }
+    }
+  };
+
+  /* =====================================================================
+     3) PRODUCTS: the ONLY three books the Rabbit can recommend or link to.
+     'manual' (Marijuana Manual) is only ever shown after the 21+/legal-location "Yes, both".
+     (Drug Synthesis and the Coca/Khat/Kratom book are deliberately absent,
+      and the engine also blocks their ASINs if someone adds them by mistake.)
+     ===================================================================== */
+  var PRODUCTS = {
+    coloring: { asin: 'B0GW9BRT6X', usd: '$9.99', short: { en: 'the Coloring Book', es: 'el Coloring Book', it: 'il Coloring Book' }, title: { en: 'Furious Acid Coloring Book', es: 'Furious Acid Coloring Book', it: 'Furious Acid Coloring Book' },
+      meta: { en: 'Paperback · 60 pages', es: 'Tapa blanda · 60 páginas · edición en inglés', it: 'Copertina flessibile · 60 pagine · edizione in inglese' },
+      reason: { en: 'Sixty pages of intricate, surreal linework made to be colored your way: eerie and funny in equal parts.',
+                es: 'Sesenta páginas de ilustraciones surrealistas y detalladas para colorear a tu manera: inquietantes y divertidas a partes iguales.',
+                it: 'Sessanta pagine di illustrazioni surreali e dettagliate da colorare a modo tuo: inquietanti e divertenti in parti uguali.' },
+      sample: { en: 'Picture it: a quiet evening, one page, a few pencils, and a strange little world slowly taking color under your hand. That’s all it asks of you.',
+                es: 'Imagínalo: una tarde tranquila, una página, unos lápices y un pequeño mundo extraño que va tomando color bajo tu mano. Es todo lo que te pide.',
+                it: 'Immagina: una sera tranquilla, una pagina, qualche matita e un piccolo mondo strano che prende colore sotto la tua mano. È tutto ciò che ti chiede.' } },
+    hidden: { asin: 'B0GJPYPJTZ', usd: '$34.99', short: { en: 'Hidden Passages', es: 'Hidden Passages', it: 'Hidden Passages' }, title: { en: 'Hidden Passages: The Chemistry Behind Medicine and Drug Discovery', es: 'Hidden Passages: The Chemistry Behind Medicine and Drug Discovery', it: 'Hidden Passages: The Chemistry Behind Medicine and Drug Discovery' },
+      meta: { en: 'Paperback · 271 pages', es: 'Tapa blanda · 271 páginas · libro en inglés', it: 'Copertina flessibile · 271 pagine · libro in inglese' },
+      reason: { en: 'It follows the trail from plants and history to modern medicine, connecting ideas instead of listing formulas.',
+                es: 'Sigue el rastro desde las plantas y la historia hasta la medicina moderna, conectando ideas en lugar de enumerar fórmulas.',
+                it: 'Segue la pista dalle piante e dalla storia fino alla medicina moderna, collegando idee invece di elencare formule.' },
+      student: { en: ' A good companion to coursework.', es: ' Un buen compañero para tus estudios.', it: ' Un buon compagno per lo studio.' },
+      sample: { en: 'There’s a free sample on the website. Read a few pages and see whether the voice feels like yours.',
+                es: 'Hay una muestra gratuita en la web. Lee unas páginas y mira si la voz del libro va contigo.',
+                it: 'C’è un estratto gratuito sul sito. Leggi qualche pagina e senti se la voce del libro fa per te.' },
+      sampleUrl: 'https://furiousacid.com/excerpt-medicine.html' },
+    manual: { asin: 'B0G8VLPS1K', usd: '$34.99', gated: true, short: { en: 'the Marijuana Manual', es: 'el Marijuana Manual', it: 'il Marijuana Manual' }, title: { en: 'Marijuana Manual: Technical Notebook', es: 'Marijuana Manual: Technical Notebook', it: 'Marijuana Manual: Technical Notebook' },
+      meta: { en: 'Paperback · 188 pages', es: 'Tapa blanda · 188 páginas · libro en inglés', it: 'Copertina flessibile · 188 pagine · libro in inglese' },
+      reason: { en: 'A serious, technical, step-by-step indoor-growing guide: climate, lighting and setups, from nothing to professional. Fully illustrated. Please follow your local laws.',
+                es: 'Una guía seria, técnica y paso a paso de cultivo en interior: clima, iluminación y montajes, desde cero hasta nivel profesional. Totalmente ilustrada. Respeta siempre las leyes locales.',
+                it: 'Una guida seria, tecnica e passo dopo passo alla coltivazione indoor: clima, illuminazione e allestimenti, da zero a livello professionale. Interamente illustrata. Rispetta sempre le leggi locali.' },
+      sample: { en: 'There’s a free sample on the website, so you can see the illustrated style before deciding.',
+                es: 'Hay una muestra gratuita en la web, para que veas el estilo ilustrado antes de decidir.',
+                it: 'C’è un estratto gratuito sul sito, così puoi vedere lo stile illustrato prima di decidere.' },
+      sampleUrl: 'https://furiousacid.com/excerpt-marijuana.html' },
+  };
+
+  /* =====================================================================
+     3b) ASK ME ANYTHING: which typed messages count as general questions
+         (answered from Wikipedia). Accents are ignored; typos are forgiven.
+     ===================================================================== */
+  var ASK = {
+    // a message starting like this is a question ("is/are/can..." need 4+ words, so "is it good?" stays a reply)
+    starts: 'what|whats|what\'s|wat|waht|whta|wht|who|hwo|wy|whos|who\'s|whose|why|how|when|where|which|explain|define|tell me about|meaning of|que|quien|quienes|por que|como|cuando|donde|cual|cuales|cuanto|cuantos|cuantas|explica\\w*|hablame de|cosa|cos\'e|che cos\'e|che cosa|chi|perche|come|quando|dove|quale|quali|quanto|quanti|spiega\\w*|parlami di',
+    weakStarts: 'is|are|was|were|does|do|did|can|could|es|son|fue|puede|hay|e|sono|era|puo|ci sono',
+    // ...but these are about the Rabbit itself or the books: they go to the call flow, not to Wikipedia
+    notWiki: 'book\\w*|libr[oi]\\w*|recommend\\w*|suggest\\w*|recomi\\w*|sugier\\w*|consigli\\w*|suggeri\\w*|amazon|prices?|precio\\w*|prezz\\w*|costs?|cuesta|buy|comprar|comprare|shop|store|tienda|negozio|merch|samples?|muestra|estratto|rabbit|conejo|coniglio|(are|r|do|can|could|would|will|did|have) (you|u)|you (have|sell|got|recommend|know|like|do)|your name|eres|tienes|puedes|sabes|vendes|te llamas|sei|hai|puoi|sai|vendi|ti chiami',
+    // words dropped when the Rabbit repeats the topic back ("what got you wondering about graphene?")
+    filler: 'and|or|e|y|o|what|whats|who|whos|whose|why|how|when|where|which|is|are|was|were|does|do|did|can|could|the|a|an|of|to|in|on|about|tell|me|explain|define|meaning|exactly|really|actually|get|gets|made|work|works|que|quien|quienes|por|como|cuando|donde|cual|cuales|es|son|fue|el|la|los|las|un|una|de|del|al|se|explica|explicame|hablame|funciona|cosa|cos|che|chi|perche|come|quando|dove|quale|quali|il|lo|gli|le|uno|di|della|dello|dei|delle|sono|ha|spiega|spiegami|parlami|funziona'
+  };
+
+  /* =====================================================================
+     4) SAFETY: please do not remove. Runs before the call flow on every
+        typed message, in English, Spanish and Italian.
+     ===================================================================== */
+  var BLOCKED_ASINS = ['B0HCMMZF89', 'B0H6NQCZM7', 'B0H6LXN9L7', 'B0HC8H1LR4', 'B0HHKSFF7W', 'B0GPL18WSK', 'B0GPHFQKCV'];
+  var SAFE = {
+    crisis: /\b(suicid\w*|kill (my ?self|myself)|hurt (my ?self|myself)|want to die|overdos\w*|od'?d|poison(ed|ing)?|can'?t breathe|not breathing|emergency|matarme|quitarme la vida|hacerme dano|quiero morir|sobredosis|envenen\w*|no puedo respirar|emergencia|uccidermi|togliermi la vita|farmi del male|voglio morire|overdose|avvelen\w*|non respiro|emergenza)\b/,
+    action: /\b(make|making|made|mak|maek|mkae|amke|mkae|prepar\w*|si fa|se hace|se hacen|fa|fai|synthes\w*|sintes\w*|sintetiz\w*|sintetizz\w*|cook\w*|extract\w*|isolat\w*|brew\w*|produce|producing|manufactur\w*|recipes?|route|yield|reagents?|precursors?|convert\w*|conversion|buy|score|plug|dealer|vendor|where (can|do|to|could) (i|you|we)? ?(buy|get|find|order|source)|hacer|hago|hace|fabric\w*|cocin\w*|extra\w*|producir|convertir|recetas?|compr\w*|consegu\w*|consigo|donde (compro|consigo|encuentro|venden|pillo)|camello|fare|faccio|cucin\w*|estra\w*|produrre|convertire|ricett\w*|procurar\w*|dove (compro|trovo|prendo)|spaccia\w*|pusher)\b/,
+    drug: /\b(drugs?|narcotic\w*|ketamin\w*|dmt|5-?meo\w*|meth|metth|meht|mehth|methamphetamine|metanfetamin\w*|crystal meth|amphetamines?|anfetamin\w*|adderall|mdma|molly|ecstasy|extasis|lsd|psilocyb\w*|psilocib\w*|shrooms?|magic mushrooms?|mescalin\w*|peyote|cocain\w*|coca|heroin\w*|eroina|fentanil\w*|fentanyl|opioid\w*|opiates?|oppiacei|oxycodone|oxycontin|morphin\w*|morfin\w*|codein\w*|ghb|pcp|tryptamin\w*|triptamin\w*|phenethylamines?|cathinon\w*|catinon\w*|bath salts|khat|kratom|benzos?|benzodiazepin\w*|xanax|thc|cbd|hashish|hachis|hascisc|psychedelics?|psicodelic\w*|psichedelic\w*|drogas?|droghe|estupefacientes?|stupefacenti)\b/,
+    // pushing for instructions after the warm redirect (only checked once they asked how to make/get a drug)
+    push: /\b(just tell me|tell me how|tell me the (steps|recipe|way)|give me (the )?(steps|recipe|instructions|method|ingredients)|steps?|step by step|recipe|instructions?|ingredients?|how many grams|grams|dosage|where (can|do) i (buy|get)|dime como|dime los pasos|dame (los pasos|la receta|instrucciones)|pasos?|paso a paso|receta|instrucciones|ingredientes|gramos|dosis|donde (compro|consigo)|dimmi come|dammi (i passaggi|la ricetta|le istruzioni)|passaggi|passo passo|ricetta|istruzioni|ingredienti|grammi|dove (compro|trovo))\b/,
+    precursor: /\b(precursors?|precursores|precursori|reagents?|reactivos|reagenti|safrol\w*|p2p|pseudoephedrine|pseudoefedrina|ephedrine|efedrina|lysergic|lisergic\w*|ergot\w*)\b/,
+    bannedBook: /(drug synthesis|sintesis de farmacos|sintesi di farmaci|synthesis book|libro de sintesis|libro di sintesi|coca,? khat|khat (and|y|e) kratom|indoor cultivation)/,
+    // making weapons or explosives (always refused when asked together with a making verb, SAFE.build)
+    weapon: /\b(bombs?|pipe ?bombs?|explosives?|explosiv\w*|detonat\w*|dynamite|tnt|c-?4|semtex|nitroglycerin\w*|nitroglicerin\w*|thermite|napalm|molotov\w*|gunpowder|black powder|flash powder|fireworks?|pyrotechnic\w*|guns?|firearms?|pistols?|rifles?|silencers?|suppressors?|ammo|ammunition|bullets?|grenades?|landmines?|ied|nerve agents?|sarin|ricin|anthrax|mustard gas|chlorine gas|poison gas|toxic gas|chemical weapons?|bioweapons?|weapons?|polvora|fuegos artificiales|petardos?|armas?|pistolas?|municion\w*|granadas?|bombas?|explosivos?|esplosiv\w*|polvere da sparo|fuochi d'?artificio|petardi|armi|arma|pistole|fucil\w*|munizion\w*|granate|bomba|bombe|gas nervino|gas tossico)\b/,
+    build: /\b(make|making|made|mak|maek|mkae|amke|build\w*|homemade|home-made|diy|assembl\w*|construct\w*|synthes\w*|recipes?|cook\w*|mix\w*|prepar\w*|produce|producing|manufactur\w*|3d print\w*|creat\w*|extract\w*|hacer|hago|hace|fabric\w*|constru\w*|armar|casero|casera|mezcl\w*|crear|fare|faccio|costrui\w*|costruzione|fabbric\w*|fatto in casa|mescol\w*|creare|preparare)\b/,
+    // named controlled drugs, checked on every Wikipedia answer before it is shown
+    drugNamed: /\b(ketamin\w*|dmt|dimethyltryptamine|5-?meo\w*|meth|methamphetamine|metanfetamin\w*|metamfetamin\w*|amphetamines?|anfetamin\w*|anfetamin\w*|mdma|molly|ecstasy|extasis|lsd|lysergic\w*|psilocyb\w*|psilocib\w*|mescalin\w*|peyote|ayahuasca|cocain\w*|heroin\w*|eroina|fentanil\w*|fentanyl|opioids?|oxycodone|oxycontin|morphin\w*|morfin\w*|codein\w*|ghb|pcp|phencyclidine|tryptamin\w*|triptamin\w*|phenethylamines?|cathinon\w*|catinon\w*|mephedrone|bath salts|khat|kratom|benzodiazepin\w*|xanax|thc|hashish|hachis|hascisc|crack cocaine|opium|oppio|salvia divinorum|controlled substances?|sustancias? controladas?|sostanze? stupefacent\w*|narcotraf\w*|drug traffick\w*|clandestine lab\w*)\b/,
+    // cannabis itself: no Wikipedia summary; it goes to the plants path (21+/legal check -> the Manual)
+    cannabis: /\b(cannabis|marijuana|marihuana|weed|ganja|hemp|canamo|canapa)\b/,
+    otherPlant: /\b(coca|khat|kratom|peyote|magic mushrooms?|shrooms?|psilocyb\w*|psilocib\w*|mescalin\w*|poppy|poppies|amapolas?|papaver\w*|salvia divinorum|hongos alucinogenos|funghi allucinogeni|setas magicas)\b/
+  };
+  var SAFE_TEXT = {
+    guard: { en: ['I don’t give instructions for making, extracting, or getting drugs or their ingredients. That door stays locked, for everyone. 🔒', 'But there’s a story I love telling instead: a willow tree, a hidden molecule, and how it became aspirin. The real adventure of medicine is in how people discovered things like that.'],
+             es: ['No doy instrucciones para fabricar, extraer ni conseguir drogas o sus ingredientes. Esa puerta está cerrada, para todo el mundo. 🔒', 'Pero hay una historia que me encanta contar: un sauce, una molécula escondida y cómo se convirtió en la aspirina. La verdadera aventura de la medicina está en cómo se descubrieron cosas así.'],
+             it: ['Non do istruzioni per produrre, estrarre o procurarsi droghe o i loro ingredienti. Quella porta resta chiusa, per tutti. 🔒', 'Però c’è una storia che adoro raccontare: un salice, una molecola nascosta e come è diventata l’aspirina. La vera avventura della medicina sta nel modo in cui si scoprono cose così.'] },
+    book:  { en: ['That one isn’t something I recommend here.', 'If the chemistry of medicine is what pulls you in, there’s a book I’d gladly point you to.'],
+             es: ['Ese no es un libro que recomiende aquí.', 'Si lo que te atrae es la química de la medicina, hay un libro que te recomendaría con gusto.'],
+             it: ['Quello non è un libro che consiglio qui.', 'Se ciò che ti attira è la chimica della medicina, c’è un libro che ti indicherei volentieri.'] },
+    plant: { en: ['That’s a plant I don’t help people grow or process.', 'The history of plant medicines, though? That’s a path I love walking.'],
+             es: ['Esa es una planta que no ayudo a cultivar ni a procesar.', 'Pero ¿la historia de las medicinas que vienen de las plantas? Ese sendero me encanta.'],
+             it: ['È una pianta che non aiuto a coltivare né a lavorare.', 'Ma la storia delle medicine nate dalle piante? È un sentiero che adoro.'] },
+    topic: { en: ['That’s one I don’t help with. Making weapons or explosives stays off the table here, for everyone. 🔒', 'But there’s a story I love telling instead: a willow tree, a hidden molecule, and how it became aspirin. The real adventure of medicine is in how people discovered things like that.'],
+             es: ['Con eso no ayudo. Fabricar armas o explosivos queda fuera de la mesa aquí, para todo el mundo. 🔒', 'Pero hay una historia que me encanta contar: un sauce, una molécula escondida y cómo se convirtió en la aspirina. La verdadera aventura de la medicina está en cómo se descubrieron cosas así.'],
+             it: ['Con questo non aiuto. Produrre armi o esplosivi resta fuori discussione qui, per tutti. 🔒', 'Però c’è una storia che adoro raccontare: un salice, una molecola nascosta e come è diventata l’aspirina. La vera avventura della medicina sta nel modo in cui si scoprono cose così.'] },
+    drugOnly: { en: ['I talk about the science and history of medicines, never recipes.'], es: ['Hablo de la ciencia y la historia de los medicamentos, nunca de recetas.'], it: ['Parlo della scienza e della storia dei farmaci, mai di ricette.'] },
+    crisis: { en: ['I’m an automated helper, but your safety matters more than anything here. 💜', 'If you or someone near you is in danger, call your local emergency number (911 in the US and Canada, 999 in the UK, 112 in Europe). In the US, call or text 988, or call Poison Control at 1-800-222-1222. UK and Ireland: Samaritans, 116 123.'],
+              es: ['Soy un asistente automático, pero tu seguridad importa más que cualquier otra cosa. 💜', 'Si tú o alguien cerca está en peligro, llama al número de emergencias (112 en España y Europa, 911 en EE. UU. y México). En España, la Línea 024 atiende a personas con pensamientos suicidas las 24 horas. En EE. UU., llama o escribe al 988.'],
+              it: ['Sono un assistente automatico, ma la tua sicurezza conta più di ogni altra cosa. 💜', 'Se tu o qualcuno vicino a te siete in pericolo, chiama il numero di emergenza (112 in Italia e in Europa, 911 negli Stati Uniti). In Italia puoi chiamare Telefono Amico al 02 2327 2327, attivo 24 ore su 24.'] },
+  };
+
+  var UI_TEXT = {
+    en: { title: 'The Purple Rabbit', sub: 'Ask me anything · finds the right book', ph: 'Ask the Rabbit anything…', send: 'Send', tip: 'Psst… ask the Rabbit',
+          hint: 'Ask me anything: why the sky is blue, who discovered penicillin… or let me help you find the right book.',
+          wiki: 'Read more on Wikipedia', voiceOn: 'Read replies aloud', voiceOff: 'Stop reading replies aloud',
+          notice: 'An automated helper, not a person. It doesn’t save what you type. Short answers come from Wikipedia.', open: 'Open Ask the Purple Rabbit chat', close: 'Close chat', langs: 'Language',
+          rec: 'The Rabbit recommends', gentle: 'A lighter option', taste: 'A free sample', amazon: 'See it on Amazon.', sampleLink: 'Read a free sample',
+          restart: 'Start over', back: 'Back to the lab', told: 'You told me: %s.' },
+    es: { title: 'El Conejo Púrpura', sub: 'Pregúntame lo que quieras · encuentra tu libro', ph: 'Pregúntale lo que quieras al Conejo…', send: 'Enviar', tip: 'Psst… pregúntale al Conejo',
+          hint: 'Pregúntame lo que quieras: por qué el cielo es azul, quién descubrió la penicilina… o te ayudo a encontrar el libro adecuado.',
+          wiki: 'Leer más en Wikipedia', voiceOn: 'Leer las respuestas en voz alta', voiceOff: 'Dejar de leer en voz alta',
+          notice: 'Un asistente automático, no una persona. No guarda lo que escribes. Las respuestas breves vienen de Wikipedia.', open: 'Abrir el chat del Conejo Púrpura', close: 'Cerrar el chat', langs: 'Idioma',
+          rec: 'El Conejo recomienda', gentle: 'Una opción más ligera', taste: 'Una muestra gratis', amazon: 'Ver en Amazon.', sampleLink: 'Leer una muestra gratis (en inglés)',
+          restart: 'Empezar de nuevo', back: 'Volver al laboratorio', told: 'Me contaste: %s.' },
+    it: { title: 'Il Coniglio Viola', sub: 'Chiedimi quello che vuoi · trova il tuo libro', ph: 'Chiedi quello che vuoi al Coniglio…', send: 'Invia', tip: 'Psst… chiedi al Coniglio',
+          hint: 'Chiedimi quello che vuoi: perché il cielo è blu, chi ha scoperto la penicillina… oppure ti aiuto a trovare il libro giusto.',
+          wiki: 'Leggi di più su Wikipedia', voiceOn: 'Leggi le risposte ad alta voce', voiceOff: 'Smetti di leggere ad alta voce',
+          notice: 'Un assistente automatico, non una persona. Non salva ciò che scrivi. Le risposte brevi vengono da Wikipedia.', open: 'Apri la chat del Coniglio Viola', close: 'Chiudi la chat', langs: 'Lingua',
+          rec: 'Il Coniglio consiglia', gentle: 'Un’opzione più leggera', taste: 'Un estratto gratuito', amazon: 'Vedi su Amazon.', sampleLink: 'Leggi un estratto gratuito (in inglese)',
+          restart: 'Ricomincia', back: 'Torna al laboratorio', told: 'Mi hai detto: %s.' }
+  };
+
+  /* =====================================================================
+  /* =====================================================================
+     5) ENGINE: no need to edit below this line
+     ===================================================================== */
+  var LOC = (navigator.languages && navigator.languages[0]) || navigator.language || 'en-US';
+  function detectLang(loc) { var p = String(loc).toLowerCase().slice(0, 2); return p === 'es' ? 'es' : p === 'it' ? 'it' : 'en'; }
+  function detectStore(loc) {
+    var parts = String(loc).split(/[-_]/), region = (parts[1] || '').toUpperCase();
+    var byRegion = { US: 'com', ES: 'es', IT: 'it', SM: 'it', VA: 'it', GB: 'co.uk', UK: 'co.uk', IE: 'co.uk', DE: 'de', AT: 'de', CH: 'de', LI: 'de', FR: 'fr', BE: 'fr', LU: 'fr', MC: 'fr', CA: 'ca' };
+    if (region) return byRegion[region] || 'com';
+    return ({ es: 'es', it: 'it', de: 'de', fr: 'fr' })[parts[0].toLowerCase()] || 'com';
+  }
+  var lang = SETTINGS.language !== 'auto' && UI_TEXT[SETTINGS.language] ? SETTINGS.language : detectLang(LOC);
+  var store = SETTINGS.store !== 'auto' ? SETTINGS.store : detectStore(LOC);
+
+  function deaccent(s) { return String(s).normalize('NFD').replace(/[\u0300-\u036f]/g, ''); }
+  function norm(s) { return deaccent(String(s).toLowerCase()).replace(/[\u2018\u2019\u00b4`]/g, "'"); }
+  var rxCache = {};
+  function rx(words) { return rxCache[words] || (rxCache[words] = new RegExp('\\b(' + deaccent(words) + ')\\b', 'i')); }
+  var RX = {
+    direct: rx(CALL_FLOW.greetingWords.direct), warmAsked: rx(CALL_FLOW.greetingWords.warmAsked), warm: rx(CALL_FLOW.greetingWords.warm),
+    done: rx(CALL_FLOW.doneWords), unsure: rx(CALL_FLOW.unsureWords), medicine: rx(CALL_FLOW.interests.medicine.words),
+    restart: rx('restart|start over|reset|empezar de nuevo|reiniciar|volver a empezar|ricominci\\w*|da capo'),
+    askStart: new RegExp('^(' + deaccent(ASK.starts) + ')\\b'), askWeak: new RegExp('^(' + deaccent(ASK.weakStarts) + ')\\b'),
+    notWiki: rx(ASK.notWiki), filler: new RegExp('^(' + ASK.filler + ')$'),
+    expensive: rx(CALL_FLOW.retentionWords.too_expensive), notNow: rx(CALL_FLOW.retentionWords.not_now)
+  };
+  // Never repeat these back to the visitor (drug talk, cannabis slang, swearing): use a neutral label instead.
+  var NO_ECHO = /\b(weed|marijuana|cannabis|marihuana|hierba|erba|ganja|stoned|fuck\w*|shit\w*|mierda|joder|cazzo|merda)\b/;
+
+  /* ---------- typo tolerance ----------
+     Every keyword list above (call flow, interests, retention, questions AND the safety lists)
+     becomes a vocabulary. A typed word that isn't known is corrected to the closest keyword
+     within a small edit distance (same first letter): 4-letter keywords forgive one dropped
+     letter or one swap, 5-7 letters one edit, 8+ letters two edits. Repeated letters ("metth", "heyyy") and
+     look-alike digits ("m3th") are also folded for the safety check. Real words that merely look
+     like a keyword ("math", "stories") are listed in TYPO_KEEP and never corrected.            */
+  var TYPO_KEEP = {}; 'acido add aid aids almas ama amar amas amazonas ambos ame ami amo ampollas ara aras arcas areas ari arias arm arman armor arms aromas ate avvalendosi avvenendo backing ballet bank banking basa basata basato bassa been ben benz bezos bimba bin bob boba boko bom bombay bombed bombeo bomber bombo boo boobs booms boos boots bosco boton brian brooks buco buenos built busca cabello cadera caera cajero calor camera camillo cammello canada canale canales canto capello car carlo carro case casello caserio caserma caserta caseta castro cayera cca celebro cento cerca cercano cercanos cero cerro certa certe certi chase cheat cheating chile choking cia ciclo ciego cierto cio clara clark classe classi clave clear close coa cobain cocida coe coin col cold colin colina collega com comer comienza comin comp compa compadre comparar compare compared compares comparire comparse comparte comparve comperare compiere compilare complace comporre comporta comportamenti comportamento comportamiento composed composicion composition composizione compu concert concertacion concerted concerti concerto concerts concesion concession conferire confesion confession conmigo consecucion consecuencia consecuencias consecuente consecuentemente consecutiva consecutivas consecutive consecutivi consecutivo consecutivos consegna consegnare consegnata consegnate consegnati consegnato consegne consejo consentir consentire consequence consequences consequent consequential consequently consiga consigue consiguen consigues consiguiendo consiguiente consiguieron consiguio constrained constraint constraints contigo contract contracted contracting contraction contractions contractor contractors contracts contractual contractuales contrazione convection convencion convent conventi convention conventional conventionally conventions convento conventos converge convergen convergence convergencia convergenza convergere converrebbe conversa conversacion conversaciones conversamos conversando conversar conversare conversation conversational conversations conversazione conversazioni converse conversely conversione conversioni conversions convierta conviertan convierte convierten convirtiendo convirtiendose convirtiera convirtieron convirtio coo cooling cooperare corruzione corto cosas covering covert crea cream crean creara crearne crearse creas crease creer crept crest creta criar cristal cristales cuarto cuartos cuenta cuentas cuento cuentos cugina culmination cumin danno decine defined deroga des descubierto dinamita dinamite discutere doe done donne doris dose doses dottor dov drags drums dueno dug dynamics economia economic economica economicas economiche economici economics eleccion election elections electronic electronica electronico electronics elementi elemento elementos elettori elettronica emergence emergencies emergent emergente emergenti emergenze encontro encuentra encuentran encuentras encuentre encuentren encuentres ensenen entra entrambi entrance era ergo eroica errori errors esa esclusiva esclusivamente esclusive esclusivi esclusivo esperienza esperienze esplosione esplosioni espressione espresso estadio estadistica estadisticas estar estara estatuto estera estrella estrellas estrema estremamente estreno estricto estupido estuviera estuvieron exclusiva exclusivamente exclusivas exclusive exclusively exclusividad exclusivity exclusivo exclusivos experience experienced experiences experiencia experiencias explico exploding exploring explosion explosiones explosions extensive fabbri fabriano fabrizio facci faccia faccino faccion facil famiglie familiar familias fantasia fantastic fantastica fantastico fantasy far fascio fin firewood fisico force forearm foreword formacion formaciones forme forte forze fosse funcion funcionan funcionar funciones function functional functions funzionare funzione funzioni fusil gana ganada ganga god grabada grabadas grabados grabs grados grammo grammy gramo granados granata granite granja granos gras grasos grass gravita grazia grenada gus haber hablo haced haceis haces hacker hae hall hater hell hem her herein heroic heroica heroico heroism heroismo herring hijas homenaje homepage housework humanity ingrediente instruccion instructing instructional instructive instructor instructors iscrizioni isolamento isolare istituzioni istruzione japon jason kat landings landline laser late latter lavoratori layer leading les libero libra libre libri lie lightning litro liturgical liturgico llego lungo luogo mad mae maestra magnitud makin malati manifattura manuel march marking masculina masculinas masculine masculinidad masculinity masculino masculinos masking matarse matarte mating meal medal medica medicamentos medici meh mejor memorial meno menos mental mentre mercatini mercatino merci mercoledi mercy messaging met meta metas mete metta mette metti metto mexicana mexico mid milly min minas ministers minor mma modo molla molle molli mollo monte mornin morning mornings muestran municipal municipale municipales municipali municipalidad municipalidades municipalita municipalities municipality municipi municipio municipios munitions muscolare muscolari muscolatura muscoli muscolo musician musicians mutacion mutaciones mutazione mutazioni necesita necesitan necesitas necessita negocio negozi negro nero ninas older opio orde orden oro ottima ottimi overcome paesaggi paesaggio pagos pain palos panos pants pao parecio paros pas pasas paseos pases pass passaggio passanti passeggio pastos patos pausa pavos payments pedo percepcion percio perfecta perfectly perfetta periodi periodico periodicos permette pesos pezzo piani piano pil pilla pillow pin pisos pistoia piston pistons pit plan plane planes planeta plano plans plantea plata poi point polizia pollo poppa possa posto precari precaria precarias precariato precarie precariedad precarieta precario precarious precisa precisamente precisely precisione preciso precursore predecir pregare premio premios prenda prende prendi prendio preocupar preocuparme preocuparnos preocuparse preocuparte prepago prepaid presion previo previous previously prezioso pride prime prince prize procesar procura procurador procuradores procuraduria procurato procuratore procuratori procured procurement produca produced producen producer producers produces producia producian producida producido producira produciria producirse producono product producto productor products produrra produsse profughi profunda profundamente profundidad profundo proporre pudo pueda puedas puede pueden pug puo puppies puppy pura pushed pushes qual quanta quante quarto quasi queen quier quiera quiere quieres quiet quieto quinto quita rabbia reactivar reactive recata recettori recibe recibes recita recite recomendaciones recta rectas redaccion redazione reduccion reduction regali regent regents reggente relacion relacionada relacionadas relacionado relacionados relaciones relation relations relativos relazione relazioni reloj rest restare rican ricatti ricatto ricotta rieles rife rigettato rigetto rilasciato rilascio rimette rimetterci rimettere rimettersi rimetto rotte rouge rouse rout routed router ruote saben saber sale sales saludo saluto salva salvo sapore sari satin saudi save sayin scacciare scare scope scopre scored scorer scorie scorn scorre scorse scorte scuole scure sede seems sees segni seno sep sera seria serie serve sevilla sfacciata shore sientes sierra silence silenced silenciar silencio silencios simple simples siniestra siniestro siniestros sintassi sintetica sintetici sintetico skill skills slave slide sogno sol sold soli solid solve soppresso sore sourced spacca spaccare spaccato spaccatura spaccio spare spazi spiace spore sta stare starts stats stays ste stems steph stiano stole stone stops storica storm story strana studenti students stunning suelo suena sull suono suore supone suppress suppressed suppression swore synthetic tanks teaching tel tenes terrore thinks tienen trenes trono trova trove trovi trozo uccidera uccidere ucciderla ucciderli ucciderlo ucciderti universal universale universo vaglio val vedi vendan vende vender vendo venti verdes verdi voglia voglie wan wed wee were whenever wherever whole whore words worker world wound yea'.split(' ').forEach(function (w) { if (w) TYPO_KEEP[w] = 1; });
+  var VOCAB = { w: {}, stems: [], guard: {}, byLen: {}, nt: {} };
+  function vocabFrom(src, guard) { // words inside multi-word phrases ("where can i buy") are known, but never typo targets
+    var s = deaccent(String(src).toLowerCase()).replace(/\\b/g, ' ').replace(/\\w[*+]/g, '*').replace(/\\s[*+?]?/g, ' ').replace(/'\??/g, '').replace(/-\??/g, ' ');
+    s.split('|').forEach(function (seg) {
+      var multi = /\S\s+\S/.test(seg.replace(/[()]/g, ' ').trim());
+      seg.split(/[()\s,.;:!]+/).forEach(function (p) {
+        if (!p) return;
+        var stem = /\*$/.test(p); p = p.replace(/\*/g, '');
+        if (/[^a-z?+]/.test(p)) return;
+        p = p.replace(/([a-z])\+/g, '$1');
+        var vs = [p], guardV = 0;
+        while (vs.some(function (v) { return v.indexOf('?') > -1; }) && guardV++ < 5) {
+          vs = [].concat.apply([], vs.map(function (v) { var i = v.indexOf('?'); return i < 0 ? [v] : i === 0 ? [v.slice(1)] : [v.slice(0, i) + v.slice(i + 1), v.slice(0, i - 1) + v.slice(i + 1)]; }));
+        }
+        vs.forEach(function (v) {
+          if (v.length < 3 || /[^a-z]/.test(v)) return;
+          if (stem) { if (VOCAB.stems.indexOf(v) < 0) VOCAB.stems.push(v); } else VOCAB.w[v] = 1;
+          if (guard) VOCAB.guard[v] = 1;
+          if (multi) VOCAB.nt[v] = VOCAB.nt[v] === 0 ? 0 : 1; else VOCAB.nt[v] = 0;
+        });
+      });
+    });
+  }
+  (function buildVocab() {
+    var k, i, G = CALL_FLOW.greetingWords;
+    for (k in SAFE) vocabFrom(SAFE[k].source, true);
+    for (k in G) vocabFrom(G[k]);
+    for (k in CALL_FLOW.interests) vocabFrom(CALL_FLOW.interests[k].words);
+    for (k in CALL_FLOW.productNames) vocabFrom(CALL_FLOW.productNames[k].words);
+    for (k in CALL_FLOW.retentionWords) vocabFrom(CALL_FLOW.retentionWords[k]);
+    vocabFrom(CALL_FLOW.doneWords); vocabFrom(CALL_FLOW.unsureWords); vocabFrom(ASK.starts); vocabFrom(ASK.notWiki);
+    vocabFrom('restart|start over|reset|empezar|reiniciar|ricominci\\w*|coloring|book|books|hidden|passages|manual|wikipedia');
+    for (k in CALL_FLOW.steps) { var ch = CALL_FLOW.steps[k].choices || []; for (i = 0; i < ch.length; i++) if (ch[i].words) vocabFrom(ch[i].words); }
+    VOCAB.stems.sort(function (a, b) { return b.length - a.length; });
+    for (k in VOCAB.w) if (!VOCAB.nt[k]) (VOCAB.byLen[k.length] = VOCAB.byLen[k.length] || []).push(k);
+    // short stems ("cook", "build") are also typo targets as whole words ("cok", "bulid")
+    VOCAB.stems.forEach(function (st) { if (st.length >= 4 && st.length <= 5 && !VOCAB.nt[st] && !VOCAB.w[st]) (VOCAB.byLen[st.length] = VOCAB.byLen[st.length] || []).push(st); });
+  })();
+  function osa(a, b) { // optimal string alignment distance (Damerau-Levenshtein with adjacent swaps)
+    var m = a.length, n = b.length, d = [], i, j;
+    for (i = 0; i <= m; i++) { d[i] = [i]; }
+    for (j = 0; j <= n; j++) d[0][j] = j;
+    for (i = 1; i <= m; i++) for (j = 1; j <= n; j++) {
+      var c = a[i - 1] === b[j - 1] ? 0 : 1;
+      d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + c);
+      if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + 1);
+    }
+    return d[m][n];
+  }
+  function typoDist(w, t) { // allowed distance between a typed word and a keyword, or -1 (first letters must match)
+    var lw = w.length, lt = t.length;
+    if (lt < 4 || Math.abs(lw - lt) > 2 || w.charAt(0) !== t.charAt(0)) return -1;
+    var d = osa(w, t);
+    if (d < 1) return -1;
+    if (lt === 4) return d === 1 && (lw === 3 || (lw === 4 && w.split('').sort().join('') === t.split('').sort().join(''))) ? 1 : -1;
+    if (lt <= 7) return d === 1 && lw >= lt - 1 ? 1 : -1;
+    return d === 1 || (d === 2 && lw >= 8) ? d : -1;
+  }
+  function knownWord(w) {
+    if (VOCAB.w[w] || TYPO_KEEP[w]) return true;
+    for (var i = 0; i < VOCAB.stems.length; i++) if (w.indexOf(VOCAB.stems[i]) === 0) return true;
+    return false;
+  }
+  var fixCache = {};
+  function fixWord(w) {
+    if (w.length < 3 || /[^a-z]/.test(w)) return w;
+    if (w in fixCache) return fixCache[w];
+    if (knownWord(w)) return (fixCache[w] = w);
+    var best = null, bd = 9, bg = false;
+    function consider(c, d, g) { if (c === w + 's' || w === c + 's' || c === w + 'es' || w === c + 'es') return; if (d < bd || (d === bd && g && !bg)) { best = c; bd = d; bg = g; } }
+    for (var L0 = Math.max(3, w.length - 2); L0 <= w.length + 2; L0++) (VOCAB.byLen[L0] || []).forEach(function (t) { var d = typoDist(w, t); if (d > 0) consider(t, d, !!VOCAB.guard[t]); });
+    VOCAB.stems.forEach(function (s) {
+      if (s.length < 6 || VOCAB.nt[s]) return;                        // short stems ("chem", "compr") only match exactly
+      for (var L = s.length > 6 ? s.length - 1 : s.length; L <= Math.min(w.length, s.length + 1); L++) {
+        var d2 = typoDist(w.slice(0, L), s); if (d2 > 0) consider(s + w.slice(L), d2, !!VOCAB.guard[s]);
+      }
+    });
+    return (fixCache[w] = best || w);
+  }
+  function fixTypos(n) { return String(n).replace(/[a-z]+/g, fixWord); }                 // on normalized text
+  function fixRaw(raw) {                                                                     // same fixes, keeping the visitor's casing elsewhere
+    return String(raw).replace(/[A-Za-z\u00C0-\u017F]+/g, function (tok) { var k = norm(tok), f = fixWord(k); return f === k ? tok : f; });
+  }
+  function leet(n) { return String(n).replace(/[0134@$5]/g, function (c) { return { '0': 'o', '1': 'i', '3': 'e', '4': 'a', '@': 'a', '$': 's', '5': 's' }[c]; }); }
+  function squash(n) { return leet(n).replace(/([a-z])\1+/g, '$1'); } // look-alike digits + repeated letters (safety check only)
+  function anyRx(re, vs) { for (var i = 0; i < vs.length; i++) if (re.test(vs[i])) return true; return false; }
+
+  function T(obj) { return obj ? (obj[lang] || obj.en) : ''; }
+  function own(url) { return SETTINGS.utm ? url + (url.indexOf('?') > -1 ? '&' : '?') + SETTINGS.utm : url; }
+  function safeProduct(key) { if (key === 'manual' && !state.gateOk) return 'hidden'; return PRODUCTS[key] ? key : 'hidden'; }
+  function linkFor(key) {
+    var p = PRODUCTS[key]; if (!p || !p.asin || BLOCKED_ASINS.indexOf(p.asin) > -1) return null;
+    if (key === 'manual' && !state.gateOk) return null;
+    var tag = SETTINGS.attribution[store] && SETTINGS.attribution[store][key];
+    return 'https://www.amazon.' + store + '/dp/' + p.asin + (tag ? '?' + tag : '');
+  }
+  // Click-counter hooks: every outgoing link carries data-* attributes (no tracking is done here).
+  function tagLink(a, book, kind, card) {
+    a.setAttribute('data-fa-link', kind); if (book) a.setAttribute('data-book', book); a.setAttribute('data-lang', lang);
+    a.setAttribute('data-store', store); if (PRODUCTS[book] && PRODUCTS[book].asin) a.setAttribute('data-asin', PRODUCTS[book].asin);
+    if (card) a.setAttribute('data-card', card);
+    a.target = '_blank'; a.rel = 'noopener noreferrer'; return a;
+  }
+  /* ---------- paraphrasing the visitor's own words ---------- */
+  var LEAD_INS = [
+    /^(hi|hey|hello|yo|hola|buenas|ciao|salve)[\s,.!:;-]+/i,
+    /^(well|um+|uh+|hmm+|so|ok|okay|honestly|i guess|i think|probably|mostly|mainly|definitely|pues|bueno|creo que|la verdad|mmm+|beh|mah|allora|direi|credo( che)?|boh)[\s,.:;!-]+/i,
+    /^(i'?m|i am) (really |super |very |kinda |kind of |mostly )?(into|interested in|curious about|fascinated by|obsessed with)\s+/i,
+    /^i (really |just |kinda |kind of |mostly )?(like|love|enjoy|dig)\s+/i,
+    /^(it'?s|its|it is|probably|definitely|mostly)\s+/i,
+    /^(me (gusta|gustan|encanta|encantan|interesa|interesan|fascina|fascinan|atrae|atraen|llama la atenci[oó]n)( mucho)?|sobre todo|m[aá]s que nada)\s+/i,
+    /^(mi (piace|piacciono|interessa|interessano|affascina|affascinano|attira|attirano)( molto| tanto)?|adoro|amo|soprattutto)\s+/i
+  ];
+  var FLIP = {
+    en: [[/\bi'm\b/gi, 'you’re'], [/\bi am\b/gi, 'you are'], [/\bi've\b/gi, 'you’ve'], [/\bi'd\b/gi, 'you’d'], [/\bi\b/gi, 'you'], [/\bmy\b/gi, 'your'], [/\bmine\b/gi, 'yours'], [/\bmyself\b/gi, 'yourself'], [/\bme\b/gi, 'you']],
+    es: [[/\bmis\b/gi, 'tus'], [/\bmi\b/gi, 'tu'], [/\bconmigo\b/gi, 'contigo']],
+    it: [[/\bmiei\b/gi, 'tuoi'], [/\bmio\b/gi, 'tuo'], [/\bmia\b/gi, 'tua'], [/\bmie\b/gi, 'tue']]
+  };
+  function labelFor(k) { var l = T(CALL_FLOW.interests[k].label); return l.charAt(0).toLowerCase() + l.slice(1); }
+  function joinWord() { return lang === 'es' ? ' y ' : lang === 'it' ? ' e ' : ' and '; }
+  function labelsText(keys) { return keys.map(labelFor).join(joinWord()); }
+  function phraseFrom(raw, found) {
+    var t = String(raw).replace(/[\u2018\u2019]/g, "'").replace(/\s+/g, ' ').trim();
+    for (var r = 0; r < 4; r++) { var before = t; for (var i = 0; i < LEAD_INS.length; i++) t = t.replace(LEAD_INS[i], ''); if (t === before) break; }
+    t = t.replace(/[.!?¡¿…,;:]+$/g, '').replace(/^[¡¿]+/, '').trim();
+    var f = FLIP[lang] || []; for (i = 0; i < f.length; i++) t = t.replace(f[i][0], f[i][1]);
+    var unsafe = NO_ECHO.test(norm(raw)) || SAFE.drug.test(norm(raw)) || SAFE.precursor.test(norm(raw));
+    var words = t ? t.split(' ').length : 0;
+    if (!t || unsafe || words > 10) {
+      if (found.length) return labelsText(found);
+      if (!t || unsafe) return '';
+      var cut = t.slice(0, 42); return cut.slice(0, cut.lastIndexOf(' ') > 20 ? cut.lastIndexOf(' ') : 42) + '…';
+    }
+    if (/^[A-ZÁÉÍÓÚÑ][a-záéíóúñàèìòù]/.test(t)) t = t.charAt(0).toLowerCase() + t.slice(1);
+    return t;
+  }
+  function findInterests(n) {
+    var hits = [];
+    for (var k in CALL_FLOW.interests) { var m = n.search(rx(CALL_FLOW.interests[k].words)); if (m > -1) hits.push({ k: k, at: m }); }
+    hits.sort(function (a, b) { return a.at - b.at; });
+    var keys = hits.map(function (h) { return h.k; });
+    if (keys.length > 1) keys = keys.filter(function (k) { return k !== 'science'; }); // "chemistry" alone is not a preference
+    return keys;
+  }
+  function addFound(keys) { keys.forEach(function (k) { if (state.interests.indexOf(k) < 0) state.interests.push(k); }); }
+  function addPhrase(p) {
+    if (!p) return; var low = p.toLowerCase();
+    for (var i = 0; i < state.phrases.length; i++) if (state.phrases[i].toLowerCase() === low) return;
+    state.phrases.push(p);
+  }
+  function soFarText() { // their phrases in order, kept short enough to read in one breath (~70 characters)
+    var out = [];
+    for (var i = 0; i < state.phrases.length; i++) { var next = out.concat(state.phrases[i]).join(', '); if (out.length && next.length > 70) break; out.push(state.phrases[i]); }
+    return out.join(', ');
+  }
+
+  /* ---------- picking the book + the honest "because" ---------- */
+  function effBook(k) { var b = CALL_FLOW.interests[k].book; return (b === 'manual' && !state.gateOk) ? 'hidden' : b; }
+  function pickBook() {
+    if (state.redirected) return 'hidden';
+    // after the warm drug redirect: Hidden Passages; the Manual only if they talked about growing/plants (21+ check first)
+    if (state.drugCurious) return state.interests.indexOf('plants') > -1 ? 'manual' : 'hidden';
+    var score = {}, first = {};
+    state.interests.forEach(function (k, i) {
+      var b = CALL_FLOW.interests[k].book, w = (k === 'science' || k === 'school') ? 0.5 : 1;
+      score[b] = (score[b] || 0) + w; if (!(b in first)) first[b] = i;
+    });
+    var best = null;
+    for (var b in score) if (!best || score[b] > score[best] || (score[b] === score[best] && first[b] < first[best])) best = b;
+    return best || 'hidden';
+  }
+  function because() {
+    var prod = state.product, R = CALL_FLOW.because[prod] || {}, A = CALL_FLOW.also;
+    if ((state.redirected || (state.drugCurious && prod === 'hidden')) && R.redirect) return T(R.redirect);
+    var prim = null, sec = null;
+    // a pivot after a free answer talks about THAT topic first, then what they said before
+    var list = state.pivotPending ? state.topicInterests.concat(state.interests) : state.interests;
+    list.forEach(function (k) {
+      if (effBook(k) !== prod) return;
+      if (!prim && R[k]) prim = k; else if (prim && !sec && k !== prim && A[k]) sec = k;
+    });
+    return T(prim ? R[prim] : R['default']) + (sec ? T(A[sec]) : '');
+  }
+  // book for a free-answer topic: medicine/history/molecules -> Hidden Passages, art/colors/creepy/kids/
+  // relaxing -> Coloring Book, plants/growing/lighting -> the Manual (after the 21+ check), else Hidden
+  // Passages (or the Coloring Book if Hidden Passages was already shown)
+  function bookForTopic(keys) {
+    for (var i = 0; i < keys.length; i++) { var b = CALL_FLOW.interests[keys[i]].book; if (b) return b; }
+    return state.shown.hidden && !state.shown.coloring ? 'coloring' : 'hidden';
+  }
+  function goRecommend(forced) {
+    var fromGate = current === 'pivot_age' || current === 'age_check';
+    var book = forced || (state.pivotPending && state.pivotBook) || pickBook();
+    if (book === 'manual' && !state.gateOk) {
+      if (!state.gateAsked) { state.gateAsked = true; return run(state.pivotPending ? 'pivot_age' : 'age_check'); }
+      book = 'hidden';
+    }
+    state.product = safeProduct(book); state.recommended = true;
+    if (state.pivotPending) {
+      if (state.shown[state.product]) { state.pivotPending = false; return run('pivot_again'); }
+      return run(fromGate ? 'pivot_after_gate' : 'pivot');
+    }
+    // after the warm drug redirect: Hidden Passages plus the $9.99 Coloring Book as the cheaper pick
+    run(state.drugCurious && state.product === 'hidden' ? 'recommend_curious' : state.redirected ? 'recommend_redirect' : 'recommend');
+  }
+
+  /* ---------- tokens ---------- */
+  function fill(s) {
+    return String(s).replace(/\{(\w+)\}/g, function (m, k) {
+      switch (k) {
+        case 'discovery': return T(CALL_FLOW.phrases.discovery);
+        case 'latest': return state.latest || state.phrases[state.phrases.length - 1] || '';
+        case 'soFar': var l = soFarText(); return l.charAt(0).toUpperCase() + l.slice(1);
+        case 'soFarParen': var l2 = soFarText(); return l2 ? ' (' + l2 + ')' : '';
+        case 'because': return because();
+        case 'coloringPrice': return store === 'com' ? ' (' + PRODUCTS.coloring.usd + ')' : '';
+        case 'link': return linkFor(state.product || 'hidden') || '';
+        case 'asin': return (PRODUCTS[state.product || 'hidden'] || {}).asin || '';
+        case 'title': return T((PRODUCTS[state.product || 'hidden'] || PRODUCTS.hidden).short);
+        case 'topic': return state.topic || T(CALL_FLOW.phrases.that);
+      }
+      return m;
+    });
+  }
+
+  /* ---------- the chat window ---------- */
+  var state; function resetState() { state = { interests: [], phrases: [], latest: '', rounds: 0, product: null, recommended: false, redirected: false, gateOk: false, gateNo: false, gateAsked: false, lead: '', replied: false, nudged: false,
+    drugAsks: 0, pushes: 0, drugCurious: false, answers: 0, lastPivotAt: 0, pivotPending: false, pivotBook: null, topicInterests: [], topic: '', shown: {} }; }
+  resetState();
+  var mount = SETTINGS.embed && document.querySelector(SETTINGS.embed);
+  var host = document.getElementById('fa-rabbit-host');
+  if (mount && !host) { host = document.createElement('div'); host.id = 'fa-rabbit-host'; mount.appendChild(host); }
+  if (!host) { host = document.createElement('div'); host.id = 'fa-rabbit-host'; document.body.appendChild(host); }
+  var root = host.attachShadow ? host.attachShadow({ mode: 'open' }) : host;
+  var RABBIT = '<svg viewBox="0 0 64 64" aria-hidden="true"><path fill="currentColor" d="M22 4c-4 0-6 6-5 14 .6 5 2 9 4 12-5 3-8 8-8 14 0 10 8 16 19 16s19-6 19-16c0-6-3-11-8-14 2-3 3.4-7 4-12 1-8-1-14-5-14s-7 7-8 15l-.3 3h-3.4l-.3-3C29 11 26 4 22 4z"/><circle cx="26" cy="42" r="3" fill="#0d0714"/><circle cx="38" cy="42" r="3" fill="#0d0714"/><circle cx="26.8" cy="41.2" r="1" fill="#ff5cf0"/><circle cx="38.8" cy="41.2" r="1" fill="#ff5cf0"/></svg>';
+  var SPK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3 9.5v5h4l5 4v-13l-5 4H3z"/>';
+  var SPK_OFF = SPK + '<path d="M16 9.5l5 5m0-5l-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
+  var SPK_ON = SPK + '<path d="M15.5 9a4 4 0 010 6M18 6.5a7.5 7.5 0 010 11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
+  var ARROW = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5m0 0l-6 6m6-6l6 6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  root.innerHTML = '<style>' +
+    ':host{all:initial}*{box-sizing:border-box;font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}' +
+    '.bubble{position:fixed;right:20px;bottom:20px;width:62px;height:62px;border-radius:50%;border:0;cursor:pointer;z-index:2147483000;color:#f4e9ff;background:radial-gradient(circle at 30% 25%,#9b5cff,#4b00ad 60%,#22004f);box-shadow:0 8px 28px rgba(75,0,173,.55),0 0 0 3px rgba(255,92,240,.25);display:flex;align-items:center;justify-content:center;transition:transform .2s}' +
+    '.bubble:hover{transform:scale(1.06)}.bubble svg{width:34px;height:34px}.bubble img{width:64px;height:64px;margin-top:-10px;filter:drop-shadow(0 3px 4px rgba(0,0,0,.45));animation:bob 3.2s ease-in-out infinite}@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}.pulse{position:absolute;inset:-6px;border-radius:50%;border:2px solid rgba(255,92,240,.45);animation:pulse 2.6s infinite}' +
+    '@keyframes pulse{0%{transform:scale(.9);opacity:.9}100%{transform:scale(1.35);opacity:0}}' +
+    '.tip{position:fixed;right:92px;bottom:34px;z-index:2147483000;background:#1a0d2b;color:#efe3ff;font-size:13px;padding:8px 12px;border-radius:12px;border:1px solid #5b2ca8;box-shadow:0 6px 18px rgba(0,0,0,.35)}' +
+    '.panel{position:fixed;right:20px;bottom:94px;width:380px;max-width:calc(100vw - 24px);height:min(600px,calc(100vh - 120px));z-index:2147483001;display:none;flex-direction:column;background:linear-gradient(180deg,#140a22,#0d0714);color:#efe3ff;border:1px solid #4a2386;border-radius:20px;overflow:hidden;box-shadow:0 18px 50px rgba(20,0,50,.6)}' +
+    '.panel.open{display:flex;animation:rise .25s ease-out}@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}' +
+    '.head{display:flex;align-items:center;gap:8px;padding:10px 12px;background:linear-gradient(135deg,#4b00ad,#2a0a57);border-bottom:1px solid #5b2ca8}' +
+    '.logo{flex:none;width:74px;height:44px;background:#fffdf6;border-radius:8px;transform:rotate(-3deg);box-shadow:0 2px 0 #1a0d2b,0 0 12px rgba(255,92,240,.45);display:flex;align-items:center;justify-content:center;padding:3px}.logo img{max-width:100%;max-height:100%;display:block}.logo svg{width:26px;height:26px;color:#4b00ad}' +
+    '.row{display:flex;align-items:flex-end;gap:6px;margin:0 0 8px}.row .msg{margin:0}.ava{flex:none;width:30px;height:30px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#3a1b66,#1a0d2b);border:1px solid #5b2ca8;overflow:hidden;display:flex;align-items:flex-end;justify-content:center}.ava img{width:34px;height:34px;margin-bottom:-4px}.ava svg{width:20px;height:20px;color:#c9a6ff;margin-bottom:4px}.ava.spacer{visibility:hidden}' +
+    '.t{flex:1;min-width:0;line-height:1.2}.t b{display:block;font-size:14.5px;line-height:1.15;color:#fff;overflow-wrap:anywhere}.t span{font-size:11px;color:#d6c2f5}' +
+    '.langs{display:flex;border:1px solid #7b4bd1;border-radius:999px;overflow:hidden;flex:none}.langs button{background:transparent;color:#d6c2f5;border:0;font-size:11px;font-weight:700;padding:5px 7px;cursor:pointer}.langs button[aria-pressed="true"]{background:#ff5cf0;color:#1a0d2b}' +
+    '.spk{flex:none;width:32px;height:26px;border:1px solid #7b4bd1;border-radius:999px;background:transparent;color:#d6c2f5;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}.spk svg{width:17px;height:17px}.spk[aria-pressed="true"]{background:#ff5cf0;color:#1a0d2b;border-color:#ff5cf0}.spk:focus-visible,.langs button:focus-visible{outline:2px solid #fdf200;outline-offset:1px}' +
+    '.x{background:transparent;border:0;color:#e9dcff;font-size:22px;cursor:pointer;padding:2px 6px;border-radius:8px;flex:none}.x:hover{background:rgba(255,255,255,.1)}' +
+    '.main{flex:1;min-height:0;display:flex;flex-direction:column;background-image:radial-gradient(rgba(155,92,255,.08) 1px,transparent 1px);background-size:18px 18px}' +
+    '.log{flex:1;overflow-y:auto;padding:14px 12px 6px}' +
+    '.hero{display:none}' +
+    /* ask-anything first screen: one big box, a short greeting, no buttons */
+    '.panel.ask .log{display:none}.panel.ask .main{justify-content:center;padding:0 20px 8%}' +
+    '.panel.ask .hero{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;margin-bottom:18px}' +
+    '.heroArt{width:92px;height:92px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#3a1b66,#1a0d2b);border:1px solid #5b2ca8;box-shadow:0 0 28px rgba(255,92,240,.25);display:flex;align-items:flex-end;justify-content:center;overflow:hidden}.heroArt img{width:96px;height:96px;margin-bottom:-8px}.heroArt svg{width:56px;height:56px;color:#c9a6ff;margin-bottom:14px}' +
+    '.hero h2{margin:10px 0 0;font-size:26px;line-height:1.2;color:#fff;font-weight:800}.hero p{margin:0;max-width:330px;font-size:14px;line-height:1.5;color:#cdb6f0}' +
+    '.panel.ask .form{border:0;background:transparent;padding:0}.panel.ask .form input{padding:17px 18px;font-size:17px;border-radius:18px;border-width:2px;box-shadow:0 0 0 5px rgba(255,92,240,.07),0 10px 30px rgba(0,0,0,.35)}.panel.ask .send{width:56px;border-radius:18px}' +
+    '.msg{max-width:86%;margin:0 0 8px;padding:9px 12px;border-radius:16px;font-size:14px;line-height:1.45;white-space:pre-wrap;word-wrap:break-word}.bot{background:#241238;border:1px solid #3b1d63;border-bottom-left-radius:5px}' +
+    '.me{margin-left:auto;background:linear-gradient(135deg,#7b2cff,#5a14d6);color:#fff;border-bottom-right-radius:5px}' +
+    '.msg.wiki{white-space:normal}.msg.wiki .src{display:block;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#ff8cf3;margin-bottom:3px}.msg.wiki a.wk{display:inline-block;margin-top:6px;font-size:12.5px;font-weight:700;color:#ffb3f7;text-decoration:none;border-bottom:1px dashed #ff5cf0;word-break:normal}.msg.wiki .fol{display:block;margin-top:8px}' +
+    '.typing{display:inline-flex;gap:4px;padding:12px 14px}.typing i{width:6px;height:6px;border-radius:50%;background:#b98cff;animation:blink 1.2s infinite}.typing i:nth-child(2){animation-delay:.2s}.typing i:nth-child(3){animation-delay:.4s}@keyframes blink{0%,80%,100%{opacity:.25}40%{opacity:1}}' +
+    '.opts{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 10px}.opt{background:transparent;color:#e7d6ff;border:1px solid #7b4bd1;border-radius:999px;padding:7px 12px;font-size:13px;cursor:pointer}.opt:hover,.opt:focus{background:#3a1b66;outline:none;border-color:#ff5cf0}' +
+    '.card{position:relative;margin:2px 0 10px 36px;max-width:84%;border:1px solid #7b4bd1;border-radius:16px;overflow:hidden;background:linear-gradient(160deg,#2a1245,#1a0d2b);box-shadow:0 0 18px rgba(155,92,255,.25)}' +
+    '.jump{position:absolute;right:-14px;top:-30px;width:66px;height:66px;filter:drop-shadow(0 4px 5px rgba(0,0,0,.5));animation:hop 1.8s ease-in-out infinite;pointer-events:none}@keyframes hop{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-6px) rotate(3deg)}}' +
+    '.card h4,.ct{padding-right:48px}.opts{margin-left:36px!important}' +
+    '.ct{padding:10px 12px 0;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#ff8cf3}.card h4{margin:4px 12px 2px;font-size:15px;color:#fff;line-height:1.3}.pr{margin:0 12px;font-size:12.5px;color:#cdb6f0}' +
+    '.card p{margin:8px 12px;font-size:13.5px;line-height:1.45;color:#efe3ff}.card .echo{font-style:italic;color:#d9c3ff}' +
+    '.card a{display:block;margin:4px 12px 12px;text-align:center;text-decoration:none;font-weight:700;font-size:14px;color:#fff;padding:10px;border-radius:12px;background:linear-gradient(135deg,#ff2bd6,#6d28ff)}.card a.soft{background:transparent;border:1px solid #ff5cf0;color:#ffd6fa}.card a:hover{filter:brightness(1.1)}' +
+    '.form{display:flex;gap:8px;padding:10px;border-top:1px solid #33184f;background:#110919}.form input{flex:1;min-width:0;background:#1d0f2e;border:1px solid #4a2386;color:#fff;border-radius:12px;padding:10px 12px;font-size:16px}.form input::placeholder{color:#a58ccc}.form input:focus{outline:none;border-color:#ff5cf0}' +
+    '.send{background:linear-gradient(135deg,#ff2bd6,#6d28ff);color:#fff;border:0;border-radius:12px;width:46px;padding:0;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;flex:none}.send svg{width:20px;height:20px}' +
+    '.notice{font-size:10.5px;color:#a88fcc;text-align:center;padding:6px 10px 8px;background:#110919}.panel.ask .notice{background:transparent}' +
+    '@media (max-width:480px){.panel{right:8px;left:8px;width:auto;max-width:none;bottom:84px;height:calc(100vh - 100px);height:calc(100dvh - 100px)}.bubble{right:14px;bottom:14px}.tip{display:none}.t span{display:none}.logo{width:60px;height:38px}.hero h2{font-size:23px}.panel.ask .main{padding:0 14px 6%}}' +
+    '.opt.door{border-style:dashed}.msg a{color:#ffb3f7;word-break:break-all}' +
+    '@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}' +
+    (mount ? ':host{display:block;height:100%}.panel{position:relative!important;inset:auto!important;width:100%!important;max-width:none!important;height:100%!important;z-index:auto}.bubble,.tip,.x{display:none!important}' : '') +
+    '</style>' +
+    '<div class="tip" id="tip"></div>' +
+    '<button class="bubble" id="bubble" aria-expanded="false"><span class="pulse"></span><span id="bubbleArt"></span></button>' +
+    '<section class="panel ask" id="panel" role="dialog">' +
+      '<div class="head"><div class="logo" id="logo"></div><div class="t"><b id="ttl"></b><span id="sub"></span></div>' +
+      '<button class="spk" id="spk" type="button" aria-pressed="false"></button>' +
+      '<div class="langs" id="langs" role="group"><button data-l="en">EN</button><button data-l="es">ES</button><button data-l="it">IT</button></div>' +
+      '<button class="x" id="close">×</button></div>' +
+      '<div class="main" id="main">' +
+        '<div class="hero" id="hero"><div class="heroArt" id="heroArt"></div><h2 id="heroTitle"></h2><p id="heroHint"></p></div>' +
+        '<div class="log" id="log" aria-live="polite"></div>' +
+        '<form class="form" id="form" autocomplete="off"><input id="inp" type="text" maxlength="300" enterkeyhint="send"><button class="send" id="send" type="submit"></button></form>' +
+      '</div>' +
+      '<div class="notice" id="notice"></div>' +
+    '</section>';
+  var $ = function (id) { return root.getElementById ? root.getElementById(id) : document.getElementById(id); };
+  var bubble = $('bubble'), panel = $('panel'), log = $('log'), form = $('form'), inp = $('inp'), tip = $('tip'), spk = $('spk');
+  var current = null, started = false, busy = false, runId = 0, nudgeTimer = null, lastShort = false;
+  function art(file, cls, alt) { // brand image with a safe fallback to the drawn rabbit if the file is missing
+    var holder = document.createElement('span'); holder.style.display = 'contents';
+    var i = new Image(); i.alt = alt || ''; if (cls) i.className = cls;
+    i.onerror = function () { holder.innerHTML = RABBIT; };
+    i.src = (SETTINGS.assetData && SETTINGS.assetData[file]) || SETTINGS.assetsPath + file; holder.appendChild(i); return holder;
+  }
+  $('bubbleArt').appendChild(art('rabbit-idle.png', '', ''));
+  $('logo').appendChild(art('furiousacid-logo.png', '', 'Furious Acid'));
+  $('heroArt').appendChild(art('rabbit-idle.png', '', ''));
+  $('send').innerHTML = ARROW;
+  function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+  function botRow(node) {
+    var last = log.lastElementChild, row = el('div', 'row');
+    var first = !(last && last.className === 'row' && !last.getAttribute('data-typing'));
+    var av = el('div', 'ava' + (first ? '' : ' spacer')); if (first) av.appendChild(art('rabbit-idle.png', '', ''));
+    row.appendChild(av); row.appendChild(node); return row;
+  }
+  function botBubble(text) { // plain text; Amazon links inside a line become real (tagged) links
+    var d = el('div', 'msg bot'), parts = String(text).split(/(https:\/\/www\.amazon\.[a-z.]+\/dp\/[A-Z0-9]{10}[^\s)]*)/);
+    for (var i = 0; i < parts.length; i++) {
+      if (i % 2) { var a = el('a', null, parts[i]); a.href = parts[i]; tagLink(a, state.product || 'hidden', 'amazon', 'plain'); d.appendChild(a); }
+      else if (parts[i]) d.appendChild(document.createTextNode(parts[i]));
+    }
+    return d;
+  }
+
+  /* ---------- the ask-anything first screen ---------- */
+  function enterAsk() { panel.classList.add('ask'); }
+  function leaveAsk() { if (panel.classList.contains('ask')) { panel.classList.remove('ask'); scroll(); } }
+
+  /* ---------- read-aloud voice (browser speechSynthesis; off by default, nothing is stored) ---------- */
+  var synth = window.speechSynthesis, voiceOn = false, voices = [];
+  var VOICE_LANG = { en: 'en-US', es: 'es-ES', it: 'it-IT' };
+  var DEEP = /\b(male|man|david|daniel|george|james|mark|fred|alex|tom|aaron|arthur|oliver|guy|ryan|christopher|eric|thomas|jorge|diego|carlos|pablo|juan|enrique|alvaro|raul|luca|giorgio|cosimo|paolo|roberto|marco|luciano|diego)\b/i;
+  var LIGHT = /\b(female|woman|zira|samantha|victoria|karen|moira|tessa|susan|hazel|serena|helena|laura|monica|paulina|elsa|alice|federica|paola|lucia|isabella|sabina|ava|allison|kate|fiona|joana)\b/i;
+  function loadVoices() { try { voices = (synth && synth.getVoices()) || []; } catch (e) { voices = []; } }
+  if (synth) { loadVoices(); try { synth.addEventListener('voiceschanged', loadVoices); } catch (e) { /* older browsers */ } }
+  function pickVoice() {
+    if (!voices.length) loadVoices();
+    var best = null, bs = -99;
+    voices.forEach(function (v) {
+      var vl = String(v.lang || '').toLowerCase().replace('_', '-'); if (vl.indexOf(lang) !== 0) return;
+      var s = (DEEP.test(v.name) ? 3 : 0) - (LIGHT.test(v.name) ? 3 : 0) + (vl === VOICE_LANG[lang].toLowerCase() ? 1 : 0) + (v.localService ? 0.5 : 0);
+      if (s > bs) { bs = s; best = v; }
+    });
+    return best;
+  }
+  function speakable(text) { // never read links, long URLs, ASINs or emoji aloud
+    return String(text).replace(/https?:\/\/\S+/g, '').replace(/\bwww\.\S+/g, '').replace(/\b[a-z0-9-]+\.(com|org|net|es|it|co\.uk|de|fr|ca)(\/\S*)?/gi, '')
+      .replace(/\bB0[A-Z0-9]{8}\b/g, '').replace(/[\u2190-\u21ff\u2600-\u27bf\ufe0f\u200d]|\ud83c[\udc00-\udfff]|\ud83d[\udc00-\udfff]|\ud83e[\udc00-\udfff]/g, '')
+      .replace(/\(\s*\)/g, '').replace(/\s+/g, ' ').trim();
+  }
+  function speak(text) {
+    if (!voiceOn || !synth || typeof window.SpeechSynthesisUtterance !== 'function') return;
+    var s = speakable(text); if (!s) return;
+    try {
+      var u = new window.SpeechSynthesisUtterance(s);
+      u.lang = VOICE_LANG[lang]; u.rate = SETTINGS.voiceRate; u.pitch = SETTINGS.voicePitch;
+      var v = pickVoice(); if (v) u.voice = v;
+      synth.speak(u);
+    } catch (e) { /* speech is optional */ }
+  }
+  function stopSpeaking() { try { if (synth) synth.cancel(); } catch (e) { /* ignore */ } }
+  function setVoice(on) {
+    voiceOn = !!on; var u = UI_TEXT[lang];
+    spk.setAttribute('aria-pressed', voiceOn ? 'true' : 'false'); spk.innerHTML = voiceOn ? SPK_ON : SPK_OFF;
+    spk.setAttribute('aria-label', voiceOn ? u.voiceOff : u.voiceOn); spk.title = voiceOn ? u.voiceOff : u.voiceOn;
+    if (!voiceOn) stopSpeaking();
+  }
+  if (!synth || typeof window.SpeechSynthesisUtterance !== 'function') spk.style.display = 'none';
+
+  function applyUI() {
+    var u = UI_TEXT[lang];
+    $('ttl').textContent = u.title; $('sub').textContent = u.sub; inp.placeholder = u.ph; inp.setAttribute('aria-label', u.ph);
+    $('send').setAttribute('aria-label', u.send); $('send').title = u.send; $('notice').textContent = u.notice; tip.textContent = u.tip;
+    $('heroHint').textContent = u.hint;
+    bubble.setAttribute('aria-label', u.open); $('close').setAttribute('aria-label', u.close); panel.setAttribute('aria-label', u.title);
+    $('langs').setAttribute('aria-label', u.langs); setVoice(voiceOn);
+    var bs = $('langs').querySelectorAll('button'); for (var i = 0; i < bs.length; i++) bs[i].setAttribute('aria-pressed', bs[i].getAttribute('data-l') === lang ? 'true' : 'false');
+  }
+  function scroll() { log.scrollTop = log.scrollHeight; }
+  function clearOpts() { var o = log.querySelectorAll('.opts'); for (var i = 0; i < o.length; i++) o[i].parentNode.removeChild(o[i]); }
+  function set(obj) { if (obj) for (var k in obj) state[k] = obj[k]; }
+  function typingFor(ms, done) { // shows the "…" typing dots for ms, then calls done
+    var my = runId, d = el('div', 'msg bot typing'); d.innerHTML = '<i></i><i></i><i></i>';
+    var t = botRow(d); t.setAttribute('data-typing', '1'); log.appendChild(t); scroll();
+    setTimeout(function () { if (my !== runId) return; if (t.parentNode) t.parentNode.removeChild(t); done(); }, ms);
+  }
+  function say(arr, done, instant) { // one bubble per line, each after a short typing pause (longer lines type a bit longer)
+    var my = runId, i = 0; busy = true;
+    (function nx() {
+      if (my !== runId) return;
+      if (i >= arr.length) { busy = false; if (done) done(); return; }
+      var line = arr[i++], ms = Math.round(SETTINGS.typingDelay * (0.7 + Math.min(line.length, 200) / 250));
+      var put = function () { log.appendChild(botRow(botBubble(line))); scroll(); speak(line); nx(); };
+      if (instant) put(); else typingFor(ms, put);
+    })();
+  }
+  function card(key, kind) { // kind: 'rec' | 'budget' | 'sample' | 'pivot'
+    key = safeProduct(key); var p = PRODUCTS[key], url = linkFor(key), u = UI_TEXT[lang];
+    if (!url) return;
+    var c = el('div', 'card'); c.setAttribute('data-book', key);
+    if (kind !== 'sample') c.appendChild(art('rabbit-jump.png', 'jump', ''));
+    c.appendChild(el('div', 'ct', kind === 'budget' ? u.gentle : kind === 'sample' ? u.taste : u.rec));
+    c.appendChild(el('h4', null, T(p.title)));
+    c.appendChild(el('div', 'pr', (store === 'com' && p.usd ? p.usd + ' · ' : '') + T(p.meta)));
+    if (kind === 'sample') {
+      c.appendChild(el('p', null, T(p.sample)));
+      if (p.sampleUrl) { var s = el('a', 'soft', u.sampleLink + ' \u2197'); s.href = own(p.sampleUrl); tagLink(s, key, 'sample', kind); c.appendChild(s); }
+    } else {
+      if (kind === 'pivot') { // the owner's cushion line, right under the book
+        var st = CALL_FLOW.steps[current] || {}, cu = T((CALL_FLOW.steps[st.cushionFrom] || st).cushion);
+        if (cu) { var line = fill(cu); c.appendChild(el('p', 'cushion', line)); speak(line); }
+      }
+      if (kind === 'rec' && soFarText()) c.appendChild(el('p', 'echo', u.told.replace('%s', soFarText())));
+      if (kind === 'budget') c.appendChild(el('p', null, T(p.reason)));
+      var a = el('a', null, u.amazon + store + ' \u2197'); a.href = url; tagLink(a, key, 'amazon', kind); c.appendChild(a);
+    }
+    if (kind !== 'sample') state.shown[key] = true;
+    log.appendChild(c); scroll();
+  }
+  function show(kind, done) {
+    var prod = safeProduct(state.product || 'hidden');
+    if (kind === 'link') { busy = true; return typingFor(SETTINGS.linkPauseMs, function () { card(prod, 'rec'); done(); }); }
+    if (kind === 'pivot') { busy = true; return typingFor(SETTINGS.linkPauseMs, function () { card(prod, 'pivot'); state.pivotPending = false; done(); }); }
+    if (kind === 'linkCheap') { busy = true; return typingFor(SETTINGS.linkPauseMs, function () {
+      card(prod, 'rec');
+      if (prod === 'coloring') return done();
+      say([fill(T(CALL_FLOW.phrases.cheaperPick))], function () { card('coloring', 'budget'); done(); });
+    }); }
+    if (kind === 'budget') { card('coloring', 'budget'); if (prod !== 'coloring' && PRODUCTS[prod].sampleUrl) card(prod, 'sample'); }
+    else if (kind === 'sample') card(prod, 'sample');
+    else if (kind === 'retain') { if (PRODUCTS[prod].sampleUrl) card(prod, 'sample'); else card('coloring', 'budget'); }
+    done();
+  }
+  function choicesOf(st) { return (st.choicesFrom ? CALL_FLOW.steps[st.choicesFrom].choices : st.choices) || []; }
+  function showChoices(st) {
+    var wrap = el('div', 'opts'), u = UI_TEXT[lang], list = choicesOf(st).slice();
+    if (st.doors) {
+      for (var k in CALL_FLOW.interests) { var it = CALL_FLOW.interests[k]; if (it.door && state.interests.indexOf(k) < 0) list.push({ label: it.label, door: k }); }
+      if (state.rounds > 0) list.push({ label: CALL_FLOW.phrases.thatsIt, next: '@recommend' });
+    }
+    if (st.stage === 'Close') list.push({ label: { en: u.restart, es: u.restart, it: u.restart }, restart: true });
+    list.forEach(function (c) {
+      var b = el('button', 'opt' + (c.door ? ' door' : ''), T(c.label)); b.type = 'button';
+      b.addEventListener('click', function () { if (busy) return; userSays(T(c.label)); lastShort = false; choose(c); });
+      wrap.appendChild(b);
+    });
+    if (list.length) { log.appendChild(wrap); scroll(); }
+  }
+  function linesOf(st, key) {
+    var src = (key === 'say' && lastShort && st.short) ? st.short : st[key];
+    var v = T(src); if (!v) return [];
+    if (typeof v === 'string') v = [v];
+    return v.map(fill).filter(function (x) { return x; });
+  }
+  function go(next) { if (next === '@recommend') return goRecommend(); run(next); }
+  function run(id, instant) {
+    if (id === 'too_expensive' && state.product === 'coloring') id = 'too_expensive_coloring';
+    var st = CALL_FLOW.steps[id] || CALL_FLOW.steps.fallback; current = CALL_FLOW.steps[id] ? id : 'fallback';
+    if (!instant) leaveAsk();
+    clearOpts(); set(st.set);
+    var arr = linesOf(st, 'say');
+    if (state.lead) { if (arr.length) arr[0] = state.lead + arr[0]; else arr = [state.lead.trim()]; state.lead = ''; }
+    if (instant) $('heroTitle').textContent = arr.join(' ');
+    say(arr, function () {
+      var rest = function () {
+        say(linesOf(st, 'after'), function () {
+          if (st.next) return go(st.next);
+          showChoices(st);
+          if (st.nudge) armNudge(st.nudge);
+        });
+      };
+      if (st.show) show(st.show, rest); else rest();
+    }, instant);
+  }
+  function armNudge(stepId) {
+    cancelNudge(); var my = runId;
+    nudgeTimer = setTimeout(function () { if (my !== runId || state.replied || state.nudged || busy) return; state.nudged = true; run(stepId); }, SETTINGS.nudgeAfterMs);
+  }
+  function cancelNudge() { if (nudgeTimer) { clearTimeout(nudgeTimer); nudgeTimer = null; } }
+  function choose(c) {
+    cancelNudge(); state.replied = true;
+    if (c.restart) return restartAll();
+    if (c.door) return discoveryAnswer(T(c.label), norm(T(c.label)), [c.door], labelFor(c.door));
+    set(c.set); if (c.lead) state.lead = T(c.lead);
+    go(c.next);
+  }
+  function userSays(t) { leaveAsk(); clearOpts(); log.appendChild(el('div', 'msg me', t)); scroll(); }
+
+  /* ---------- 1) greeting reply: warm / cold / direct ---------- */
+  function greetingReply(raw, n, found, drugTalk) {
+    if (found.length) { // they already named a curiosity: that counts as discovery round 1
+      addFound(found); var ph = drugTalk ? labelsText(found) : phraseFrom(raw, found);
+      addPhrase(ph); state.latest = ph; state.rounds = 1; return run('greet_direct_topic');
+    }
+    if (RX.direct.test(n)) return run('greet_direct');
+    if (RX.warmAsked.test(n)) return run('greet_warm_asked');
+    if (RX.warm.test(n)) return run('greet_warm');
+    return run('greet_cold');
+  }
+  /* ---------- 2-3) discovery answers: paraphrase + what else ---------- */
+  function discoveryAnswer(raw, n, found, forcedPhrase) {
+    var had = state.interests.length + state.phrases.length > 0;
+    var wc = n.split(/\s+/).filter(function (w) { return w; }).length;
+    var done = RX.done.test(n), unsure = RX.unsure.test(n);
+    if (!found.length && !forcedPhrase && (done || unsure || wc <= 2)) return had ? goRecommend() : run('discovery_help');
+    addFound(found);
+    var ph = forcedPhrase || phraseFrom(raw, found);
+    if (ph) { addPhrase(ph); state.latest = ph; }
+    if (found.length && done && had) return goRecommend();
+    state.rounds++;
+    if (state.rounds > SETTINGS.whatElseRounds) return goRecommend();
+    run(state.rounds === 1 ? 'what_else_1' : state.rounds === 2 ? 'what_else_2' : 'what_else_more');
+  }
+  function refuse(textObj) { // SAFETY: refuse, then redirect to the medicine-history book
+    state.redirected = true; state.lead = ''; state.pivotPending = false; leaveAsk(); clearOpts();
+    say(T(textObj), function () { state.product = 'hidden'; state.recommended = true; run('recommend_redirect'); });
+  }
+
+  // SAFETY, the warm way: asked how to make/get a drug (or a drug topic came up in a lookup).
+  // Curiosity first, then the normal call flow; the drug is never named back, no how-to, ever.
+  function drugCurious(wikiVariant) {
+    var first = !state.drugCurious;
+    state.drugCurious = true; state.pivotPending = false; state.lead = ''; busy = false; clearOpts();
+    if (wikiVariant) return run(first ? 'drug_curious_wiki' : 'drug_wiki_again'); // a question is not "pushing"
+    if (++state.drugAsks > 1) return pushBack();
+    run('drug_curious');
+  }
+  function pushBack() { // they keep pushing for instructions: gentle, no lecture, back to the books
+    state.drugCurious = true; state.pivotPending = false; state.lead = '';
+    if (state.pushes++ >= 1) { state.product = 'hidden'; state.recommended = true; return run('drug_push_again'); }
+    if (state.shown.hidden) { state.product = 'hidden'; state.recommended = true; return run('drug_push_light'); }
+    run('drug_push');
+  }
+
+  /* ---------- ask me anything: short answers from Wikipedia ---------- */
+  function isQuestion(n, raw) {
+    var t = n.replace(/^[\s¿¡"'(]+/, ''), wc = t.split(/\s+/).filter(function (w) { return w; }).length;
+    if (wc < 2 || RX.notWiki.test(t) || RX.warmAsked.test(t) || (RX.warm.test(t) && wc <= 3)) return false;
+    if (RX.askStart.test(t)) return true;
+    if (RX.askWeak.test(t) && wc >= 4) return true;
+    return /\?\s*$/.test(raw) && wc >= 3 && !/\b(i|my|me|yo|mi|me|io)\b/.test(t);
+  }
+  function topicOf(n) { // "what is graphene" -> "graphene" (used for the search and the curious fallback question)
+    var ws = n.replace(/[^a-z0-9\s'-]/g, ' ').split(/[\s']+/).filter(function (w) { return w && !RX.filler.test(w); });
+    return ws.length && ws.length <= 5 ? ws.join(' ') : '';
+  }
+  function wikiQuery(raw) { // why/how questions: the whole question (finds explanations); others: just the content words
+    var toks = String(raw).toLowerCase().replace(/[^\p{L}\p{N}\s'-]/gu, ' ').split(/[\s']+/).filter(function (x) { return x; });
+    if (!toks.length || /^(why|how|perche|come|como)$/.test(norm(toks[0])) || (norm(toks[0]) === 'por' && toks[1] && norm(toks[1]) === 'que')) return toks.join(' ').slice(0, 150);
+    var out = toks.filter(function (x) { return !RX.filler.test(norm(x)); });
+    return (out.length ? out : toks).join(' ').slice(0, 150);
+  }
+  var WHY = /\b(because|caus\w*|due to|process\w*|scatter\w*|reason\w*|result\w*|debido|porque|causa\w*|proceso\w*|dispers\w*|diffus\w*|dovut\w*|perche|motivo)\b/;
+  var PERSON = /\b(was|is) an? [\w\s,-]{0,60}(scientist|physician|chemist|physicist|biologist|microbiologist|pharmacologist|inventor|engineer|mathematician|doctor|researcher|botanist|pharmacist)\b|\b(fue|es) una? [\w\s,-]{0,60}(cientific\w*|medic\w*|quimic\w*|fisic\w*|biolog\w*|microbiolog\w*|inventor\w*|investigador\w*|farmac\w*)\b|\b(e|era|fu) (stat[oa] )?una? [\w\s,-]{0,60}(scienziat\w*|medic\w*|chimic\w*|fisic\w*|biolog\w*|microbiolog\w*|inventor\w*|ricercat\w*|farmac\w*)\b/;
+  var WORKS = /\b(album|single|song|film|movie|novel|band|rapper|episode|video ?game|tv series|television series|studio album|painting|singolo|canzone|disco|miniserie|serie televisiva|programma televisivo|romanzo|gruppo musicale|videogioco|opera a olio|cancion|sencillo|pelicula|novela|telenovela|banda|grupo musical|serie de television|serie animata|serie animada|brand|company|empresa|azienda|marca|marchio|leyes?|laws?|legge|leggi|orden|ordine|order of|emblema|emblem|medalla|medal|medaglia|condecoracion|dia internacional|international day|giornata)\b/;
+  function shortText(ex) { // 1-3 sentences, about 340 characters at most
+    var t = String(ex || '').replace(/\s*\([^()]{0,160}\)/g, '').replace(/\s*\([^()]{0,160}\)/g, '').replace(/\s*\[[^\]]*\]/g, '').replace(/\s+([,.;:])/g, '$1').replace(/\s+/g, ' ').trim();
+    var bits = t.match(/[^.!?]+(?:[.!?]+["»”’)]?|$)/g) || [], out = [], cur = '';
+    for (var i = 0; i < bits.length; i++) { // glue back abbreviations like "P. chrysogenum", "St. Louis", "1.5"
+      cur += bits[i];
+      if (/(\b[A-Z]|\b(St|Dr|Mr|Mrs|Ms|Sr|Jr|vs|etc|ca|approx|No|Prof|Gen|Mt|ss|pp|cf|ecc|Sig|Dott)|\d)\.$/.test(cur.trim()) && i < bits.length - 1) continue;
+      out.push(cur.trim()); cur = '';
+    }
+    if (cur.trim()) out.push(cur.trim());
+    var res = '';
+    for (i = 0; i < out.length && i < 3; i++) { var nx = res ? res + ' ' + out[i] : out[i]; if (res && nx.length > 340) break; res = nx; }
+    if (res.length > 420) { res = res.slice(0, 400); res = res.slice(0, res.lastIndexOf(' ')) + '…'; }
+    return res;
+  }
+  function pickPage(pages, q) {
+    var topic = topicOf(q), words = topic.split(' ').filter(function (w) { return w.length > 2; }).map(function (w) { return w.slice(0, 5); });
+    var who = /^(who|whos|quien|quienes|chi)\b/.test(q), why = /^(why|how|por que|como|perche|come)\b/.test(q);
+    var best = null, bs = -1;
+    (pages || []).forEach(function (p) {
+      if (!p || !p.extract || (p.pageprops && 'disambiguation' in p.pageprops)) return;
+      var tn = norm(p.title).replace(/\s*\(.*\)$/, ''), text = norm(p.title + ' ' + p.extract), hits = 0;
+      words.forEach(function (w) { if ((' ' + text.replace(/[^a-z0-9]+/g, ' ')).indexOf(' ' + w) > -1) hits++; }); // word starts only ("get" must not hit "together")
+      if (words.length && !hits) return;
+      var tw = tn.split(/\s+/).filter(function (w) { return w.length > 2; });
+      var titleFit = /^(why|por que|perche)\b/.test(q) ? 0 : tn === topic ? 2 : tw.length && tw.every(function (w) { return q.indexOf(w) > -1; }) ? 1 : 0; // why-answers rarely carry the question as a title
+      if (titleFit && words.length && tn.indexOf(words[0]) === 0) titleFit += 1; // the title is the question's subject ("how do FIREWORKS get colors")
+      var s = hits + titleFit + (9 - Math.min(p.index || 8, 8)) * 0.25 + (who && PERSON.test(text) ? 1.5 : 0) + (why && WHY.test(text) ? 1 : 0) - (WORKS.test(text) && !WORKS.test(q) ? 2.5 : 0);
+      if (s > bs) { bs = s; best = p; }
+    });
+    return best && bs >= 1 ? best : null;
+  }
+  function wikiLookup(q, done) {
+    var ctl = window.AbortController ? new AbortController() : null, finished = false;
+    function finish(pages, failed) { if (finished) return; finished = true; clearTimeout(timer); done(pages, failed); }
+    var timer = setTimeout(function () { if (ctl) ctl.abort(); finish(null, true); }, SETTINGS.wikiTimeoutMs);
+    if (!window.fetch) return finish(null, true);
+    var url = 'https://' + lang + '.wikipedia.org/w/api.php?action=query&format=json&formatversion=2&origin=*&generator=search&gsrlimit=8&gsrenablerewrites=1' +
+      '&prop=extracts%7Cinfo%7Cpageprops&exintro=1&explaintext=1&exsentences=4&exlimit=8&inprop=url&ppprop=disambiguation&redirects=1&gsrsearch=' + encodeURIComponent(q);
+    try {
+      fetch(url, { credentials: 'omit', referrerPolicy: 'no-referrer', signal: ctl ? ctl.signal : undefined })
+        .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+        .then(function (j) { finish((j && j.query && j.query.pages) || [], false); })
+        .catch(function () { finish(null, true); });
+    } catch (e) { finish(null, true); }
+  }
+  function wikiAnswer(raw, n, found) {
+    var my = runId, q = wikiQuery(raw), nq = norm(String(raw).replace(/[^\p{L}\p{N}\s'-]/gu, ' ').replace(/\s+/g, ' ').trim()), t0 = Date.now();
+    state.topic = topicOf(nq); busy = true; clearOpts();
+    var d = el('div', 'msg bot typing'); d.innerHTML = '<i></i><i></i><i></i>';
+    var dots = botRow(d); dots.setAttribute('data-typing', '1'); log.appendChild(dots); scroll();
+    wikiLookup(q, function (pages, failed) {
+      setTimeout(function () {
+        if (my !== runId) return;
+        if (dots.parentNode) dots.parentNode.removeChild(dots);
+        busy = false;
+        if (failed) { addFound(found); return run('wiki_fail'); }
+        var page = pickPage(pages, nq);
+        if (!page) { addFound(found); return run('wiki_none'); }
+        var text = shortText(page.extract), check = norm(page.title + ' ' + page.extract); // check the whole extract, not just the part we show
+        // SAFETY again, on what came back: no summaries about controlled drugs or making drugs / weapons
+        if (SAFE.drugNamed.test(check) || SAFE.precursor.test(check) || (SAFE.action.test(check) && SAFE.drug.test(check))) return drugCurious(true);
+        if (SAFE.cannabis.test(check)) { addFound(['plants']); return goRecommend(); } // plants path: 21+/legal check first
+        state.answers++;
+        var ti = found.length ? found.slice() : findInterests(norm(page.title)).filter(function (k) { return k !== 'plants'; });
+        addFound(ti); state.topicInterests = ti;
+        if (state.topic) addPhrase(state.topic);
+        var pivotDue = state.answers === 1 || state.answers - state.lastPivotAt >= SETTINGS.pivotEvery;
+        var fol = pivotDue ? '' : T(CALL_FLOW.phrases.wikiFollow)[(state.answers - 1) % T(CALL_FLOW.phrases.wikiFollow).length];
+        var box = el('div', 'msg bot wiki'), u = UI_TEXT[lang];
+        box.appendChild(el('span', 'src', 'Wikipedia'));
+        box.appendChild(el('span', 'txt', text));
+        var href = String(page.fullurl || '');
+        if (href.indexOf('https://' + lang + '.wikipedia.org/') !== 0) href = 'https://' + lang + '.wikipedia.org/wiki/' + encodeURIComponent(String(page.title).replace(/ /g, '_'));
+        box.appendChild(document.createTextNode(' '));
+        var a = el('a', 'wk', u.wiki + ' \u2197'); a.href = href; tagLink(a, null, 'wikipedia'); box.appendChild(a);
+        if (fol) box.appendChild(el('span', 'fol', fol));
+        log.appendChild(botRow(box)); scroll(); speak(text + (fol ? ' ' + fol : ''));
+        if (!pivotDue) { current = 'wiki_answer'; return; }
+        // GIVE, THEN PIVOT: warmly point to the best-fit book
+        state.lastPivotAt = state.answers; state.pivotBook = bookForTopic(ti); state.pivotPending = true;
+        goRecommend();
+      }, Math.max(0, SETTINGS.typingDelay - (Date.now() - t0)));
+    });
+  }
+  CALL_FLOW.steps.wiki_answer = { stage: 'Discovery', listen: 'discovery' }; // after a free answer, a statement feeds the discovery
+
+  function productNamed(f) { for (var k in CALL_FLOW.productNames) if (rx(CALL_FLOW.productNames[k].words).test(f)) return k; return null; }
+
+  function handleText(raw) {
+    var t = String(raw).trim(); if (!t) return;
+    cancelNudge(); state.replied = true;
+    userSays(t);
+    var n = norm(t), f = fixTypos(n), fr = fixRaw(t);            // f: typo-fixed text used for matching; fr: for echoing back
+    var V = [n, f, fixTypos(leet(n)), fixTypos(squash(n))];       // the safety check looks at all of these
+    lastShort = n.split(/\s+/).length <= SETTINGS.shortReplyWords;
+    // ---- safety first, at every step (all languages, typos included) ----
+    if (anyRx(SAFE.crisis, V)) {
+      clearOpts(); current = null;
+      say(T(SAFE_TEXT.crisis), function () { showChoices({ choices: [{ label: { en: UI_TEXT.en.back, es: UI_TEXT.es.back, it: UI_TEXT.it.back }, restart: true }] }); });
+      return;
+    }
+    if (anyRx(SAFE.bannedBook, V)) return refuse(SAFE_TEXT.book);
+    for (var v = 0; v < V.length; v++) {
+      var s = V[v];
+      if ((SAFE.action.test(s) && (SAFE.drug.test(s) || SAFE.precursor.test(s))) || (SAFE.precursor.test(s) && !RX.medicine.test(s))) return drugCurious(false);
+      if (SAFE.build.test(s) && SAFE.weapon.test(s)) return refuse(SAFE_TEXT.topic);
+    }
+    if (anyRx(SAFE.otherPlant, V)) return refuse(SAFE_TEXT.plant);
+    var drugTalk = anyRx(SAFE.drug, V) || anyRx(SAFE.precursor, V); // mentioned, not asking to make/get: never echoed back
+    // still pushing for instructions after the warm redirect
+    if (state.drugAsks && anyRx(SAFE.push, V) && !RX.expensive.test(f) && !productNamed(f) && !findInterests(f).some(function (k) { return k === 'plants'; })) return pushBack();
+    if (RX.restart.test(f)) return restartAll();
+    var st = CALL_FLOW.steps[current] || {}, list = choicesOf(st), i;
+    var q = SETTINGS.wikipedia && !list.some(function (c) { return c.set && (c.set.gateOk || c.set.gateNo); }) && isQuestion(f, t) && !anyRx(SAFE.cannabis, V);
+    // a controlled-drug topic is never looked up: warm curiosity instead (no summary)
+    if (q && (drugTalk || anyRx(SAFE.drugNamed, V))) return drugCurious(true);
+    // ---- RETENTION: "too expensive" / "not now" / leaving, at any point ----
+    var wc = f.split(/\s+/).length;
+    if (!q && (state.recommended || wc <= 6)) {
+      if (RX.expensive.test(f)) { cancelNudge(); return run('too_expensive'); }
+      if (RX.notNow.test(f) && !RX.expensive.test(f)) return run('not_now');
+    }
+    // ---- a typed answer to the current step's buttons (first match wins) ----
+    if (!q) for (i = 0; i < list.length; i++) if (list[i].words && rx(list[i].words).test(f)) return choose(list[i]);
+    // ---- after a recommendation: "not sure" works at any point ----
+    if (!q && state.recommended) {
+      var rc = CALL_FLOW.steps.recommend.choices;
+      for (i = 0; i < rc.length; i++) if (rc[i].next === 'not_sure' && rx(rc[i].words).test(f)) return choose(rc[i]);
+    }
+    var found = findInterests(f);
+    // ---- they named a book: go straight to it (the Manual still needs the 21+/legal check) ----
+    var pn = !q && productNamed(f);
+    if (pn) {
+      addFound([CALL_FLOW.productNames[pn].interest]); var pph = phraseFrom(fr, []);
+      if (pph) { addPhrase(pph); state.latest = pph; }
+      return goRecommend(pn);
+    }
+    // ---- a general question: free answer from Wikipedia (then maybe a pivot) ----
+    if (q) return wikiAnswer(t, f, found);
+    if (drugTalk) { if (!state.drugCurious) state.lead = T(SAFE_TEXT.drugOnly)[0] + ' '; if (!found.length) found = ['medicine']; }
+    if (st.listen === 'greeting') return greetingReply(fr, f, found, drugTalk);
+    if (st.listen === 'discovery') return discoveryAnswer(fr, f, found, drugTalk ? labelsText(found) : null);
+    if (st.listen === 'end') {
+      var keep = state.lead, shown = state.shown, da = state.drugAsks, pu = state.pushes; resetState(); state.replied = true; state.lead = keep; state.shown = shown; state.drugAsks = da; state.pushes = pu;
+      if (found.length) return discoveryAnswer(fr, f, found, drugTalk ? labelsText(found) : null);
+      return run('greet_again');
+    }
+    if (st.again) { say([T(st.again)], function () { showChoices(st); }); return; }
+    if (state.recommended) return run('after_link_unclear');
+    run('fallback');
+  }
+
+  function restartAll() { runId++; busy = false; cancelNudge(); stopSpeaking(); log.innerHTML = ''; resetState(); lastShort = false; enterAsk(); run(CALL_FLOW.start, true); }
+  function setLanguage(l) { if (!UI_TEXT[l] || l === lang) return; lang = l; applyUI(); if (started) restartAll(); }
+  function open() { panel.classList.add('open'); bubble.setAttribute('aria-expanded', 'true'); tip.style.display = 'none'; if (!started) { started = true; run(CALL_FLOW.start, true); } if (!mount) setTimeout(function () { inp.focus({ preventScroll: true }); }, 50); }
+  function close() { if (mount) return; stopSpeaking(); panel.classList.remove('open'); bubble.setAttribute('aria-expanded', 'false'); bubble.focus(); }
+
+  applyUI();
+  bubble.addEventListener('click', function () { panel.classList.contains('open') ? close() : open(); });
+  $('close').addEventListener('click', close);
+  $('langs').addEventListener('click', function (e) { var l = e.target && e.target.getAttribute && e.target.getAttribute('data-l'); if (l) setLanguage(l); });
+  spk.addEventListener('click', function () { setVoice(!voiceOn); });
+  panel.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+  form.addEventListener('submit', function (e) { e.preventDefault(); if (busy) return; var v = inp.value; inp.value = ''; handleText(v); });
+  setTimeout(function () { tip.style.display = 'none'; }, 9000);
+  if (mount) open();
+  window.FARabbit = { open: open, close: close, setLanguage: setLanguage, store: function () { return store; }, language: function () { return lang; },
+    fixTypos: function (s) { return fixTypos(norm(s)); } };
+})();
 </script>
 </body>
 </html>
