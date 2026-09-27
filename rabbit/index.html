@@ -37,7 +37,7 @@ html.fa-embed,html.fa-embed body{background:#0d0714;height:100%}html.fa-embed he
 <p class="m">Ask the Rabbit anything, or let it point you to the right book. EN · ES · IT. Short answers come from Wikipedia. <a href="/">← Home</a></p>
 <p class="d">Ask the Rabbit anything: why the sky is blue, who discovered penicillin, how fireworks get their colors. It answers in a few lines, and when you're curious to go deeper, it points you to the right Furious Acid book, whether that's eerie art, the story of medicine, or growing plants.</p>
 <p class="d">Habla español · Parla italiano. Use the EN / ES / IT buttons in the chat.</p>
-<p class="muted d">The Rabbit is an automated helper, not a person. Short answers to general questions come from Wikipedia's free public API (text by Wikipedia contributors, CC BY-SA); a question is sent to Wikipedia only to look it up; everything else runs right in your browser. The Rabbit uses no cookies and tracks nothing; if you tell it your first name, it remembers only that and your last topic, in your own browser's storage on this device, never sent anywhere (type “forget me” to erase it). Read-aloud uses your browser's own voice. Links open your local Amazon store. <a href="/">← Back to furiousacid.com</a></p>
+<p class="muted d">The Rabbit is an automated helper, not a person. Short answers to general questions come from Wikipedia's free public API (text by Wikipedia contributors, CC BY-SA); a question is sent to Wikipedia only to look it up; everything else runs right in your browser. The Rabbit uses no cookies and tracks nothing; if you tell it your first name, it remembers only that, your last topic, and which topics you pick most (to order its suggestions), in your own browser's storage on this device, never sent anywhere (type “forget me” to erase it). Read-aloud uses your browser's own voice. Links open your local Amazon store. <a href="/">← Back to furiousacid.com</a></p>
 </section>
 <div id="chat"></div>
 </main>
@@ -46,6 +46,7 @@ window.FA_RABBIT_SETTINGS = {
   embed: '#chat',
   pathUrl: '',
   assetsPath: '/rabbit/assets/',
+  previewRoot: '../site-repo/', // LOCAL PREVIEW ONLY: where app windows look when opened from file://
   assetData: {
     'furiousacid-logo.png': 'data:image/png;base64,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',
     'rabbit-idle.png': 'data:image/png;base64,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',
@@ -1375,19 +1376,25 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
     en: { title: 'The Purple Rabbit', sub: 'Ask me anything · finds the right book', ph: 'Ask the Rabbit anything…', send: 'Send', tip: 'Psst… ask the Rabbit',
           hint: 'Ask me anything: why the sky is blue, who discovered penicillin… or let me help you find the right book.',
           wiki: 'Read more on Wikipedia', voiceOn: 'Read replies aloud', voiceOff: 'Stop reading replies aloud',
-          notice: 'May make mistakes.', policy: 'Policy', policyTitle: 'Policy', policyBody: 'An automated helper, not a person. It remembers only your name and last topic, on this device (say “forget me” to clear). Short answers come from Wikipedia.', open: 'Open Ask the Purple Rabbit chat', close: 'Close chat', langs: 'Language',
+          notice: 'May make mistakes', policy: 'Policy', policyTitle: 'Policy', policyBody: 'An automated helper, not a person. It remembers only your name, your last topic, and which topics you pick most, on this device (say “forget me” to clear). Short answers come from Wikipedia.',
+          vidTitle: 'Videos coming soon!', vidBody: 'The Rabbit is getting camera-ready. 🐇 Check back soon.', vidLine: 'Videos coming soon! 🐇', ok: 'OK', closeApp: 'Close',
+          qs: { sky: 'Why is the sky blue?', penicillin: 'Who discovered penicillin?', book: 'Find me a book', vaccines: 'How do vaccines work?', scream: 'Who painted The Scream?', fireworks: 'How do fireworks get their colors?', memory: 'How does memory work?', relax: 'Something relaxing', molar: 'Molar mass of NaCl', school: 'Help me study chemistry' }, open: 'Open Ask the Purple Rabbit chat', close: 'Close chat', langs: 'Language',
           rec: 'The Rabbit recommends', gentle: 'A lighter option', taste: 'A free sample', amazon: 'See it on Amazon.', sampleLink: 'Read a free sample',
           restart: 'Start over', back: 'Back to the lab', told: 'You told me: %s.' },
     es: { title: 'El Conejo Púrpura', sub: 'Pregúntame lo que quieras · encuentra tu libro', ph: 'Pregúntale lo que quieras al Conejo…', send: 'Enviar', tip: 'Psst… pregúntale al Conejo',
           hint: 'Pregúntame lo que quieras: por qué el cielo es azul, quién descubrió la penicilina… o te ayudo a encontrar el libro adecuado.',
           wiki: 'Leer más en Wikipedia', voiceOn: 'Leer las respuestas en voz alta', voiceOff: 'Dejar de leer en voz alta',
-          notice: 'Puede equivocarse.', policy: 'Política', policyTitle: 'Política', policyBody: 'Un asistente automático, no una persona. Solo recuerda tu nombre y tu último tema, en este dispositivo (di «olvídame» para borrarlo). Las respuestas breves vienen de Wikipedia.', open: 'Abrir el chat del Conejo Púrpura', close: 'Cerrar el chat', langs: 'Idioma',
+          notice: 'Puede equivocarse', policy: 'Política', policyTitle: 'Política', policyBody: 'Un asistente automático, no una persona. Solo recuerda tu nombre, tu último tema y los temas que más eliges, en este dispositivo (di «olvídame» para borrarlo). Las respuestas breves vienen de Wikipedia.',
+          vidTitle: '¡Videos muy pronto!', vidBody: 'El Conejo se está preparando para la cámara. 🐇 Vuelve pronto.', vidLine: '¡Videos muy pronto! 🐇', ok: 'OK', closeApp: 'Cerrar',
+          qs: { sky: '¿Por qué el cielo es azul?', penicillin: '¿Quién descubrió la penicilina?', book: 'Búscame un libro', vaccines: '¿Cómo funcionan las vacunas?', scream: '¿Quién pintó El grito?', fireworks: '¿Cómo obtienen su color los fuegos artificiales?', memory: '¿Cómo funciona la memoria?', relax: 'Algo relajante', molar: 'Masa molar de NaCl', school: 'Ayúdame a estudiar química' }, open: 'Abrir el chat del Conejo Púrpura', close: 'Cerrar el chat', langs: 'Idioma',
           rec: 'El Conejo recomienda', gentle: 'Una opción más ligera', taste: 'Una muestra gratis', amazon: 'Ver en Amazon.', sampleLink: 'Leer una muestra gratis (en inglés)',
           restart: 'Empezar de nuevo', back: 'Volver al laboratorio', told: 'Me contaste: %s.' },
     it: { title: 'Il Coniglio Viola', sub: 'Chiedimi quello che vuoi · trova il tuo libro', ph: 'Chiedi quello che vuoi al Coniglio…', send: 'Invia', tip: 'Psst… chiedi al Coniglio',
           hint: 'Chiedimi quello che vuoi: perché il cielo è blu, chi ha scoperto la penicillina… oppure ti aiuto a trovare il libro giusto.',
           wiki: 'Leggi di più su Wikipedia', voiceOn: 'Leggi le risposte ad alta voce', voiceOff: 'Smetti di leggere ad alta voce',
-          notice: 'Può sbagliare.', policy: 'Informativa', policyTitle: 'Informativa', policyBody: 'Un assistente automatico, non una persona. Ricorda solo il tuo nome e l’ultimo argomento, su questo dispositivo (scrivi «dimenticami» per cancellarli). Le risposte brevi vengono da Wikipedia.', open: 'Apri la chat del Coniglio Viola', close: 'Chiudi la chat', langs: 'Lingua',
+          notice: 'Può sbagliare', policy: 'Informativa', policyTitle: 'Informativa', policyBody: 'Un assistente automatico, non una persona. Ricorda solo il tuo nome, l’ultimo argomento e gli argomenti che scegli più spesso, su questo dispositivo (scrivi «dimenticami» per cancellarli). Le risposte brevi vengono da Wikipedia.',
+          vidTitle: 'Video in arrivo!', vidBody: 'Il Coniglio si sta preparando per la telecamera. 🐇 Torna presto.', vidLine: 'Video in arrivo! 🐇', ok: 'OK', closeApp: 'Chiudi',
+          qs: { sky: 'Perché il cielo è blu?', penicillin: 'Chi ha scoperto la penicillina?', book: 'Trovami un libro', vaccines: 'Come funzionano i vaccini?', scream: 'Chi ha dipinto L’urlo?', fireworks: 'Come prendono colore i fuochi d’artificio?', memory: 'Come funziona la memoria?', relax: 'Qualcosa di rilassante', molar: 'Massa molare di NaCl', school: 'Aiutami a studiare chimica' }, open: 'Apri la chat del Coniglio Viola', close: 'Chiudi la chat', langs: 'Lingua',
           rec: 'Il Coniglio consiglia', gentle: 'Un’opzione più leggera', taste: 'Un estratto gratuito', amazon: 'Vedi su Amazon.', sampleLink: 'Leggi un estratto gratuito (in inglese)',
           restart: 'Ricomincia', back: 'Torna al laboratorio', told: 'Mi hai detto: %s.' }
   };
@@ -1578,6 +1585,7 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
   function addFound(keys) {
     keys.forEach(function (k) { if (state.interests.indexOf(k) < 0) state.interests.push(k); });
     if (keys.length && !memBlocked) { memory.topic = keys[keys.length - 1]; memWrite(); } // last topic, on this device only
+    keys.forEach(function (k) { if (k !== 'plants') like(k); });                        // topic counts for the suggested prompts
   }
   function addPhrase(p) {
     if (!p) return; var low = p.toLowerCase();
@@ -1668,19 +1676,23 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
      Nothing is kept from a conversation that touched the drug / weapon / crisis guardrails
      (it's rolled back to how it was when the page opened), and "forget me" erases everything.       */
   var MEM_KEY = 'faRabbitMemory', memBlocked = false, memAtLoad = null;
+  // adaptive suggestions: how often each TOPIC KEY came up (never the visitor's words). 'plants' is never counted.
+  var LIKE_KEYS = ['medicine', 'art', 'calm', 'mind', 'everyday', 'science', 'school', 'calc', 'app_weather', 'app_game', 'app_lab'];
+  function like(k) { if (memBlocked || LIKE_KEYS.indexOf(k) < 0) return; memory.likes = memory.likes || {}; memory.likes[k] = Math.min(99, (memory.likes[k] || 0) + 1); memWrite(); }
   function memParse(raw) {
     var j = null; try { j = raw ? JSON.parse(raw) : null; } catch (e) { j = null; }
     var o = {}; if (!j || typeof j !== 'object') return o;
     if (j.seen) o.seen = 1;
     if (typeof j.name === 'string' && /^[A-Za-z\u00C0-\u017F][A-Za-z\u00C0-\u017F'-]{0,19}$/.test(j.name)) o.name = j.name;
     if (typeof j.topic === 'string' && CALL_FLOW.interests.hasOwnProperty(j.topic)) o.topic = j.topic;
+    if (j.likes && typeof j.likes === 'object') for (var lk in j.likes) if (LIKE_KEYS.indexOf(lk) > -1 && j.likes[lk] > 0) { o.likes = o.likes || {}; o.likes[lk] = Math.min(99, Math.floor(+j.likes[lk]) || 0); }
     return o;
   }
   try { memAtLoad = window.localStorage.getItem(MEM_KEY); } catch (e) { memAtLoad = null; }
   var memory = memParse(memAtLoad), returning = !!memory.seen;
   function memWrite() {
     if (memBlocked) return;
-    var o = { seen: 1 }; if (memory.name) o.name = memory.name; if (memory.topic) o.topic = memory.topic; memory.seen = 1;
+    var o = { seen: 1 }; if (memory.name) o.name = memory.name; if (memory.topic) o.topic = memory.topic; if (memory.likes) o.likes = memory.likes; memory.seen = 1;
     try { window.localStorage.setItem(MEM_KEY, JSON.stringify(o)); } catch (e) { /* storage off: fine */ }
   }
   function memGuard() { // a guardrail fired: keep nothing from this conversation
@@ -1773,7 +1785,7 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
     '.card a{display:block;margin:4px 12px 12px;text-align:center;text-decoration:none;font-weight:700;font-size:14px;color:#fff;padding:10px;border-radius:12px;background:linear-gradient(135deg,#ff2bd6,#6d28ff)}.card a.soft{background:transparent;border:1px solid #ff5cf0;color:#ffd6fa}.card a:hover{filter:brightness(1.1)}' +
     '.form{display:flex;gap:8px;padding:10px;border-top:1px solid #33184f;background:#110919}.form input{flex:1;min-width:0;background:#1d0f2e;border:1px solid #4a2386;color:#fff;border-radius:12px;padding:10px 12px;font-size:16px}.form input::placeholder{color:#a58ccc}.form input:focus{outline:none;border-color:#ff5cf0}' +
     '.send{background:linear-gradient(135deg,#ff2bd6,#6d28ff);color:#fff;border:0;border-radius:12px;width:46px;padding:0;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;flex:none}.send svg{width:20px;height:20px}' +
-    '.notice{font-size:10.5px;color:#a88fcc;text-align:center;padding:6px 10px 8px;background:#110919}.panel.ask .notice{background:transparent}.notice .policyBtn{background:none;border:0;padding:0;margin-left:4px;color:#ffb3f7;font:inherit;font-weight:700;text-decoration:underline;cursor:pointer}.heroPrompts{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:14px;max-width:340px}.heroPrompts button{appearance:none;border:0;cursor:pointer;color:#fff;font-weight:800;font-size:13px;line-height:1.1;padding:10px 12px;border-radius:999px;box-shadow:0 0 0 2px #fdf200}.heroPrompts button.weather{background:linear-gradient(135deg,#1a6fbf,#0b3a66)}.heroPrompts button.game{background:linear-gradient(100deg,#3a1028,#12060e)}.heroPrompts button.lab{background:linear-gradient(135deg,#e0262b,#9e0f14)}.policyWin{position:absolute;inset:0;z-index:8;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(8,4,16,.78)}.policyWin.open{display:flex}.policyCard{width:min(420px,100%);background:#1a0d2b;color:#efe3ff;border:1px solid #7b4bd1;border-radius:16px;padding:16px 16px 14px;box-shadow:0 16px 40px rgba(0,0,0,.45)}.policyCard b{display:block;font-size:16px;margin-bottom:8px}.policyCard p{margin:0 0 14px;font-size:14px;line-height:1.5;color:#e7d6ff}.policyCard button{background:#ff5cf0;color:#1a0d2b;border:0;border-radius:999px;font-weight:800;padding:8px 14px;cursor:pointer}.appwin{position:absolute;inset:0;z-index:9;display:none;flex-direction:column;background:#0d0714}.appwin.open{display:flex}.appbar{display:flex;align-items:center;gap:8px;padding:8px 10px;background:#2a0a57;color:#fff}.appbar b{flex:1;font-size:14px}.appbar button{background:transparent;border:0;color:#fff;font-size:22px;cursor:pointer;padding:0 6px}.appwin iframe{flex:1;width:100%;border:0;background:#fff}' +
+    '.notice{font-size:10.5px;color:#a88fcc;text-align:center;padding:6px 10px 8px;background:#110919}.panel.ask .notice{background:transparent}.notice .policyBtn{background:none;border:0;padding:0;margin-left:0;color:#ffb3f7;font:inherit;font-weight:700;text-decoration:underline;cursor:pointer}.heroPrompts{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:14px;max-width:340px}.heroPrompts button{appearance:none;border:0;cursor:pointer;color:#fff;font-weight:800;font-size:13px;line-height:1.1;padding:10px 12px;border-radius:999px;box-shadow:0 0 0 2px #fdf200}.heroPrompts button.weather{background:linear-gradient(135deg,#1a6fbf,#0b3a66)}.heroPrompts button.game{background:linear-gradient(100deg,#3a1028,#12060e)}.heroPrompts button.lab{background:linear-gradient(135deg,#e0262b,#9e0f14)}.policyWin{position:absolute;inset:0;z-index:8;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(8,4,16,.78)}.policyWin.open{display:flex}.policyCard{width:min(420px,100%);background:#1a0d2b;color:#efe3ff;border:1px solid #7b4bd1;border-radius:16px;padding:16px 16px 14px;box-shadow:0 16px 40px rgba(0,0,0,.45)}.policyCard b{display:block;font-size:16px;margin-bottom:8px}.policyCard p{margin:0 0 14px;font-size:14px;line-height:1.5;color:#e7d6ff}.policyCard button{background:#ff5cf0;color:#1a0d2b;border:0;border-radius:999px;font-weight:800;padding:8px 14px;cursor:pointer}.appwin{position:absolute;inset:0;z-index:9;display:none;flex-direction:column;background:#0d0714}.appwin.open{display:flex}.appbar{display:flex;align-items:center;gap:8px;padding:8px 10px;background:#2a0a57;color:#fff}.appbar b{flex:1;font-size:14px}.appbar button{background:transparent;border:0;color:#fff;font-size:22px;cursor:pointer;padding:0 6px}.appwin iframe{flex:1;width:100%;border:0;background:#fff}.heroPrompts button.q{background:#241238;color:#efe3ff;font-weight:700;box-shadow:0 0 0 1px #7b4bd1}.heroPrompts button.q:hover,.heroPrompts button:focus-visible{filter:brightness(1.2);outline:none}.appbar button{min-width:44px;min-height:40px}.vidCard{text-align:center}.vidCard .vidArt{width:84px;height:84px;margin:0 auto 10px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#3a1b66,#1a0d2b);border:1px solid #5b2ca8;box-shadow:0 0 0 3px #fdf200;display:flex;align-items:flex-end;justify-content:center;overflow:hidden}.vidCard .vidArt img{width:88px;height:88px;margin-bottom:-8px}.vidCard b{font-size:22px!important;color:#fff}' +
     '@media (max-width:480px){.panel{right:8px;left:8px;width:auto;max-width:none;bottom:84px;height:calc(100vh - 100px);height:calc(100dvh - 100px)}.bubble{right:14px;bottom:14px}.tip{display:none}.t span{display:none}.logo{width:60px;height:38px}.hero h2{font-size:23px}.panel.ask .main{padding:0 14px 6%}}' +
     '.msg.calc{white-space:normal}.msg.calc span{display:block}.msg.calc .src{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#ff8cf3;margin-bottom:3px}.msg.calc .think{color:#d9c3ff;font-style:italic;margin-bottom:5px}' +
     '.msg.calc .step{padding-left:1.25em;text-indent:-1.25em;margin:2px 0;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}.msg.calc .ans{margin-top:7px;font-weight:800;color:#fff;font-size:15px;background:rgba(253,242,0,.12);border-left:3px solid #fdf200;border-radius:8px;padding:6px 9px}.msg.calc .note{margin-top:5px;font-size:12.5px;color:#cdb6f0}.msg.calc .fol{margin-top:8px}' +
@@ -1794,7 +1806,7 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
         '<div class="log" id="log" aria-live="polite"></div>' +
         '<form class="form" id="form" autocomplete="off"><input id="inp" type="text" maxlength="300" enterkeyhint="send"><button class="send" id="send" type="submit"></button></form>' +
       '</div>' +
-      '<div class="notice" id="notice"></div>' +'<div class="policyWin" id="policyWin"><div class="policyCard"><b id="policyTitle"></b><p id="policyBody"></p><button type="button" id="policyClose">OK</button></div></div>' +'<div class="appwin" id="appwin"><div class="appbar"><b id="appname"></b><button type="button" id="appclose" aria-label="Close">×</button></div><iframe id="appframe" title="Furious Acid"></iframe></div>' +
+      '<div class="notice" id="notice"></div>' +'<div class="policyWin" id="policyWin"><div class="policyCard"><b id="policyTitle"></b><p id="policyBody"></p><button type="button" id="policyClose">OK</button></div></div>' +'<div class="policyWin" id="videoWin" role="dialog" aria-modal="true"><div class="policyCard vidCard"><div class="vidArt" id="vidArt"></div><b id="vidTitle"></b><p id="vidBody"></p><button type="button" id="vidClose">OK</button></div></div>' +'<div class="appwin" id="appwin"><div class="appbar"><b id="appname"></b><button type="button" id="appclose" aria-label="Close">×</button></div><iframe id="appframe" title="Furious Acid"></iframe></div>' +
     '</section>';
   var $ = function (id) { return root.getElementById ? root.getElementById(id) : document.getElementById(id); };
   var bubble = $('bubble'), panel = $('panel'), log = $('log'), form = $('form'), inp = $('inp'), tip = $('tip'), spk = $('spk');
@@ -1827,33 +1839,92 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
 
   /* ---------- the ask-anything first screen ---------- */
   function enterAsk() { panel.classList.add('ask'); }
+  // Apps open in a window from the Rabbit (real site paths). The Rabbit game IS Furious Roll (/roll/).
   var APPS = [
     { key: 'weather', href: '/weather/', cls: 'weather', en: 'Furious Acid Weather', es: 'Clima Furious Acid', it: 'Meteo Furious Acid' },
     { key: 'game', href: '/roll/', cls: 'game', en: 'Furious Acid Game', es: 'Juego Furious Acid', it: 'Gioco Furious Acid' },
     { key: 'lab', href: '/lab/', cls: 'lab', en: 'Furious Acid Lab', es: 'Laboratorio Furious Acid', it: 'Laboratorio Furious Acid' }
   ];
+  // Suggested questions: tapping one asks it. `tag` = the topic key it belongs to (for the on-device ordering).
+  var QUESTIONS = [
+    { id: 'sky', tag: 'science', base: 3 }, { id: 'penicillin', tag: 'medicine', base: 2 }, { id: 'book', tag: 'book', base: 1, keep: true },
+    { id: 'vaccines', tag: 'medicine' }, { id: 'scream', tag: 'art' }, { id: 'fireworks', tag: 'everyday' },
+    { id: 'memory', tag: 'mind' }, { id: 'relax', tag: 'calm' }, { id: 'molar', tag: 'calc' }, { id: 'school', tag: 'school' }
+  ];
+  function likes() { return memory.likes || {}; }
+  function pickQuestions() { // 3 chips: the ones matching what this visitor asks about most float up; "Find me a book" always stays
+    var L = likes(), used = {};
+    var scored = QUESTIONS.map(function (q, i) {
+      var s = (q.base || 0) + (L[q.tag] || 0) * 4 + (memory.topic && memory.topic === q.tag ? 2 : 0) - i * 0.01;
+      return { q: q, s: s };
+    }).sort(function (a, b) { return b.s - a.s; });
+    var out = [], keep = QUESTIONS.filter(function (q) { return q.keep; });
+    scored.forEach(function (x) { if (out.length < 3 - keep.length && !x.q.keep && !used[x.q.tag + (L[x.q.tag] ? '' : x.q.id)]) { used[x.q.tag + (L[x.q.tag] ? '' : x.q.id)] = 1; out.push(x.q); } });
+    return out.concat(keep);
+  }
+  function pickApps() { // most-opened app first (stable otherwise)
+    var L = likes();
+    return APPS.map(function (a, i) { return { a: a, s: (L['app_' + a.key] || 0) - i * 0.01 }; }).sort(function (x, y) { return y.s - x.s; }).map(function (x) { return x.a; });
+  }
   function paintPrompts() {
     var box = $('heroPrompts'); if (!box) return; box.innerHTML = '';
-    APPS.forEach(function (app) {
-      var b = document.createElement('button'); b.type = 'button'; b.className = app.cls; b.textContent = app[lang] || app.en;
+    var u = UI_TEXT[lang];
+    pickQuestions().forEach(function (q) {
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'q'; b.textContent = u.qs[q.id]; b.setAttribute('data-q', q.id);
+      b.onclick = function () { if (busy) return; handleText(u.qs[q.id]); };
+      box.appendChild(b);
+    });
+    pickApps().forEach(function (app) {
+      var b = document.createElement('button'); b.type = 'button'; b.className = app.cls; b.textContent = app[lang] || app.en; b.setAttribute('data-app', app.key);
       b.onclick = function () { openApp(app); };
       box.appendChild(b);
     });
   }
+  // local preview only (file://): point the window at the checked-out site files; on the live site this is a no-op
+  function appSrc(href) { return location.protocol === 'file:' ? (SETTINGS.previewRoot || '') + href.replace(/^\//, '') + 'index.html' : href; }
+  var HOSTED = /[?&]host=1(?:&|$)/.test(location.search) && window.parent && window.parent !== window;
   function openApp(app) {
-    $('appname').textContent = app[lang] || app.en;
-    var frame = $('appframe');
-    if (frame.getAttribute('src') !== app.href) frame.src = app.href;
+    like('app_' + app.key);
+    if (HOSTED) { // on the homepage the window opens over the whole page (better on phones)
+      try { window.parent.postMessage({ fa: 'rabbit-app', key: app.key, title: app[lang] || app.en }, '*'); return; } catch (e) { /* fall through to the in-chat window */ }
+    }
+    $('appname').textContent = app[lang] || app.en; $('appclose').setAttribute('aria-label', UI_TEXT[lang].closeApp);
+    var frame = $('appframe'), src = appSrc(app.href);
+    frame.setAttribute('data-href', app.href);
+    if (frame.getAttribute('src') !== src) frame.src = src;
     $('appwin').classList.add('open');
   }
-  function closeApp() { $('appwin').classList.remove('open'); var frame = $('appframe'); frame.src = 'about:blank'; }
+  function closeApp() { $('appwin').classList.remove('open'); var frame = $('appframe'); frame.src = 'about:blank'; frame.removeAttribute('data-href'); }
   $('policyClose').onclick = function () { $('policyWin').classList.remove('open'); };
   $('appclose').onclick = closeApp;
+  $('vidArt').appendChild(art('rabbit-jump.png', '', ''));
+  function openVideos() { $('videoWin').classList.add('open'); setTimeout(function () { try { $('vidClose').focus({ preventScroll: true }); } catch (e) { /* ignore */ } }, 30); }
+  $('vidClose').onclick = function () { $('videoWin').classList.remove('open'); };
+  panel.addEventListener('keydown', function (e) { if (e.key === 'Escape') { $('videoWin').classList.remove('open'); $('policyWin').classList.remove('open'); if ($('appwin').classList.contains('open')) closeApp(); } });
   function appFromText(f) {
     if (/\b(weather|clima|meteo)\b/.test(f)) return APPS[0];
     if (/\b(lab|laboratorio|simulator)\b/.test(f)) return APPS[2];
-    if (/\b(game|juego|gioco)\b/.test(f)) return APPS[1];
+    if (/\b(game|juego|gioco|furious roll|rabbit game)\b/.test(f)) return APPS[1];
     return null;
+  }
+  // "videos?" / "youtube" / "watch ..." (typos forgiven): the Videos coming soon window
+  function wantsVideos(n, raw) {
+    var w = n.replace(/[^a-z\s]/g, ' ').split(/\s+/).filter(Boolean);
+    if (/\bvideo ?games?\b|\bvideogam\w*|\bvideogioc\w*|\bvideojueg\w*/.test(n)) return false;
+    var vid = w.some(function (x) {
+      return x === 'vid' || x === 'vids' || x === 'yt' || (x.length >= 4 && x.length <= 7 && x.charAt(0) === 'v' && (osa(x, 'video') <= 1 || osa(x, 'videos') <= 1)) ||
+        (x.length >= 6 && x.charAt(0) === 'y' && osa(x, 'youtube') <= 2) || x === 'youtuber' || x === 'tube';
+    });
+    var watch = w.some(function (x, i) {
+      var isW = x === 'watch' || x === 'watching' || (x.length === 5 && x.charAt(0) === 'w' && osa(x, 'watch') <= 1 && !/^(wash|water|waste|wait|waltz|match|watts?)$/.test(x)) || x === 'whatch';
+      return isW && (w.length <= 3 || /^(you|your|u|something|stuff|clips?|vids?|videos?|the|rabbit|furious|tiktoks?|now|more|online)$/.test(w[i + 1] || ''));
+    });
+    // a statement that merely mentions a video ("I saw a video about…") stays in the normal chat
+    if (vid && !watch && w.length > 3 && !/\b(you|your|u|rabbit|furious|channel|any|have|got|where|show|more|new|upcoming|coming|pls|please|tienes|tiene|hay|tenes|hai|avete|ci sono)\b/.test(n)) return false;
+    if (!vid && !watch) return false;
+    // a real general question about video tech ("how does video compression work?") still goes to Wikipedia
+    if (!watch && isQuestion(n, raw) && !/\b(you|your|u|rabbit|furious|channel|youtube|have|got|any|make|post|where)\b/.test(n)) return false;
+    return true;
   }
   function leaveAsk() { if (panel.classList.contains('ask')) { panel.classList.remove('ask'); scroll(); } }
 
@@ -1906,8 +1977,9 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
     var nspan = document.createElement('span'); nspan.textContent = u.notice;
     var pbtn = document.createElement('button'); pbtn.type = 'button'; pbtn.className = 'policyBtn'; pbtn.textContent = u.policy;
     pbtn.onclick = function () { $('policyWin').classList.add('open'); };
-    $('notice').appendChild(nspan); $('notice').appendChild(document.createTextNode(' ')); $('notice').appendChild(pbtn);
-    $('policyTitle').textContent = u.policyTitle; $('policyBody').textContent = u.policyBody;
+    $('notice').appendChild(nspan); $('notice').appendChild(document.createTextNode(' \u00b7 ')); $('notice').appendChild(pbtn);
+    $('policyTitle').textContent = u.policyTitle; $('policyBody').textContent = u.policyBody; $('policyClose').textContent = u.ok;
+    $('vidTitle').textContent = u.vidTitle; $('vidBody').textContent = u.vidBody; $('vidClose').textContent = u.ok;
     paintPrompts();
     $('heroHint').textContent = u.hint;
     bubble.setAttribute('aria-label', u.open); $('close').setAttribute('aria-label', u.close); panel.setAttribute('aria-label', u.title);
@@ -2187,7 +2259,7 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
   }
   function calcReply(res) {
     var my = runId; clearOpts(); busy = true;
-    if (!res.unknown) state.calcs++;
+    if (!res.unknown) { state.calcs++; like('calc'); }
     var nudge = !res.unknown && (state.calcs === CALC_TEXT.nudgeFirst || (state.calcs > CALC_TEXT.nudgeFirst && (state.calcs - CALC_TEXT.nudgeFirst) % CALC_TEXT.nudgeEvery === 0));
     typingFor(Math.round(SETTINGS.typingDelay * 1.1), function () {
       if (my !== runId) return;
@@ -2252,6 +2324,7 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
     if (state.drugAsks && anyRx(SAFE.push, V) && !RX.expensive.test(f) && !productNamed(f) && !findInterests(f).some(function (k) { return k === 'plants'; })) return pushBack();
     var askedApp = appFromText(f);
     if (askedApp && f.split(/\s+/).length <= 5 && t.indexOf('?') < 0 && !/^(what|why|how|who|quien|quién|como|cómo|por que|perch[eé])\b/.test(f)) { openApp(askedApp); return; }
+    if (!drugTalk && !anyRx(SAFE.drugNamed, V) && wantsVideos(n, t)) { clearOpts(); say([UI_TEXT[lang].vidLine]); openVideos(); return; }
     if (RX.restart.test(f)) return restartAll();
     if (!drugTalk) memWrite();
     // ---- memory (this device only): "forget me", "my name is ...", "do you remember me?" ----
@@ -2312,7 +2385,7 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
     run('fallback');
   }
 
-  function restartAll() { runId++; busy = false; cancelNudge(); stopSpeaking(); log.innerHTML = ''; resetState(); lastShort = false; enterAsk(); run(startStep(), true); }
+  function restartAll() { runId++; busy = false; cancelNudge(); stopSpeaking(); log.innerHTML = ''; resetState(); lastShort = false; paintPrompts(); enterAsk(); run(startStep(), true); }
   // Optional deep link: /rabbit/?q=1000*500 asks that question for the visitor (up to 3 q= values).
   // Nothing from a deep-linked visit is remembered on the device.
   var AUTO_Q = [];
@@ -2326,6 +2399,9 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
   function open() { panel.classList.add('open'); bubble.setAttribute('aria-expanded', 'true'); tip.style.display = 'none'; if (!started) { started = true; run(startStep(), true); if (AUTO_Q.length) setTimeout(autoAsk, 350); } if (!mount) setTimeout(function () { inp.focus({ preventScroll: true }); }, 50); }
   function close() { if (mount) return; stopSpeaking(); panel.classList.remove('open'); bubble.setAttribute('aria-expanded', 'false'); bubble.focus(); }
 
+  var DEMO = (/[?&]demo=([a-z-]+)/.exec(location.search) || [])[1] || '';
+  if (!/^(back|prompts|policy|videos|app-weather|app-game|app-lab|chat)$/.test(DEMO)) DEMO = '';
+  if (DEMO) { memBlocked = true; returning = true; memory = { seen: 1, topic: 'medicine', likes: { medicine: 3, app_lab: 2 } }; }
   applyUI();
   bubble.addEventListener('click', function () { panel.classList.contains('open') ? close() : open(); });
   $('close').addEventListener('click', close);
@@ -2335,6 +2411,11 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
   form.addEventListener('submit', function (e) { e.preventDefault(); if (busy) return; var v = inp.value; inp.value = ''; handleText(v); });
   setTimeout(function () { tip.style.display = 'none'; }, 9000);
   if (mount) open();
+  if (DEMO) setTimeout(function () {
+    if (DEMO === 'policy') { var pb = root.querySelector('.policyBtn'); if (pb) pb.click(); }
+    else if (DEMO === 'videos') handleText('any videos?');
+    else if (DEMO.indexOf('app-') === 0) { var ab = root.querySelector('[data-app="' + DEMO.slice(4) + '"]'); if (ab) ab.click(); }
+  }, 600);
   window.FARabbit = { open: open, close: close, setLanguage: setLanguage, store: function () { return store; }, language: function () { return lang; },
     fixTypos: function (s) { return fixTypos(norm(s)); }, calc: function (s) { return FA_CALC.answer(s); } };
 })();
