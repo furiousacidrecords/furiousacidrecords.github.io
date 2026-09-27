@@ -25,9 +25,11 @@ h1{margin:0 0 10px;font-size:34px;line-height:1.1;color:var(--purple-dark)}
 .intro a{color:var(--purple-dark);font-weight:800;text-decoration:none}
 #chat{height:min(640px,calc(100vh - 150px));min-height:480px;border-radius:20px;box-shadow:0 18px 50px rgba(75,0,173,.28)}
 @media (max-width:860px){main{grid-template-columns:1fr;padding:16px 12px 28px;gap:16px}h1{font-size:28px}.intro{padding:12px 16px}.intro .d{display:none}.intro .m{display:block}h1{font-size:24px;margin-bottom:4px}#chat{height:calc(100vh - 90px);height:calc(100dvh - 90px);min-height:440px}}
+html.fa-embed,html.fa-embed body{background:#0d0714;height:100%}html.fa-embed header,html.fa-embed .intro{display:none}html.fa-embed main{display:block;max-width:none;margin:0;padding:0;height:100%}html.fa-embed #chat{height:100%;min-height:0;border-radius:0;box-shadow:none}
 </style>
 </head>
 <body>
+<script>if(/[?&]embed=1(?:&|$)/.test(location.search))document.documentElement.classList.add("fa-embed");</script>
 <header><a class="home" href="/"><span class="chip"><img id="hdrLogo" alt="Furious Acid"></span><span>Furious <b>Acid</b></span></a></header>
 <main>
 <section class="intro">
@@ -1373,19 +1375,19 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
     en: { title: 'The Purple Rabbit', sub: 'Ask me anything · finds the right book', ph: 'Ask the Rabbit anything…', send: 'Send', tip: 'Psst… ask the Rabbit',
           hint: 'Ask me anything: why the sky is blue, who discovered penicillin… or let me help you find the right book.',
           wiki: 'Read more on Wikipedia', voiceOn: 'Read replies aloud', voiceOff: 'Stop reading replies aloud',
-          notice: 'An automated helper, not a person. It remembers only your name and last topic, on this device (say “forget me” to clear). Short answers come from Wikipedia.', open: 'Open Ask the Purple Rabbit chat', close: 'Close chat', langs: 'Language',
+          notice: 'May make mistakes.', policy: 'Policy', policyTitle: 'Policy', policyBody: 'An automated helper, not a person. It remembers only your name and last topic, on this device (say “forget me” to clear). Short answers come from Wikipedia.', open: 'Open Ask the Purple Rabbit chat', close: 'Close chat', langs: 'Language',
           rec: 'The Rabbit recommends', gentle: 'A lighter option', taste: 'A free sample', amazon: 'See it on Amazon.', sampleLink: 'Read a free sample',
           restart: 'Start over', back: 'Back to the lab', told: 'You told me: %s.' },
     es: { title: 'El Conejo Púrpura', sub: 'Pregúntame lo que quieras · encuentra tu libro', ph: 'Pregúntale lo que quieras al Conejo…', send: 'Enviar', tip: 'Psst… pregúntale al Conejo',
           hint: 'Pregúntame lo que quieras: por qué el cielo es azul, quién descubrió la penicilina… o te ayudo a encontrar el libro adecuado.',
           wiki: 'Leer más en Wikipedia', voiceOn: 'Leer las respuestas en voz alta', voiceOff: 'Dejar de leer en voz alta',
-          notice: 'Un asistente automático, no una persona. Solo recuerda tu nombre y tu último tema, en este dispositivo (di «olvídame» para borrarlo). Las respuestas breves vienen de Wikipedia.', open: 'Abrir el chat del Conejo Púrpura', close: 'Cerrar el chat', langs: 'Idioma',
+          notice: 'Puede equivocarse.', policy: 'Política', policyTitle: 'Política', policyBody: 'Un asistente automático, no una persona. Solo recuerda tu nombre y tu último tema, en este dispositivo (di «olvídame» para borrarlo). Las respuestas breves vienen de Wikipedia.', open: 'Abrir el chat del Conejo Púrpura', close: 'Cerrar el chat', langs: 'Idioma',
           rec: 'El Conejo recomienda', gentle: 'Una opción más ligera', taste: 'Una muestra gratis', amazon: 'Ver en Amazon.', sampleLink: 'Leer una muestra gratis (en inglés)',
           restart: 'Empezar de nuevo', back: 'Volver al laboratorio', told: 'Me contaste: %s.' },
     it: { title: 'Il Coniglio Viola', sub: 'Chiedimi quello che vuoi · trova il tuo libro', ph: 'Chiedi quello che vuoi al Coniglio…', send: 'Invia', tip: 'Psst… chiedi al Coniglio',
           hint: 'Chiedimi quello che vuoi: perché il cielo è blu, chi ha scoperto la penicillina… oppure ti aiuto a trovare il libro giusto.',
           wiki: 'Leggi di più su Wikipedia', voiceOn: 'Leggi le risposte ad alta voce', voiceOff: 'Smetti di leggere ad alta voce',
-          notice: 'Un assistente automatico, non una persona. Ricorda solo il tuo nome e l’ultimo argomento, su questo dispositivo (scrivi «dimenticami» per cancellarli). Le risposte brevi vengono da Wikipedia.', open: 'Apri la chat del Coniglio Viola', close: 'Chiudi la chat', langs: 'Lingua',
+          notice: 'Può sbagliare.', policy: 'Informativa', policyTitle: 'Informativa', policyBody: 'Un assistente automatico, non una persona. Ricorda solo il tuo nome e l’ultimo argomento, su questo dispositivo (scrivi «dimenticami» per cancellarli). Le risposte brevi vengono da Wikipedia.', open: 'Apri la chat del Coniglio Viola', close: 'Chiudi la chat', langs: 'Lingua',
           rec: 'Il Coniglio consiglia', gentle: 'Un’opzione più leggera', taste: 'Un estratto gratuito', amazon: 'Vedi su Amazon.', sampleLink: 'Leggi un estratto gratuito (in inglese)',
           restart: 'Ricomincia', back: 'Torna al laboratorio', told: 'Mi hai detto: %s.' }
   };
@@ -1771,7 +1773,7 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
     '.card a{display:block;margin:4px 12px 12px;text-align:center;text-decoration:none;font-weight:700;font-size:14px;color:#fff;padding:10px;border-radius:12px;background:linear-gradient(135deg,#ff2bd6,#6d28ff)}.card a.soft{background:transparent;border:1px solid #ff5cf0;color:#ffd6fa}.card a:hover{filter:brightness(1.1)}' +
     '.form{display:flex;gap:8px;padding:10px;border-top:1px solid #33184f;background:#110919}.form input{flex:1;min-width:0;background:#1d0f2e;border:1px solid #4a2386;color:#fff;border-radius:12px;padding:10px 12px;font-size:16px}.form input::placeholder{color:#a58ccc}.form input:focus{outline:none;border-color:#ff5cf0}' +
     '.send{background:linear-gradient(135deg,#ff2bd6,#6d28ff);color:#fff;border:0;border-radius:12px;width:46px;padding:0;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;flex:none}.send svg{width:20px;height:20px}' +
-    '.notice{font-size:10.5px;color:#a88fcc;text-align:center;padding:6px 10px 8px;background:#110919}.panel.ask .notice{background:transparent}' +
+    '.notice{font-size:10.5px;color:#a88fcc;text-align:center;padding:6px 10px 8px;background:#110919}.panel.ask .notice{background:transparent}.notice .policyBtn{background:none;border:0;padding:0;margin-left:4px;color:#ffb3f7;font:inherit;font-weight:700;text-decoration:underline;cursor:pointer}.heroPrompts{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:14px;max-width:340px}.heroPrompts button{appearance:none;border:0;cursor:pointer;color:#fff;font-weight:800;font-size:13px;line-height:1.1;padding:10px 12px;border-radius:999px;box-shadow:0 0 0 2px #fdf200}.heroPrompts button.weather{background:linear-gradient(135deg,#1a6fbf,#0b3a66)}.heroPrompts button.game{background:linear-gradient(100deg,#3a1028,#12060e)}.heroPrompts button.lab{background:linear-gradient(135deg,#e0262b,#9e0f14)}.policyWin{position:absolute;inset:0;z-index:8;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(8,4,16,.78)}.policyWin.open{display:flex}.policyCard{width:min(420px,100%);background:#1a0d2b;color:#efe3ff;border:1px solid #7b4bd1;border-radius:16px;padding:16px 16px 14px;box-shadow:0 16px 40px rgba(0,0,0,.45)}.policyCard b{display:block;font-size:16px;margin-bottom:8px}.policyCard p{margin:0 0 14px;font-size:14px;line-height:1.5;color:#e7d6ff}.policyCard button{background:#ff5cf0;color:#1a0d2b;border:0;border-radius:999px;font-weight:800;padding:8px 14px;cursor:pointer}.appwin{position:absolute;inset:0;z-index:9;display:none;flex-direction:column;background:#0d0714}.appwin.open{display:flex}.appbar{display:flex;align-items:center;gap:8px;padding:8px 10px;background:#2a0a57;color:#fff}.appbar b{flex:1;font-size:14px}.appbar button{background:transparent;border:0;color:#fff;font-size:22px;cursor:pointer;padding:0 6px}.appwin iframe{flex:1;width:100%;border:0;background:#fff}' +
     '@media (max-width:480px){.panel{right:8px;left:8px;width:auto;max-width:none;bottom:84px;height:calc(100vh - 100px);height:calc(100dvh - 100px)}.bubble{right:14px;bottom:14px}.tip{display:none}.t span{display:none}.logo{width:60px;height:38px}.hero h2{font-size:23px}.panel.ask .main{padding:0 14px 6%}}' +
     '.msg.calc{white-space:normal}.msg.calc span{display:block}.msg.calc .src{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#ff8cf3;margin-bottom:3px}.msg.calc .think{color:#d9c3ff;font-style:italic;margin-bottom:5px}' +
     '.msg.calc .step{padding-left:1.25em;text-indent:-1.25em;margin:2px 0;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}.msg.calc .ans{margin-top:7px;font-weight:800;color:#fff;font-size:15px;background:rgba(253,242,0,.12);border-left:3px solid #fdf200;border-radius:8px;padding:6px 9px}.msg.calc .note{margin-top:5px;font-size:12.5px;color:#cdb6f0}.msg.calc .fol{margin-top:8px}' +
@@ -1788,11 +1790,11 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
       '<div class="langs" id="langs" role="group"><button data-l="en">EN</button><button data-l="es">ES</button><button data-l="it">IT</button></div>' +
       '<button class="x" id="close">×</button></div>' +
       '<div class="main" id="main">' +
-        '<div class="hero" id="hero"><div class="heroArt" id="heroArt"></div><h2 id="heroTitle"></h2><p id="heroHint"></p></div>' +
+        '<div class="hero" id="hero"><div class="heroArt" id="heroArt"></div><h2 id="heroTitle"></h2><p id="heroHint"></p><div class="heroPrompts" id="heroPrompts"></div></div>' +
         '<div class="log" id="log" aria-live="polite"></div>' +
         '<form class="form" id="form" autocomplete="off"><input id="inp" type="text" maxlength="300" enterkeyhint="send"><button class="send" id="send" type="submit"></button></form>' +
       '</div>' +
-      '<div class="notice" id="notice"></div>' +
+      '<div class="notice" id="notice"></div>' +'<div class="policyWin" id="policyWin"><div class="policyCard"><b id="policyTitle"></b><p id="policyBody"></p><button type="button" id="policyClose">OK</button></div></div>' +'<div class="appwin" id="appwin"><div class="appbar"><b id="appname"></b><button type="button" id="appclose" aria-label="Close">×</button></div><iframe id="appframe" title="Furious Acid"></iframe></div>' +
     '</section>';
   var $ = function (id) { return root.getElementById ? root.getElementById(id) : document.getElementById(id); };
   var bubble = $('bubble'), panel = $('panel'), log = $('log'), form = $('form'), inp = $('inp'), tip = $('tip'), spk = $('spk');
@@ -1825,6 +1827,34 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
 
   /* ---------- the ask-anything first screen ---------- */
   function enterAsk() { panel.classList.add('ask'); }
+  var APPS = [
+    { key: 'weather', href: '/weather/', cls: 'weather', en: 'Furious Acid Weather', es: 'Clima Furious Acid', it: 'Meteo Furious Acid' },
+    { key: 'game', href: '/roll/', cls: 'game', en: 'Furious Acid Game', es: 'Juego Furious Acid', it: 'Gioco Furious Acid' },
+    { key: 'lab', href: '/lab/', cls: 'lab', en: 'Furious Acid Lab', es: 'Laboratorio Furious Acid', it: 'Laboratorio Furious Acid' }
+  ];
+  function paintPrompts() {
+    var box = $('heroPrompts'); if (!box) return; box.innerHTML = '';
+    APPS.forEach(function (app) {
+      var b = document.createElement('button'); b.type = 'button'; b.className = app.cls; b.textContent = app[lang] || app.en;
+      b.onclick = function () { openApp(app); };
+      box.appendChild(b);
+    });
+  }
+  function openApp(app) {
+    $('appname').textContent = app[lang] || app.en;
+    var frame = $('appframe');
+    if (frame.getAttribute('src') !== app.href) frame.src = app.href;
+    $('appwin').classList.add('open');
+  }
+  function closeApp() { $('appwin').classList.remove('open'); var frame = $('appframe'); frame.src = 'about:blank'; }
+  $('policyClose').onclick = function () { $('policyWin').classList.remove('open'); };
+  $('appclose').onclick = closeApp;
+  function appFromText(f) {
+    if (/\b(weather|clima|meteo)\b/.test(f)) return APPS[0];
+    if (/\b(lab|laboratorio|simulator)\b/.test(f)) return APPS[2];
+    if (/\b(game|juego|gioco)\b/.test(f)) return APPS[1];
+    return null;
+  }
   function leaveAsk() { if (panel.classList.contains('ask')) { panel.classList.remove('ask'); scroll(); } }
 
   /* ---------- read-aloud voice (browser speechSynthesis; off by default, nothing is stored) ---------- */
@@ -1871,7 +1901,14 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
   function applyUI() {
     var u = UI_TEXT[lang];
     $('ttl').textContent = u.title; $('sub').textContent = u.sub; inp.placeholder = u.ph; inp.setAttribute('aria-label', u.ph);
-    $('send').setAttribute('aria-label', u.send); $('send').title = u.send; $('notice').textContent = u.notice; tip.textContent = u.tip;
+    $('send').setAttribute('aria-label', u.send); $('send').title = u.send; tip.textContent = u.tip;
+    $('notice').textContent = '';
+    var nspan = document.createElement('span'); nspan.textContent = u.notice;
+    var pbtn = document.createElement('button'); pbtn.type = 'button'; pbtn.className = 'policyBtn'; pbtn.textContent = u.policy;
+    pbtn.onclick = function () { $('policyWin').classList.add('open'); };
+    $('notice').appendChild(nspan); $('notice').appendChild(document.createTextNode(' ')); $('notice').appendChild(pbtn);
+    $('policyTitle').textContent = u.policyTitle; $('policyBody').textContent = u.policyBody;
+    paintPrompts();
     $('heroHint').textContent = u.hint;
     bubble.setAttribute('aria-label', u.open); $('close').setAttribute('aria-label', u.close); panel.setAttribute('aria-label', u.title);
     $('langs').setAttribute('aria-label', u.langs); setVoice(voiceOn);
@@ -2213,6 +2250,8 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
     if ((drugTalk || anyRx(SAFE.drugNamed, V)) && (FA_CALC.DOSE.test(n) || CALC_DRUG_MATH.test(n))) return drugCurious(false);
     // still pushing for instructions after the warm redirect
     if (state.drugAsks && anyRx(SAFE.push, V) && !RX.expensive.test(f) && !productNamed(f) && !findInterests(f).some(function (k) { return k === 'plants'; })) return pushBack();
+    var askedApp = appFromText(f);
+    if (askedApp && f.split(/\s+/).length <= 5 && t.indexOf('?') < 0 && !/^(what|why|how|who|quien|quién|como|cómo|por que|perch[eé])\b/.test(f)) { openApp(askedApp); return; }
     if (RX.restart.test(f)) return restartAll();
     if (!drugTalk) memWrite();
     // ---- memory (this device only): "forget me", "my name is ...", "do you remember me?" ----
