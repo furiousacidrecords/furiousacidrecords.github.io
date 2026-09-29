@@ -2428,7 +2428,7 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
   }
   function setLanguage(l) {
     if (!UI_TEXT[l] || l === lang || busy) return;
-    cancelNudge(); stopSpeaking();
+    stopSpeaking();
     var choices = shownChoices;
     lang = l; applyUI();
     // Translate controls without deleting messages, drafts, interests or book-gate choices.

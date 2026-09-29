@@ -149,6 +149,21 @@ test('language changes keep the existing book age/legal gate in place', async t 
   assert.ok(c.$('[data-book="hidden"]'));
 });
 
+test('changing language preserves the existing one-time nudge and draft', async t => {
+  const c = chat(t, { settings: { nudgeAfterMs: 25 } });
+  c.input('A draft, not sent yet');
+  c.$('[data-l="es"]').click();
+  await wait(60);
+  await c.idle();
+  assert.match(c.$('#log').textContent, /Sin prisa/);
+  assert.equal(c.$('#inp').value, 'A draft, not sent yet');
+  const messages = c.root.querySelectorAll('.msg').length;
+  c.$('[data-l="it"]').click();
+  await wait(60);
+  await c.idle();
+  assert.equal(c.root.querySelectorAll('.msg').length, messages);
+});
+
 for (const [name, failure] of Object.entries({
   network: () => Promise.reject(new Error('Offline')),
   synchronous: () => { throw new Error('Fetch unavailable'); },
