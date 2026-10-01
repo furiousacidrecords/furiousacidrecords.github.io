@@ -2,140 +2,39 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="Explore Furious Acid. Rotate the glass cube to discover books, merch, the Lab, games, apps, updates, and the Purple Rabbit chatbot.">
   <title>Furious Acid</title>
-  <style>html,body{margin:0;background:#f3f2f5;font-family:system-ui,sans-serif}p{padding:24px;text-align:center}</style>
+  <link rel="icon" href="/favicon.png">
+  <link rel="stylesheet" href="/cube.css">
 </head>
 <body>
-  <p>Loading Furious Acid…</p>
-  <script>
-    fetch('home-original.html?v=20260916-nogames', { cache: 'no-store' })
-      .then(function (response) {
-        if (!response.ok) throw new Error('Homepage unavailable');
-        return response.text();
-      })
-      .then(function (html) {
-        html = html.replace(/<iframe\b[^>]*class=["'][^"']*\bpurple-progress-frame\b[^"']*["'][\s\S]*?<\/iframe>/gi, '');
-        html = html.replace(/<a\b[^>]*class=["'][^"']*\blab-simulator-cta\b[^"']*["'][^>]*>[\s\S]*?<\/a>/gi, '');
-        html = html.replace(/<a\b[^>]*href=["']\/purple(?:\/manual)?\/?["'][^>]*>[\s\S]*?<\/a>/gi, '');
-        html = html.replace(/<p class=["']update-copy["'][^>]*>[\s\S]*?<\/p>/i, '<p class="update-copy"><a href="/me" style="color:#e10600;font-weight:800;text-decoration:none">what happened to furious acid. Read here.</a></p>');
-        html = html.replace('</time>\n    </aside>', '</time>\n    </aside>\n    <section id="fa-home-chat" style="margin-top:8px;height:min(740px,82vh);min-height:560px;border-radius:16px;overflow:hidden;border:1px solid #dedbe3;background:#0d0714"><iframe src="/rabbit/?embed=1" title="Ask the Purple Rabbit" style="width:100%;height:100%;border:0;display:block"></iframe></section>');
-        html = html.replace(/<time class=["']update-date["'][^>]*>[\s\S]*?<\/time>/i, '<time class="update-date" datetime="2026-09-16">September 16, 2026</time>');
-        html = html.replace(/<a\b[^>]*href=["']\/game(?:2(?:\.2)?)?\/?["'][^>]*>[\s\S]*?<\/a>/gi, '');
-        html = html.replace('Custom Studio</a>\\n', 'Custom Studio</a>');
-
-        html = html.replace(/href=["']#forum["']/g, 'href="https://acid-chat-hub.lovable.app/forum" target="_blank" rel="noopener noreferrer"');
-        html = html.replace(/https:\/\/furious-acid-forum\.lovable\.app(?:\/)?/g, 'https://acid-chat-hub.lovable.app/forum');
-
-        var mobileCatalogStyle = `<style id="mobile-catalog-grid-style">
-          @media (max-width: 900px) {
-            html, body {
-              max-width: 100% !important;
-              overflow-x: hidden !important;
-            }
-            .shop-panel,
-            .shop-row {
-              overflow: visible !important;
-            }
-            .shop-panel .book-grid,
-            .shop-panel .merch-grid {
-              display: grid !important;
-              grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-              grid-auto-flow: row !important;
-              grid-auto-columns: minmax(0, 1fr) !important;
-              gap: 8px !important;
-              width: 100% !important;
-              max-width: 100% !important;
-              overflow: visible !important;
-              overflow-x: visible !important;
-              padding: 0 !important;
-              scroll-snap-type: none !important;
-              -webkit-overflow-scrolling: auto !important;
-            }
-            .shop-panel .book-grid > *,
-            .shop-panel .merch-grid > *,
-            .shop-panel .merch-card,
-            .shop-panel .product-card {
-              width: 100% !important;
-              min-width: 0 !important;
-              max-width: 100% !important;
-              flex: none !important;
-              margin: 0 !important;
-            }
-            .shop-panel .product-image {
-              width: 100% !important;
-              height: 118px !important;
-              object-fit: contain !important;
-            }
-            .shop-panel .merch-card .product-image {
-              object-fit: cover !important;
-            }
-            .shop-panel .product-body { padding: 7px !important; }
-            .shop-panel .product-body h3 {
-              min-height: 30px !important;
-              font-size: 11.5px !important;
-            }
-            .shop-panel .product-detail,
-            .shop-panel .text-link { font-size: 10px !important; }
-            .shop-panel .product-links .button {
-              min-height: 34px !important;
-              padding: 5px !important;
-              font-size: 10.5px !important;
-            }
-          }
-          @media (max-width: 360px) {
-            .shop-panel .book-grid,
-            .shop-panel .merch-grid { gap: 6px !important; }
-            .shop-panel .product-image { height: 105px !important; }
-          }
-        </style>`;
-        if (html.indexOf('mobile-catalog-grid-style') === -1 && html.indexOf('</head>') !== -1) {
-          html = html.replace('</head>', mobileCatalogStyle + '\n</head>');
-        }
-
-        var marker = '        <div class="book-grid">\n';
-        var newPaperback = `          <article class="product-card book-card">
-            <img class="product-image" src="https://images-na.ssl-images-amazon.com/images/P/B0HCMMZF89.01.L.jpg" alt="Furious Acid paperback book cover" loading="lazy">
-            <div class="product-body">
-              <h3>Furious Acid Paperback</h3>
-              <p class="product-detail">Paperback edition</p>
-              <div class="product-links">
-                <a class="button" href="https://www.amazon.com/dp/B0HCMMZF89" target="_blank" rel="noopener noreferrer">View on Amazon ↗</a>
-              </div>
-            </div>
-          </article>
-
-`;
-        var italianCard = `          <article class="product-card book-card">
-            <img class="product-image" src="https://images-na.ssl-images-amazon.com/images/P/B0HC8H1LR4.01.L.jpg" alt="Sintesi di farmaci Italian edition book cover" loading="lazy">
-            <div class="product-body">
-              <h3>Sintesi di farmaci</h3>
-              <p class="product-detail">Edizione italiana</p>
-              <div class="product-links">
-                <a class="button" href="https://www.amazon.it/dp/B0HC8H1LR4" target="_blank" rel="noopener noreferrer">Acquista su Amazon.it ↗</a>
-              </div>
-            </div>
-          </article>
-
-`;
-        var extraCards = '';
-        if (html.indexOf('B0HCMMZF89') === -1) extraCards += newPaperback;
-        if (html.indexOf('B0HC8H1LR4') === -1) extraCards += italianCard;
-        if (extraCards && html.indexOf(marker) !== -1) {
-          html = html.replace(marker, marker + extraCards);
-        }
-
-
-        var videoNote = '<style>#fa-video-soon{position:fixed;left:14px;bottom:calc(18px + env(safe-area-inset-bottom));z-index:80;margin:0;padding:7px 12px;border-radius:999px;background:rgba(255,255,255,.92);border:1px solid #dedbe3;color:#17131d;font:700 12px/1.2 system-ui,sans-serif;letter-spacing:.02em;box-shadow:0 6px 16px rgba(23,19,29,.12)}@media (max-width:480px){#fa-video-soon{left:10px;font-size:11px;padding:6px 10px}}</style><p id="fa-video-soon">Video coming soon</p>';
-        if (html.indexOf('fa-video-soon') === -1) html = html.replace('</body>', videoNote + '\n</body>');
-
-        document.open();
-        document.write(html);
-        document.close();
-      })
-      .catch(function () {
-        document.body.innerHTML = '<p>Furious Acid is temporarily unavailable. Please refresh.</p>';
-      });
-  </script>
+  <header class="header">
+    <a class="wordmark" href="/" aria-label="Furious Acid home">FURIOUS<span>ACID</span></a>
+    <a class="updates-link" href="/me">Updates <span aria-hidden="true">/ 01</span></a>
+  </header>
+  <main>
+    <div class="intro"><p class="eyebrow">THE FURIOUS ACID UNIVERSE</p><h1>Pick a plane.</h1><p class="hint" id="cube-help">Drag to rotate. Tap a face to explore.</p></div>
+    <div class="stage" id="stage" role="group" aria-label="Interactive six-sided navigation cube" aria-describedby="cube-help" tabindex="0">
+      <div class="cube" id="cube">
+        <div class="face front" data-plane="updates"><button type="button" data-select="updates"><span class="face-number">01 / FURIOUS ACID</span><span class="face-title">Updates</span><span class="face-note">What happened. What’s next.</span></button></div>
+        <div class="face right" data-plane="books"><button type="button" data-select="books"><span class="face-number">02 / FURIOUS ACID</span><span class="face-title">Books</span><span class="face-note">Open a hidden passage.</span></button></div>
+        <div class="face back" data-plane="merch"><button type="button" data-select="merch"><span class="face-number">03 / FURIOUS ACID</span><span class="face-title">Merch</span><span class="face-note">Take a piece with you.</span></button></div>
+        <div class="face left" data-plane="lab"><button type="button" data-select="lab"><span class="face-number">04 / FURIOUS ACID</span><span class="face-title">Lab<span class="alpha">ALPHA</span></span><span class="face-note">Step up to the bench.</span></button></div>
+        <div class="face top" data-plane="games"><button type="button" data-select="games"><span class="face-number">05 / FURIOUS ACID</span><span class="face-title">Games</span><span class="face-note">Play in our world.</span></button></div>
+        <div class="face bottom" data-plane="apps"><button type="button" data-select="apps"><span class="face-number">06 / FURIOUS ACID</span><span class="face-title">Apps<span class="chat-label">+ Chatbot</span></span><span class="face-note">Ask. Calculate. Create.</span></button></div>
+      </div>
+    </div>
+    <div class="cube-controls"><span class="motion-label" id="motion-label">SLOW ROTATION</span><button type="button" id="motion" aria-pressed="false">Pause rotation</button><button type="button" id="reset">Reset view</button></div>
+    <nav class="planes" aria-label="Choose a cube face">
+      <button type="button" data-select="updates">Updates</button><button type="button" data-select="books">Books</button><button type="button" data-select="merch">Merch</button><button type="button" data-select="lab">Lab Alpha</button><button type="button" data-select="games">Games</button><button type="button" data-select="apps">Apps</button><button type="button" data-select="apps">Chatbot</button>
+    </nav>
+    <section class="destination" id="destination" aria-labelledby="destination-title" hidden>
+      <div><p class="eyebrow" id="destination-number"></p><h2 id="destination-title"></h2><p id="destination-description"></p></div><div class="destination-links" id="destination-links"></div>
+    </section>
+    <noscript><nav class="fallback" aria-label="Furious Acid sections"><a href="/me">Updates</a><a href="/catalog.html#books">Books</a><a href="/merch/">Merch</a><a href="/lab/">Lab Alpha</a><a href="/roll/">Games</a><a href="/calc/">Apps</a><a href="/rabbit/">Chatbot</a></nav></noscript>
+  </main>
+  <footer><span>© 2026 FURIOUS ACID</span><a href="/catalog.html">Browse the catalog</a><a href="https://acid-chat-hub.lovable.app/forum">Forum</a></footer>
+  <script src="/cube.js" defer></script>
 </body>
 </html>
