@@ -8,8 +8,8 @@
   const sections = {
     updates: {number:'01', title:'Furious Acid Updates', description:'What happened to Furious Acid, and what comes next.', x:0,y:0, links:[['Read the updates','/me']]},
     books: {number:'02', title:'Furious Acid Books', description:'Explore the books and read sample pages.', x:0,y:-90, links:[['Browse books','/catalog.html#books'],['Read a sample','/excerpt-medicine.html']]},
-    merch: {number:'03', title:'Furious Acid Merch', description:'The Furious Acid collection, direct from the shop.', x:0,y:-180, links:[['Open the merch shop','/merch/'],['Browse the collection','/catalog.html#merch']]},
-    lab: {number:'04', title:'Furious Acid Lab Alpha', description:'A chemistry bench with live equations and the Purple Rabbit.', x:0,y:90, links:[['Enter Lab Alpha','/lab/']]},
+    merch: {number:'03', title:'Furious Acid Merch', description:'Shop Furious Acid on TikTok.', x:0,y:-180, links:[['Open TikTok Shop','https://vt.tiktok.com/ZPLedk8hg/']]},
+    lab: {number:'04', title:'Furious Acid Lab Alpha', description:'A chemistry bench with live equations and the Purple Rabbit.', x:0,y:90, links:[['Enter Lab Alpha','/lab/'],['OTC Chemical Reference','/list-chem.html']]},
     games: {number:'05', title:'Furious Acid Games', description:'A rabbit pilots a rabbit robot. Roll up the world, then take it to Mars.', x:-90,y:0, links:[['Play Furious Roll','/roll/']]},
     apps: {number:'06', title:'Furious Acid Apps + Chatbot', description:'Talk to the Purple Rabbit, work through a calculation, or create something.', x:90,y:0, links:[['Open the chatbot','/rabbit/'],['Calculator','/calc/'],['Custom Studio','/custom-studio.html'],['Weather for Roku','/weather/']]}
   };
