@@ -1,7 +1,11 @@
 (() => {
   'use strict';
+  if (/^#(?:merch|shop)$/.test(location.hash)) {
+    location.replace('https://vt.tiktok.com/ZPLedk8hg/');
+    return;
+  }
   // Preserve bookmarked sections of the previous home page.
-  if (/^#(?:books|merch|shop|forum|questions|fa-home-chat)$/.test(location.hash)) {
+  if (/^#(?:books|forum|questions|fa-home-chat)$/.test(location.hash)) {
     location.replace('/catalog.html' + location.hash);
     return;
   }
@@ -111,3 +115,4 @@
   }
   updateMotion();draw();requestAnimationFrame(frame);
 })();
+
