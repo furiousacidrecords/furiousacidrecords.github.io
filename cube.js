@@ -80,7 +80,8 @@
   stage.addEventListener('pointermove',event=>{
     if(!drag || event.pointerId!==drag.id)return;
     const now=performance.now(),dx=event.clientX-drag.x,dy=event.clientY-drag.y;
-    if(Math.hypot(event.clientX-drag.startX,event.clientY-drag.startY)>7){drag.moved=true;stage.setPointerCapture(event.pointerId);stage.classList.add('dragging');}
+    if(!drag.moved && Math.hypot(event.clientX-drag.startX,event.clientY-drag.startY)>7){drag.moved=true;stage.setPointerCapture(event.pointerId);stage.classList.add('dragging');}
+    if(drag.moved && event.cancelable)event.preventDefault();
     if(drag.moved){y+=dx*.36;x-=dy*.36;const dt=Math.max(8,now-drag.time);vy=dx*.36/dt;vx=-dy*.36/dt;draw();}
     drag.x=event.clientX;drag.y=event.clientY;drag.time=now;
   });
@@ -90,12 +91,35 @@
     if(drag.moved){suppressUntil=performance.now()+350;previewHoldUntil=0;}
     vx=vy=0;
     holdUntil=performance.now()+5000;drag=null;stage.classList.remove('dragging');
-    if(stage.hasPointerCapture(event.pointerId))stage.releasePointerCapture(event.pointerId);
+    if(stage.hasPointerCapture?.(event.pointerId))stage.releasePointerCapture(event.pointerId);
     setTimeout(()=>{suppressClick=false;},0);
   }
   stage.addEventListener('pointerup',release);stage.addEventListener('pointercancel',release);
-  stage.addEventListener('lostpointercapture',event=>{if(drag)release(event);});
-  stage.addEventListener('click',event=>{if(suppressClick){event.preventDefault();event.stopImmediatePropagation();}},true);
+  // Touch starts with implicit capture on a face. Losing that capture while
+  // transferring to the stage is expected and must not cancel the swipe.
+  stage.addEventListener('lostpointercapture',event=>{if(event.target===stage && drag)release(event);});
+  stage.addEventListener('dragstart',event=>event.preventDefault());
+  stage.addEventListener('click',event=>{if(suppressClick || performance.now()<suppressUntil){event.preventDefault();event.stopImmediatePropagation();}},true);
+  if(!('PointerEvent' in window)) {
+    function touchPoint(touch,type) {
+      return {pointerId:touch.identifier,isPrimary:true,button:0,clientX:touch.clientX,clientY:touch.clientY,type};
+    }
+    stage.addEventListener('touchstart',event=>{
+      if(event.touches.length!==1)return;
+      const touch=event.touches[0];suppressClick=false;snap=null;vx=vy=0;
+      drag={id:touch.identifier,x:touch.clientX,y:touch.clientY,startX:touch.clientX,startY:touch.clientY,time:performance.now(),moved:false};
+    },{passive:true});
+    stage.addEventListener('touchmove',event=>{
+      if(!drag)return;
+      const touch=[...event.touches].find(item=>item.identifier===drag.id);if(!touch)return;
+      const dx=touch.clientX-drag.x,dy=touch.clientY-drag.y;
+      if(Math.hypot(touch.clientX-drag.startX,touch.clientY-drag.startY)>7)drag.moved=true;
+      if(drag.moved){event.preventDefault();y+=dx*.36;x-=dy*.36;stage.classList.add('dragging');draw();}
+      drag.x=touch.clientX;drag.y=touch.clientY;drag.time=performance.now();
+    },{passive:false});
+    function endTouch(event){const touch=[...event.changedTouches].find(item=>drag && item.identifier===drag.id);if(touch)release(touchPoint(touch,event.type==='touchcancel'?'pointercancel':'pointerup'));}
+    window.addEventListener('touchend',endTouch);window.addEventListener('touchcancel',endTouch);
+  }
   // Release a tap that ends outside the stage as well.
   window.addEventListener('pointerup',release);window.addEventListener('pointercancel',release);
   stage.addEventListener('keydown',event=>{

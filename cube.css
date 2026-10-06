@@ -34,3 +34,11 @@ body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-ser
 @media(prefers-reduced-motion:reduce){.face-link.is-rippling::after{animation:none}}
 
 @media(max-width:1100px){.preview-panel{margin-bottom:20px}}
+
+/* All five real covers; keep phone swipes on the cube, not the link image. */
+.book-preview{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));aspect-ratio:1.8;gap:4px;padding:4px}
+.book-preview img{grid-column:span 2;width:100%;height:100%;min-height:0;object-fit:contain}
+.book-preview img:nth-child(4){grid-column:2/span 2}.book-preview img:nth-child(5){grid-column:4/span 2}
+.face[data-plane="books"] .face-note{display:none}
+.stage,.cube,.face-link{touch-action:none;-webkit-touch-callout:none}
+.face-link{-webkit-user-drag:none}.face-link span{pointer-events:none}
