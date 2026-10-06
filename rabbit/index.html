@@ -1380,7 +1380,8 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
           vidTitle: 'Videos coming soon!', vidBody: 'The Rabbit is getting camera-ready. 🐇 Check back soon.', vidLine: 'Videos coming soon! 🐇', ok: 'OK', closeApp: 'Close',
           qs: { sky: 'Why is the sky blue?', penicillin: 'Who discovered penicillin?', book: 'Find me a book', vaccines: 'How do vaccines work?', scream: 'Who painted The Scream?', fireworks: 'How do fireworks get their colors?', memory: 'How does memory work?', relax: 'Something relaxing', molar: 'Molar mass of NaCl', school: 'Help me study chemistry' }, open: 'Open Ask the Purple Rabbit chat', close: 'Close chat', langs: 'Language',
           rec: 'The Rabbit recommends', gentle: 'A lighter option', taste: 'A free sample', amazon: 'See it on Amazon.', sampleLink: 'Read a free sample',
-          restart: 'Start over', back: 'Back to the lab', told: 'You told me: %s.' },
+          restart: 'Start over', back: 'Back to the lab', told: 'You told me: %s.',
+          working: 'The Rabbit is replying…', lookingUp: 'Looking that up on Wikipedia…', retry: 'Try that lookup again', conversation: 'Conversation' },
     es: { title: 'El Conejo Púrpura', sub: 'Pregúntame lo que quieras · encuentra tu libro', ph: 'Pregúntale lo que quieras al Conejo…', send: 'Enviar', tip: 'Psst… pregúntale al Conejo',
           hint: 'Pregúntame lo que quieras: por qué el cielo es azul, quién descubrió la penicilina… o te ayudo a encontrar el libro adecuado.',
           wiki: 'Leer más en Wikipedia', voiceOn: 'Leer las respuestas en voz alta', voiceOff: 'Dejar de leer en voz alta',
@@ -1388,7 +1389,8 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
           vidTitle: '¡Videos muy pronto!', vidBody: 'El Conejo se está preparando para la cámara. 🐇 Vuelve pronto.', vidLine: '¡Videos muy pronto! 🐇', ok: 'OK', closeApp: 'Cerrar',
           qs: { sky: '¿Por qué el cielo es azul?', penicillin: '¿Quién descubrió la penicilina?', book: 'Búscame un libro', vaccines: '¿Cómo funcionan las vacunas?', scream: '¿Quién pintó El grito?', fireworks: '¿Cómo obtienen su color los fuegos artificiales?', memory: '¿Cómo funciona la memoria?', relax: 'Algo relajante', molar: 'Masa molar de NaCl', school: 'Ayúdame a estudiar química' }, open: 'Abrir el chat del Conejo Púrpura', close: 'Cerrar el chat', langs: 'Idioma',
           rec: 'El Conejo recomienda', gentle: 'Una opción más ligera', taste: 'Una muestra gratis', amazon: 'Ver en Amazon.', sampleLink: 'Leer una muestra gratis (en inglés)',
-          restart: 'Empezar de nuevo', back: 'Volver al laboratorio', told: 'Me contaste: %s.' },
+          restart: 'Empezar de nuevo', back: 'Volver al laboratorio', told: 'Me contaste: %s.',
+          working: 'El Conejo está respondiendo…', lookingUp: 'Buscando en Wikipedia…', retry: 'Volver a intentar la búsqueda', conversation: 'Conversación' },
     it: { title: 'Il Coniglio Viola', sub: 'Chiedimi quello che vuoi · trova il tuo libro', ph: 'Chiedi quello che vuoi al Coniglio…', send: 'Invia', tip: 'Psst… chiedi al Coniglio',
           hint: 'Chiedimi quello che vuoi: perché il cielo è blu, chi ha scoperto la penicillina… oppure ti aiuto a trovare il libro giusto.',
           wiki: 'Leggi di più su Wikipedia', voiceOn: 'Leggi le risposte ad alta voce', voiceOff: 'Smetti di leggere ad alta voce',
@@ -1396,7 +1398,8 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
           vidTitle: 'Video in arrivo!', vidBody: 'Il Coniglio si sta preparando per la telecamera. 🐇 Torna presto.', vidLine: 'Video in arrivo! 🐇', ok: 'OK', closeApp: 'Chiudi',
           qs: { sky: 'Perché il cielo è blu?', penicillin: 'Chi ha scoperto la penicillina?', book: 'Trovami un libro', vaccines: 'Come funzionano i vaccini?', scream: 'Chi ha dipinto L’urlo?', fireworks: 'Come prendono colore i fuochi d’artificio?', memory: 'Come funziona la memoria?', relax: 'Qualcosa di rilassante', molar: 'Massa molare di NaCl', school: 'Aiutami a studiare chimica' }, open: 'Apri la chat del Coniglio Viola', close: 'Chiudi la chat', langs: 'Lingua',
           rec: 'Il Coniglio consiglia', gentle: 'Un’opzione più leggera', taste: 'Un estratto gratuito', amazon: 'Vedi su Amazon.', sampleLink: 'Leggi un estratto gratuito (in inglese)',
-          restart: 'Ricomincia', back: 'Torna al laboratorio', told: 'Mi hai detto: %s.' }
+          restart: 'Ricomincia', back: 'Torna al laboratorio', told: 'Mi hai detto: %s.',
+          working: 'Il Coniglio sta rispondendo…', lookingUp: 'Ricerca su Wikipedia…', retry: 'Riprova la ricerca', conversation: 'Conversazione' }
   };
 
   /* =====================================================================
@@ -1763,11 +1766,11 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
     '.langs{display:flex;border:1px solid #7b4bd1;border-radius:999px;overflow:hidden;flex:none}.langs button{background:transparent;color:#d6c2f5;border:0;font-size:11px;font-weight:700;padding:5px 7px;cursor:pointer}.langs button[aria-pressed="true"]{background:#ff5cf0;color:#1a0d2b}' +
     '.spk{flex:none;width:32px;height:26px;border:1px solid #7b4bd1;border-radius:999px;background:transparent;color:#d6c2f5;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}.spk svg{width:17px;height:17px}.spk[aria-pressed="true"]{background:#ff5cf0;color:#1a0d2b;border-color:#ff5cf0}.spk:focus-visible,.langs button:focus-visible{outline:2px solid #fdf200;outline-offset:1px}' +
     '.x{background:transparent;border:0;color:#e9dcff;font-size:22px;cursor:pointer;padding:2px 6px;border-radius:8px;flex:none}.x:hover{background:rgba(255,255,255,.1)}' +
-    '.main{flex:1;min-height:0;display:flex;flex-direction:column;background-image:radial-gradient(rgba(155,92,255,.08) 1px,transparent 1px);background-size:18px 18px}' +
+    '.main{flex:1;min-height:0;display:flex;flex-direction:column;background-image:radial-gradient(rgba(155,92,255,.08) 1px,transparent 1px);background-size:18px 18px}.head,.notice,.form{flex-shrink:0}.log{min-height:0;overscroll-behavior:contain}' +
     '.log{flex:1;overflow-y:auto;padding:14px 12px 6px}' +
     '.hero{display:none}' +
     /* ask-anything first screen: one big box, a short greeting, no buttons */
-    '.panel.ask .log{display:none}.panel.ask .main{justify-content:center;padding:0 20px 8%}' +
+    '.panel.ask .log{display:none}.panel.ask .main{justify-content:center;padding:0 20px 8%}.panel.ask .hero{min-height:0;overflow-y:auto;overscroll-behavior:contain}.hero>*{flex-shrink:0}' +
     '.panel.ask .hero{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;margin-bottom:18px}' +
     '.heroArt{width:92px;height:92px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#3a1b66,#1a0d2b);border:1px solid #5b2ca8;box-shadow:0 0 28px rgba(255,92,240,.25);display:flex;align-items:flex-end;justify-content:center;overflow:hidden}.heroArt img{width:96px;height:96px;margin-bottom:-8px}.heroArt svg{width:56px;height:56px;color:#c9a6ff;margin-bottom:14px}' +
     '.hero h2{margin:10px 0 0;font-size:26px;line-height:1.2;color:#fff;font-weight:800}.hero p{margin:0;max-width:330px;font-size:14px;line-height:1.5;color:#cdb6f0}' +
@@ -1784,7 +1787,7 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
     '.card p{margin:8px 12px;font-size:13.5px;line-height:1.45;color:#efe3ff}.card .echo{font-style:italic;color:#d9c3ff}' +
     '.card a{display:block;margin:4px 12px 12px;text-align:center;text-decoration:none;font-weight:700;font-size:14px;color:#fff;padding:10px;border-radius:12px;background:linear-gradient(135deg,#ff2bd6,#6d28ff)}.card a.soft{background:transparent;border:1px solid #ff5cf0;color:#ffd6fa}.card a:hover{filter:brightness(1.1)}' +
     '.form{display:flex;gap:8px;padding:10px;border-top:1px solid #33184f;background:#110919}.form input{flex:1;min-width:0;background:#1d0f2e;border:1px solid #4a2386;color:#fff;border-radius:12px;padding:10px 12px;font-size:16px}.form input::placeholder{color:#a58ccc}.form input:focus{outline:none;border-color:#ff5cf0}' +
-    '.send{background:linear-gradient(135deg,#ff2bd6,#6d28ff);color:#fff;border:0;border-radius:12px;width:46px;padding:0;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;flex:none}.send svg{width:20px;height:20px}' +
+    '.send{background:linear-gradient(135deg,#ff2bd6,#6d28ff);color:#fff;border:0;border-radius:12px;width:46px;padding:0;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;flex:none}.send svg{width:20px;height:20px}.send:disabled,.langs button:disabled,.opt:disabled,.heroPrompts button.q:disabled{opacity:.5;cursor:default}.send:focus-visible{outline:2px solid #fdf200;outline-offset:2px}.chatStatus{flex:none;margin:0;padding:6px 12px;color:#d6c2f5;background:#110919;font-size:12px;text-align:center}.chatStatus:empty{display:none}' +
     '.notice{font-size:10.5px;color:#a88fcc;text-align:center;padding:6px 10px 8px;background:#110919}.panel.ask .notice{background:transparent}.notice .policyBtn{background:none;border:0;padding:0;margin-left:0;color:#ffb3f7;font:inherit;font-weight:700;text-decoration:underline;cursor:pointer}.heroPrompts{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:14px;max-width:340px}.heroPrompts button{appearance:none;border:0;cursor:pointer;color:#fff;font-weight:800;font-size:13px;line-height:1.1;padding:10px 12px;border-radius:999px;box-shadow:0 0 0 2px #fdf200}.heroPrompts button.weather{background:linear-gradient(135deg,#1a6fbf,#0b3a66)}.heroPrompts button.game{background:linear-gradient(100deg,#3a1028,#12060e)}.heroPrompts button.lab{background:linear-gradient(135deg,#e0262b,#9e0f14)}.policyWin{position:absolute;inset:0;z-index:8;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(8,4,16,.78)}.policyWin.open{display:flex}.policyCard{width:min(420px,100%);background:#1a0d2b;color:#efe3ff;border:1px solid #7b4bd1;border-radius:16px;padding:16px 16px 14px;box-shadow:0 16px 40px rgba(0,0,0,.45)}.policyCard b{display:block;font-size:16px;margin-bottom:8px}.policyCard p{margin:0 0 14px;font-size:14px;line-height:1.5;color:#e7d6ff}.policyCard button{background:#ff5cf0;color:#1a0d2b;border:0;border-radius:999px;font-weight:800;padding:8px 14px;cursor:pointer}.appwin{position:absolute;inset:0;z-index:9;display:none;flex-direction:column;background:#0d0714}.appwin.open{display:flex}.appbar{display:flex;align-items:center;gap:8px;padding:8px 10px;background:#2a0a57;color:#fff}.appbar b{flex:1;font-size:14px}.appbar button{background:transparent;border:0;color:#fff;font-size:22px;cursor:pointer;padding:0 6px}.appwin iframe{flex:1;width:100%;border:0;background:#fff}.heroPrompts button.q{background:#241238;color:#efe3ff;font-weight:700;box-shadow:0 0 0 1px #7b4bd1}.heroPrompts button.q:hover,.heroPrompts button:focus-visible{filter:brightness(1.2);outline:none}.appbar button{min-width:44px;min-height:40px}.vidCard{text-align:center}.vidCard .vidArt{width:84px;height:84px;margin:0 auto 10px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#3a1b66,#1a0d2b);border:1px solid #5b2ca8;box-shadow:0 0 0 3px #fdf200;display:flex;align-items:flex-end;justify-content:center;overflow:hidden}.vidCard .vidArt img{width:88px;height:88px;margin-bottom:-8px}.vidCard b{font-size:22px!important;color:#fff}' +
     '@media (max-width:480px){.panel{right:8px;left:8px;width:auto;max-width:none;bottom:84px;height:calc(100vh - 100px);height:calc(100dvh - 100px)}.bubble{right:14px;bottom:14px}.tip{display:none}.t span{display:none}.logo{width:60px;height:38px}.hero h2{font-size:23px}.panel.ask .main{padding:0 14px 6%}}' +
     '.msg.calc{white-space:normal}.msg.calc span{display:block}.msg.calc .src{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#ff8cf3;margin-bottom:3px}.msg.calc .think{color:#d9c3ff;font-style:italic;margin-bottom:5px}' +
@@ -1803,14 +1806,26 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
       '<button class="x" id="close">×</button></div>' +
       '<div class="main" id="main">' +
         '<div class="hero" id="hero"><div class="heroArt" id="heroArt"></div><h2 id="heroTitle"></h2><p id="heroHint"></p><div class="heroPrompts" id="heroPrompts"></div></div>' +
-        '<div class="log" id="log" aria-live="polite"></div>' +
+        '<div class="log" id="log" role="log" aria-live="polite" aria-relevant="additions" tabindex="0"></div>' +
         '<form class="form" id="form" autocomplete="off"><input id="inp" type="text" maxlength="300" enterkeyhint="send"><button class="send" id="send" type="submit"></button></form>' +
       '</div>' +
+      '<div class="chatStatus" id="chatStatus" role="status" aria-live="polite" aria-atomic="true"></div>' +
       '<div class="notice" id="notice"></div>' +'<div class="policyWin" id="policyWin"><div class="policyCard"><b id="policyTitle"></b><p id="policyBody"></p><button type="button" id="policyClose">OK</button></div></div>' +'<div class="policyWin" id="videoWin" role="dialog" aria-modal="true"><div class="policyCard vidCard"><div class="vidArt" id="vidArt"></div><b id="vidTitle"></b><p id="vidBody"></p><button type="button" id="vidClose">OK</button></div></div>' +'<div class="appwin" id="appwin"><div class="appbar"><b id="appname"></b><button type="button" id="appclose" aria-label="Close">×</button></div><iframe id="appframe" title="Furious Acid"></iframe></div>' +
     '</section>';
   var $ = function (id) { return root.getElementById ? root.getElementById(id) : document.getElementById(id); };
   var bubble = $('bubble'), panel = $('panel'), log = $('log'), form = $('form'), inp = $('inp'), tip = $('tip'), spk = $('spk');
   var current = null, started = false, busy = false, runId = 0, nudgeTimer = null, lastShort = false;
+  var busyKind = 'working', composing = false, retryQuestion = null, shownChoices = null;
+  function syncComposer() {
+    var u = UI_TEXT[lang];
+    $('send').disabled = busy || composing || !inp.value.trim();
+    log.setAttribute('aria-busy', busy ? 'true' : 'false');
+    var status = busy ? u[busyKind] : '';
+    if ($('chatStatus').textContent !== status) $('chatStatus').textContent = status;
+    var controls = root.querySelectorAll('#langs button, .opts button, .heroPrompts button.q');
+    for (var i = 0; i < controls.length; i++) controls[i].disabled = busy;
+  }
+  function setBusy(on, kind) { busy = !!on; busyKind = kind || 'working'; syncComposer(); }
   function art(file, cls, alt) { // brand image with a safe fallback to the drawn rabbit if the file is missing
     var holder = document.createElement('span'); holder.style.display = 'contents';
     var i = new Image(); i.alt = alt || ''; if (cls) i.className = cls;
@@ -1824,6 +1839,7 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
   function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
   function botRow(node) {
     var last = log.lastElementChild, row = el('div', 'row');
+    row.setAttribute('lang', lang);
     var first = !(last && last.className === 'row' && !last.getAttribute('data-typing'));
     var av = el('div', 'ava' + (first ? '' : ' spacer')); if (first) av.appendChild(art('rabbit-idle.png', '', ''));
     row.appendChild(av); row.appendChild(node); return row;
@@ -1971,6 +1987,7 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
 
   function applyUI() {
     var u = UI_TEXT[lang];
+    panel.setAttribute('lang', lang); log.setAttribute('aria-label', u.conversation);
     $('ttl').textContent = u.title; $('sub').textContent = u.sub; inp.placeholder = u.ph; inp.setAttribute('aria-label', u.ph);
     $('send').setAttribute('aria-label', u.send); $('send').title = u.send; tip.textContent = u.tip;
     $('notice').textContent = '';
@@ -1985,20 +2002,21 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
     bubble.setAttribute('aria-label', u.open); $('close').setAttribute('aria-label', u.close); panel.setAttribute('aria-label', u.title);
     $('langs').setAttribute('aria-label', u.langs); setVoice(voiceOn);
     var bs = $('langs').querySelectorAll('button'); for (var i = 0; i < bs.length; i++) bs[i].setAttribute('aria-pressed', bs[i].getAttribute('data-l') === lang ? 'true' : 'false');
+    syncComposer();
   }
   function scroll() { log.scrollTop = log.scrollHeight; }
-  function clearOpts() { var o = log.querySelectorAll('.opts'); for (var i = 0; i < o.length; i++) o[i].parentNode.removeChild(o[i]); }
+  function clearOpts() { shownChoices = null; var o = log.querySelectorAll('.opts'); for (var i = 0; i < o.length; i++) o[i].parentNode.removeChild(o[i]); }
   function set(obj) { if (obj) for (var k in obj) state[k] = obj[k]; }
   function typingFor(ms, done) { // shows the "…" typing dots for ms, then calls done
     var my = runId, d = el('div', 'msg bot typing'); d.innerHTML = '<i></i><i></i><i></i>';
-    var t = botRow(d); t.setAttribute('data-typing', '1'); log.appendChild(t); scroll();
+    var t = botRow(d); t.setAttribute('data-typing', '1'); t.setAttribute('aria-hidden', 'true'); log.appendChild(t); scroll();
     setTimeout(function () { if (my !== runId) return; if (t.parentNode) t.parentNode.removeChild(t); done(); }, ms);
   }
   function say(arr, done, instant) { // one bubble per line, each after a short typing pause (longer lines type a bit longer)
-    var my = runId, i = 0; busy = true;
+    var my = runId, i = 0; setBusy(true);
     (function nx() {
       if (my !== runId) return;
-      if (i >= arr.length) { busy = false; if (done) done(); return; }
+      if (i >= arr.length) { setBusy(false); if (done) done(); return; }
       var line = arr[i++], ms = Math.round(SETTINGS.typingDelay * (0.7 + Math.min(line.length, 200) / 250));
       var put = function () { log.appendChild(botRow(botBubble(line))); scroll(); speak(line); nx(); };
       if (instant) put(); else typingFor(ms, put);
@@ -2007,7 +2025,7 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
   function card(key, kind) { // kind: 'rec' | 'budget' | 'sample' | 'pivot'
     key = safeProduct(key); var p = PRODUCTS[key], url = linkFor(key), u = UI_TEXT[lang];
     if (!url) return;
-    var c = el('div', 'card'); c.setAttribute('data-book', key);
+    var c = el('div', 'card'); c.setAttribute('data-book', key); c.setAttribute('lang', lang);
     if (kind !== 'sample') c.appendChild(art('rabbit-jump.png', 'jump', ''));
     c.appendChild(el('div', 'ct', kind === 'budget' ? u.gentle : kind === 'sample' ? u.taste : u.rec));
     c.appendChild(el('h4', null, T(p.title)));
@@ -2029,9 +2047,9 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
   }
   function show(kind, done) {
     var prod = safeProduct(state.product || 'hidden');
-    if (kind === 'link') { busy = true; return typingFor(SETTINGS.linkPauseMs, function () { card(prod, 'rec'); done(); }); }
-    if (kind === 'pivot') { busy = true; return typingFor(SETTINGS.linkPauseMs, function () { card(prod, 'pivot'); state.pivotPending = false; done(); }); }
-    if (kind === 'linkCheap') { busy = true; return typingFor(SETTINGS.linkPauseMs, function () {
+    if (kind === 'link') { setBusy(true); return typingFor(SETTINGS.linkPauseMs, function () { card(prod, 'rec'); done(); }); }
+    if (kind === 'pivot') { setBusy(true); return typingFor(SETTINGS.linkPauseMs, function () { card(prod, 'pivot'); state.pivotPending = false; done(); }); }
+    if (kind === 'linkCheap') { setBusy(true); return typingFor(SETTINGS.linkPauseMs, function () {
       card(prod, 'rec');
       if (prod === 'coloring') return done();
       say([fill(T(CALL_FLOW.phrases.cheaperPick))], function () { card('coloring', 'budget'); done(); });
@@ -2043,6 +2061,7 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
   }
   function choicesOf(st) { return (st.choicesFrom ? CALL_FLOW.steps[st.choicesFrom].choices : st.choices) || []; }
   function showChoices(st) {
+    shownChoices = st;
     var wrap = el('div', 'opts'), u = UI_TEXT[lang], list = choicesOf(st).slice();
     if (st.doors) {
       for (var k in CALL_FLOW.interests) { var it = CALL_FLOW.interests[k]; if (st.doorsOnly ? st.doorsOnly.indexOf(k) > -1 : (it.door && state.interests.indexOf(k) < 0)) list.push({ label: it.label, door: k }); }
@@ -2054,7 +2073,12 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
       b.addEventListener('click', function () { if (busy) return; userSays(T(c.label)); lastShort = false; choose(c); });
       wrap.appendChild(b);
     });
-    if (list.length) { log.appendChild(wrap); scroll(); }
+    if (current === 'wiki_fail' && retryQuestion) {
+      var question = retryQuestion, retry = el('button', 'opt retry', u.retry); retry.type = 'button';
+      retry.onclick = function () { if (!busy) handleText(question); };
+      wrap.appendChild(retry);
+    }
+    if (wrap.childNodes.length) { log.appendChild(wrap); syncComposer(); scroll(); }
   }
   function linesOf(st, key) {
     var src = (key === 'say' && lastShort && st.short) ? st.short : st[key];
@@ -2095,7 +2119,7 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
     set(c.set); if (c.lead) state.lead = T(c.lead);
     go(c.next);
   }
-  function userSays(t) { leaveAsk(); clearOpts(); log.appendChild(el('div', 'msg me', t)); scroll(); }
+  function userSays(t) { leaveAsk(); clearOpts(); var message = el('div', 'msg me', t); message.setAttribute('lang', lang); log.appendChild(message); scroll(); }
 
   /* ---------- 1) greeting reply: warm / cold / direct ---------- */
   function greetingReply(raw, n, found, drugTalk) {
@@ -2131,7 +2155,7 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
   // Curiosity first, then the normal call flow; the drug is never named back, no how-to, ever.
   function drugCurious(wikiVariant) {
     var first = !state.drugCurious; memGuard();
-    state.drugCurious = true; state.pivotPending = false; state.lead = ''; busy = false; clearOpts();
+    state.drugCurious = true; state.pivotPending = false; state.lead = ''; setBusy(false); clearOpts();
     if (wikiVariant) return run(first ? 'drug_curious_wiki' : 'drug_wiki_again'); // a question is not "pushing"
     if (++state.drugAsks > 1) return pushBack();
     run('drug_curious');
@@ -2183,7 +2207,7 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
     var who = /^(who|whos|quien|quienes|chi)\b/.test(q), why = /^(why|how|por que|como|perche|come)\b/.test(q);
     var best = null, bs = -1;
     (pages || []).forEach(function (p) {
-      if (!p || !p.extract || (p.pageprops && 'disambiguation' in p.pageprops)) return;
+      if (!p || typeof p.title !== 'string' || typeof p.extract !== 'string' || !p.extract.trim() || (p.pageprops && typeof p.pageprops === 'object' && 'disambiguation' in p.pageprops)) return;
       var tn = norm(p.title).replace(/\s*\(.*\)$/, ''), text = norm(p.title + ' ' + p.extract), hits = 0;
       words.forEach(function (w) { if ((' ' + text.replace(/[^a-z0-9]+/g, ' ')).indexOf(' ' + w) > -1) hits++; }); // word starts only ("get" must not hit "together")
       if (words.length && !hits) return;
@@ -2205,21 +2229,27 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
     try {
       fetch(url, { credentials: 'omit', referrerPolicy: 'no-referrer', signal: ctl ? ctl.signal : undefined })
         .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
-        .then(function (j) { finish((j && j.query && j.query.pages) || [], false); })
+        .then(function (j) {
+          if (!j || j.error) return finish(null, true);
+          // MediaWiki may omit query entirely for zero search matches.
+          if (!j.query) return finish(j.batchcomplete !== undefined ? [] : null, j.batchcomplete === undefined);
+          if (!Array.isArray(j.query.pages)) return finish(null, true);
+          finish(j.query.pages, false);
+        })
         .catch(function () { finish(null, true); });
     } catch (e) { finish(null, true); }
   }
   function wikiAnswer(raw, n, found) {
     var my = runId, q = wikiQuery(raw), nq = norm(String(raw).replace(/[^\p{L}\p{N}\s'-]/gu, ' ').replace(/\s+/g, ' ').trim()), t0 = Date.now();
-    state.topic = topicOf(nq); busy = true; clearOpts();
+    state.topic = topicOf(nq); setBusy(true, 'lookingUp'); clearOpts();
     var d = el('div', 'msg bot typing'); d.innerHTML = '<i></i><i></i><i></i>';
-    var dots = botRow(d); dots.setAttribute('data-typing', '1'); log.appendChild(dots); scroll();
+    var dots = botRow(d); dots.setAttribute('data-typing', '1'); dots.setAttribute('aria-hidden', 'true'); log.appendChild(dots); scroll();
     wikiLookup(q, function (pages, failed) {
       setTimeout(function () {
         if (my !== runId) return;
         if (dots.parentNode) dots.parentNode.removeChild(dots);
-        busy = false;
-        if (failed) { addFound(found); return run('wiki_fail'); }
+        setBusy(false);
+        if (failed) { retryQuestion = raw; addFound(found); return run('wiki_fail'); }
         var page = pickPage(pages, nq);
         if (!page) { addFound(found); return run('wiki_none'); }
         var text = shortText(page.extract), check = norm(page.title + ' ' + page.extract); // check the whole extract, not just the part we show
@@ -2258,12 +2288,12 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
       .replace(/\u00d7/g, ' times ').replace(/\u00f7/g, ' divided by ').replace(/\u2212/g, ' minus ').replace(/\u2248/g, ' about ');
   }
   function calcReply(res) {
-    var my = runId; clearOpts(); busy = true;
+    var my = runId; clearOpts(); setBusy(true);
     if (!res.unknown) { state.calcs++; like('calc'); }
     var nudge = !res.unknown && (state.calcs === CALC_TEXT.nudgeFirst || (state.calcs > CALC_TEXT.nudgeFirst && (state.calcs - CALC_TEXT.nudgeFirst) % CALC_TEXT.nudgeEvery === 0));
     typingFor(Math.round(SETTINGS.typingDelay * 1.1), function () {
       if (my !== runId) return;
-      busy = false;
+      setBusy(false);
       var box = el('div', 'msg bot calc');
       box.appendChild(el('span', 'src', T(res.kind === 'math' ? CALC_TEXT.math : CALC_TEXT.chem)));
       if (res.think) box.appendChild(el('span', 'think', res.think));
@@ -2279,10 +2309,10 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
   function calcNudge(next) { // one light book mention (Hidden Passages or the Coloring Book only), in the usual Amazon link style
     var key = (state.calcNudges++ % 2) ? 'coloring' : 'hidden', url = linkFor(key), my = runId;
     if (!url) return next();
-    busy = true;
+    setBusy(true);
     typingFor(SETTINGS.typingDelay, function () {
       if (my !== runId) return;
-      busy = false;
+      setBusy(false);
       var line = fill(T(CALC_TEXT.nudge[key])), d = el('div', 'msg bot calc nudge');
       d.appendChild(el('span', 'txt', line));
       var a = el('a', 'wk', UI_TEXT[lang].amazon + store + ' \u2197'); a.href = url; tagLink(a, key, 'amazon', 'calc'); d.appendChild(a);
@@ -2297,7 +2327,8 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
   function productNamed(f) { for (var k in CALL_FLOW.productNames) if (rx(CALL_FLOW.productNames[k].words).test(f)) return k; return null; }
 
   function handleText(raw) {
-    var t = String(raw).trim(); if (!t) return;
+    var t = String(raw).trim(); if (!t || busy) return;
+    retryQuestion = null;
     cancelNudge(); state.replied = true;
     userSays(t);
     var n = norm(t), f = fixTypos(n), fr = fixRaw(t);            // f: typo-fixed text used for matching; fr: for echoing back
@@ -2385,7 +2416,7 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
     run('fallback');
   }
 
-  function restartAll() { runId++; busy = false; cancelNudge(); stopSpeaking(); log.innerHTML = ''; resetState(); lastShort = false; paintPrompts(); enterAsk(); run(startStep(), true); }
+  function restartAll() { runId++; retryQuestion = null; setBusy(false); cancelNudge(); stopSpeaking(); log.innerHTML = ''; resetState(); lastShort = false; paintPrompts(); enterAsk(); run(startStep(), true); }
   // Optional deep link: /rabbit/?q=1000*500 asks that question for the visitor (up to 3 q= values).
   // Nothing from a deep-linked visit is remembered on the device.
   var AUTO_Q = [];
@@ -2395,7 +2426,15 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
     memBlocked = true;
     (function nx() { if (!AUTO_Q.length) return; if (busy) return setTimeout(nx, 150); handleText(AUTO_Q.shift()); setTimeout(nx, 400); })();
   }
-  function setLanguage(l) { if (!UI_TEXT[l] || l === lang) return; lang = l; applyUI(); if (started) restartAll(); }
+  function setLanguage(l) {
+    if (!UI_TEXT[l] || l === lang || busy) return;
+    stopSpeaking();
+    var choices = shownChoices;
+    lang = l; applyUI();
+    // Translate controls without deleting messages, drafts, interests or book-gate choices.
+    if (panel.classList.contains('ask')) $('heroTitle').textContent = linesOf(CALL_FLOW.steps[startStep()], 'say').join(' ');
+    clearOpts(); if (choices) showChoices(choices);
+  }
   function open() { panel.classList.add('open'); bubble.setAttribute('aria-expanded', 'true'); tip.style.display = 'none'; if (!started) { started = true; run(startStep(), true); if (AUTO_Q.length) setTimeout(autoAsk, 350); } if (!mount) setTimeout(function () { inp.focus({ preventScroll: true }); }, 50); }
   function close() { if (mount) return; stopSpeaking(); panel.classList.remove('open'); bubble.setAttribute('aria-expanded', 'false'); bubble.focus(); }
 
@@ -2408,7 +2447,13 @@ document.getElementById('hdrLogo').src = window.FA_RABBIT_SETTINGS.assetData['fu
   $('langs').addEventListener('click', function (e) { var l = e.target && e.target.getAttribute && e.target.getAttribute('data-l'); if (l) setLanguage(l); });
   spk.addEventListener('click', function () { setVoice(!voiceOn); });
   panel.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
-  form.addEventListener('submit', function (e) { e.preventDefault(); if (busy) return; var v = inp.value; inp.value = ''; handleText(v); });
+  inp.addEventListener('input', syncComposer);
+  inp.addEventListener('compositionstart', function () { composing = true; syncComposer(); });
+  inp.addEventListener('compositionend', function () { composing = false; syncComposer(); });
+  form.addEventListener('submit', function (e) {
+    e.preventDefault(); if (busy || composing || !inp.value.trim()) return;
+    var v = inp.value; inp.value = ''; syncComposer(); handleText(v);
+  });
   setTimeout(function () { tip.style.display = 'none'; }, 9000);
   if (mount) open();
   if (DEMO) setTimeout(function () {

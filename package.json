@@ -1,0 +1,10 @@
+{
+  "name": "furiousacid-site-checks",
+  "private": true,
+  "scripts": {
+    "test": "node --test tests/rabbit.test.cjs"
+  },
+  "devDependencies": {
+    "jsdom": "26.1.0"
+  }
+}
