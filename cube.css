@@ -83,11 +83,11 @@ body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-ser
 .face-link{-webkit-user-drag:none}.face-link span{pointer-events:none}
 
 /* The book projects a connected reading world without leaving the cube. */
-.book-world{position:relative;display:grid;grid-template-columns:minmax(0,1fr) 390px;align-items:center;gap:30px;max-width:1220px;margin:0 auto;padding:0 30px;isolation:isolate}
+.book-world{position:relative;display:grid;grid-template-columns:minmax(0,1fr) 390px;align-items:start;gap:30px;max-width:1220px;margin:0 auto;padding:0 30px;isolation:isolate}
 .book-world .stage{height:530px;min-width:0}
 .book-world .preview-panel{position:relative;top:auto;left:auto;width:100%;margin:0;padding:24px;z-index:2;background:#ffffffc9;backdrop-filter:blur(12px)}
 .preview-panel.is-projecting{--book-accent:#0072b4;border-color:color-mix(in srgb,var(--book-accent),white 60%);box-shadow:0 0 35px #24b3ff12,0 8px 25px #06578008}
-.preview-panel.is-projecting h2{font-size:23px;line-height:1.2}.preview-panel.is-projecting #preview-description{font-size:15px;line-height:1.45}
+.preview-panel.is-projecting h2{font-size:23px;line-height:1.2}.preview-panel.is-projecting #preview-description{display:none}
 .projection-beam{position:absolute;inset:0;width:100%;height:100%;overflow:visible;z-index:1;pointer-events:none}
 .beam-line{fill:none;stroke:#159eda;stroke-width:1;stroke-dasharray:4 6;opacity:.65;animation:beam-travel 12s linear infinite}.beam-source{fill:#7ae4ff;stroke:#0086bd;stroke-width:1;filter:drop-shadow(0 0 5px #5ed9ff)}
 @keyframes beam-travel{to{stroke-dashoffset:-100}}
@@ -100,7 +100,7 @@ body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-ser
 .projection-art img.is-page{height:165px;object-fit:cover;object-position:top;box-shadow:0 2px 6px #06304f20;border:1px solid #d2e3eb}
 .projection-art figcaption{font-size:12px;line-height:1.45;color:#637383;margin-top:9px}
 .projection-topics{display:grid;gap:10px}.projection-topic{padding:0 0 10px 10px;border-left:2px solid color-mix(in srgb,var(--book-accent),white 60%);border-bottom:1px solid #e0edf5}
-.projection-topic h3{font-size:14px;line-height:1.3;margin:0 0 5px;font-weight:700;color:#23405a}.preview-panel .projection-topic p{font-size:14px!important;line-height:1.45!important;color:#51677a!important}
+.projection-topic summary{font-size:14px;line-height:1.3;min-height:32px;padding:6px 0;cursor:pointer;font-weight:700;color:#23405a}.projection-topic summary:focus-visible{outline:2px solid #0072b4;outline-offset:3px}.preview-panel .projection-topic p{font-size:14px!important;line-height:1.45!important;color:#51677a!important}
 .is-assembling .projection-art,.is-assembling .projection-topic{animation:assemble-book .55s both cubic-bezier(.17,.75,.2,1);animation-delay:calc(var(--assembly-step,0)*65ms)}
 @keyframes assemble-book{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
 .book-connections{margin-top:15px;padding-top:12px;border-top:1px solid #cfdfeb}.preview-panel .book-connections p{font-size:14px!important;line-height:1.4!important;margin-bottom:10px!important}

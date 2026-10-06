@@ -152,8 +152,8 @@
       img.classList.toggle('is-page',Boolean(inside.image));img.dataset.book=key;
       document.getElementById('projection-art-caption').textContent=inside.caption;
       document.getElementById('projection-topics').replaceChildren(...inside.topics.map(([title,description],i)=>{
-        const card=document.createElement('div');card.className='projection-topic';card.style.setProperty('--assembly-step',i+1);
-        const heading=document.createElement('h3');heading.textContent=title;const text=document.createElement('p');text.textContent=description;card.append(heading,text);return card;
+        const card=document.createElement('details');card.className='projection-topic';card.name='book-topics';card.open=i===0;card.style.setProperty('--assembly-step',i+1);
+        const heading=document.createElement('summary');heading.textContent=title;const text=document.createElement('p');text.textContent=description;card.append(heading,text);return card;
       }));
       document.getElementById('connection-description').textContent=inside.connection;
       document.getElementById('connected-books').replaceChildren(...inside.related.map(related=>bookControl(related,'connected-book')));
