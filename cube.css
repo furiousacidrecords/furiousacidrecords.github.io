@@ -138,3 +138,6 @@ body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-ser
 .city-gate{position:absolute;left:50%;top:100px;transform:translateX(-50%);width:calc(var(--size)*.85);height:calc(var(--size)*.48);background:transparent;border:0;padding:0;z-index:3;color:#174d6c;touch-action:none;user-select:none;cursor:pointer}.city-gate span{position:absolute;bottom:-5px;left:50%;transform:translateX(-50%);white-space:nowrap;font-size:14px;padding:6px 12px;border-radius:30px;background:#e6f8ffe6;border:1px solid #9bd9f2;box-shadow:0 0 15px #65d6ff40}.city-gate:hover span{background:#c9f0ff}.stage .cube{scale:var(--city-zoom,1);transition:scale .9s cubic-bezier(.2,.8,.25,1)}.stage.city-near .cube{--city-zoom:1.08}.stage.city-closer .cube{--city-zoom:1.16}.stage.city-near .city-gate{height:calc(var(--size)*.58)}.stage.city-closer .city-gate{height:calc(var(--size)*.65)}
 @media(max-width:780px){.city-status{top:0;font-size:12px}.city-gate{top:80px}.city-gate span{font-size:12px}.stage.city-closer .cube{--city-zoom:1.08}.stage.city-near .cube{--city-zoom:1.04}}
 @media(prefers-reduced-motion:reduce){.stage .cube{transition:none}}
+
+/* Keep the city timer outside the skyline. */
+.city-status{position:relative;left:auto;top:auto;transform:none;margin:14px auto 20px;width:min(330px,calc(100% - 40px))}

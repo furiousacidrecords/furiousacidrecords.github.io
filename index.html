@@ -11,7 +11,7 @@
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://furiousacid.com/">
   <link rel="icon" href="/favicon.png">
-  <link rel="stylesheet" href="/cube.css?v=20261006-city-diorama-2">
+  <link rel="stylesheet" href="/cube.css?v=20261006-city-diorama-3">
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebSite", "name": "Furious Acid", "url": "https://furiousacid.com/", "description": "Books, visual technical notebooks, coloring art, games, and the Purple Rabbit by Zach Brown.", "author": {"@type": "Person", "name": "Zach Brown"}}</script>
 </head>
 <body>
@@ -21,10 +21,11 @@
   </header>
   <main>
     <div class="intro"><p class="eyebrow">THE FURIOUS ACID UNIVERSE</p><h1>The game already began.</h1><p class="hint" id="cube-help">Keep the city glowing. Tap to get closer. Drag to explore.</p></div>
+    <div class="city-status" aria-label="City run"><span id="city-entry-message">The city is fading. Get closer.</span><progress id="city-entry-light" max="100" value="100" aria-label="City light"></progress><button id="city-entry-pause" type="button" aria-pressed="false">Pause game</button></div>
     <div class="book-world" id="book-world">
       <svg class="projection-beam" id="projection-beam" aria-hidden="true" hidden><defs><linearGradient id="beam-fill"><stop stop-color="#33bfff" stop-opacity=".3"/><stop offset="1" stop-color="#33bfff" stop-opacity=".02"/></linearGradient></defs><path class="beam-fan" fill="url(#beam-fill)"/><path class="beam-line"/><circle class="beam-source" r="4"/></svg>
     <div class="stage" id="stage" role="group" aria-label="Interactive six-sided navigation cube" aria-describedby="cube-help" tabindex="0">
-      <div class="city-status" aria-label="City run"><span id="city-entry-message">The city is fading. Get closer.</span><progress id="city-entry-light" max="100" value="100" aria-label="City light"></progress><button id="city-entry-pause" type="button" aria-pressed="false">Pause game</button></div>
+      
       <button class="city-gate" id="city-gate" type="button" aria-label="Get closer to the city"><span id="city-gate-label">Tap to get closer</span></button>
       <div class="cube" id="cube">
         <div class="city-diorama" id="city-diorama" aria-hidden="true">
@@ -84,7 +85,7 @@
   </main>
   <dialog class="game-portal" id="game-portal" aria-labelledby="game-portal-title"><header class="game-portal-header"><h2 id="game-portal-title">Furious Roll</h2><a href="/roll/" target="_blank" rel="noopener">Furious Roll</a><a id="game-page" href="/city/" target="_blank" rel="noopener">Open game page</a><button type="button" id="close-game">Close game</button></header><iframe id="game-frame" title="Furious Roll" allow="fullscreen; gamepad; pointer-lock"></iframe></dialog>
   <footer><span>© 2026 FURIOUS ACID</span><a href="/catalog.html">Browse the catalog</a><a href="https://acid-chat-hub.lovable.app/forum">Forum</a></footer>
-  <script src="/cube.js?v=20261006-city-diorama-2" defer></script>
+  <script src="/cube.js?v=20261006-city-diorama-3" defer></script>
   <script src="/city-entry.js?v=1" defer></script>
 </body>
 </html>
