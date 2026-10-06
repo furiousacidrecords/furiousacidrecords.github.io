@@ -88,7 +88,11 @@
   function release(event){
     if(!drag || event.pointerId!==drag.id)return;
     suppressClick=drag.moved;
-    if(drag.moved){suppressUntil=performance.now()+350;previewHoldUntil=0;}
+    if(drag.moved){
+      suppressUntil=performance.now()+350;previewHoldUntil=0;
+      const front=faceButtons.slice().sort((a,b)=>Number(b.dataset.facing)-Number(a.dataset.facing))[0];
+      if(front)preview(front.dataset.select);
+    }
     vx=vy=0;
     holdUntil=performance.now()+5000;drag=null;stage.classList.remove('dragging');
     if(stage.hasPointerCapture?.(event.pointerId))stage.releasePointerCapture(event.pointerId);
