@@ -10,12 +10,12 @@
     return;
   }
   const sections = {
-    updates: {number:'01', title:'Furious Acid Updates', description:'What happened to Furious Acid, and what comes next.', x:0,y:0, links:[['Read the updates','/me']]},
-    books: {number:'02', title:'Furious Acid Books', description:'Explore the books and read sample pages.', x:0,y:-90, links:[['Browse books','/catalog.html#books'],['Read a sample','/excerpt-medicine.html']]},
-    merch: {number:'03', title:'Furious Acid Merch', description:'Shop Furious Acid on TikTok.', x:0,y:-180, links:[['Open TikTok Shop','https://vt.tiktok.com/ZPLedk8hg/']]},
-    lab: {number:'04', title:'Furious Acid Lab Alpha', description:'A chemistry bench with live equations and the Purple Rabbit.', x:0,y:90, links:[['Enter Lab Alpha','/lab/'],['OTC Chemical Reference','/list-chem.html']]},
-    games: {number:'05', title:'Furious Acid Games', description:'A rabbit pilots a rabbit robot. Roll up the world, then take it to Mars.', x:-90,y:0, links:[['Play Furious Roll','/roll/']]},
-    apps: {number:'06', title:'Furious Acid Apps + Chatbot', description:'Talk to the Purple Rabbit, work through a calculation, or create something.', x:90,y:0, links:[['Open the chatbot','/rabbit/'],['Calculator','/calc/'],['Custom Studio','/custom-studio.html'],['Weather for Roku','/weather/']]}
+    updates: {number:'01', title:'Updates', description:'The Purple Rabbit, the books, and the story behind 23.2K followers.', links:[['Read the story','/me/']]},
+    books: {number:'02', title:'Books', description:'Visual growing layouts lead into indoor climate and experiments, then chemistry and drug discovery and a pictorial lab manual. The coloring book brings the art into your hands.', links:[['Browse books','/catalog.html#books'],['All editions on Amazon','https://www.amazon.com/stores/Furious-Acid/author/B0GWLWJBS6/allbooks']]},
+    merch: {number:'03', title:'Merch', description:'The Purple Rabbit beyond the page. Open Furious Acid’s TikTok Shop for the current collection.', links:[['Open TikTok Shop','https://vt.tiktok.com/ZPLedk8hg/']]},
+    lab: {number:'04', title:'Lab Alpha', description:'Enter the interactive chemistry bench. The reference spreadsheet is a separate destination.', links:[['Enter the lab','/lab/'],['Chemical reference','/list-chem.html']]},
+    games: {number:'05', title:'Games', description:'Furious Roll: a rabbit pilots a rabbit robot, rolling up a world and taking it to Mars.', links:[['Play Furious Roll','/roll/']]},
+    apps: {number:'06', title:'Apps + Chatbot', description:'Meet the Purple Rabbit, calculate, create, or check the weather.', links:[['Purple Rabbit','/rabbit/'],['Calculator','/calc/'],['Custom Studio','/custom-studio.html'],['Roku weather','/weather/']]}
   };
   const stage = document.getElementById('stage');
   const cube = document.getElementById('cube');
@@ -23,6 +23,10 @@
   const motionLabel = document.getElementById('motion-label');
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const faceButtons = [...cube.querySelectorAll('[data-select]')];
+  let activeKey = '';
+  let hovering = false;
+  let previewHoldUntil = 0;
+  let suppressUntil = 0;
   let x=-22,y=-35,paused=reduced.matches,drag=null,snap=null,vx=0,vy=0;
   let holdUntil=0,lastFrame=0,suppressClick=false;
   const nearest = (current,target) => current + ((target-current+180)%360+360)%360-180;
@@ -44,21 +48,29 @@
     motion.setAttribute('aria-pressed',String(paused));
     motionLabel.textContent = paused ? 'ROTATION PAUSED' : 'SLOW ROTATION';
   }
-  function select(key) {
-    const section=sections[key]; if (!section) return;
-    vx=vy=0;holdUntil=performance.now()+12000;
-    if (reduced.matches) {x=section.x;y=nearest(y,section.y);snap=null;draw();}
-    else snap={x:nearest(x,section.x),y:nearest(y,section.y)};
-    document.querySelectorAll('.planes [data-select]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.select===key)));
-    document.getElementById('destination-number').textContent=section.number+' / FURIOUS ACID';
-    document.getElementById('destination-title').textContent=section.title;
-    document.getElementById('destination-description').textContent=section.description;
-    document.getElementById('destination-links').replaceChildren(...section.links.map(([label,url])=>{
+  function preview(key) {
+    const section=sections[key]; if (!section || activeKey===key) return;
+    activeKey=key;
+    document.querySelectorAll('[data-select]').forEach(link=>link.classList.toggle('is-active',link.dataset.select===key));
+    document.getElementById('preview-number').textContent=section.number+' / FURIOUS ACID';
+    document.getElementById('preview-title').textContent=section.title;
+    document.getElementById('preview-description').textContent=section.description;
+    document.getElementById('preview-links').replaceChildren(...section.links.map(([label,url])=>{
       const link=document.createElement('a');link.textContent=label;link.href=url;return link;
     }));
-    document.getElementById('destination').hidden=false;
   }
-  document.querySelectorAll('[data-select]').forEach(button=>button.addEventListener('click',()=>{if(!suppressClick)select(button.dataset.select);}));
+  document.querySelectorAll('[data-select]').forEach(link=>{
+    link.addEventListener('pointerenter',event=>{if(event.pointerType==='mouse'){hovering=true;previewHoldUntil=performance.now()+8000;preview(link.dataset.select);link.classList.remove('is-rippling');void link.offsetWidth;link.classList.add('is-rippling');}});
+    link.addEventListener('pointerleave',()=>{hovering=false;});
+    link.addEventListener('focus',()=>{previewHoldUntil=performance.now()+8000;preview(link.dataset.select);});
+    link.addEventListener('click',event=>{
+      if(suppressClick || performance.now()<suppressUntil){event.preventDefault();return;}
+      link.classList.remove('is-rippling'); void link.offsetWidth;link.classList.add('is-rippling');
+    });
+  });
+  const panel=document.getElementById('preview-panel');
+  panel.addEventListener('pointerenter',()=>{hovering=true;});
+  panel.addEventListener('pointerleave',()=>{hovering=false;previewHoldUntil=performance.now()+3000;});
   stage.addEventListener('pointerdown',event=>{
     if(!event.isPrimary || event.button!==0)return;
     suppressClick=false;snap=null;vx=vy=0;
@@ -75,7 +87,8 @@
   function release(event){
     if(!drag || event.pointerId!==drag.id)return;
     suppressClick=drag.moved;
-    if(performance.now()-drag.time>90 || reduced.matches || event.type==='pointercancel')vx=vy=0;
+    if(drag.moved){suppressUntil=performance.now()+350;previewHoldUntil=0;}
+    vx=vy=0;
     holdUntil=performance.now()+5000;drag=null;stage.classList.remove('dragging');
     if(stage.hasPointerCapture(event.pointerId))stage.releasePointerCapture(event.pointerId);
     setTimeout(()=>{suppressClick=false;},0);
@@ -92,27 +105,30 @@
       y+=(event.key==='ArrowRight'?15:event.key==='ArrowLeft'?-15:0);
       x+=(event.key==='ArrowDown'?-15:event.key==='ArrowUp'?15:0);draw();
     }
-    if(event.key==='Enter' || event.key===' '){event.preventDefault();const face=faceButtons.filter(b=>b.getAttribute('aria-hidden')==='false').sort((a,b)=>Number(b.dataset.facing)-Number(a.dataset.facing));if(face[0])select(face[0].dataset.select);}
+    if(event.key==='Enter' || event.key===' '){event.preventDefault();const face=faceButtons.filter(b=>b.getAttribute('aria-hidden')==='false').sort((a,b)=>Number(b.dataset.facing)-Number(a.dataset.facing));if(face[0])face[0].click();}
   });
   motion.addEventListener('click',()=>{paused=!paused;vx=vy=0;holdUntil=0;updateMotion();});
   document.getElementById('reset').addEventListener('click',()=>{
     x=-22;y=-35;snap=null;vx=vy=0;holdUntil=performance.now()+3000;
-    document.getElementById('destination').hidden=true;
-    document.querySelectorAll('.planes [data-select]').forEach(b=>b.setAttribute('aria-pressed','false'));draw();
+    preview('updates');draw();
   });
   reduced.addEventListener('change',()=>{paused=reduced.matches;vx=vy=0;if(snap){x=snap.x;y=snap.y;snap=null;}updateMotion();draw();});
   document.addEventListener('visibilitychange',()=>{lastFrame=0;vx=vy=0;});
   function frame(now){
     const dt=Math.min(lastFrame?now-lastFrame:16,40);lastFrame=now;
-    const keyboardFocus=stage.contains(document.activeElement) || document.getElementById('destination').contains(document.activeElement);
+    const keyboardFocus=stage.contains(document.activeElement) || document.getElementById('preview-panel').contains(document.activeElement) || document.querySelector('.planes').contains(document.activeElement);
     if(!document.hidden && !drag){
       if(snap){const amount=1-Math.exp(-dt/150);x+=(snap.x-x)*amount;y+=(snap.y-y)*amount;if(Math.abs(snap.x-x)+Math.abs(snap.y-y)<.08){x=snap.x;y=snap.y;snap=null;}}
       else if(Math.abs(vx)+Math.abs(vy)>.002){x+=vx*dt;y+=vy*dt;const decay=Math.exp(-dt/220);vx*=decay;vy*=decay;}
-      else if(!paused && !keyboardFocus && now>holdUntil){y+=dt*.0045;x+=(-22-x)*.002;}
+      else if(!paused && !hovering && !keyboardFocus && now>holdUntil){y+=dt*.0025;x+=(-22-x)*.002;}
       draw();
+      if(!hovering && !keyboardFocus && now>previewHoldUntil) {
+        const front=faceButtons.slice().sort((a,b)=>Number(b.dataset.facing)-Number(a.dataset.facing))[0];
+        if(front)preview(front.dataset.select);
+      }
     }
     requestAnimationFrame(frame);
   }
-  updateMotion();draw();requestAnimationFrame(frame);
+  updateMotion();draw();preview('updates');requestAnimationFrame(frame);
 })();
 
