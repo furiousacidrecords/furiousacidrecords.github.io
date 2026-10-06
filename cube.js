@@ -69,7 +69,7 @@
       button.style.pointerEvents = visible ? 'auto' : 'none';
       button.tabIndex = button.matches('a,button') && visible ? 0 : -1;
       button.setAttribute('aria-hidden', String(!visible));
-      button.querySelectorAll('a,button').forEach(control=>{control.tabIndex=visible ? 0 : -1;});
+      button.querySelectorAll('a,button').forEach(control=>{control.tabIndex=visible ? 0 : -1;control.style.pointerEvents=visible ? 'auto' : 'none';});
     });
     reflections.forEach((reflection,i)=>{
       const angle=facing[faceButtons[i].dataset.select];
