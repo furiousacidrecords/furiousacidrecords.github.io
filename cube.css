@@ -35,10 +35,49 @@ body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-ser
 
 @media(max-width:1100px){.preview-panel{margin-bottom:20px}}
 
-/* All five real covers; keep phone swipes on the cube, not the link image. */
-.book-preview{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));aspect-ratio:1.8;gap:4px;padding:4px}
-.book-preview img{grid-column:span 2;width:100%;height:100%;min-height:0;object-fit:contain}
-.book-preview img:nth-child(4){grid-column:2/span 2}.book-preview img:nth-child(5){grid-column:4/span 2}
-.face[data-plane="books"] .face-note{display:none}
+/* Separate physical books. Their artwork stays on the covers; the shelf is clear. */
+.face{background:linear-gradient(135deg,#55779330,#09182a57 55%,#37587925)}
+.face .book-face{transform-style:preserve-3d;gap:6px;cursor:grab!important}
+.book-face:hover,.book-face.is-active{background:none;box-shadow:none}
+.book-face::after{display:none}
+.face .book-preview{position:relative;display:block;aspect-ratio:auto;height:calc(var(--size)*.59);width:100%;padding:0;overflow:visible;border:0;background:transparent;box-shadow:none;transform-style:preserve-3d;line-height:normal}
+.book{--depth:7px;--tilt:0deg;--turn:-22deg;--lift:10px;position:absolute;display:block;width:26%;aspect-ratio:2/3;padding:0;border:0;border-radius:2px;background:none;transform:translateZ(var(--lift)) rotateZ(var(--tilt));transform-style:preserve-3d;cursor:pointer;touch-action:none;pointer-events:auto;color:#fff;transition:transform .3s ease}
+.book:nth-child(1){left:1%;top:4%;--tilt:-9deg;--lift:12px}
+.book:nth-child(2){left:36%;top:0;--tilt:4deg;--turn:-16deg;--lift:18px}
+.book:nth-child(3){left:70%;top:6%;--tilt:9deg;--turn:-25deg;--lift:24px}
+.book:nth-child(4){left:20%;top:48%;--tilt:-6deg;--lift:26px}
+.book:nth-child(5){left:55%;top:46%;--tilt:7deg;--turn:-18deg;--lift:30px}
+.book:hover,.book:focus-visible{transform:translateZ(calc(var(--lift) + 12px)) rotateZ(var(--tilt)) scale(1.06)}
+.book:focus-visible{outline:2px solid #d4f4ff;outline-offset:6px}
+.book-object{position:absolute;inset:0;display:block;transform-style:preserve-3d;transform:rotateX(7deg) rotateY(var(--turn));transition:transform .65s cubic-bezier(.2,.75,.25,1);pointer-events:none}
+.book.is-turned .book-object{transform:rotateX(7deg) rotateY(calc(var(--turn) + 180deg))}
+.book-panel{position:absolute;inset:0;display:block;border-radius:1px;backface-visibility:hidden;box-shadow:1px 2px 4px #03111d88;background:#050607}
+.book-cover{transform:translateZ(calc(var(--depth)/2))}
+.book-reverse{transform:rotateY(180deg) translateZ(calc(var(--depth)/2))}
+.book-preview .book img{display:block;width:100%;height:100%;object-fit:contain;pointer-events:none}
+.book-reverse img{transform:scaleX(-1);opacity:.86}
+.book-panel::after{content:"";position:absolute;inset:0;border-radius:1px;background:linear-gradient(100deg,#0008,transparent 8%,#fff3 10%,transparent 14%,transparent 76%,#fff2);box-shadow:inset 0 0 0 1px #ffffff35;pointer-events:none}
+.book-spine,.book-pages,.book-edge{position:absolute;display:block;backface-visibility:hidden;pointer-events:none}
+.book-spine{top:0;left:calc(var(--depth)/-2);width:var(--depth);height:100%;transform:rotateY(-90deg);background:linear-gradient(90deg,#080b10,#50616e 45%,#080b10)}
+.book-pages{top:0;left:calc(100% - var(--depth)/2);width:var(--depth);height:100%;transform:rotateY(90deg);background:repeating-linear-gradient(#d1c8b6 0 1px,#faf2e3 1px 3px)}
+.book-edge{left:0;width:100%;height:var(--depth);background:repeating-linear-gradient(0deg,#d1c8b6 0 1px,#faf2e3 1px 2px)}
+.book-edge-top{top:calc(var(--depth)/-2);transform:rotateX(90deg)}
+.book-edge-bottom{top:calc(100% - var(--depth)/2);transform:rotateX(-90deg)}
+.book-cultivation .book-cover::before{content:"";position:absolute;inset:0;background:url('/book-grain.svg') center/100% 100%;mix-blend-mode:screen;opacity:.23;pointer-events:none}
+.book-cultivation .book-cover::after{background:radial-gradient(ellipse at var(--gloss-x,70%) var(--gloss-y,30%),#e5f7ff70,transparent 48%),linear-gradient(100deg,#0009,transparent 8%,#fff6 10%,transparent 14%,transparent 88%,#fff3);box-shadow:inset 0 0 0 1px #9eadb466,inset 2px 0 3px #fff2}
+.book-cultivation .book-spine{background:linear-gradient(90deg,#000,#293139,#000)}
+.face .book-catalog{font-size:clamp(25px,4vw,36px);text-decoration:none;pointer-events:auto;transform:translateZ(12px)}
+.book-catalog:hover{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:5px}
+.book-hint{display:block;margin-top:5px;font-size:10px;font-weight:500;letter-spacing:.09em;pointer-events:none}
+.face .plane-reflection{position:absolute;inset:0;transform:rotateY(180deg) scaleX(-1) translateZ(2px);backface-visibility:hidden;pointer-events:none!important;transition:none!important;justify-content:center;background:none;box-shadow:none;text-shadow:none}
+.plane-reflection .face-number,.plane-reflection .face-title,.plane-reflection .face-note{display:none}
+.plane-reflection::after{display:none}
+.plane-reflection .face-preview{background:transparent;border:0;box-shadow:none}
+.plane-reflection .book{pointer-events:none;cursor:default}
+.plane-reflection .book-cover::after{background:none;box-shadow:none}
+.plane-reflection .book-preview{transform:translateZ(0)}
+@media(max-width:600px){:root{--size:clamp(210px,58vw,280px)}.stage{height:350px}.book{--depth:5px}.face .book-face{padding:7%;gap:5px}.book-hint{font-size:8px;margin-top:3px}.book-face .face-number{font-size:10px}.face .book-catalog{font-size:25px}}
+@media(prefers-reduced-motion:reduce){.book-object,.book{transition:none}.book:hover,.book:focus-visible{transform:translateZ(var(--lift)) rotateZ(var(--tilt))}}
+/* Keep swipes on the cube instead of dragging an image or opening a link. */
 .stage,.cube,.face-link{touch-action:none;-webkit-touch-callout:none}
 .face-link{-webkit-user-drag:none}.face-link span{pointer-events:none}
