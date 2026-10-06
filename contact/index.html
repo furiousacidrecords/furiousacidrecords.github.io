@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>Contact Zach | Furious Acid</title>
+  <meta name="description" content="Contact Zach Brown about Furious Acid books, research, art, games, and merchandise. Use the public contact email or the existing submission form.">
+  <link rel="canonical" href="https://furiousacid.com/contact/">
+  <link rel="icon" href="/favicon.png">
+  <link rel="stylesheet" href="/cube.css?v=20261006-book-projection-1">
+  <style>
+    .contact-page{max-width:760px;margin:25px auto 60px;padding:0 22px}.contact-page h1{font-size:clamp(30px,6vw,44px)}.contact-page p{font-size:16px;line-height:1.5;color:#526271}.contact-card{margin-top:25px;background:#ffffffd9;border:1px solid #bdd9e9;border-radius:8px;padding:25px}.contact-card h2{font-size:23px;margin:0 0 15px}.contact-form{display:grid;gap:17px}.contact-form label{display:grid;gap:7px;font-size:14px;color:#294c62;font-weight:600}.contact-form input,.contact-form textarea{width:100%;font:inherit;font-weight:400;font-size:16px;border:1px solid #a9c6d9;background:#fcfeff;padding:12px;border-radius:4px;color:#162e42}.contact-form textarea{min-height:145px;resize:vertical}.contact-form input:focus,.contact-form textarea:focus{outline:2px solid #0072b4;outline-offset:2px}.contact-form button,.contact-button{font-size:16px;padding:12px 17px;border:0;background:#0072b4;color:white;min-height:46px;border-radius:4px;justify-self:start;text-decoration:none}.contact-form .email-note{font-size:14px;line-height:1.45;margin:0}.direct-email{overflow-wrap:anywhere}.contact-page details{margin-top:24px;padding-top:22px;border-top:1px solid #d2e3ee}.contact-page summary{cursor:pointer;font-size:16px;font-weight:600;min-height:44px;color:#075b91}.submission-frame{width:100%;height:1500px;min-height:700px;border:1px solid #d2e3ee;background:white;border-radius:5px}.contact-tools{display:flex;flex-wrap:wrap;gap:16px;margin-top:25px;font-size:14px}.contact-page a:focus-visible{outline:3px solid #006aac;outline-offset:4px}body.is-embedded .header,body.is-embedded .contact-tools{display:none}body.is-embedded .contact-page{margin:0 auto;padding:20px}body.is-embedded .contact-card{margin-top:16px}@media(max-width:500px){.contact-card{padding:19px}.contact-page{padding:0 18px}}
+  </style>
+</head>
+<body>
+  <header class="header"><a class="wordmark" href="/">FURIOUS<span>ACID</span></a><a class="updates-link" href="/">Back to the cube</a></header>
+  <main class="contact-page">
+    <p class="eyebrow">GET IN TOUCH</p><h1>Contact Zach.</h1>
+    <p>Books, research, art, games, or a project you want to talk about.</p>
+    <section class="contact-card" aria-labelledby="message-heading">
+      <h2 id="message-heading">Write a message</h2>
+      <form class="contact-form" id="contact-form">
+        <label>Your name<input name="name" autocomplete="name" required maxlength="120"></label>
+        <label>Your email<input name="email" type="email" autocomplete="email" required maxlength="254"></label>
+        <label>Your message<textarea name="message" required maxlength="5000" rows="5"></textarea></label>
+        <button type="submit">Open email to Zach</button>
+        <p class="email-note">Opens your email app with your message ready to send to <a class="direct-email" href="mailto:furiousacidcreator@gmail.com">furiousacidcreator@gmail.com</a>.</p>
+        <p id="email-status" class="email-note" role="status" hidden>Your message is prepared. Send it from your email app. <a id="prepared-email">Open the prepared email again</a>.</p>
+      </form>
+      <noscript><p><a href="mailto:furiousacidcreator@gmail.com">Email Zach directly</a>, or use the submission form below.</p></noscript>
+      <details id="submission-details"><summary>Use the existing submission form</summary><p>Submit through the Furious Acid questionnaire.</p><p><a href="https://docs.google.com/forms/d/e/1FAIpQLSc3CCnnXqeRuJDzXjZDbF0QyJFNSLs7Sc0409xqxGuDreRZ9w/viewform" target="_blank" rel="noopener noreferrer">Open the form in a new window</a></p><iframe class="submission-frame" title="Furious Acid submission form" data-src="https://docs.google.com/forms/d/e/1FAIpQLSc3CCnnXqeRuJDzXjZDbF0QyJFNSLs7Sc0409xqxGuDreRZ9w/viewform?embedded=true" loading="lazy"></iframe></details>
+    </section>
+    <nav class="contact-tools" aria-label="Furious Acid tools"><a href="/calc/">Calculator</a><a href="/custom-studio.html">Custom Studio</a><a href="/weather/">Weather</a><a href="https://acid-chat-hub.lovable.app/forum">Furious Acid Forum</a></nav>
+  </main>
+  <script>
+    (()=>{
+      if(new URLSearchParams(location.search).get('embed')==='1')document.body.classList.add('is-embedded');
+      const form=document.getElementById('contact-form');
+      form.addEventListener('submit',event=>{
+        event.preventDefault();if(!form.reportValidity())return;
+        const data=new FormData(form);
+        const body=`Name: ${data.get('name')}\r\nReply email: ${data.get('email')}\r\n\r\n${data.get('message')}`;
+        const link=document.getElementById('prepared-email');
+        link.href='mailto:furiousacidcreator@gmail.com?subject='+encodeURIComponent('Furious Acid website message')+'&body='+encodeURIComponent(body);
+        document.getElementById('email-status').hidden=false;link.click();
+      });
+      document.getElementById('submission-details').addEventListener('toggle',event=>{if(event.target.open){const frame=event.target.querySelector('iframe');if(!frame.hasAttribute('src'))frame.src=frame.dataset.src;}});
+    })();
+  </script>
+</body>
+</html>

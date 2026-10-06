@@ -11,7 +11,7 @@
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://furiousacid.com/">
   <link rel="icon" href="/favicon.png">
-  <link rel="stylesheet" href="/cube.css?v=20261006-book-planes-2">
+  <link rel="stylesheet" href="/cube.css?v=20261006-book-projection-1">
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebSite", "name": "Furious Acid", "url": "https://furiousacid.com/", "description": "Books, visual technical notebooks, coloring art, games, and the Purple Rabbit by Zach Brown.", "author": {"@type": "Person", "name": "Zach Brown"}}</script>
 </head>
 <body>
@@ -20,11 +20,13 @@
     <a class="updates-link" href="/me">The story · 23.2K followers</a>
   </header>
   <main>
-    <div class="intro"><p class="eyebrow">THE FURIOUS ACID UNIVERSE</p><h1>Pick a plane.</h1><p class="hint" id="cube-help">Drag to rotate. Tap a book to turn it. Tap a face to enter.</p></div>
+    <div class="intro"><p class="eyebrow">THE FURIOUS ACID UNIVERSE</p><h1>Enter a book.</h1><p class="hint" id="cube-help">Drag the cube. Tap a book to see inside.</p></div>
+    <div class="book-world" id="book-world">
+      <svg class="projection-beam" id="projection-beam" aria-hidden="true" hidden><defs><linearGradient id="beam-fill"><stop stop-color="#33bfff" stop-opacity=".3"/><stop offset="1" stop-color="#33bfff" stop-opacity=".02"/></linearGradient></defs><path class="beam-fan" fill="url(#beam-fill)"/><path class="beam-line"/><circle class="beam-source" r="4"/></svg>
     <div class="stage" id="stage" role="group" aria-label="Interactive six-sided navigation cube" aria-describedby="cube-help" tabindex="0">
       <div class="cube" id="cube">
         <div class="face front" data-plane="updates"><a class="face-link" data-select="updates" href="/me/"><span class="face-number">01 / FURIOUS ACID</span><span class="face-preview updates-preview"><img src="/images/cube/updates.jpg" alt="Preview of What happened to Furious Acid" draggable="false" width="1348" height="926"></span><span class="face-title">Updates</span><span class="face-note">23.2K followers. The story behind it.</span></a></div>
-        <div class="face right" data-plane="books"><div class="face-link book-face" data-select="books" role="group" aria-label="Five books — tap a cover to turn it">
+        <div class="face right" data-plane="books"><div class="face-link book-face" data-select="books" role="group" aria-label="Five connected books — tap a cover to explore">
           <span class="face-number">02 / FURIOUS ACID</span>
           <div class="face-preview book-preview"><button class="book book-medicine" type="button" data-book="medicine" aria-label="Turn The Chemistry Behind Medicine and Drug Discovery" aria-pressed="false">
               <span class="book-object"><span class="book-panel book-cover"><img src="https://images-na.ssl-images-amazon.com/images/P/B0GJPYPJTZ.01.L.jpg" alt="The Chemistry Behind Medicine and Drug Discovery cover" draggable="false"></span><span class="book-panel book-reverse" aria-hidden="true"><img src="https://images-na.ssl-images-amazon.com/images/P/B0GJPYPJTZ.01.L.jpg" alt="" draggable="false"></span><span class="book-spine" aria-hidden="true"></span><span class="book-pages" aria-hidden="true"></span><span class="book-edge book-edge-top" aria-hidden="true"></span><span class="book-edge book-edge-bottom" aria-hidden="true"></span></span>
@@ -41,12 +43,12 @@
 <button class="book book-coloring" type="button" data-book="coloring" aria-label="Turn Furious Acid Coloring Book" aria-pressed="false">
               <span class="book-object"><span class="book-panel book-cover"><img src="https://images-na.ssl-images-amazon.com/images/P/B0GW9BRT6X.01.L.jpg" alt="Furious Acid Coloring Book cover" draggable="false"></span><span class="book-panel book-reverse" aria-hidden="true"><img src="https://images-na.ssl-images-amazon.com/images/P/B0GW9BRT6X.01.L.jpg" alt="" draggable="false"></span><span class="book-spine" aria-hidden="true"></span><span class="book-pages" aria-hidden="true"></span><span class="book-edge book-edge-top" aria-hidden="true"></span><span class="book-edge book-edge-bottom" aria-hidden="true"></span></span>
             </button></div>
-          <a class="face-title book-catalog" href="/catalog.html#books">Books <span class="book-hint">TAP A BOOK TO TURN IT</span></a>
+          <a class="face-title book-catalog" href="/catalog.html#books">Books <span class="book-hint">TAP A BOOK TO SEE INSIDE</span></a>
         </div></div>
         <div class="face back" data-plane="merch"><a class="face-link" data-select="merch" href="https://vt.tiktok.com/ZPLedk8hg/"><span class="face-number">03 / FURIOUS ACID</span><span class="face-preview merch-preview"><img src="https://images-api.printify.com/mockup/69af358318fd5f7c2200ff3f/68324/9077/furious-acid-purple-rabbit-velveteen-plush-blanket.jpg?camera_label=front&amp;revision=1773090286176" alt="Furious Acid Purple Rabbit blanket from the merchandise catalog" draggable="false"></span><span class="face-title">Merch</span><span class="face-note">Shop on TikTok.</span></a></div>
         <div class="face left" data-plane="lab"><a class="face-link" data-select="lab" href="/lab/"><span class="face-number">04 / FURIOUS ACID</span><span class="face-preview"><img src="/images/cube/lab.jpg" alt="The actual Furious Acid Lab flask and reaction bench" draggable="false" width="540" height="330"></span><span class="face-title">Lab<span class="alpha">ALPHA</span></span><span class="face-note">Step up to the bench.</span></a></div>
-        <div class="face top" data-plane="games"><a class="face-link" data-select="games" href="/roll/"><span class="face-number">05 / FURIOUS ACID</span><span class="face-preview"><img src="/images/cube/games.jpg" alt="Furious Roll artwork with Earth objects on Mars" draggable="false" width="1200" height="630"></span><span class="face-title">Games</span><span class="face-note">Play in our world.</span></a></div>
-        <div class="face bottom" data-plane="apps"><a class="face-link" data-select="apps" href="/rabbit/"><span class="face-number">06 / FURIOUS ACID</span><span class="face-preview apps-preview"><img src="/images/cube/apps.jpg" alt="The Purple Rabbit chatbot screen" draggable="false" width="419" height="320"></span><span class="face-title">Apps<span class="chat-label">+ Chatbot</span></span><span class="face-note">Ask. Calculate. Create.</span></a></div>
+        <div class="face top" data-plane="games"><a class="face-link game-face" data-select="games" href="/roll/"><span class="face-number">05 / FURIOUS ACID</span><span class="face-preview game-preview"><img src="/images/cube/games.jpg" alt="Furious Roll artwork with Earth objects on Mars" draggable="false" width="1200" height="630"><span class="play-caption">PLAY FURIOUS ROLL</span></span><span class="face-title">Games</span><span class="face-note">Play in our world.</span></a></div>
+        <div class="face bottom" data-plane="apps"><a class="face-link" data-select="apps" href="/contact/"><span class="face-number">06 / FURIOUS ACID</span><span class="face-preview contact-preview"><span class="contact-heading">MESSAGE ZACH</span><span class="contact-field">Name &amp; email</span><span class="contact-field">Your message</span></span><span class="face-title">Contact<span class="chat-label">+ Apps</span></span><span class="face-note">Get in touch. Explore the tools.</span></a></div>
       </div>
     </div>
     <aside class="preview-panel" id="preview-panel" aria-label="Destination preview">
@@ -54,14 +56,25 @@
       <h2 id="preview-title">Updates</h2>
       <p id="preview-description">The Purple Rabbit, the books, and the story behind 23.2K followers.</p>
       <div id="preview-links"></div>
+      <section class="book-projection" id="book-projection" aria-label="Explore the selected book" hidden>
+        <div class="projection-toolbar"><span id="projection-caption">Inside this book</span><button id="turn-book" type="button" aria-pressed="false">Turn book</button><button id="close-projection" type="button" aria-label="Close book preview">Close</button></div>
+        <div class="projection-assembly" id="projection-assembly">
+          <figure class="projection-art"><img id="projection-image" alt=""><figcaption id="projection-art-caption"></figcaption></figure>
+          <div class="projection-topics" id="projection-topics"></div>
+        </div>
+        <div class="book-connections"><p id="connection-description"></p><div id="connected-books" role="group" aria-label="Follow a connection to another book"></div></div>
+        <nav class="book-trail" id="book-trail" aria-label="Explore all five books"></nav>
+      </section>
     </aside>
+    </div>
     <div class="cube-controls"><span class="motion-label" id="motion-label">SLOW ROTATION</span><button type="button" id="motion" aria-pressed="false">Pause rotation</button><button type="button" id="reset">Reset view</button></div>
     <nav class="planes" aria-label="Open a destination">
-      <a data-select="updates" href="/me/">Updates</a><a data-select="books" href="/catalog.html#books">Books</a><a data-select="merch" href="https://vt.tiktok.com/ZPLedk8hg/">Merch</a><a data-select="lab" href="/lab/">Lab Alpha</a><a data-select="games" href="/roll/">Games</a><a data-select="apps" href="/rabbit/">Apps + Chatbot</a>
+      <a data-select="updates" href="/me/">Updates</a><a data-select="books" href="/catalog.html#books">Books</a><a data-select="merch" href="https://vt.tiktok.com/ZPLedk8hg/">Merch</a><a data-select="lab" href="/lab/">Lab Alpha</a><a data-select="games" href="/roll/">Games</a><a data-select="apps" href="/contact/">Contact + Apps</a>
     </nav>
-    <noscript><nav class="fallback" aria-label="Furious Acid sections"><a href="/me">Updates</a><a href="/catalog.html#books">Books</a><a href="https://vt.tiktok.com/ZPLedk8hg/">Merch</a><a href="/lab/">Lab Alpha</a><a href="/roll/">Games</a><a href="/calc/">Apps</a><a href="/rabbit/">Chatbot</a></nav></noscript>
+    <noscript><nav class="fallback" aria-label="Furious Acid sections"><a href="/me">Updates</a><a href="/catalog.html#books">Books</a><a href="https://vt.tiktok.com/ZPLedk8hg/">Merch</a><a href="/lab/">Lab Alpha</a><a href="/roll/">Games</a><a href="/calc/">Apps</a><a href="/contact/">Contact</a></nav></noscript>
   </main>
+  <dialog class="game-portal" id="game-portal" aria-labelledby="game-portal-title"><header class="game-portal-header"><h2 id="game-portal-title">Furious Roll</h2><a id="game-page" href="/roll/" target="_blank" rel="noopener">Open game page</a><button type="button" id="close-game">Close game</button></header><iframe id="game-frame" title="Furious Roll" allow="fullscreen; gamepad; pointer-lock"></iframe></dialog>
   <footer><span>© 2026 FURIOUS ACID</span><a href="/catalog.html">Browse the catalog</a><a href="https://acid-chat-hub.lovable.app/forum">Forum</a></footer>
-  <script src="/cube.js?v=20261006-book-planes-2" defer></script>
+  <script src="/cube.js?v=20261006-book-projection-1" defer></script>
 </body>
 </html>
