@@ -14,7 +14,7 @@
     books: {number:'02', title:'Books', description:'Visual growing layouts lead into indoor climate and experiments, then chemistry and drug discovery and a pictorial lab manual. The coloring book brings the art into your hands.', links:[['Browse books','/catalog.html#books'],['All editions on Amazon','https://www.amazon.com/stores/Furious-Acid/author/B0GWLWJBS6/allbooks']]},
     merch: {number:'03', title:'Merch', description:'The Purple Rabbit beyond the page. Open Furious Acid’s TikTok Shop for the current collection.', links:[['Open TikTok Shop','https://vt.tiktok.com/ZPLedk8hg/']]},
     lab: {number:'04', title:'Lab Alpha', description:'Enter the interactive chemistry bench. The reference spreadsheet is a separate destination.', links:[['Enter the lab','/lab/'],['Chemical reference','/list-chem.html']]},
-    games: {number:'05', title:'Games', description:'Furious Roll: a rabbit pilots a rabbit robot, rolling up a world and taking it to Mars. Open the game right here.', links:[['Play Furious Roll','/roll/']]},
+    games: {number:'05', title:'City Run', description:'The game already began. Get closer, follow the glowing trail, and collect sparks to reach the rocket.', links:[['Enter the city','/city/'],['Play Furious Roll','/roll/']]},
     apps: {number:'06', title:'Contact + Apps', description:'Get in touch with Zach through the submission form or the public contact email. The calculator, studio, and weather tools are here too.', links:[['Contact Zach','/contact/'],['Calculator','/calc/'],['Custom Studio','/custom-studio.html'],['Roku weather','/weather/']]}
   };
   const books = {
@@ -60,6 +60,7 @@
     content.parentElement.append(reflection);
     return reflection;
   });
+  const cityElevations=[...cube.querySelectorAll('[data-city-side]')];
   let activeKey = '';
   let hovering = false;
   let previewHoldUntil = 0;
@@ -73,7 +74,7 @@
   const gameFrame=document.getElementById('game-frame');
   let gameTrigger=null;
   function playGame(key,trigger){
-    const game={title:'Furious Roll',url:'/roll/'};
+    const game={title:'City Run',url:'/city/?light='+Math.ceil(window.cityEntryLight?.() ?? 100)};
     if(typeof gamePortal.showModal!=='function'){location.href=game.url;return;}
     if(!gamePortal.open)gameTrigger=trigger || document.activeElement;
     document.getElementById('game-portal-title').textContent=game.title;gameFrame.title=game.title;gameFrame.src=game.url;
@@ -114,6 +115,16 @@
     });
     cube.style.setProperty('--gloss-x',`${50+Math.sin(ry+Math.PI/2)*38}%`);
     cube.style.setProperty('--gloss-y',`${45+Math.sin(rx)*30}%`);
+    // Four synthesized elevations keep the skyline upright in the same cube
+    // coordinates. Blend neighbouring views at corners instead of showing
+    // four opaque image walls. The terrain has its own top, sides and underside.
+    const sideFacing=[Math.cos(ry),-Math.sin(ry),-Math.cos(ry),Math.sin(ry)];
+    const strongest=Math.max(...sideFacing);
+    cityElevations.forEach((plane,i)=>{
+      const facing=sideFacing[i];
+      const blend=Math.max(0,Math.min(1,(facing-strongest+.34)/.34));
+      plane.style.opacity=String(blend);
+    });
     drawBeam();
   }
   function drawBeam(){
@@ -180,7 +191,7 @@
     document.getElementById('preview-description').textContent=section.description;
     document.getElementById('preview-links').replaceChildren(...section.links.map(([label,url])=>{
       const link=document.createElement('a');link.textContent=label;link.href=url;
-      if(url==='/roll/')link.addEventListener('click',event=>{if(event.ctrlKey || event.metaKey || event.shiftKey || event.altKey)return;event.preventDefault();playGame('roll',link);});return link;
+      if(url==='/city/')link.addEventListener('click',event=>{if(event.ctrlKey || event.metaKey || event.shiftKey || event.altKey)return;event.preventDefault();playGame('roll',link);});return link;
     }));
   }
   function preview(key) {
@@ -307,5 +318,9 @@
     }
     requestAnimationFrame(frame);
   }
+  stage.addEventListener('city-approach',event=>{
+    closeBook();snap={x:-27,y:nearest(y,-45)};holdUntil=performance.now()+12000;preview('games');
+    if(event.detail?.enter)playGame('city',document.getElementById('city-gate'));
+  });
   updateMotion();draw();preview('books');requestAnimationFrame(frame);
 })();
