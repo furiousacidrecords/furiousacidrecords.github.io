@@ -12,9 +12,9 @@
     if(light<=0){light=100;depth=0;}
     depth++;light=Math.min(100,light+10);
     stage.classList.toggle('city-near',depth===1);stage.classList.toggle('city-closer',depth>=2);
-    label.textContent=depth===1?'Closer. Tap again.':depth===2?'One more tap. Enter the city.':'Enter the city';
-    gate.setAttribute('aria-label',depth>=2?'Enter the city':'Get closer to the city');
-    message.textContent=depth===1?'You found the city.':depth===2?'Follow the sparks.':'The city is waiting.';
+    label.textContent=depth===1?'Closer. Tap again.':depth===2?'One more tap. Play Furious Roll.':'Play Furious Roll';
+    gate.setAttribute('aria-label',depth>=2?'Play Furious Roll':'Get closer to the city');
+    message.textContent=depth===1?'You found the city.':depth===2?'Roll the world up.':'Furious Roll is waiting.';
     stage.dispatchEvent(new CustomEvent('city-approach',{detail:{enter:depth>=3}}));
   });
   pause.addEventListener('pointerdown',e=>e.stopPropagation());
