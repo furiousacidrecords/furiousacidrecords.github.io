@@ -12,13 +12,15 @@
     if(light<=0){light=100;depth=0;}
     depth++;light=Math.min(100,light+10);
     stage.classList.toggle('city-near',depth===1);stage.classList.toggle('city-closer',depth>=2);
-    label.textContent=depth===1?'Closer. Tap again.':depth===2?'One more tap. Play Furious Roll.':'Play Furious Roll';
-    gate.setAttribute('aria-label',depth>=2?'Play Furious Roll':'Get closer to the city');
-    message.textContent=depth===1?'You found the city.':depth===2?'Roll the world up.':'Furious Roll is waiting.';
+    label.textContent=depth===1?'Closer. Tap again.':depth===2?'One more tap. Enter the city.':'Enter the city';
+    gate.setAttribute('aria-label',depth>=2?'Enter the city':'Get closer to the city');
+    message.textContent=depth===1?'You found the city.':depth===2?'Follow the sparks.':'The city is waiting.';
     stage.dispatchEvent(new CustomEvent('city-approach',{detail:{enter:depth>=3}}));
   });
+  stage.addEventListener('city-start',()=>{paused=false;});
+  stage.addEventListener('city-leave',()=>{depth=0;label.textContent='Tap to get closer';});
   pause.addEventListener('pointerdown',e=>e.stopPropagation());
-  pause.addEventListener('click',()=>{paused=!paused;pause.textContent=paused?'Resume game':'Pause game';pause.setAttribute('aria-pressed',String(paused));});
-  function frame(now){const dt=Math.min(last?(now-last)/1000:0,.1);last=now;const portal=document.getElementById('game-portal');if(!document.hidden&&!paused&&!portal.open){light=Math.max(0,light-dt*.45);meter.value=light;if(light<=0){message.textContent='The city dimmed. Tap to bring it back.';label.textContent='Restore the city';}else if(depth===0)message.textContent=`City light ${Math.ceil(light)}%. Get closer.`;}requestAnimationFrame(frame);}
+  pause.addEventListener('click',()=>{paused=!paused;pause.textContent=paused?'Resume game':'Pause game';pause.setAttribute('aria-pressed',String(paused));document.getElementById('inline-city')?.contentWindow?.postMessage({type:'city-pause',paused},location.origin);});
+  function frame(now){const dt=Math.min(last?(now-last)/1000:0,.1);last=now;const portal=document.getElementById('game-portal');if(!document.hidden&&!paused&&!portal.open&&!stage.classList.contains('city-playing')){light=Math.max(0,light-dt*.45);meter.value=light;if(light<=0){message.textContent='The city dimmed. Tap to bring it back.';label.textContent='Restore the city';}else if(depth===0)message.textContent=`City light ${Math.ceil(light)}%. Get closer.`;}requestAnimationFrame(frame);}
   document.addEventListener('visibilitychange',()=>last=0);requestAnimationFrame(frame);
 })();

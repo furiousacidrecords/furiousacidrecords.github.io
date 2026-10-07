@@ -117,7 +117,7 @@ body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-ser
 .game-portal{width:min(1240px,96vw);height:90svh;max-width:none;max-height:none;padding:0;background:#140c22;border:1px solid #84cfff;border-radius:10px;box-shadow:0 0 50px #36adff30;color:white;overflow:hidden}.game-portal[open]{display:flex;flex-direction:column}.game-portal::backdrop{background:#071c34c9;backdrop-filter:blur(7px)}.game-portal-header{display:flex;flex-wrap:wrap;align-items:center;gap:14px;padding:14px 18px;background:#112538;border-bottom:1px solid #547e9d}.game-portal h2{font-size:18px;margin:0 auto 0 0}.game-portal nav{display:flex;gap:8px}.game-portal button,.game-portal a{font-size:14px;min-height:40px;padding:9px 12px;border-radius:4px;border:1px solid #6894af;background:#203b52;color:#fff;text-decoration:none}.game-portal button[aria-pressed=true]{background:#087cb7;border-color:#94dfff}.game-portal iframe{display:block;width:100%;flex:1;border:0;min-height:0;background:#140c22}@media(max-width:600px){.game-portal{width:100vw;height:100svh;border-radius:0;border:0}.game-portal-header{padding:10px;gap:8px}.game-portal-header h2{width:100%}.game-portal-header a{margin-left:auto}.game-portal button,.game-portal a{font-size:12px;padding:9px 8px}}
 
 /* A pop-up diorama shares the cube's 3D space; it never clips to the top face. */
-.city-diorama{position:absolute;left:50%;top:0;width:0;height:0;transform:translateY(calc(var(--size)*-.025));transform-style:preserve-3d;pointer-events:none;--city-height:calc(var(--size)*.70);--terrain-size:calc(var(--size)*.94)}
+.city-diorama{position:absolute;left:50%;top:0;width:0;height:0;transform:translateY(calc(var(--size)*.10));transform-style:preserve-3d;pointer-events:none;--city-height:calc(var(--size)*.70);--terrain-size:calc(var(--size)*.94)}
 .city-terrain{position:absolute;left:0;top:0;width:0;height:0;transform-style:preserve-3d;pointer-events:none}
 .city-ground{position:absolute;left:calc(var(--terrain-size)*-.5);top:calc(var(--terrain-size)*-.5);width:var(--terrain-size);height:var(--terrain-size);background:#cc3e27 url('/images/cube/city-ground.webp') center/cover;transform:rotateX(90deg);backface-visibility:hidden;border-radius:6%;box-shadow:inset 0 0 18px #58171999}
 .city-earth{position:absolute;left:calc(var(--terrain-size)*-.5);top:0;width:var(--terrain-size);height:calc(var(--size)*.045);background:#923520 url('/images/cube/city-ground.webp') center/cover;backface-visibility:hidden;filter:brightness(.73);transform-origin:center top}
@@ -141,3 +141,11 @@ body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-ser
 
 /* Keep the city timer outside the skyline. */
 .city-status{position:relative;left:auto;top:auto;transform:none;margin:14px auto 20px;width:min(330px,calc(100% - 40px))}
+
+/* The world sits in the cube surface; play stays on that same surface. */
+.city-earth,.city-earth-bottom{display:none}.city-ground{display:none}
+.inline-city{position:absolute;inset:0;width:100%;height:100%;border:0;transform:translateZ(3px);backface-visibility:hidden;pointer-events:auto;background:#c34b30}
+.stage.city-playing .city-diorama,.stage.city-playing .city-gate,.stage.city-playing .game-face,.stage.city-playing .top .plane-reflection{display:none}
+.stage.city-playing .cube{--city-zoom:1.1}.inline-city-controls{max-width:700px;margin:0 auto 20px;padding:14px 20px;color:#174d6c;background:#eef9ff;border:1px solid #a5d8ed;border-radius:12px;font-size:16px}.inline-city-buttons{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;margin-top:12px}.inline-city-buttons button{font:inherit;min-height:44px;padding:10px 14px;border:1px solid #91c9e2;border-radius:8px;background:white;color:#174d6c;touch-action:none}.inline-city-buttons button:active{background:#bceaff}
+.stage.city-playing{--size:min(78vw,440px);--half:calc(var(--size)/2);padding-top:20px;height:560px}.stage.city-playing .cube{--city-zoom:1}.stage.city-playing .face:not(.top){pointer-events:none}.stage.city-playing .face:not(.top) .face-link{pointer-events:none!important}
+@media(max-width:780px){.book-world .stage.city-playing{height:460px;padding-top:0}}
