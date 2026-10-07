@@ -15,7 +15,7 @@
     merch: {number:'03', title:'Merch', description:'The Purple Rabbit beyond the page. Open Furious Acid’s TikTok Shop for the current collection.', links:[['Open TikTok Shop','https://vt.tiktok.com/ZPLedk8hg/']]},
     lab: {number:'04', title:'Lab Alpha', description:'Enter the interactive chemistry bench. The reference spreadsheet is a separate destination.', links:[['Enter the lab','/lab/'],['Chemical reference','/list-chem.html']]},
     games: {number:'05', title:'City Run', description:'The game already began. Get closer, follow the glowing trail, and collect sparks to reach the rocket.', links:[['Enter the city','/city/'],['Play Furious Roll','/roll/']]},
-    apps: {number:'06', title:'Contact + Apps', description:'Get in touch with Zach through the submission form or the public contact email. The calculator, studio, and weather tools are here too.', links:[['Contact Zach','/contact/'],['Calculator','/calc/'],['Custom Studio','/custom-studio.html'],['Roku weather','/weather/']]}
+    apps: {number:'06', title:'Contact + Apps', description:'Get in touch through the submission form or the public contact email. The calculator, studio, and weather tools are here too.', links:[['Contact Furious Acid','/contact/'],['Calculator','/calc/'],['Custom Studio','/custom-studio.html'],['Roku weather','/weather/']]}
   };
   const books = {
     medicine:{title:'The Chemistry Behind Medicine and Drug Discovery', description:'Hidden Passages, Volume 1. Chemistry and drug discovery — the red book in the Furious Acid collection.', asin:'B0GJPYPJTZ'},
