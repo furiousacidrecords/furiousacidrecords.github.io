@@ -14,7 +14,7 @@
     books: {number:'02', title:'Books', description:'Visual growing layouts lead into indoor climate and experiments, then chemistry and drug discovery and a pictorial lab manual. The coloring book brings the art into your hands.', links:[['Browse books','/catalog.html#books'],['All editions on Amazon','https://www.amazon.com/stores/Furious-Acid/author/B0GWLWJBS6/allbooks']]},
     merch: {number:'03', title:'Merch', description:'The Purple Rabbit beyond the page. Open Furious Acid’s TikTok Shop for the current collection.', links:[['Open TikTok Shop','https://vt.tiktok.com/ZPLedk8hg/']]},
     lab: {number:'04', title:'Lab Alpha', description:'Enter the interactive chemistry bench. The reference spreadsheet is a separate destination.', links:[['Enter the lab','/lab/'],['Chemical reference','/list-chem.html']]},
-    games: {number:'05', title:'City Run', description:'The game already began. Get closer, follow the glowing trail, and collect sparks to reach the rocket.', links:[['Enter the city','/city/'],['Play Furious Roll','/roll/']]},
+    art: {number:'05', title:'Art', description:'The floating city artwork.', links:[]},
     apps: {number:'06', title:'Contact + Apps', description:'Get in touch through the submission form or the public contact email. The calculator, studio, and weather tools are here too.', links:[['Contact Furious Acid','/contact/'],['Calculator','/calc/'],['Custom Studio','/custom-studio.html'],['Roku weather','/weather/']]}
   };
   const books = {
@@ -31,7 +31,7 @@
     cultivation:{short:'Climate models',color:'#007c91',image:'/coca-page3.png',caption:'Actual sample · botanical illustrations',topics:[['Indoor climate','Indoor cultivation and climate modeling extend the manual’s view of the growing environment.'],['Experimental methods','The author connects this book with photocatalytic experiments and Raman spectrometry.'],['Plant sources','Coca, khat, and kratom are the plants named in this research notebook.']],related:['marijuana','medicine','synthesis'],connection:'The growing environment connects to plant research, comparative methods, and chemistry.'},
     medicine:{short:'Chemistry & medicine',color:'#b63850',caption:'The red book · Hidden Passages, Volume 1',topics:[['Chemistry & medicine','The chemistry behind medicine and drug discovery, in the author’s Hidden Passages series.'],['Connected research','Plant research, chemical ideas, and the history of medicine meet in this part of the collection.'],['Comparative methods','A connection to the author’s broader interest in comparing research approaches.']],related:['cultivation','synthesis'],connection:'Follow plant research into chemistry, then explore the pictorial lab manual.'},
     synthesis:{short:'Pictorial research',color:'#7b4bb5',caption:'Actual cover · pictorial lab manual',topics:[['Pictorial lab manual','The author describes Drug Synthesis as a visual lab manual and a story best explored in the book itself.'],['Research connections','Comparative methods and plant-source research connect this book with the rest of the collection.'],['Editions','Explore the English editions and the Italian and Spanish versions from the catalog.']],related:['medicine','cultivation','coloring'],connection:'The chemistry connects back to plant research; the pictorial format connects to the collection’s art.'},
-    coloring:{short:'Art & coloring',color:'#9559b8',caption:'Actual cover · Furious Acid Coloring Book',topics:[['Coloring book','The coloring title brings Furious Acid’s visual identity onto the page.'],['The Purple Rabbit','The character connects the books with the broader Furious Acid world.'],['Beyond the page','Follow the art into the merchandise collection and the game.']],related:['marijuana','synthesis'],connection:'A shared visual language runs through the diagrams, the pictorial manual, and the art.'}
+    coloring:{short:'Art & coloring',color:'#9559b8',caption:'Actual cover · Furious Acid Coloring Book',topics:[['Coloring book','The coloring title brings Furious Acid’s visual identity onto the page.'],['The Purple Rabbit','The character connects the books with the broader Furious Acid world.'],['Beyond the page','Follow the art into the merchandise collection.']],related:['marijuana','synthesis'],connection:'A shared visual language runs through the diagrams, the pictorial manual, and the art.'}
   };
   const stage = document.getElementById('stage');
   const cube = document.getElementById('cube');
@@ -70,48 +70,6 @@
   const projection=document.getElementById('book-projection');
   const beam=document.getElementById('projection-beam');
   const world=document.getElementById('book-world');
-  const gamePortal=document.getElementById('game-portal');
-  const gameFrame=document.getElementById('game-frame');
-  let gameTrigger=null;
-  function playGame(key,trigger){
-    if(key==='roll'){
-      gameTrigger=trigger||document.activeElement;gameFrame.src='/roll/';gameFrame.title='Furious Roll';document.getElementById('game-page').href='/roll/';
-      if(typeof gamePortal.showModal==='function')gamePortal.showModal();else location.href='/roll/';return;
-    }
-    closeBook();
-    const frame=document.getElementById('inline-city');
-    if(!stage.classList.contains('city-playing'))gameTrigger=trigger||document.activeElement;
-    stage.classList.add('city-playing');frame.hidden=false;
-    if(!frame.getAttribute('src'))frame.src='/city/?embedded=1&light='+Math.ceil(window.cityEntryLight?.()??100);
-    document.getElementById('inline-city-controls').hidden=false;
-    paused=true;vx=vy=0;snap=null;x=-65;y=0;updateMotion();draw();
-    document.getElementById('city-entry-pause').textContent='Pause game';document.getElementById('city-entry-pause').setAttribute('aria-pressed','false');
-    stage.dispatchEvent(new Event('city-start'));
-    frame.focus({preventScroll:true});
-
-  }
-  document.querySelectorAll('[data-play-game]').forEach(button=>button.addEventListener('click',()=>playGame(button.dataset.playGame)));
-  document.getElementById('close-game').addEventListener('click',()=>gamePortal.close());
-  gamePortal.addEventListener('close',()=>{gameFrame.removeAttribute('src');gameTrigger?.focus({preventScroll:true});});
-  function leaveCity(){
-    const frame=document.getElementById('inline-city');frame.removeAttribute('src');frame.hidden=true;
-    stage.classList.remove('city-playing','city-near','city-closer');document.getElementById('inline-city-controls').hidden=true;
-    paused=reduced.matches;x=-18;y=-68;snap=null;vx=vy=0;updateMotion();draw();
-    stage.dispatchEvent(new Event('city-leave'));gameTrigger?.focus({preventScroll:true});
-  }
-  document.getElementById('leave-city').addEventListener('click',leaveCity);
-  window.addEventListener('keydown',event=>{if(stage.classList.contains('city-playing')&&['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Space'].includes(event.code)){event.preventDefault();cityInput(event.code,true);}});
-  window.addEventListener('keyup',event=>{if(stage.classList.contains('city-playing'))cityInput(event.code,false);});
-  function cityInput(key,down){document.getElementById('inline-city').contentWindow?.postMessage({type:'city-input',key,down},location.origin);}
-  for(const button of document.querySelectorAll('[data-city-key]')){
-    button.addEventListener('pointerdown',event=>{event.preventDefault();button.setPointerCapture(event.pointerId);cityInput(button.dataset.cityKey,true);});
-    for(const event of ['pointerup','pointercancel','lostpointercapture'])button.addEventListener(event,()=>cityInput(button.dataset.cityKey,false));
-  }
-  window.addEventListener('message',event=>{
-    if(event.origin!==location.origin||event.source!==document.getElementById('inline-city').contentWindow||event.data?.type!=='city-state')return;
-    document.getElementById('inline-city-status').textContent=`Tiny rabbit robot · ${event.data.collected} / 12 sparks · City light ${Math.ceil(event.data.energy)}%`;
-    document.getElementById('city-entry-light').value=event.data.energy;
-  });
   const bookCover=key=>bookButtons.find(button=>button.dataset.book===key).querySelector('.book-cover img').getAttribute('src');
   const bookControl=(key,className)=>{
     const button=document.createElement('button');button.type='button';button.className=className;button.dataset.exploreBook=key;button.setAttribute('aria-label','Explore '+books[key].title);
@@ -126,7 +84,7 @@
   function draw() {
     cube.style.transform = `rotateX(${x}deg) rotateY(${y}deg)`;
     const rx=x*Math.PI/180,ry=y*Math.PI/180;
-    const facing={updates:Math.cos(rx)*Math.cos(ry),books:-Math.cos(rx)*Math.sin(ry),merch:-Math.cos(rx)*Math.cos(ry),lab:Math.cos(rx)*Math.sin(ry),games:-Math.sin(rx),apps:Math.sin(rx)};
+    const facing={updates:Math.cos(rx)*Math.cos(ry),books:-Math.cos(rx)*Math.sin(ry),merch:-Math.cos(rx)*Math.cos(ry),lab:Math.cos(rx)*Math.sin(ry),art:-Math.sin(rx),apps:Math.sin(rx)};
     faceButtons.forEach(button => {
       button.dataset.facing = String(facing[button.dataset.select]);
       const visible = facing[button.dataset.select] > .13;
@@ -218,7 +176,7 @@
     document.getElementById('preview-description').textContent=section.description;
     document.getElementById('preview-links').replaceChildren(...section.links.map(([label,url])=>{
       const link=document.createElement('a');link.textContent=label;link.href=url;
-      if(url==='/city/'||url==='/roll/')link.addEventListener('click',event=>{if(event.ctrlKey || event.metaKey || event.shiftKey || event.altKey)return;event.preventDefault();playGame(url==='/roll/'?'roll':'city',link);});return link;
+      return link;
     }));
   }
   function preview(key) {
@@ -242,7 +200,6 @@
     link.addEventListener('focus',()=>{previewHoldUntil=performance.now()+8000;preview(link.dataset.select);});
     link.addEventListener('click',event=>{
       if(suppressClick || performance.now()<suppressUntil){event.preventDefault();return;}
-      if(link.dataset.select==='games' && !event.ctrlKey && !event.metaKey && !event.shiftKey && !event.altKey){event.preventDefault();playGame('city',link);return;}
       link.classList.remove('is-rippling'); void link.offsetWidth;link.classList.add('is-rippling');
     });
   });
@@ -259,7 +216,6 @@
   panel.addEventListener('pointerenter',()=>{hovering=true;});
   panel.addEventListener('pointerleave',()=>{hovering=false;previewHoldUntil=performance.now()+3000;});
   stage.addEventListener('pointerdown',event=>{
-    if(stage.classList.contains('city-playing'))return;
     if(!event.isPrimary || event.button!==0)return;
     suppressClick=false;snap=null;vx=vy=0;
     drag={id:event.pointerId,x:event.clientX,y:event.clientY,startX:event.clientX,startY:event.clientY,time:performance.now(),moved:false};
@@ -323,9 +279,9 @@
     }
     if(event.key==='Enter' || event.key===' '){event.preventDefault();const face=faceButtons.filter(b=>b.getAttribute('aria-hidden')==='false').sort((a,b)=>Number(b.dataset.facing)-Number(a.dataset.facing));if(face[0]?.matches('a,button'))face[0].click();else face[0]?.querySelector('button,a')?.focus();}
   });
-  motion.addEventListener('click',()=>{if(stage.classList.contains('city-playing'))return;paused=!paused;vx=vy=0;holdUntil=0;updateMotion();});
+  motion.addEventListener('click',()=>{paused=!paused;vx=vy=0;holdUntil=0;updateMotion();});
   document.getElementById('reset').addEventListener('click',()=>{
-    leaveCity();x=-18;y=-68;snap=null;vx=vy=0;holdUntil=performance.now()+3000;
+    paused=reduced.matches;updateMotion();x=-18;y=-68;snap=null;vx=vy=0;holdUntil=performance.now()+3000;
     bookButtons.forEach(button=>{button.classList.remove('is-turned');});
     preview('books');draw();
   });
@@ -346,9 +302,5 @@
     }
     requestAnimationFrame(frame);
   }
-  stage.addEventListener('city-approach',event=>{
-    closeBook();snap={x:-27,y:nearest(y,-45)};holdUntil=performance.now()+12000;preview('games');
-    if(event.detail?.enter)playGame('city',document.getElementById('city-gate'));
-  });
   updateMotion();draw();preview('books');requestAnimationFrame(frame);
 })();
