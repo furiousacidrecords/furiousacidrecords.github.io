@@ -133,3 +133,12 @@ body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-ser
 /* Preserve the floating artwork at the existing cube plane. */
 .city-earth,.city-earth-bottom,.city-ground{display:none}
 .art-face{cursor:grab!important}
+
+/* Floating dual-screen teaser. Protected media is never embedded in the public page. */
+.screen-deck{max-width:720px;margin:30px auto -16px;padding:0 20px;display:grid;grid-template-columns:1fr 1fr;gap:14px;position:relative;z-index:3;perspective:950px}
+.deck-screen{min-height:184px;border:5px solid #172b3d;border-radius:13px;background:#071723;color:#e7f5ff;box-shadow:0 12px 26px #092b4940,0 0 0 1px #70c5ff55;overflow:hidden;display:flex;flex-direction:column;align-items:center;text-align:center;transform:rotateY(-5deg)}
+.deck-locked{transform:rotateY(5deg);justify-content:center;background:radial-gradient(circle at 50% 20%,#294056,#09141f 80%)}
+.screen-top{font-size:10px;letter-spacing:.13em;font-weight:700;padding:10px;color:#a4dfff;width:100%}.screen-dot{color:#52e7b5}
+.screen-picture{flex:1;min-height:84px;width:100%;background:radial-gradient(circle at 50% 35%,#1779a5,#09233a 70%);display:grid;place-items:center;position:relative}.screen-mark{font-size:38px;font-weight:900;letter-spacing:-.09em;color:#c6f0ff}.screen-play{position:absolute;right:14px;bottom:10px;font-size:13px;opacity:.65}
+.screen-bottom{display:flex;flex-direction:column;gap:3px;padding:9px}.screen-bottom strong,.deck-locked strong{font-size:16px}.screen-bottom span,.deck-locked p{font-size:12px;color:#b7d3e4;margin:4px 0 12px}.screen-lock{font-size:24px;margin:4px 0 9px}.screen-status{font-size:10px;letter-spacing:.1em;border:1px solid #7093a8;border-radius:20px;padding:6px 12px;margin-bottom:13px;color:#b7d3e4}
+@media(max-width:600px){.screen-deck{gap:8px;padding:0 12px;margin:22px auto -18px}.deck-screen{min-height:166px;border-width:3px}.screen-top{font-size:8px;padding:8px 3px}.screen-bottom strong,.deck-locked strong{font-size:13px}.screen-bottom span,.deck-locked p{font-size:10px}.screen-mark{font-size:28px}.screen-status{font-size:8px;padding:5px}}
