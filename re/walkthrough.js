@@ -75,7 +75,6 @@
     distance += speed;
     if (distanceEl) distanceEl.textContent = Math.floor(distance) + ' m';
 
-    // The world starts to rush past as the cart gathers speed.
     if (world) {
       world.style.setProperty('--rush', String(Math.min(1, distance / 900)));
       world.style.setProperty('--world-scale', String(1 + Math.min(.55, distance / 2200)));
@@ -123,16 +122,40 @@
   mirrorSkip?.addEventListener('click', () => setTimeout(openWorld, 180));
 
   checkoutBtn?.addEventListener('click', () => {
-    // The visual journey is live now. Real charging is intentionally not faked.
-    // A Stripe payment link can be dropped into data-checkout-url when connected.
     const url = checkoutBtn.dataset.checkoutUrl;
     if (url) {
       window.location.href = url;
       return;
     }
-    if (checkoutNote) {
-      checkoutNote.textContent = 'The $5 checkout is staged and ready. Connect the payment link to make the charge live.';
-    }
-    checkoutBtn.textContent = 'CHECKOUT READY — $5';
+    if (checkoutNote) checkoutNote.textContent = 'Checkout is not connected yet.';
   });
+
+  // Stripe returns here after the current is checked out. This is a visual
+  // continuation marker for the test build; live gating will need verified
+  // payment state instead of trusting a query-string flag.
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('checked') === '1' && world && checkout) {
+    world.hidden = false;
+    blanketCard.hidden = true;
+    rideStage.hidden = true;
+    checkout.classList.add('show');
+    document.body.style.overflow = 'hidden';
+
+    const eyebrow = checkout.querySelector('.eyebrow');
+    const title = checkout.querySelector('h2');
+    const body = checkout.querySelector('p');
+    if (eyebrow) eyebrow.textContent = 'CHECK ✓';
+    if (title) title.textContent = 'YOU CHECKED OUT';
+    if (body) body.textContent = 'The current noticed. Keep checking.';
+    if (checkoutBtn) {
+      checkoutBtn.textContent = 'KEEP CHECKING';
+      checkoutBtn.removeAttribute('data-checkout-url');
+      checkoutBtn.onclick = () => {
+        checkout.classList.remove('show');
+        rideStage.hidden = false;
+        if (checkoutNote) checkoutNote.textContent = 'Paid-path continuation starts here.';
+      };
+    }
+    if (checkoutNote) checkoutNote.textContent = 'Test checkout returned successfully.';
+  }
 })();
