@@ -29,10 +29,11 @@
   let replyCount = 0;
   let mirrorShown = false;
   let nextReplyTimer = null;
+  let outputWatchdog = null;
   let objectUrl = null;
   let engineReady = false;
   let inTurn = false;
-  const seenReplies = new Set();
+  let lastAssistantText = '';
 
   const rand = arr => arr[Math.floor(Math.random() * arr.length)];
   const clean = s => String(s || '').replace(/\s+/g, ' ').trim();
@@ -60,12 +61,22 @@
     const row = document.createElement('div');
     row.className = `message ${who === 'user' ? 'user-message' : 'assistant-message'}`;
     if (who !== 'user') {
-      const avatar = document.createElement('div'); avatar.className = 'avatar'; avatar.textContent = '◌'; row.appendChild(avatar);
+      const avatar = document.createElement('div');
+      avatar.className = 'avatar';
+      avatar.textContent = '◌';
+      row.appendChild(avatar);
     }
-    const bubble = document.createElement('div'); bubble.className = 'bubble';
-    const speaker = document.createElement('span'); speaker.className = 'speaker'; speaker.textContent = who === 'user' ? 'You' : 'Chatbot';
-    const body = document.createElement('div'); body.textContent = text;
-    bubble.append(speaker, body); row.appendChild(bubble); chatStream.appendChild(row); scrollBottom();
+    const bubble = document.createElement('div');
+    bubble.className = 'bubble';
+    const speaker = document.createElement('span');
+    speaker.className = 'speaker';
+    speaker.textContent = who === 'user' ? 'You' : 'Chatbot';
+    const body = document.createElement('div');
+    body.textContent = text;
+    bubble.append(speaker, body);
+    row.appendChild(bubble);
+    chatStream.appendChild(row);
+    scrollBottom();
   }
 
   function setTyping(on) {
@@ -80,28 +91,19 @@
     return true;
   }
 
-  function scheduleNextReply() {
+  function finishTurn() {
     clearTimeout(nextReplyTimer);
-    if (!inTurn || replyCount >= 3) return;
-    nextReplyTimer = setTimeout(() => {
-      if (!inTurn || replyCount >= 3 || !overlay?.hidden) return;
-      setTyping(true);
-      if (regenBtn && !regenBtn.disabled) {
-        regenBtn.click();
-      } else {
-        // One more rebuild with fresh random settings can expose a different legal pool.
-        if (mode) mode.value = 'random';
-        if (transitions) transitions.value = 'random';
-        triggerBuild();
-      }
-    }, 1150);
+    clearTimeout(outputWatchdog);
+    inTurn = false;
+    setTyping(false);
   }
 
   function showMirror() {
-    clearTimeout(nextReplyTimer);
-    inTurn = false;
-    setTyping(false);
-    if (!overlay || mirrorShown || !mirrorSurprise?.checked) return;
+    finishTurn();
+    if (!overlay || mirrorShown || !mirrorSurprise?.checked) {
+      if (send) send.disabled = false;
+      return;
+    }
     mirrorShown = true;
     setTimeout(() => {
       overlay.hidden = false;
@@ -109,57 +111,97 @@
     }, 450);
   }
 
-  function handleEngineOutput() {
-    if (!inTurn || !out) return;
-    const text = clean(out.textContent);
-    if (!text || text === '—') return;
-
-    // Variant zero is the user's own wording. Do not pretend it is a chatbot reply.
-    if (text.toLowerCase() === clean(submittedSource).toLowerCase()) {
-      setTyping(true);
-      setTimeout(() => {
-        if (inTurn && regenBtn && !regenBtn.disabled) regenBtn.click();
-        else if (inTurn) scheduleNextReply();
-      }, 250);
-      return;
-    }
-
-    const key = text.toLowerCase();
-    if (seenReplies.has(key)) {
-      scheduleNextReply();
-      return;
-    }
-    seenReplies.add(key);
+  function emitReply(text) {
+    if (!inTurn || replyCount >= 3) return;
+    const reply = clean(text) || lastAssistantText || submittedSource || '...';
+    clearTimeout(outputWatchdog);
     setTyping(false);
-    addMessage(text, 'assistant');
+    addMessage(reply, 'assistant');
+    lastAssistantText = reply;
     replyCount += 1;
 
     if (replyCount >= 3) showMirror();
     else scheduleNextReply();
   }
 
+  function scheduleNextReply() {
+    clearTimeout(nextReplyTimer);
+    clearTimeout(outputWatchdog);
+    if (!inTurn || replyCount >= 3) return;
+
+    nextReplyTimer = setTimeout(() => {
+      if (!inTurn || replyCount >= 3 || !overlay?.hidden) return;
+      setTyping(true);
+      const before = replyCount;
+
+      if (regenBtn && !regenBtn.disabled) {
+        regenBtn.click();
+        outputWatchdog = setTimeout(() => {
+          if (inTurn && replyCount === before && replyCount < 3) {
+            emitReply(lastAssistantText || submittedSource);
+          }
+        }, 700);
+      } else {
+        // Some inputs only have one legal wording. Repeating is allowed: the joke
+        // is always three chatbot replies, not a promise of three unique rewrites.
+        outputWatchdog = setTimeout(() => {
+          if (inTurn && replyCount === before && replyCount < 3) {
+            emitReply(lastAssistantText || submittedSource);
+          }
+        }, 450);
+      }
+    }, 1050);
+  }
+
+  function handleEngineOutput() {
+    if (!inTurn || !out || replyCount >= 3) return;
+    const text = clean(out.textContent);
+    if (!text || text === '—') return;
+
+    // Repeats are intentionally allowed. If English only gives us "Hello" and
+    // "Hi", the chatbot can say one of them again. Three replies always win.
+    emitReply(text);
+  }
+
   if (out) {
-    new MutationObserver(handleEngineOutput).observe(out, { childList: true, characterData: true, subtree: true });
+    new MutationObserver(handleEngineOutput).observe(out, {
+      childList: true,
+      characterData: true,
+      subtree: true
+    });
   }
 
   function startTurn() {
     const text = clean(source?.value);
     if (!text || !engineReady || inTurn) return;
+
     submittedSource = text;
     replyCount = 0;
-    seenReplies.clear();
+    lastAssistantText = '';
     inTurn = true;
     clearTimeout(nextReplyTimer);
+    clearTimeout(outputWatchdog);
+
     addMessage(text, 'user');
     setTyping(true);
     if (send) send.disabled = true;
+
+    const before = replyCount;
     triggerBuild();
-    setTimeout(() => { if (send) send.disabled = false; }, 650);
+
+    // Even if the grammar engine produces no mutation at all, give the user a
+    // first reply. From there the same three-replies-then-mirror rule continues.
+    outputWatchdog = setTimeout(() => {
+      if (inTurn && replyCount === before && replyCount < 3) emitReply(submittedSource);
+    }, 900);
   }
 
   send?.addEventListener('click', startTurn);
   source?.addEventListener('keydown', e => {
-    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); startTurn(); }
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      startTurn();
+    }
   });
   source?.addEventListener('input', () => {
     if (!source) return;
@@ -167,36 +209,53 @@
     source.style.height = Math.min(source.scrollHeight, 120) + 'px';
   });
 
-  settingsToggle?.addEventListener('click', () => { if (settingsPanel) settingsPanel.hidden = false; });
-  settingsClose?.addEventListener('click', () => { if (settingsPanel) settingsPanel.hidden = true; });
+  settingsToggle?.addEventListener('click', () => {
+    if (settingsPanel) settingsPanel.hidden = false;
+  });
+  settingsClose?.addEventListener('click', () => {
+    if (settingsPanel) settingsPanel.hidden = true;
+  });
 
   randomize?.addEventListener('click', () => {
     if (mode) mode.value = 'random';
     if (transitions) transitions.value = 'random';
   });
 
-  function hideMirror() { if (overlay) overlay.hidden = true; }
+  function hideMirror() {
+    if (overlay) overlay.hidden = true;
+    if (send) send.disabled = false;
+  }
+
   mirrorClose?.addEventListener('click', hideMirror);
   mirrorSkip?.addEventListener('click', hideMirror);
   mirrorDone?.addEventListener('click', hideMirror);
-  overlay?.addEventListener('click', e => { if (e.target === overlay) hideMirror(); });
-  document.addEventListener('keydown', e => { if (e.key === 'Escape' && overlay && !overlay.hidden) hideMirror(); });
+  overlay?.addEventListener('click', e => {
+    if (e.target === overlay) hideMirror();
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && overlay && !overlay.hidden) hideMirror();
+  });
 
   mirrorFile?.addEventListener('change', () => {
     const file = mirrorFile.files?.[0];
     if (!file) return;
     if (objectUrl) URL.revokeObjectURL(objectUrl);
     objectUrl = URL.createObjectURL(file);
-    if (mirrorPreview) { mirrorPreview.src = objectUrl; mirrorPreview.hidden = false; }
+    if (mirrorPreview) {
+      mirrorPreview.src = objectUrl;
+      mirrorPreview.hidden = false;
+    }
     if (mirrorBlank) mirrorBlank.hidden = true;
     if (mirrorDone) mirrorDone.hidden = false;
   });
 
-  // Engine controls still exist in Advanced, but the visible chat never needs them.
   if (loadBtn) loadBtn.textContent = 'REBUILD';
 
   if (send) send.disabled = true;
-  const ready = () => { engineReady = true; if (send) send.disabled = false; };
+  const ready = () => {
+    engineReady = true;
+    if (send) send.disabled = false;
+  };
   if (window.__compromiseReady?.then) window.__compromiseReady.then(ready).catch(ready);
   else setTimeout(ready, 250);
 })();
