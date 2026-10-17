@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark">
-<title>Sentence Math E3</title>
+<title>Sentence Math E3.1</title>
 <link rel="stylesheet" href="./e3.css">
 </head>
 <body><main>
 <h1>Sentence Math</h1>
-<div class="tag">E3 — English rules first. No language model required. FuriousAcid.com/re</div>
+<div class="tag">E3.1 — English rules first. No language model required. FuriousAcid.com/re</div>
 
 <div class="card">
 <label for="source">Enter English</label>
@@ -50,7 +50,24 @@
 <div class="dictlinks" style="margin-top:10px"><a target="_blank" rel="noopener" href="https://github.com/spencermountain/compromise">Compromise source</a><a target="_blank" rel="noopener" href="https://www.dictionary.com/">Dictionary.com</a><a target="_blank" rel="noopener" href="https://www.thesaurus.com/">Thesaurus.com</a></div>
 </div>
 </main>
-<script src="https://unpkg.com/compromise@14.18.0/builds/compromise.js"></script>
-<script src="./e3.js"></script>
+<script>
+window.__compromiseReady = new Promise((resolve, reject) => {
+  const urls = [
+    'https://unpkg.com/compromise@14.18.0/builds/compromise.js',
+    'https://cdn.jsdelivr.net/npm/compromise@14.18.0/builds/compromise.js'
+  ];
+  const load = i => {
+    if (i >= urls.length) { reject(new Error('Compromise CDN unavailable')); return; }
+    const s = document.createElement('script');
+    s.src = urls[i];
+    s.onload = () => resolve();
+    s.onerror = () => load(i + 1);
+    document.head.appendChild(s);
+  };
+  load(0);
+});
+</script>
+<script src="./e3.js?v=31"></script>
+<script src="./hotfix.js?v=1"></script>
 </body>
 </html>
