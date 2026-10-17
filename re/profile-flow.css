@@ -1,0 +1,34 @@
+/* Profile-choice prototype: mirror -> uploaded photo -> goofy funhouse version -> choose. */
+.profile-flow[hidden]{display:none}
+.profile-flow{margin-top:14px}
+.profile-loading{display:grid;place-items:center;gap:10px;min-height:170px;padding:20px;border:1px solid var(--chat-line);border-radius:18px;background:#0f1218}
+.profile-loading .spinner{width:42px;height:42px;border-radius:50%;border:4px solid rgba(255,255,255,.16);border-top-color:#fff;animation:profileSpin .8s linear infinite}
+.profile-loading strong{font-size:18px}.profile-loading span{font-size:12px;color:var(--chat-muted)}
+@keyframes profileSpin{to{transform:rotate(360deg)}}
+
+.profile-chooser h3{font-size:25px;margin:2px 0 4px}.profile-chooser .chooser-copy{color:var(--chat-muted);font-size:13px;margin:0 0 13px;line-height:1.45}
+.profile-previews{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+.profile-option-card{position:relative;overflow:hidden;border:1px solid #49505e;border-radius:18px;background:#0f1218;min-height:230px;text-align:left;padding:0;box-shadow:0 12px 30px rgba(0,0,0,.28)}
+.profile-option-card .option-tag{position:absolute;z-index:5;left:10px;top:10px;background:rgba(7,9,13,.78);border:1px solid rgba(255,255,255,.2);backdrop-filter:blur(8px);border-radius:999px;padding:5px 8px;font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+.original-preview{width:100%;height:230px;display:block;object-fit:cover}
+
+.funhouse-preview{position:relative;height:230px;overflow:hidden;background:linear-gradient(#62c7ed 0 31%,#b5df85 31% 53%,#73bd55 53% 100%)}
+.funhouse-preview .fh-sun{position:absolute;right:17px;top:17px;width:46px;height:46px;border-radius:50%;background:#ffe47d;box-shadow:0 0 24px rgba(255,228,125,.55)}
+.funhouse-preview .fh-hill{position:absolute;border-radius:50% 50% 0 0/70% 70% 0 0;background:#4f9d6d}.funhouse-preview .fh-h1{width:85%;height:43%;left:-15%;top:27%;transform:rotate(-7deg)}.funhouse-preview .fh-h2{width:80%;height:39%;right:-20%;top:31%;background:#3b8462;transform:rotate(7deg)}
+.funhouse-preview .fh-grass{position:absolute;inset:auto 0 0;height:47%;background:linear-gradient(#8ed466,#63b44e)}
+.funhouse-preview .fh-blanket{position:absolute;left:15%;right:9%;bottom:18%;height:31%;background:repeating-linear-gradient(8deg,#f3b6c9 0 14px,#f6d9bf 14px 27px,#e9a9c3 27px 40px);transform:skewX(-10deg) rotate(-2deg);border-radius:10px;box-shadow:0 7px 20px rgba(0,0,0,.18)}
+.funhouse-preview .fh-person{position:absolute;bottom:25%;width:37%;height:35%;transform:rotate(8deg)}.funhouse-preview .fh-person.you{left:18%}.funhouse-preview .fh-person.stranger{right:11%;transform:rotate(-7deg) scale(.92)}
+.funhouse-preview .fh-body{position:absolute;left:25%;bottom:0;width:72%;height:53%;background:#78c5c8;border-radius:50% 50% 38% 52%;box-shadow:inset -8px -6px 0 rgba(0,0,0,.07)}
+.funhouse-preview .fh-person.stranger .fh-body{background:#91d0d5}
+.funhouse-preview .fh-head{position:absolute;left:7%;top:10%;width:37%;aspect-ratio:1;border-radius:50%;overflow:hidden;background:#a87355;border:2px solid rgba(255,255,255,.25);box-shadow:0 3px 10px rgba(0,0,0,.22)}
+.funhouse-preview .fh-head img{width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
+.funhouse-preview .fh-person.stranger .fh-head:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 36%,#d49c75 0 44%,#4b3329 45% 58%,transparent 59%)}
+.funhouse-preview .fh-caption{position:absolute;left:10px;right:10px;bottom:7px;text-align:center;font-size:11px;font-weight:800;color:#14351b;text-shadow:0 1px rgba(255,255,255,.55)}
+
+.profile-choice-buttons{display:grid;gap:8px;margin-top:11px}.profile-choice-buttons button{border-radius:13px;padding:12px 14px;font-size:13px;font-weight:900;cursor:pointer}.profile-choice-buttons .fun{background:#f4f6f8;color:#111;border:0}.profile-choice-buttons .normal{background:#252a33;color:#fff;border:1px solid #4a5260}.profile-choice-buttons .default{background:#181b21;color:#ddd;border:1px solid #383e49}.profile-choice-buttons .none{background:transparent;color:#9ca4b1;border:1px dashed #414854}
+.profile-result{padding:17px;border:1px solid #414854;border-radius:18px;background:#0f1218}.profile-result .check-big{font-size:38px}.profile-result h3{margin:5px 0}.profile-result p{color:var(--chat-muted);margin:0 0 13px}.profile-result button{border-radius:12px;padding:10px 13px}
+
+/* In this prototype the old mirror action row is replaced by the profile flow. */
+.mirror-actions{display:none!important}
+@media(max-width:560px){.profile-previews{grid-template-columns:1fr}.profile-option-card,.original-preview,.funhouse-preview{min-height:190px;height:190px}}
+@media(prefers-reduced-motion:reduce){.profile-loading .spinner{animation:none}}
