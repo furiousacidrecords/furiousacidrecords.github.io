@@ -4,71 +4,49 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark">
-<title>Sentence Math E1</title>
-<style>
-:root{--bg:#101114;--panel:#191b20;--line:#30343d;--text:#f5f5f7;--muted:#aeb3bd;--hi:#fff;--good:#a9edbb;--bad:#ffb8b8}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
-main{max-width:900px;margin:auto;padding:22px 14px 50px}h1{font-size:clamp(32px,8vw,64px);letter-spacing:-.06em;margin:0}.tag{color:var(--muted);margin:4px 0 22px}
-.card{border:1px solid var(--line);background:var(--panel);border-radius:16px;padding:15px;margin:12px 0}label{display:block;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-size:12px;margin-bottom:8px}
-textarea,input{width:100%;border:1px solid var(--line);background:#0b0c0f;color:var(--text);border-radius:11px;padding:13px;font:inherit}textarea{min-height:118px;font-size:18px;line-height:1.45;resize:vertical}
-.row{display:flex;gap:9px;flex-wrap:wrap;margin-top:10px}button{border:1px solid var(--line);background:#24272e;color:var(--text);border-radius:11px;padding:11px 13px;font:inherit;font-weight:700;cursor:pointer}button.primary{background:var(--hi);color:#111}button:disabled{opacity:.35;cursor:not-allowed}
-.output{font-family:Georgia,serif;font-size:clamp(24px,5vw,39px);line-height:1.3;min-height:70px;display:flex;align-items:center}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.stat{background:#0b0c0f;border:1px solid var(--line);border-radius:11px;padding:11px}.stat b{display:block;font-size:19px;margin-top:5px;overflow-wrap:anywhere}
-.keyrow{display:grid;grid-template-columns:1fr auto;gap:8px}.small{font-size:12px;line-height:1.5;color:var(--muted)}.status{font-size:13px;min-height:20px;margin-top:10px;color:var(--good)}.err{color:var(--bad)}
-.wordrow{padding:9px 0;border-top:1px solid var(--line)}.wordrow:first-child{border-top:0}.syn{color:#d8dde8}.wordrow a{color:#fff;text-decoration:underline;text-underline-offset:3px}.rule{font-size:13px;line-height:1.55}.mono{font-family:inherit}
-@media(max-width:620px){.stats{grid-template-columns:1fr}.keyrow{grid-template-columns:1fr}}
-</style>
+<title>Sentence Math E2</title>
+<link rel="stylesheet" href="./e2.css">
 </head>
 <body><main>
 <h1>Sentence Math</h1>
-<div class="tag">E1 — no added words. FuriousAcid.com/re</div>
+<div class="tag">E2 — same effect, different legal English. FuriousAcid.com/re</div>
+
 <div class="card">
 <label for="source">Enter English</label>
 <textarea id="source">I can read. It is fun.</textarea>
-<div class="row"><button class="primary" id="load">LOAD</button><button id="regen" disabled>REGENERATE</button><button id="back" disabled>◀</button></div>
+<div class="controls">
+  <div><label for="transitions">Optional transitions</label><select id="transitions"><option value="off">Off</option><option value="neutral">Neutral only</option><option value="expressive">Expressive / may shift relation</option></select></div>
+  <div><label for="floor">Effect floor</label><div class="rangebox"><input id="floor" type="range" min="70" max="100" value="88"><div class="rangevalue" id="floorValue">88%</div></div></div>
+</div>
+<div class="row"><button class="primary" id="load">PARSE + BUILD</button><button id="regen" disabled>REGENERATE</button><button id="back" disabled>◀</button></div>
 <div class="status" id="status"></div>
 </div>
+
 <div class="card"><label>Regenerated sentence</label><div class="output" id="out">—</div></div>
 <div class="stats">
-<div class="stat"><label>Variant</label><b id="vno">—</b></div>
-<div class="stat"><label>Total</label><b id="total">—</b></div>
-<div class="stat"><label>Words</label><b id="words">—</b></div>
+  <div class="stat"><label>Variant</label><b id="variant">—</b></div>
+  <div class="stat"><label>Accepted</label><b id="total">—</b></div>
+  <div class="stat"><label>Effect confidence</label><b id="score">—</b></div>
 </div>
+
+<div class="card math">
+<label>The math</label>
+<div class="formula" id="formula">—</div>
+<div class="why" id="why">—</div>
+</div>
+
 <div class="card">
-<label>Numeric key</label>
+<label>Keygen</label>
 <div class="keyrow"><input id="key" readonly><button id="copy" disabled>COPY</button></div>
-<div class="small" style="margin-top:8px">Format: <span class="mono">1-P-C-C-C…</span>. 1 = E1. P = sentence-order number. Each C = 0 for the original word, 1–3 for that word's one-word synonym rank.</div>
+<div class="tiny" style="margin-top:8px">The key records the English transformation, not the sentence itself. Same E2 input + same key = the same rule/result.</div>
 <div style="height:14px"></div>
-<label>Apply key</label><div class="keyrow"><input id="applyKey" placeholder="1-0-0-1"><button id="apply" disabled>APPLY</button></div>
+<label>Apply key</label><div class="keyrow"><input id="applyKey" placeholder="E2-R10-01"><button id="apply" disabled>APPLY</button></div>
 </div>
-<div class="card">
-<label>Dictionary source</label>
-<div id="dict" class="small">Load a sentence to see the live one-for-one synonym slots and Dictionary.com verification links.</div>
+
+<div class="card tiny">
+<b>Engine rule:</b> identify grammatical/semantic roles first, then transform the structure. Core content is kept anchored unless a rule can preserve the same effect. Function words may be added or removed when English syntax requires them. Transition words are optional and scored lower when they imply a relationship the source did not state.
+<div class="dictlinks" style="margin-top:10px"><a target="_blank" rel="noopener" href="https://www.dictionary.com/">Dictionary.com</a><a target="_blank" rel="noopener" href="https://www.thesaurus.com/">Thesaurus.com</a></div>
 </div>
-<div class="card rule"><b>E1 rule:</b> the word count cannot increase. E1 may only (1) reorder complete sentences already present and (2) replace one word with one single-word synonym. Multiword entries are rejected. Every synonym slot includes a Dictionary.com verification link.</div>
 </main>
-<script>
-'use strict';
-const $=id=>document.getElementById(id);
-let model=null;
-let idx=0n;
-const fact=n=>{let x=1n;for(let i=2n;i<=BigInt(n);i++)x*=i;return x};
-function permutation(items,n){const a=[...items],out=[];let k=BigInt(n);for(let size=a.length;size>0;size--){const f=fact(size-1);const q=Number(k/f);k%=f;out.push(a.splice(q,1)[0]);}return out;}
-function replaceTokens(text,replacements){let wordIndex=0;return text.replace(/[A-Za-z]+(?:['’][A-Za-z]+)?(?:-[A-Za-z]+)*/g,match=>{wordIndex++;return Object.prototype.hasOwnProperty.call(replacements,wordIndex)?replacements[wordIndex]:match;});}
-function splitSentences(text){const matches=text.match(/[^.!?]+(?:[.!?]+|$)/g)||[];const out=matches.map(s=>s.trim()).filter(Boolean);return out.length?out:[text.trim()];}
-function decodeIndex(n){let x=BigInt(n);const choices=[];for(const slot of model.slots){const radix=BigInt(1+slot.synonyms.length);choices.push(Number(x%radix));x/=radix;}const p=Number(x%BigInt(model.sentencePermutationCount));return {p,choices};}
-function encodeKey(p,choices){return ['1',String(p),...choices.map(String)].join('-')}
-function renderAt(n){if(!model)return;const total=BigInt(model.totalVariants);if(total<1n)return;if(n<0n)n=total-1n;if(n>=total)n=0n;idx=n;const d=decodeIndex(idx);const replacements={};model.slots.forEach((slot,i)=>{const choice=d.choices[i];if(choice>0)replacements[slot.tokenIndex]=slot.synonyms[choice-1];});const substituted=replaceTokens(model.text,replacements);let sentences=splitSentences(substituted);if(sentences.length>1&&model.sentencePermutationCount>1){sentences=permutation(sentences,d.p);}const text=sentences.join(' ').trim();$('out').textContent=text;$('key').value=encodeKey(d.p,d.choices);$('vno').textContent=(idx+1n).toString();$('total').textContent=total.toString();$('words').textContent=String(model.wordCount);$('regen').disabled=total<=1n;$('back').disabled=total<=1n;$('copy').disabled=false;$('apply').disabled=false;$('status').className='status';$('status').textContent=idx===total-1n?'Last variant. Next REGENERATE wraps to the first.':'';}
-const STOPWORDS=new Set(`a an the i me my mine you your yours he him his she her hers it its we us our ours they them their theirs this that these those who whom whose which what am is are was were be been being do does did done have has had can could will would shall should may might must and or but nor for yet so if then than because since while of to in on at by from with without as into onto over under up down out off about before after between through during against among not no yes very too also just only even there here`.split(/\s+/));
-const WORDRX=/[A-Za-z]+(?:['’][A-Za-z]+)?(?:-[A-Za-z]+)*/g;
-function cleanSynonym(original,value){value=String(value||'').trim();if(!/^[A-Za-z]+(?:['’][A-Za-z]+)?(?:-[A-Za-z]+)*$/.test(value))return null;const a=original.toLowerCase(),b=value.toLowerCase();if(a===b)return null;if(a.length>3&&b.length>3&&a.replace(/s$/,'')===b.replace(/s$/,''))return null;if(original===original.toUpperCase())return value.toUpperCase();if(/^[A-Z]/.test(original))return value[0].toUpperCase()+value.slice(1);return value.toLowerCase();}
-async function getSynonyms(word){const url='https://api.datamuse.com/words?rel_syn='+encodeURIComponent(word.toLowerCase())+'&max=12';const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),8000);try{const r=await fetch(url,{signal:controller.signal,headers:{'Accept':'application/json'}});if(!r.ok)throw new Error('synonym lookup HTTP '+r.status);const rows=await r.json();const out=[],seen=new Set([word.toLowerCase()]);for(const row of rows){const s=cleanSynonym(word,row.word);if(!s)continue;const k=s.toLowerCase();if(seen.has(k))continue;seen.add(k);out.push(s);if(out.length===3)break;}return out;}finally{clearTimeout(timer)}}
-function tokenize(text){const tokens=[];let m;WORDRX.lastIndex=0;let i=0;while((m=WORDRX.exec(text))){tokens.push({index:++i,text:m[0],start:m.index,end:m.index+m[0].length})}return tokens;}
-async function analyzeClient(text){text=text.trim();if(!text)throw new Error('Enter a sentence first.');if(text.length>20000)throw new Error('E1 limits one input to 20,000 characters.');const tokens=tokenize(text);const sentences=splitSentences(text);const eligible=tokens.filter(t=>t.text.length>=2&&!STOPWORDS.has(t.text.toLowerCase()));const unique=[...new Set(eligible.map(t=>t.text.toLowerCase()))];const synMap=new Map();await Promise.all(unique.map(async word=>{try{synMap.set(word,await getSynonyms(word))}catch(_){synMap.set(word,[])}}));const slots=[];for(const token of eligible){const syns=(synMap.get(token.text.toLowerCase())||[]).map(s=>cleanSynonym(token.text,s)).filter(Boolean);if(syns.length)slots.push({tokenIndex:token.index,original:token.text,synonyms:syns.slice(0,3),dictionary:'https://www.dictionary.com/browse/'+encodeURIComponent(token.text.toLowerCase()),thesaurus:'https://www.thesaurus.com/browse/'+encodeURIComponent(token.text.toLowerCase())});}const sentencePermutationCount=(sentences.length>=1&&sentences.length<=7)?Number(fact(sentences.length)):1;let lexical=1n;for(const slot of slots)lexical*=BigInt(1+slot.synonyms.length);const total=BigInt(sentencePermutationCount)*lexical;return {engine:1,text,tokens,sentences,slots,sentencePermutationCount,lexicalCombinationCount:String(lexical),totalVariants:String(total),wordCount:tokens.length,rule:'No words are added. Whole input sentences may be reordered and eligible words may be replaced one-for-one.'};}
-async function loadSentence(){const text=$('source').value.trim();if(!text)return;$('status').className='status';$('status').textContent='Checking one-word synonym slots…';$('load').disabled=true;$('regen').disabled=true;$('back').disabled=true;$('apply').disabled=true;try{model=await analyzeClient(text);idx=0n;renderDictionary();renderAt(0n);$('status').className='status';$('status').textContent=`Ready. ${model.rule}`;}catch(error){model=null;$('status').className='status err';$('status').textContent='Could not load: '+error.message;$('out').textContent='—';$('key').value='';$('vno').textContent='—';$('total').textContent='—';$('words').textContent='—';}finally{$('load').disabled=false}}
-function renderDictionary(){const box=$('dict');if(!model||!model.slots.length){box.textContent='No safe single-word synonym slots were returned. Sentence-order variants can still work if the input has multiple sentences.';return;}box.innerHTML=model.slots.map(slot=>`<div class="wordrow"><b>${escapeHtml(slot.original)}</b> → <span class="syn">${slot.synonyms.map((x,i)=>`${i+1}:${escapeHtml(x)}`).join(' · ')}</span><br><a target="_blank" rel="noopener noreferrer" href="${escapeAttr(slot.dictionary)}">Dictionary.com</a> · <a target="_blank" rel="noopener noreferrer" href="${escapeAttr(slot.thesaurus)}">Thesaurus.com</a></div>`).join('');}
-function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function escapeAttr(s){return escapeHtml(s)}
-async function copyKey(){const value=$('key').value;try{await navigator.clipboard.writeText(value);}catch(_){$('key').focus();$('key').select();document.execCommand('copy');}$('status').className='status';$('status').textContent='Key copied.';}
-function applyKey(){if(!model)return;const raw=$('applyKey').value.trim();if(!/^\d+(?:-\d+)*$/.test(raw)){alert('Key must contain only non-negative integers separated by hyphens.');return}const parts=raw.split('-').map(Number);if(parts[0]!==1){alert('Not an E1 key.');return}if(parts.length<2){alert('Key is incomplete.');return}const p=parts[1];const choices=parts.slice(2);if(!Number.isSafeInteger(p)||p<0||p>=model.sentencePermutationCount){alert('Sentence-order number is outside this sentence’s range.');return}if(choices.length!==model.slots.length){alert('This key does not match the synonym-slot count for this sentence.');return}let lexicalIndex=0n;let multiplier=1n;for(let i=0;i<model.slots.length;i++){const choice=choices[i];const radix=1+model.slots[i].synonyms.length;if(!Number.isSafeInteger(choice)||choice<0||choice>=radix){alert('A synonym rank is outside this sentence’s dictionary range.');return}lexicalIndex+=BigInt(choice)*multiplier;multiplier*=BigInt(radix);}const n=lexicalIndex+BigInt(p)*multiplier;if(n>=BigInt(model.totalVariants)){alert('Key is outside this sentence’s range.');return}renderAt(n);}
-$('load').addEventListener('click',loadSentence);$('regen').addEventListener('click',()=>renderAt(idx+1n));$('back').addEventListener('click',()=>renderAt(idx-1n));$('copy').addEventListener('click',copyKey);$('apply').addEventListener('click',applyKey);$('source').addEventListener('keydown',event=>{if((event.metaKey||event.ctrlKey)&&event.key==='Enter')loadSentence();});
-</script></body></html>
+<script src="./e2.js"></script>
+</body>
