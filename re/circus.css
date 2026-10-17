@@ -1,0 +1,21 @@
+/* Mirror prize/circus effect — only wakes up when the upload control is approached. */
+.mirror-frame{position:relative;filter:brightness(.72) saturate(.72);transition:filter .45s ease,transform .45s cubic-bezier(.2,.8,.2,1),box-shadow .45s ease,background .45s ease}
+.mirror-frame::before{content:"";position:absolute;inset:-16px;z-index:-1;border-radius:inherit;opacity:0;transform:scale(.92);background:conic-gradient(from 0deg,#ffd85e,#ff6fae,#72e8ff,#a8ff7a,#ffd85e);filter:blur(13px);transition:opacity .35s ease,transform .45s ease}
+.mirror-modal.circus-mode .mirror-frame{filter:brightness(1.12) saturate(1.28);transform:scale(1.035);background:conic-gradient(from var(--circus-angle,0deg),#fff4a8,#ff7da8,#80efff,#c0ff8c,#ffe06b,#fff4a8);box-shadow:0 0 0 5px #242932,0 0 18px rgba(255,218,91,.65),0 0 36px rgba(255,104,177,.34),0 24px 55px rgba(0,0,0,.5);animation:mirrorPrizePulse .72s ease-in-out infinite alternate}
+.mirror-modal.circus-mode .mirror-frame::before{opacity:.95;transform:scale(1);animation:circusSpin 1.8s linear infinite}
+.mirror-modal.circus-mode .mirror-glass{background:radial-gradient(circle at 35% 22%,#596171,#252a33 55%,#0a0c10);box-shadow:inset 0 0 30px rgba(255,255,255,.11)}
+.mirror-modal.circus-mode .mirror-glass:after{background:linear-gradient(115deg,transparent 12%,rgba(255,255,255,.35) 26%,transparent 40%);animation:mirrorSweep .85s linear infinite}
+.mirror-modal.circus-mode .blank-person:before,.mirror-modal.circus-mode .blank-person:after{background:linear-gradient(135deg,#aeb5c0,#717b88);box-shadow:0 0 18px rgba(255,255,255,.16)}
+.mirror-upload{position:relative;overflow:hidden;transition:transform .2s ease,box-shadow .25s ease,letter-spacing .25s ease}
+.mirror-upload::after{content:"";position:absolute;inset:-60% -30%;transform:translateX(-85%) rotate(18deg);background:linear-gradient(90deg,transparent,rgba(255,255,255,.68),transparent);pointer-events:none}
+.mirror-upload:hover,.mirror-upload:focus-within,.mirror-modal.circus-mode .mirror-upload{transform:translateY(-2px) scale(1.035);box-shadow:0 0 0 3px rgba(255,255,255,.12),0 0 24px rgba(255,218,91,.46),0 10px 30px rgba(0,0,0,.35);letter-spacing:.045em}
+.mirror-modal.circus-mode .mirror-upload::after{animation:ticketShine .8s ease-in-out infinite}
+.mirror-modal.circus-mode .surprise-badge{color:#fff;border-color:rgba(255,224,107,.65);box-shadow:0 0 18px rgba(255,224,107,.22);animation:badgeBounce .72s ease-in-out infinite alternate}
+.mirror-modal.circus-mode h2{text-shadow:0 0 18px rgba(255,255,255,.18)}
+.mirror-modal.circus-mode{box-shadow:0 30px 100px rgba(0,0,0,.65),0 0 0 1px rgba(255,229,131,.18),0 0 48px rgba(255,104,177,.16)}
+@keyframes circusSpin{to{transform:scale(1) rotate(360deg)}}
+@keyframes mirrorPrizePulse{from{transform:scale(1.025)}to{transform:scale(1.055)}}
+@keyframes mirrorSweep{from{transform:translateX(-55%)}to{transform:translateX(75%)}}
+@keyframes ticketShine{0%,18%{transform:translateX(-85%) rotate(18deg)}70%,100%{transform:translateX(85%) rotate(18deg)}}
+@keyframes badgeBounce{from{transform:translateY(0)}to{transform:translateY(-3px)}}
+@media (prefers-reduced-motion:reduce){.mirror-modal.circus-mode .mirror-frame,.mirror-modal.circus-mode .mirror-frame::before,.mirror-modal.circus-mode .mirror-glass:after,.mirror-modal.circus-mode .mirror-upload::after,.mirror-modal.circus-mode .surprise-badge{animation:none}}
