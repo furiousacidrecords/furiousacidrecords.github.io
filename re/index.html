@@ -9,6 +9,7 @@
 <link rel="stylesheet" href="./experience.css?v=2">
 <link rel="stylesheet" href="./circus.css?v=1">
 <link rel="stylesheet" href="./profile-flow.css?v=1">
+<link rel="stylesheet" href="./consent.css?v=1">
 </head>
 <body class="chat-app">
 <div class="app-shell">
@@ -79,7 +80,6 @@
     <label class="mirror-upload">UPLOAD A PICTURE<input id="mirrorFile" type="file" accept="image/*"></label>
     <div class="mirror-privacy">The picture stays in this browser tab for this prototype.</div>
 
-    <!-- Kept for compatibility with the chat layer; the new profile flow owns the visible choices. -->
     <div class="mirror-actions" aria-hidden="true"><button id="mirrorSkip" hidden>Not now</button><button id="mirrorDone" hidden>Yep, that's me</button></div>
 
     <div id="profileFlow" class="profile-flow" hidden>
@@ -128,6 +128,30 @@
   </div>
 </div>
 
+<div id="faConsentBanner" class="fa-consent-banner" hidden role="dialog" aria-label="Analytics cookie choice">
+  <div class="fa-consent-title">🍪 <b>Can we learn from this?</b></div>
+  <p class="fa-consent-copy">Optional analytics can tell us which parts people use, where people stop, and whether the joke lands. Essential storage remembers your settings and this choice. Analytics stays off unless you say yes. <a href="./privacy.html">Privacy & cookies</a>.</p>
+  <div class="fa-consent-actions">
+    <button class="allow" data-fa-consent="analytics">ALLOW ANALYTICS</button>
+    <button class="essential" data-fa-consent="essential">ESSENTIAL ONLY</button>
+    <button id="faConsentDetails" class="details">DETAILS</button>
+  </div>
+</div>
+
+<button id="faCookieSettings" class="fa-cookie-settings" type="button">COOKIE SETTINGS</button>
+
+<div id="faConsentPanel" class="fa-consent-panel" hidden>
+  <div class="fa-consent-card" role="dialog" aria-modal="true" aria-labelledby="faConsentHeading">
+    <button id="faConsentClose" class="close" aria-label="Close">×</button>
+    <h2 id="faConsentHeading">Cookie settings</h2>
+    <p>Keep the core experience working either way. Optional analytics is a separate choice.</p>
+    <div class="row"><div><strong>Essential</strong><span>Remembers privacy/settings choices needed for the experience.</span></div><div class="state">ALWAYS ON</div></div>
+    <div class="row"><div><strong>Analytics</strong><span>Helps us understand feature usage and drop-off so we can improve the experience.</span></div><div id="faAnalyticsState" class="state">OFF</div></div>
+    <p><a href="./privacy.html">Read the plain-English privacy & cookie page</a>.</p>
+    <div class="panel-actions"><button class="allow" data-fa-consent="analytics">ALLOW ANALYTICS</button><button class="essential" data-fa-consent="essential">ESSENTIAL ONLY</button></div>
+  </div>
+</div>
+
 <script>
 window.__compromiseReady = new Promise((resolve, reject) => {
   const urls = ['https://unpkg.com/compromise@14.18.0/builds/compromise.js','https://cdn.jsdelivr.net/npm/compromise@14.18.0/builds/compromise.js'];
@@ -135,6 +159,7 @@ window.__compromiseReady = new Promise((resolve, reject) => {
   load(0);
 });
 </script>
+<script src="./consent.js?v=1"></script>
 <script src="./e3.js?v=33"></script>
 <script src="./hotfix.js?v=2"></script>
 <script src="./experience.js?v=4"></script>
