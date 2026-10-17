@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="./e3.css?v=33">
 <link rel="stylesheet" href="./experience.css?v=2">
 <link rel="stylesheet" href="./circus.css?v=1">
-<link rel="stylesheet" href="./walkthrough.css?v=1">
+<link rel="stylesheet" href="./profile-flow.css?v=1">
 </head>
 <body class="chat-app">
 <div class="app-shell">
@@ -66,54 +66,65 @@
   <div class="mirror-modal" role="dialog" aria-modal="true" aria-labelledby="mirrorTitle">
     <button id="mirrorClose" class="mirror-close" aria-label="Close">×</button>
     <div class="surprise-badge">3 replies later…</div>
-    <div class="mirror-frame" aria-hidden="true"><div class="mirror-glass"><div id="mirrorBlank" class="blank-person"></div><img id="mirrorPreview" class="mirror-preview" alt="Your mirrored preview" hidden></div></div>
+
+    <div class="mirror-frame" aria-hidden="true">
+      <div class="mirror-glass">
+        <div id="mirrorBlank" class="blank-person"></div>
+        <img id="mirrorPreview" class="mirror-preview" alt="Your mirrored preview" hidden>
+      </div>
+    </div>
+
     <h2 id="mirrorTitle">Oh. There you are. 😏</h2>
     <p>Upload your picture, if you want.</p>
     <label class="mirror-upload">UPLOAD A PICTURE<input id="mirrorFile" type="file" accept="image/*"></label>
-    <div class="mirror-actions"><button id="mirrorSkip">Not now</button><button id="mirrorDone" hidden>Yep, that's me</button></div>
-    <div class="mirror-privacy">The picture stays in this browser tab and is not sent anywhere.</div>
-  </div>
-</div>
+    <div class="mirror-privacy">The picture stays in this browser tab for this prototype.</div>
 
-<!-- The mirror does not end the joke. It drops into the current. -->
-<div id="worldOverlay" class="world-overlay" hidden>
-  <div class="world-scene">
-    <button id="worldClose" class="world-close" aria-label="Leave walkthrough">×</button>
-    <div class="world-sun"></div>
-    <div class="world-cloud c1"></div><div class="world-cloud c2"></div>
-    <div class="world-hill hill1"></div><div class="world-hill hill2"></div>
-    <div class="world-path"></div>
-    <div class="wheel-distant"><i class="wheel-spoke"></i></div>
-    <div class="bang">BANG</div><div class="rabbit" aria-hidden="true">🐇</div>
-    <div class="speed-lines" aria-hidden="true"><i></i><i></i><i></i></div>
+    <!-- Kept for compatibility with the chat layer; the new profile flow owns the visible choices. -->
+    <div class="mirror-actions" aria-hidden="true"><button id="mirrorSkip" hidden>Not now</button><button id="mirrorDone" hidden>Yep, that's me</button></div>
 
-    <section id="blanketCard" class="world-card">
-      <div class="blanket-stage">
-        <div class="blanket"></div>
-        <div class="lounger you"><div class="body"></div><div class="head"><img id="worldFace" alt="Your uploaded picture" hidden></div></div>
-        <div class="lounger stranger"><div class="body"></div><div class="head"></div></div>
+    <div id="profileFlow" class="profile-flow" hidden>
+      <div id="profileLoading" class="profile-loading" hidden>
+        <div class="spinner"></div>
+        <strong>Okay. Hold still.</strong>
+        <span>The mirror is making one questionable decision.</span>
       </div>
-      <h2>Well. There you are.</h2>
-      <p>Do I not look like your ass is sitting awkwardly on a blanket with a stranger?</p>
-      <div class="world-actions"><button id="blanketYes">YES, APPARENTLY</button><button id="blanketNo" class="ghost">NO LOL</button></div>
-    </section>
 
-    <section id="rideStage" class="ride-stage" hidden>
-      <div class="ride-copy"><h2>Keep wandering.</h2><p>There is still something spinning. Nobody seems to know why.</p></div>
-      <div class="distance">DISTANCE <span id="distanceValue">0 m</span></div>
-      <div id="cartRig" class="cart-rig" style="--steer:0px" aria-label="Shopping cart you can steer">
-        <div class="cart-handle"></div><div class="cart-basket"></div><div class="cart-wheel w1"></div><div class="cart-wheel w2"></div>
-        <button id="rideCart" class="ride-cart">RIDE THE CART</button>
+      <div id="profileChooser" class="profile-chooser" hidden>
+        <h3>So… which one? 😂</h3>
+        <p class="chooser-copy">The weird grass one, the normal picture you uploaded, the default, or nothing at all.</p>
+
+        <div class="profile-previews">
+          <div class="profile-option-card">
+            <span class="option-tag">the funhouse one</span>
+            <div class="funhouse-preview" aria-label="Prototype funhouse grass scene">
+              <div class="fh-sun"></div><div class="fh-hill fh-h1"></div><div class="fh-hill fh-h2"></div><div class="fh-grass"></div><div class="fh-blanket"></div>
+              <div class="fh-person you"><div class="fh-body"></div><div class="fh-head"><img id="funhouseFace" alt="Your face in the funhouse preview"></div></div>
+              <div class="fh-person stranger"><div class="fh-body"></div><div class="fh-head"></div></div>
+              <div class="fh-caption">Why are you lying in the grass with this person?</div>
+            </div>
+          </div>
+
+          <div class="profile-option-card">
+            <span class="option-tag">the one you actually uploaded</span>
+            <img id="originalProfilePreview" class="original-preview" alt="Your uploaded picture">
+          </div>
+        </div>
+
+        <div class="profile-choice-buttons">
+          <button id="pickFunhouse" class="fun">USE THE WEIRD ONE</button>
+          <button id="pickOriginal" class="normal">USE MY UPLOAD</button>
+          <button id="pickDefault" class="default">USE THE DEFAULT</button>
+          <button id="pickNone" class="none">NO PROFILE PICTURE</button>
+        </div>
       </div>
-    </section>
 
-    <section id="checkoutCard" class="checkout-card" aria-live="polite">
-      <div class="eyebrow">YOU KEPT CHECKING</div>
-      <h2>$5</h2>
-      <p>The cart got you here. Five bucks keeps the current going.</p>
-      <button id="checkoutBtn" class="checkout-btn" data-checkout-url="https://buy.stripe.com/test_28EcN5b3JgP55RE5jU9k400">KEEP CHECKING — $5</button>
-      <div id="checkoutNote" class="checkout-note">One-time checkout. No fake prize claim.</div>
-    </section>
+      <div id="profileResult" class="profile-result" hidden>
+        <div class="check-big">✓</div>
+        <h3 id="profileResultTitle">Selected.</h3>
+        <p id="profileResultCopy">That is as far as this version goes.</p>
+        <button id="profileResultDone">DONE FOR NOW</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -128,6 +139,6 @@ window.__compromiseReady = new Promise((resolve, reject) => {
 <script src="./hotfix.js?v=2"></script>
 <script src="./experience.js?v=4"></script>
 <script src="./circus.js?v=1"></script>
-<script src="./walkthrough.js?v=2"></script>
+<script src="./profile-flow.js?v=1"></script>
 </body>
 </html>
