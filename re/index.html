@@ -4,94 +4,84 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark">
-<title>The Chatbot — Sentence Math E3.2</title>
-<link rel="stylesheet" href="./e3.css?v=32">
-<link rel="stylesheet" href="./experience.css?v=1">
+<title>The Chatbot</title>
+<link rel="stylesheet" href="./e3.css?v=33">
+<link rel="stylesheet" href="./experience.css?v=2">
 </head>
-<body><main>
-<div class="chat-title"><h1>THE CHATBOT</h1><div class="chat-kicker"><span class="chat-pulse"></span>Sentence Math E3.2</div></div>
-<div class="tag">It does not “think.” It keeps flipping what you said through legal English. ;p</div>
+<body class="chat-app">
+<div class="app-shell">
+  <header class="app-header">
+    <div class="brandmark">◌</div>
+    <div class="brandcopy"><strong>THE CHATBOT</strong><span><i></i> online · experimental</span></div>
+    <button id="settingsToggle" class="icon-btn" aria-label="Open settings">⚙</button>
+  </header>
 
-<div class="card">
-<label for="source">Say something</label>
-<textarea id="source">Hey, what's up?</textarea>
-<div class="controls">
-  <div><label for="mode">Style</label><select id="mode"><option value="random" selected>🎲 Random / surprise me</option><option value="formal">Formal / conservative</option><option value="west">Informal / playful</option></select></div>
-  <div><label for="transitions">Transitions</label><select id="transitions"><option value="random" selected>🎲 Random / anything</option><option value="off">Off</option><option value="neutral">Neutral only</option><option value="expressive">Expressive</option></select></div>
-  <div><label for="floor">Effect floor</label><div class="rangebox"><input id="floor" type="range" min="70" max="100" value="88"><div class="rangevalue" id="floorValue">88%</div></div></div>
-  <div><label for="limit">Rewrite cap</label><select id="limit"><option>10</option><option selected>25</option><option>50</option></select></div>
+  <main class="chat-main">
+    <div id="chatStream" class="chat-stream" aria-live="polite">
+      <div class="message assistant-message intro-message">
+        <div class="avatar">◌</div>
+        <div class="bubble"><span class="speaker">Chatbot</span><div>Hey. Say something. 😏</div></div>
+      </div>
+    </div>
+
+    <div id="typingIndicator" class="typing-row" hidden>
+      <div class="avatar">◌</div><div class="typing-bubble"><b></b><b></b><b></b></div>
+    </div>
+  </main>
+
+  <div class="composer-wrap">
+    <div class="composer">
+      <textarea id="source" rows="1" placeholder="Message The Chatbot…">Hey, what's up?</textarea>
+      <button id="send" class="send-btn" aria-label="Send">↑</button>
+    </div>
+    <div class="composer-note">It may say the same thing differently. That is kind of the point.</div>
+  </div>
 </div>
 
-<div class="funbar" aria-label="Fun settings">
-  <div class="funbox"><label>Automatic</label><div class="switchrow"><input id="autoBuild" type="checkbox" checked><span>Build while I type</span></div><div class="switchrow"><input id="autoRegen" type="checkbox" checked><span>Keep regenerating</span></div></div>
-  <div class="funbox"><label for="autoSpeed">Auto speed</label><select id="autoSpeed"><option value="2500">Fast — 2.5 sec</option><option value="4000" selected>Chill — 4 sec</option><option value="7000">Slow — 7 sec</option></select><div class="auto-note">Turn auto regenerate off anytime.</div></div>
-  <div class="funbox"><label>Little surprise</label><div class="switchrow"><input id="mirrorSurprise" type="checkbox" checked><span>Mirror after 3 regenerations</span></div><div class="auto-note">Optional. No picture required.</div></div>
-  <div class="funbox"><label>Chaos button</label><button id="randomize" class="dice">🎲 RANDOMIZE NOW</button></div>
-</div>
-
-<div class="row"><button class="primary" id="load">PARSE + BUILD</button><button id="regen" disabled>REGENERATE</button><button id="back" disabled>◀</button></div>
-<div class="status" id="status"></div>
-</div>
-
-<div class="card"><label>Chatbot says</label><div class="output" id="out">—</div></div>
-<div class="stats">
-  <div class="stat"><label>Variant</label><b id="variant">—</b></div>
-  <div class="stat"><label>Accepted</label><b id="total">—</b></div>
-  <div class="stat"><label>Effect confidence</label><b id="score">—</b></div>
-</div>
-
-<div class="card math">
-<label>The rule</label>
-<div class="formula" id="formula">—</div>
-<div class="why" id="why">—</div>
-</div>
-
-<div class="card">
-<label>Keygen</label>
-<div class="keyrow"><input id="key" readonly><button id="copy" disabled>COPY</button></div>
-<div class="tiny" style="margin-top:8px">The key identifies the E3 transformation/result for this build. Regenerate walks accepted, non-duplicate candidates up to the selected cap.</div>
-<div style="height:14px"></div>
-<label>Apply key</label><div class="keyrow"><input id="applyKey" placeholder="E3-S-DATIVE-02"><button id="apply" disabled>APPLY</button></div>
-</div>
-
-<div class="card tiny">
-<b>How it works:</b> browser-side English parsing and inflection use the open-source MIT-licensed <b>Compromise</b> grammar engine. The Chatbot adds legal transformation rules, grammar-aware synonym filtering, duplicate control, scoring, and randomized style/transition settings. Synonym candidates come from Datamuse and are filtered by grammatical class/form.
-<div class="dictlinks" style="margin-top:10px"><a target="_blank" rel="noopener" href="https://github.com/spencermountain/compromise">Compromise source</a><a target="_blank" rel="noopener" href="https://www.dictionary.com/">Dictionary.com</a><a target="_blank" rel="noopener" href="https://www.thesaurus.com/">Thesaurus.com</a></div>
-</div>
-</main>
+<aside id="settingsPanel" class="settings-panel" hidden>
+  <div class="settings-head"><strong>Chat settings</strong><button id="settingsClose" class="icon-btn">×</button></div>
+  <div class="setting-grid">
+    <div><label for="mode">Style</label><select id="mode"><option value="random" selected>🎲 Random</option><option value="formal">Formal</option><option value="west">Informal / playful</option></select></div>
+    <div><label for="transitions">Transitions</label><select id="transitions"><option value="random" selected>🎲 Random</option><option value="off">Off</option><option value="neutral">Neutral</option><option value="expressive">Expressive</option></select></div>
+    <div><label for="floor">Effect floor</label><div class="rangebox"><input id="floor" type="range" min="70" max="100" value="88"><div class="rangevalue" id="floorValue">88%</div></div></div>
+    <div><label for="limit">Rewrite cap</label><select id="limit"><option>10</option><option selected>25</option><option>50</option></select></div>
+  </div>
+  <div class="settings-row"><label><input id="mirrorSurprise" type="checkbox" checked> Mirror surprise after exactly 3 chatbot replies</label></div>
+  <div class="settings-row"><button id="randomize">🎲 Randomize style now</button></div>
+  <details class="engine-details">
+    <summary>Advanced engine stuff</summary>
+    <div class="engine-buttons"><button id="load">REBUILD</button><button id="regen" disabled>REGENERATE</button><button id="back" disabled>◀</button></div>
+    <div id="status" class="status"></div>
+    <div id="out" class="engine-out">—</div>
+    <div class="engine-stats"><span>Variant <b id="variant">—</b></span><span>Accepted <b id="total">—</b></span><span>Effect <b id="score">—</b></span></div>
+    <div id="formula" class="formula">—</div><div id="why" class="why">—</div>
+    <label>Keygen</label><div class="keyrow"><input id="key" readonly><button id="copy" disabled>COPY</button></div>
+    <label>Apply key</label><div class="keyrow"><input id="applyKey" placeholder="E3-S-DATIVE-02"><button id="apply" disabled>APPLY</button></div>
+  </details>
+</aside>
 
 <div id="mirrorOverlay" class="mirror-overlay" hidden>
   <div class="mirror-modal" role="dialog" aria-modal="true" aria-labelledby="mirrorTitle">
     <button id="mirrorClose" class="mirror-close" aria-label="Close">×</button>
-    <div class="surprise-badge">third regeneration surprise :}</div>
+    <div class="surprise-badge">3 replies later…</div>
     <div class="mirror-frame" aria-hidden="true"><div class="mirror-glass"><div id="mirrorBlank" class="blank-person"></div><img id="mirrorPreview" class="mirror-preview" alt="Your mirrored preview" hidden></div></div>
     <h2 id="mirrorTitle">Oh. There you are. 😏</h2>
-    <p>Upload your picture, if you want. The mirror will flip it back at you.</p>
+    <p>Upload your picture, if you want.</p>
     <label class="mirror-upload">UPLOAD A PICTURE<input id="mirrorFile" type="file" accept="image/*"></label>
     <div class="mirror-actions"><button id="mirrorSkip">Not now</button><button id="mirrorDone" hidden>Yep, that's me</button></div>
-    <div class="mirror-privacy">For this demo, the picture stays in your browser tab and is not sent anywhere.</div>
+    <div class="mirror-privacy">The picture stays in this browser tab and is not sent anywhere.</div>
   </div>
 </div>
 
 <script>
 window.__compromiseReady = new Promise((resolve, reject) => {
-  const urls = [
-    'https://unpkg.com/compromise@14.18.0/builds/compromise.js',
-    'https://cdn.jsdelivr.net/npm/compromise@14.18.0/builds/compromise.js'
-  ];
-  const load = i => {
-    if (i >= urls.length) { reject(new Error('Compromise CDN unavailable')); return; }
-    const s = document.createElement('script');
-    s.src = urls[i];
-    s.onload = () => resolve();
-    s.onerror = () => load(i + 1);
-    document.head.appendChild(s);
-  };
+  const urls = ['https://unpkg.com/compromise@14.18.0/builds/compromise.js','https://cdn.jsdelivr.net/npm/compromise@14.18.0/builds/compromise.js'];
+  const load = i => { if (i >= urls.length) { reject(new Error('Compromise CDN unavailable')); return; } const s=document.createElement('script'); s.src=urls[i]; s.onload=()=>resolve(); s.onerror=()=>load(i+1); document.head.appendChild(s); };
   load(0);
 });
 </script>
-<script src="./e3.js?v=32"></script>
+<script src="./e3.js?v=33"></script>
 <script src="./hotfix.js?v=2"></script>
-<script src="./experience.js?v=1"></script>
+<script src="./experience.js?v=2"></script>
 </body>
 </html>
