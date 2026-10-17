@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="./e3.css?v=33">
 <link rel="stylesheet" href="./experience.css?v=2">
 <link rel="stylesheet" href="./circus.css?v=1">
+<link rel="stylesheet" href="./walkthrough.css?v=1">
 </head>
 <body class="chat-app">
 <div class="app-shell">
@@ -74,6 +75,48 @@
   </div>
 </div>
 
+<!-- The mirror does not end the joke. It drops into the current. -->
+<div id="worldOverlay" class="world-overlay" hidden>
+  <div class="world-scene">
+    <button id="worldClose" class="world-close" aria-label="Leave walkthrough">×</button>
+    <div class="world-sun"></div>
+    <div class="world-cloud c1"></div><div class="world-cloud c2"></div>
+    <div class="world-hill hill1"></div><div class="world-hill hill2"></div>
+    <div class="world-path"></div>
+    <div class="wheel-distant"><i class="wheel-spoke"></i></div>
+    <div class="bang">BANG</div><div class="rabbit" aria-hidden="true">🐇</div>
+    <div class="speed-lines" aria-hidden="true"><i></i><i></i><i></i></div>
+
+    <section id="blanketCard" class="world-card">
+      <div class="blanket-stage">
+        <div class="blanket"></div>
+        <div class="lounger you"><div class="body"></div><div class="head"><img id="worldFace" alt="Your uploaded picture" hidden></div></div>
+        <div class="lounger stranger"><div class="body"></div><div class="head"></div></div>
+      </div>
+      <h2>Well. There you are.</h2>
+      <p>Do I not look like your ass is sitting awkwardly on a blanket with a stranger?</p>
+      <div class="world-actions"><button id="blanketYes">YES, APPARENTLY</button><button id="blanketNo" class="ghost">NO LOL</button></div>
+    </section>
+
+    <section id="rideStage" class="ride-stage" hidden>
+      <div class="ride-copy"><h2>Keep wandering.</h2><p>There is still something spinning. Nobody seems to know why.</p></div>
+      <div class="distance">DISTANCE <span id="distanceValue">0 m</span></div>
+      <div id="cartRig" class="cart-rig" style="--steer:0px" aria-label="Shopping cart you can steer">
+        <div class="cart-handle"></div><div class="cart-basket"></div><div class="cart-wheel w1"></div><div class="cart-wheel w2"></div>
+        <button id="rideCart" class="ride-cart">RIDE THE CART</button>
+      </div>
+    </section>
+
+    <section id="checkoutCard" class="checkout-card" aria-live="polite">
+      <div class="eyebrow">YOU KEPT CHECKING</div>
+      <h2>$5</h2>
+      <p>The cart got you here. Five bucks keeps the current going.</p>
+      <button id="checkoutBtn" class="checkout-btn" data-checkout-url="">KEEP CHECKING — $5</button>
+      <div id="checkoutNote" class="checkout-note">One-time checkout. No fake prize claim.</div>
+    </section>
+  </div>
+</div>
+
 <script>
 window.__compromiseReady = new Promise((resolve, reject) => {
   const urls = ['https://unpkg.com/compromise@14.18.0/builds/compromise.js','https://cdn.jsdelivr.net/npm/compromise@14.18.0/builds/compromise.js'];
@@ -83,7 +126,8 @@ window.__compromiseReady = new Promise((resolve, reject) => {
 </script>
 <script src="./e3.js?v=33"></script>
 <script src="./hotfix.js?v=2"></script>
-<script src="./experience.js?v=3"></script>
+<script src="./experience.js?v=4"></script>
 <script src="./circus.js?v=1"></script>
+<script src="./walkthrough.js?v=1"></script>
 </body>
 </html>
