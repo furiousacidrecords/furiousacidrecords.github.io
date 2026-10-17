@@ -4,19 +4,21 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark">
-<title>Sentence Math E2</title>
-<link rel="stylesheet" href="./e2.css">
+<title>Sentence Math E3</title>
+<link rel="stylesheet" href="./e3.css">
 </head>
 <body><main>
 <h1>Sentence Math</h1>
-<div class="tag">E2 — same effect, different legal English. FuriousAcid.com/re</div>
+<div class="tag">E3 — English rules first. No language model required. FuriousAcid.com/re</div>
 
 <div class="card">
 <label for="source">Enter English</label>
 <textarea id="source">I can read. It is fun.</textarea>
 <div class="controls">
-  <div><label for="transitions">Optional transitions</label><select id="transitions"><option value="off">Off</option><option value="neutral">Neutral only</option><option value="expressive">Expressive / may shift relation</option></select></div>
+  <div><label for="mode">Mode</label><select id="mode"><option value="formal">Formal / conservative</option><option value="west">West Effect / wider variation</option></select></div>
+  <div><label for="transitions">Transitions</label><select id="transitions"><option value="off">Off</option><option value="neutral">Neutral only</option><option value="expressive">Expressive / may shift relation</option></select></div>
   <div><label for="floor">Effect floor</label><div class="rangebox"><input id="floor" type="range" min="70" max="100" value="88"><div class="rangevalue" id="floorValue">88%</div></div></div>
+  <div><label for="limit">Rewrite cap</label><select id="limit"><option>10</option><option selected>25</option><option>50</option></select></div>
 </div>
 <div class="row"><button class="primary" id="load">PARSE + BUILD</button><button id="regen" disabled>REGENERATE</button><button id="back" disabled>◀</button></div>
 <div class="status" id="status"></div>
@@ -30,7 +32,7 @@
 </div>
 
 <div class="card math">
-<label>The math</label>
+<label>The rule</label>
 <div class="formula" id="formula">—</div>
 <div class="why" id="why">—</div>
 </div>
@@ -38,15 +40,17 @@
 <div class="card">
 <label>Keygen</label>
 <div class="keyrow"><input id="key" readonly><button id="copy" disabled>COPY</button></div>
-<div class="tiny" style="margin-top:8px">The key records the English transformation, not the sentence itself. Same E2 input + same key = the same rule/result.</div>
+<div class="tiny" style="margin-top:8px">The key identifies the E3 transformation/result for this build. Regenerate walks only accepted, non-duplicate candidates up to the selected cap.</div>
 <div style="height:14px"></div>
-<label>Apply key</label><div class="keyrow"><input id="applyKey" placeholder="E2-R10-01"><button id="apply" disabled>APPLY</button></div>
+<label>Apply key</label><div class="keyrow"><input id="applyKey" placeholder="E3-S-DATIVE-02"><button id="apply" disabled>APPLY</button></div>
 </div>
 
 <div class="card tiny">
-<b>Engine rule:</b> identify grammatical/semantic roles first, then transform the structure. Core content is kept anchored unless a rule can preserve the same effect. Function words may be added or removed when English syntax requires them. Transition words are optional and scored lower when they imply a relationship the source did not state.
-<div class="dictlinks" style="margin-top:10px"><a target="_blank" rel="noopener" href="https://www.dictionary.com/">Dictionary.com</a><a target="_blank" rel="noopener" href="https://www.thesaurus.com/">Thesaurus.com</a></div>
+<b>E3 engine:</b> browser-side English parsing and inflection are handled by the open-source MIT-licensed <b>Compromise</b> grammar engine. Sentence Math adds its own legal transformation rules, grammar-aware synonym filtering, duplicate control, scoring, and Formal/West variation. Synonym candidates come from Datamuse and are rejected when they do not fit the original grammatical class/form.
+<div class="dictlinks" style="margin-top:10px"><a target="_blank" rel="noopener" href="https://github.com/spencermountain/compromise">Compromise source</a><a target="_blank" rel="noopener" href="https://www.dictionary.com/">Dictionary.com</a><a target="_blank" rel="noopener" href="https://www.thesaurus.com/">Thesaurus.com</a></div>
 </div>
 </main>
-<script src="./e2.js"></script>
+<script src="https://unpkg.com/compromise@14.18.0/builds/compromise.js"></script>
+<script src="./e3.js"></script>
 </body>
+</html>
