@@ -1,135 +1,14 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Custom Reports — Furious Acid</title>
-  <meta name="description" content="Furious Acid builds custom visual reports from your question, source material, notes, or research topic. See an example and request project pricing.">
-  <style>
-    :root{--ink:#15121a;--paper:#f7f5ef;--white:#fffefb;--muted:#6d6873;--line:#d9d3ca;--acid:#f0f500;--violet:#6f00ff;--orange:#ff6834;--blue:#a5eaff}
-    *{box-sizing:border-box}
-    html{scroll-behavior:smooth}
-    body{margin:0;background:var(--paper);color:var(--ink);font-family:Arial,Helvetica,sans-serif}
-    a{color:inherit;text-decoration:none}
-    button,input,textarea{font:inherit}
-    .top{display:flex;justify-content:space-between;gap:16px;padding:8px 24px;background:var(--acid);font-size:9px;font-weight:900;letter-spacing:.14em;text-transform:uppercase}
-    .wrap{width:min(1120px,100%);margin:0 auto;padding:0 24px}
-    .nav{display:flex;justify-content:space-between;align-items:center;gap:22px;padding:24px 0}
-    .brand{display:flex;align-items:center;gap:11px;font-size:12px;font-weight:900;letter-spacing:.12em}
-    .mark{display:grid;place-items:center;width:40px;height:40px;background:var(--violet);color:white;font-family:Impact,"Arial Black",sans-serif;transform:rotate(-5deg)}
-    .brand small{display:block;margin-top:5px;color:var(--muted);font-size:8px;letter-spacing:.17em}
-    .navlinks{display:flex;align-items:center;gap:20px;font-size:10px;font-weight:900;text-transform:uppercase}
-    .back{padding:10px 13px;border:1px solid var(--ink)}
-    .rule{display:flex;gap:6px}.rule i{height:4px;display:block}.rule i:nth-child(1){width:18%;background:var(--violet)}.rule i:nth-child(2){width:4%;background:var(--orange)}.rule i:nth-child(3){width:31%;background:var(--ink)}.rule i:nth-child(4){width:14%;background:var(--violet)}.rule i:nth-child(5){flex:1;background:var(--acid)}
-    h1,h2,h3{margin:0;font-family:Impact,"Arial Black",sans-serif;text-transform:uppercase;letter-spacing:-.04em;line-height:.9}
-    .hero{display:grid;grid-template-columns:1.04fr .96fr;gap:7%;align-items:center;padding:82px 0 96px}
-    .eyebrow,.index{margin:0 0 18px;color:var(--violet);font-size:10px;font-weight:900;letter-spacing:.16em;text-transform:uppercase}
-    h1{font-size:clamp(66px,8vw,112px)}h1 span,h2 span{color:var(--violet)}
-    .lede{max-width:600px;margin:28px 0;color:var(--muted);font-size:18px;line-height:1.62}
-    .plain{max-width:620px;margin:0 0 30px;padding:16px 18px;border-left:5px solid var(--orange);background:var(--white);font-size:15px;font-weight:800;line-height:1.5}
-    .actions{display:flex;flex-wrap:wrap;gap:13px}
-    .button{display:inline-flex;align-items:center;justify-content:center;gap:18px;min-height:46px;padding:0 18px;border:1px solid var(--ink);font-size:10px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;cursor:pointer}
-    .dark{background:var(--ink);color:white}.yellow{background:var(--acid)}.white{background:var(--white)}
-    .button:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--violet)}
-    .report-art{position:relative;min-height:520px;background:var(--violet);overflow:hidden;isolation:isolate}
-    .report-art:before{content:"";position:absolute;inset:18px;border:1px solid #ffffff66}
-    .grid{position:absolute;inset:0;opacity:.26;background-image:linear-gradient(#ffffff28 1px,transparent 1px),linear-gradient(90deg,#ffffff28 1px,transparent 1px);background-size:42px 42px}
-    .sheet{position:absolute;width:66%;height:74%;left:15%;top:10%;padding:26px;background:var(--white);box-shadow:13px 13px 0 var(--ink);transform:rotate(-4deg)}
-    .sheet small{color:var(--violet);font-size:8px;font-weight:900;letter-spacing:.16em}.sheet h3{margin:25px 0 28px;font-size:40px}.line{height:8px;margin:12px 0;background:#ded9d2}.line:nth-of-type(1){width:91%;background:var(--ink)}.line:nth-of-type(2){width:67%;background:var(--orange)}.line:nth-of-type(3){width:80%;background:var(--violet)}.line:nth-of-type(4){width:54%;background:var(--blue)}
-    .stamp{position:absolute;right:24px;bottom:25px;width:105px;height:105px;border:3px solid var(--acid);border-radius:50%;display:grid;place-items:center;color:var(--acid);font-family:Impact,"Arial Black",sans-serif;font-size:18px;line-height:.88;text-align:center;transform:rotate(11deg)}
-    section{padding:92px 0}
-    .heading{display:flex;justify-content:space-between;align-items:end;gap:30px;margin-bottom:42px}.heading h2{font-size:clamp(48px,6vw,76px)}.aside{max-width:470px;margin:0;color:var(--muted);font-size:15px;line-height:1.6}
-    .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}
-    .step{min-height:260px;padding:25px;background:var(--white);border-top:5px solid var(--ink)}.step:nth-child(2){border-color:var(--violet)}.step:nth-child(3){border-color:var(--orange)}
-    .step b{color:var(--violet);font-size:10px;letter-spacing:.14em}.step h3{margin:38px 0 14px;font-size:34px}.step p{margin:0;color:var(--muted);font-size:13px;line-height:1.55}
-    .dark-section{background:var(--ink);color:white}.dark-section .index{color:var(--acid)}.dark-section h2 span{color:var(--acid)}
-    .included{display:grid;grid-template-columns:1fr 1fr;gap:11%;align-items:start}
-    .included h2{font-size:clamp(50px,6vw,78px)}
-    .list{border-top:1px solid #ffffff44}.item{display:grid;grid-template-columns:38px 1fr;gap:15px;padding:19px 0;border-bottom:1px solid #ffffff44}.item b{color:var(--orange);font-size:10px}.item strong{font-size:13px}.item p{margin:5px 0 0;color:#aaa2b2;font-size:11px;line-height:1.5}
-    .boundary{margin-top:34px;padding:18px;background:var(--acid);color:var(--ink);font-size:12px;font-weight:800;line-height:1.55}
-    .contact{display:grid;grid-template-columns:.9fr 1.1fr;gap:9%;align-items:start}.contact h2{font-size:clamp(52px,6vw,82px)}
-    .contact-copy{color:var(--muted);font-size:15px;line-height:1.6}.contact-copy strong{color:var(--ink)}
-    .brief{padding:27px;background:var(--white);border:1px solid var(--ink);box-shadow:10px 10px 0 var(--violet)}
-    .brief-head{display:flex;justify-content:space-between;gap:20px;margin-bottom:25px;padding-bottom:14px;border-bottom:1px solid var(--line);color:var(--violet);font-size:9px;font-weight:900;letter-spacing:.14em;text-transform:uppercase}
-    .prompt{margin:0 0 22px;padding-left:20px;color:var(--ink);font-size:14px;line-height:1.75}.prompt li::marker{color:var(--orange);font-weight:900}
-    .status{min-height:20px;margin:12px 0 0;color:var(--violet);font-size:11px;font-weight:800}
-    footer{display:flex;justify-content:space-between;gap:22px;padding:33px 0 40px;border-top:1px solid var(--line);color:var(--muted);font-size:10px;line-height:1.55}.footer-links{display:flex;gap:18px;font-weight:900;text-transform:uppercase}
-    @media(max-width:850px){.hero,.contact,.included{grid-template-columns:1fr;gap:48px}.report-art{min-height:460px}.steps{grid-template-columns:1fr}.step{min-height:0}.heading{display:block}.aside{margin-top:20px}}
-    @media(max-width:620px){.top{padding:7px 13px;font-size:8px}.top span:nth-child(2){display:none}.wrap{padding:0 17px}.nav{align-items:flex-start;flex-direction:column}.navlinks{width:100%;justify-content:space-between}.back{display:none}.hero{padding:60px 0 72px}h1{font-size:65px}.lede{font-size:16px}.report-art{min-height:390px}.sheet{width:72%;height:72%;left:10%;padding:20px}.sheet h3{font-size:32px}.stamp{width:82px;height:82px;font-size:14px}section{padding:72px 0}.actions{display:grid}.button{width:100%}footer{display:block}.footer-links{margin-top:20px;flex-wrap:wrap}}
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Furious Acid — Books on Amazon</title>
+<link rel="canonical" href="https://www.amazon.com/stores/Furious-Acid/author/B0GWLWJBS6/allbooks">
+<meta http-equiv="refresh" content="0; url=https://www.amazon.com/stores/Furious-Acid/author/B0GWLWJBS6/allbooks">
+<script>window.location.replace("https://www.amazon.com/stores/Furious-Acid/author/B0GWLWJBS6/allbooks");</script>
 </head>
 <body>
-  <div class="top"><span>FURIOUS ACID / CUSTOM REPORTS</span><span>YOU BRING THE QUESTION — I BUILD THE REPORT</span><span>PRICED BY PROJECT</span></div>
-  <div class="wrap">
-    <nav class="nav">
-      <a class="brand" href="index.html"><span class="mark">FA</span><span>FURIOUS ACID<small>CUSTOM REPORTS</small></span></a>
-      <div class="navlinks"><a href="reports.html">See example</a><a href="#beta">Request pricing</a><a class="back" href="index.html">← Home</a></div>
-    </nav>
-    <div class="rule" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
-
-    <main>
-      <section class="hero">
-        <div>
-          <p class="eyebrow">Custom research, explanation, and documentation</p>
-          <h1>You bring the question.<br><span>I build the report.</span></h1>
-          <p class="lede">Send a topic, source material, notes, screenshots, or a question. Furious Acid turns it into a clear visual report you can read, print, share, present, or keep as a reference.</p>
-          <p class="plain">This is a custom report service. It is not a software app, subscription, mystery box, or automatic report generator.</p>
-          <div class="actions"><a class="button dark" href="reports.html">See a report example ↗</a><a class="button yellow" href="#beta">Contact me for pricing ↓</a></div>
-        </div>
-        <div class="report-art" role="img" aria-label="Stylized Furious Acid custom report pages"><div class="grid"></div><div class="sheet"><small>FURIOUS ACID / CUSTOM REPORT</small><h3>Question.<br>Evidence.<br>Answer.</h3><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div></div><div class="stamp">BUILT<br>FOR YOUR<br>QUESTION</div></div>
-      </section>
-    </main>
-  </div>
-
-  <section>
-    <div class="wrap">
-      <div class="heading"><div><p class="index">[ HOW IT WORKS ]</p><h2>Three steps.<br><span>No guessing.</span></h2></div><p class="aside">You do not need to arrive with a polished brief. A specific question and whatever material you already have are enough to start.</p></div>
-      <div class="steps">
-        <article class="step"><b>01 / SEND THE SUBJECT</b><h3>Tell me what you need.</h3><p>Share the question, topic, source files, screenshots, notes, links, or rough idea behind the report.</p></article>
-        <article class="step"><b>02 / GET THE SCOPE</b><h3>I reply with the plan.</h3><p>You receive a clear description of the report, expected length, what it will include, price, and delivery terms before work begins.</p></article>
-        <article class="step"><b>03 / RECEIVE THE REPORT</b><h3>Get a finished artifact.</h3><p>The final report is organized for reading and presentation, with visuals, analysis, references, and a direct conclusion where appropriate.</p></article>
-      </div>
-    </div>
-  </section>
-
-  <section class="dark-section">
-    <div class="wrap included">
-      <div><p class="index">[ WHAT A REPORT CAN INCLUDE ]</p><h2>Built around<br><span>the actual job.</span></h2><div class="boundary">Reports may cover legitimate research, education, explanation, comparison, documentation, or analysis. They do not include private manufacturing instructions or illegal-use guidance.</div></div>
-      <div class="list">
-        <div class="item"><b>01</b><span><strong>Clear executive summary</strong><p>The main question, finding, and practical meaning without making the reader dig for it.</p></span></div>
-        <div class="item"><b>02</b><span><strong>Visual organization</strong><p>Tables, diagrams, figures, comparisons, timelines, or page layouts chosen for the subject.</p></span></div>
-        <div class="item"><b>03</b><span><strong>Analysis and explanation</strong><p>The evidence connected back to the question in direct language.</p></span></div>
-        <div class="item"><b>04</b><span><strong>Sources and supporting notes</strong><p>References, assumptions, limitations, and additional material when the project needs them.</p></span></div>
-      </div>
-    </div>
-  </section>
-
-  <section id="beta">
-    <div class="wrap contact">
-      <div><p class="index">[ REQUEST PRICING ]</p><h2>Send the<br><span>real question.</span></h2><p class="contact-copy"><strong>Pricing is custom.</strong> It depends on the report’s size, research depth, visual work, source material, and deadline. Message Furious Acid with the details at right for a clear quote.</p></div>
-      <div class="brief">
-        <div class="brief-head"><span>WHAT TO SEND</span><span>FA / REPORT REQUEST</span></div>
-        <ol class="prompt" id="request-text"><li>Your topic or main question</li><li>What you want the report to help you understand, show, or decide</li><li>Any notes, links, screenshots, documents, or source material</li><li>Your preferred format or deadline, when relevant</li></ol>
-        <div class="actions"><button class="button white" id="copy" type="button">Copy request checklist</button><a class="button yellow" href="https://www.tiktok.com/@furiousacid" target="_blank" rel="noopener noreferrer">Message @furiousacid ↗</a></div>
-        <p class="status" id="status" aria-live="polite"></p>
-      </div>
-    </div>
-  </section>
-
-  <div class="wrap"><footer><p>Furious Acid custom reports — clear questions, organized evidence, visual analysis, and finished presentation-ready files.</p><div class="footer-links"><a href="reports.html">Report example</a><a href="index.html">Furious Acid home</a><a href="https://furiousacid.printify.me/products" target="_blank" rel="noopener noreferrer">Merch ↗</a></div></footer></div>
-
-  <script>
-    const copyButton = document.getElementById('copy');
-    const status = document.getElementById('status');
-    const checklist = `FURIOUS ACID CUSTOM REPORT REQUEST\n\n1. My topic or main question:\n\n2. What I want the report to help me understand, show, or decide:\n\n3. My notes, links, screenshots, documents, or source material:\n\n4. Preferred format or deadline:`;
-    copyButton.addEventListener('click', async () => {
-      try {
-        await navigator.clipboard.writeText(checklist);
-        status.textContent = 'Request checklist copied. Paste it into your message to @furiousacid.';
-      } catch (error) {
-        status.textContent = 'Copy was blocked by the browser. Use the four-item checklist above in your message.';
-      }
-    });
-  </script>
+<p>Furious Acid has moved permanently to <a href="https://www.amazon.com/stores/Furious-Acid/author/B0GWLWJBS6/allbooks">Amazon. Browse all books here.</a></p>
 </body>
 </html>
