@@ -1,7 +1,7 @@
 {
   "mainAssemblyName": "Simon",
   "resources": {
-    "hash": "sha256-PubQmkwtb4sEtJb7zNrS0bnDBKQrcvL04ysuQcaq/E8=",
+    "hash": "sha256-MiaOm+i1aKNzACsR2QGF88+2uf7AhiqFheecDDQCz1Y=",
     "jsModuleNative": {
       "dotnet.native.js": "sha256-9NoXeVUo4WNrEqrjAp/y3Yc8NmDcymQkzMGOIbIpGio="
     },
@@ -44,7 +44,7 @@
       "System.Text.Encodings.Web.wasm": "sha256-izQCXihH7NTeMOnFIDUqBWV0cSoHrh2JgnqbWabVgvg=",
       "System.Text.Json.wasm": "sha256-1KcUguMKoRkKQuEdGB69cV5UaWWY+ElTYtwfPQ6EPXI=",
       "System.Private.CoreLib.wasm": "sha256-EtjJn0lUrg4RRdXHoXS0DIVHZ83pG7KHILaImyf7SP8=",
-      "Simon.wasm": "sha256-Kp3K04Fc8YbudB7VWXoGoky7aPiSnJe7A9hxXJBGUqQ="
+      "Simon.wasm": "sha256-AQG7oPTSfoxZyHzBanclrkexY4hokxIZ5xzv8XwEtRg="
     }
   },
   "cacheBootResources": true,

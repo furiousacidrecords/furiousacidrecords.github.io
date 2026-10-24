@@ -11,3 +11,10 @@ html,body,#app{margin:0;padding:0;width:100%;height:100%;background:#000;color:#
 .restart{position:absolute;inset:0;opacity:0;border:0;background:transparent;cursor:pointer}
 audio{display:none}
 @media(prefers-reduced-motion:reduce){.field{filter:brightness(.78)}}
+
+/* Mobile touch-target and first-load visibility fixes */
+.target{touch-action:none;pointer-events:all}
+.field{width:100vw;height:100dvh}
+.boot-light{position:absolute;top:50%;left:50%;width:18px;height:18px;border-radius:50%;background:#45ffaa;box-shadow:0 0 15px #45ffaa;transform:translate(-50%,-50%);animation:boot-pulse 1.6s ease-in-out infinite alternate}
+@keyframes boot-pulse{from{opacity:.18;box-shadow:0 0 4px #45ffaa}to{opacity:.8;box-shadow:0 0 28px #45ffaa}}
+@media(prefers-reduced-motion:reduce){.boot-light{animation:none;opacity:.65}}
