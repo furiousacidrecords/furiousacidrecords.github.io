@@ -15,7 +15,7 @@ h1{font-size:clamp(2.35rem,7vw,4.8rem);line-height:1.04;letter-spacing:-.045em;m
 .intro{max-width:690px;color:var(--muted);font-size:1.07rem}
 .notice{border:1px solid #9b7835;background:#2d2516;color:#ffdfa0;border-radius:14px;padding:16px 18px;margin:28px 0;line-height:1.55}
 .notice strong{color:#fff1cd}
-.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:32px 0}
+.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:32px 0}
 .card{background:linear-gradient(165deg,#1a2330,#10141d);border:1px solid var(--edge);border-radius:20px;padding:25px;display:flex;flex-direction:column;min-height:335px}
 .card h2{font-size:1.32rem;line-height:1.25;margin:5px 0 12px}.tag{font-size:.74rem;color:var(--accent);font-weight:800;letter-spacing:.12em;text-transform:uppercase}
 .price{margin:12px 0 15px;font-size:2.6rem;line-height:1.1;font-weight:800;letter-spacing:-.05em}.price small{font-size:.85rem;font-weight:400;color:var(--muted);letter-spacing:normal}
@@ -35,14 +35,7 @@ footer a{color:var(--accent)}
 <p class="intro">Checkout preview for Furious Acid projects. This page is connected to Stripe's <strong>test environment only</strong>. It does not collect real money or send payouts to a bank.</p>
 <div class="notice" role="status"><strong>TEST MODE — NOT A LIVE STORE.</strong> The links below open simulated Stripe checkout. Do not use a real card or expect access to be delivered from a test payment. Live checkout will be enabled only after the correct Stripe account and payout destination are verified.</div>
 <div class="cards">
-<section class="card">
-<div class="tag">One-time / Test</div>
-<h2>PHANTOM // SIGNAL</h2>
-<div class="price">$5.00</div>
-<p>Simon-style light sequence game, built with C# gameplay and Perl-generated audio. The game is currently playable separately; purchasing and access control are not yet connected.</p>
-<a class="btn" href="https://buy.stripe.com/test_28EeVf1NkeY91nAdZJ8ww00" rel="noopener noreferrer">Open test checkout ↗</a>
-<div class="note">Simulation — no real charge</div>
-</section>
+
 <section class="card">
 <div class="tag">One-time / Draft</div>
 <h2>Digital Collection</h2>
@@ -60,7 +53,7 @@ footer a{color:var(--accent)}
 <div class="note">Simulation — no membership activated</div>
 </section>
 </div>
-<footer><p>Built as a checkout staging page. It is intentionally not linked from the main site and is excluded from search indexing until the live payment account and fulfillment are ready.</p><p><a href="/Simon/">Play PHANTOM // SIGNAL</a> · <a href="https://furiousacid.com/">Furious Acid</a></p></footer>
+<footer><p>Built as a checkout staging page. It is intentionally not linked from the main site and is excluded from search indexing until the live payment account and fulfillment are ready.</p><p><a href="https://furiousacid.com/">Furious Acid</a></p></footer>
 </main>
 </body>
 </html>
