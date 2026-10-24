@@ -30,3 +30,7 @@ Browser policies may restrict `<audio autoplay>` between taps on some mobile dev
 ### Publishing
 
 The GitHub Actions workflow `.github/workflows/simon.yml` builds C# on GitHub-hosted runners, synthesizes WAVs with Perl, and commits the static published assets under `/Simon/` without replacing the rest of the website.
+
+## October 24 mobile touch fix
+
+The SVG stretches to the full device viewport instead of squeezing the hit targets into a letterboxed square. Faint targets now have much larger invisible finger-sized touch regions, with clearer visible rings. The green handoff sweep is brighter, and the number of concurrently rendered colored-smoke particles is capped for smoother mobile performance. A single quiet glowing indicator is visible while the Blazor runtime loads.

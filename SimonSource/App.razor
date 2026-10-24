@@ -1,7 +1,7 @@
 @implements IAsyncDisposable
 
 <div class="stage">
-  <svg class="field" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid meet" @onclick="BackgroundTap">
+  <svg class="field" viewBox="0 0 1000 1000" preserveAspectRatio="none" @onclick="BackgroundTap">
     <defs>
       <filter id="smokeblur" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="25" /></filter>
       <filter id="glow" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="7" /></filter>
@@ -47,7 +47,7 @@
       @if (_phase == Phase.Handoff)
       {
         var sweep = -100 + Math.Clamp((_now - _phaseAt) / 850, 0, 1) * 1200;
-        <rect x="0" y="@sweep" width="1000" height="8" fill="#42ff9a" opacity="0.55" filter="url(#glow)" />
+        <rect x="0" y="@sweep" width="1000" height="26" fill="#42ff9a" opacity="0.85" filter="url(#glow)" />
         <rect x="0" y="@sweep" width="1000" height="2" fill="#aaffd0" opacity="0.9" />
       }
 
@@ -58,9 +58,10 @@
           var index = i;
           var mark = _sequence[i];
           <g class="target" @onclick="() => Press(index)" @onclick:stopPropagation="true">
-            <circle cx="@mark.X" cy="@mark.Y" r="49" fill="@mark.Color" opacity=".055"/>
-            <circle cx="@mark.X" cy="@mark.Y" r="25" fill="none" stroke="@mark.Color" stroke-width="2.5" opacity=".62"/>
-            <circle cx="@mark.X" cy="@mark.Y" r="6" fill="@mark.Color" opacity=".85"/>
+            <circle cx="@mark.X" cy="@mark.Y" r="100" fill="transparent" style="pointer-events:all" />
+            <circle cx="@mark.X" cy="@mark.Y" r="64" fill="@mark.Color" opacity=".16" style="pointer-events:none" />
+            <circle cx="@mark.X" cy="@mark.Y" r="36" fill="none" stroke="@mark.Color" stroke-width="4" opacity=".78" style="pointer-events:none" />
+            <circle cx="@mark.X" cy="@mark.Y" r="9" fill="@mark.Color" opacity=".98" style="pointer-events:none" />
           </g>
         }
       }
@@ -182,7 +183,7 @@
     // Each burst has an identifiable ignition plus 2–3 seconds of colored smoke.
     // Later rounds extend the lingering haze; sequence length stops increasing at four.
     var life = Math.Min(6800, 2300 + Math.Max(0, _round - 4) * 360);
-    for (var i = 0; i < 13; i++)
+    for (var i = 0; i < 8; i++)
     {
       var angle = _rng.NextDouble() * Math.PI * 2;
       var speed = 18 + _rng.NextDouble() * 105;
@@ -190,6 +191,7 @@
         Math.Cos(angle) * speed, Math.Sin(angle) * speed,
         11 + _rng.NextDouble() * 23, 0.14 + _rng.NextDouble() * 0.13, _now, life));
     }
+    if (_smoke.Count > 90) _smoke.RemoveRange(0, _smoke.Count - 90);
     Play(Names[signal.Color]);
   }
 
