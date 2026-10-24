@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#090b10">
+<title>Furious Acid — Payment Setup Preview</title>
+<style>
+:root{color-scheme:dark;--bg:#090b10;--panel:#131822;--edge:#343b49;--ink:#f8fafc;--muted:#b6bdca;--accent:#93f5c4}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 18% 0%,#1b2f2a,transparent 35%),radial-gradient(circle at 85% 16%,#261f40,transparent 32%),var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,Segoe UI,sans-serif;min-height:100dvh}
+main{max-width:1060px;padding:54px 20px 75px;margin:auto}
+.eyebrow{letter-spacing:.23em;text-transform:uppercase;font-size:.72rem;color:var(--accent);font-weight:800}
+h1{font-size:clamp(2.35rem,7vw,4.8rem);line-height:1.04;letter-spacing:-.045em;margin:12px 0 18px}
+.intro{max-width:690px;color:var(--muted);font-size:1.07rem}
+.notice{border:1px solid #9b7835;background:#2d2516;color:#ffdfa0;border-radius:14px;padding:16px 18px;margin:28px 0;line-height:1.55}
+.notice strong{color:#fff1cd}
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:32px 0}
+.card{background:linear-gradient(165deg,#1a2330,#10141d);border:1px solid var(--edge);border-radius:20px;padding:25px;display:flex;flex-direction:column;min-height:335px}
+.card h2{font-size:1.32rem;line-height:1.25;margin:5px 0 12px}.tag{font-size:.74rem;color:var(--accent);font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+.price{margin:12px 0 15px;font-size:2.6rem;line-height:1.1;font-weight:800;letter-spacing:-.05em}.price small{font-size:.85rem;font-weight:400;color:var(--muted);letter-spacing:normal}
+.card p{color:var(--muted);flex:1;margin:0 0 22px}
+a.btn{min-height:48px;display:flex;align-items:center;justify-content:center;border-radius:10px;background:var(--accent);color:#07130c;font-weight:800;text-decoration:none;text-align:center;padding:11px 14px}
+a.btn:hover,a.btn:focus-visible{background:#befbdd;outline:2px solid #fff;outline-offset:3px}
+.note{margin:7px 0 0;color:var(--muted);text-align:center;font-size:.76rem}
+footer{border-top:1px solid var(--edge);padding-top:24px;color:var(--muted);font-size:.85rem}
+footer a{color:var(--accent)}
+@media(max-width:780px){main{padding-top:35px}.cards{grid-template-columns:1fr}.card{min-height:unset}.card p{min-height:60px}}
+</style>
+</head>
+<body>
+<main>
+<div class="eyebrow">Furious Acid / payment setup</div>
+<h1>Play. Explore.<br>Support the weird.</h1>
+<p class="intro">Checkout preview for Furious Acid projects. This page is connected to Stripe's <strong>test environment only</strong>. It does not collect real money or send payouts to a bank.</p>
+<div class="notice" role="status"><strong>TEST MODE — NOT A LIVE STORE.</strong> The links below open simulated Stripe checkout. Do not use a real card or expect access to be delivered from a test payment. Live checkout will be enabled only after the correct Stripe account and payout destination are verified.</div>
+<div class="cards">
+<section class="card">
+<div class="tag">One-time / Test</div>
+<h2>PHANTOM // SIGNAL</h2>
+<div class="price">$5.00</div>
+<p>Simon-style light sequence game, built with C# gameplay and Perl-generated audio. The game is currently playable separately; purchasing and access control are not yet connected.</p>
+<a class="btn" href="https://buy.stripe.com/test_28EeVf1NkeY91nAdZJ8ww00" rel="noopener noreferrer">Open test checkout ↗</a>
+<div class="note">Simulation — no real charge</div>
+</section>
+<section class="card">
+<div class="tag">One-time / Draft</div>
+<h2>Digital Collection</h2>
+<div class="price">$9.99</div>
+<p>Placeholder digital collection offer. Contents and delivery need to be confirmed before live sales.</p>
+<a class="btn" href="https://buy.stripe.com/test_dRmdRb0JgeY9aYa2h18ww01" rel="noopener noreferrer">Open test checkout ↗</a>
+<div class="note">Simulation — no download delivered</div>
+</section>
+<section class="card">
+<div class="tag">Monthly / Draft</div>
+<h2>Archive Membership</h2>
+<div class="price">$4.99 <small>/ month</small></div>
+<p>Placeholder recurring membership offer. Members-only access has not yet been built.</p>
+<a class="btn" href="https://buy.stripe.com/test_3cI5kFdw22bn1nA2h18ww02" rel="noopener noreferrer">Open test checkout ↗</a>
+<div class="note">Simulation — no membership activated</div>
+</section>
+</div>
+<footer><p>Built as a checkout staging page. It is intentionally not linked from the main site and is excluded from search indexing until the live payment account and fulfillment are ready.</p><p><a href="/Simon/">Play PHANTOM // SIGNAL</a> · <a href="https://furiousacid.com/">Furious Acid</a></p></footer>
+</main>
+</body>
+</html>
