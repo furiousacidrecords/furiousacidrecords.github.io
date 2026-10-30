@@ -8,3 +8,12 @@
 .cards{grid-template-columns:repeat(2,1fr)}@media(max-width:850px){.cards{grid-template-columns:1fr}}
 
 .recommended{display:flex;justify-content:space-between;gap:20px;align-items:center;padding:22px 0 30px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}.recommended a{color:#d6d8cd}@media(max-width:500px){.recommended{align-items:flex-start;flex-direction:column;gap:10px}}
+
+/* Flexible one-time payment and ChatGPT author's note */
+@media (min-width:851px){.cards{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.price-variable{font-size:clamp(25px,2.6vw,38px);letter-spacing:-1.5px;line-height:1.35;margin:12px 0 18px}
+.price-variable span{display:block;margin-top:4px}
+.surprise-quote{border-top:1px solid var(--line);padding:32px 0 36px;max-width:840px}
+.surprise-quote .quote-label{color:var(--lime);font-size:11px;letter-spacing:2px;font-weight:700}
+.surprise-quote blockquote{font-family:'Space Grotesk',sans-serif;font-size:clamp(20px,2.5vw,29px);line-height:1.45;margin:16px 0}
+.surprise-quote .quote-author{font-size:12px;color:var(--muted)}
