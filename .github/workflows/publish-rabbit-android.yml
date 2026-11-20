@@ -1,0 +1,28 @@
+name: Publish Rabbit Chemistry APK
+on:
+  push:
+    paths:
+      - .github/workflows/publish-rabbit-android.yml
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify and publish signed APK
+        shell: bash
+        run: |
+          set -euo pipefail
+          dest=downloads/Rabbit_Chemistry.apk
+          mkdir -p downloads
+          for n in 0 1 2 3; do
+            curl --fail --location --retry 3 "https://rabbit-chemistry-windows-download.skittlez2901.chatgpt.site/android-$n.bin" --output "$RUNNER_TEMP/rabbit-$n.bin"
+          done
+          cat "$RUNNER_TEMP"/rabbit-{0,1,2,3}.bin > "$dest"
+          echo "e0f29db3a0d02d2f086d91c5f6d9489722b2c7d6385fc80da38595c70181d239  $dest" | sha256sum --check
+          git add -- "$dest"
+          if git diff --cached --quiet; then exit 0; fi
+          git -c user.name=github-actions -c user.email=github-actions@users.noreply.github.com commit -m "Add signed Rabbit Chemistry APK"
+          git pull --rebase origin "$GITHUB_REF_NAME"
+          git push origin "HEAD:$GITHUB_REF_NAME"
