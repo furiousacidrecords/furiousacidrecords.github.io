@@ -1,0 +1,350 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Rabbit Chemistry | Furious Acid</title><style>
+:root{color-scheme:light}*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:white;color:#111;font:15px/1.5 Arial,Helvetica,sans-serif}
+main{max-width:1270px;padding:24px 20px 80px;margin:auto}
+a{color:#0645ad;text-decoration:underline}
+h1{font-size:30px;margin:0 0 14px}h2{font-size:22px;margin:28px 0 10px}h3{font-size:18px;margin:25px 0 8px}h4{font-size:15px;margin:17px 0 7px}
+nav{display:flex;gap:8px 22px;flex-wrap:wrap;padding:0 0 16px;border-bottom:1px solid #bbb;margin:0 0 16px}
+.columns{display:grid;grid-template-columns:minmax(0,1fr) 410px;gap:26px;align-items:start}
+.calc{position:sticky;top:10px}.calc h2{margin-top:0}.calc iframe{width:100%;height:790px;border:1px solid #b7b7b7;background:white}
+.table-scroll{overflow-x:auto;margin-bottom:22px}table{width:100%;border-collapse:collapse;background:white;font-size:14px}
+th,td{border:1px solid #aaa;text-align:left;padding:6px 8px;vertical-align:top}
+th{background:#f4f4f4}tr:nth-child(even){background:#fafafa}
+.notes{padding-left:25px}li{margin:5px 0}code{font-family:Consolas,monospace;font-size:13px}
+#reactionSearch{font:inherit;padding:8px;border:1px solid #aaa;width:100%;max-width:480px}
+#reactions ol{padding-left:32px}#reactions li{padding:2px 0;overflow-wrap:anywhere}#reactions h3{margin-top:24px}
+.small{font-size:13px;color:#555}
+@media(max-width:960px){.columns{display:flex;flex-direction:column}.calc{order:-1;position:static;width:100%}.calc iframe{height:650px}.parts{width:100%}} 
+@media(max-width:550px){main{padding:15px 10px 50px}th,td{font-size:12px;padding:5px}}
+</style></head><body><main>
+<h1>Rabbit Chemistry</h1>
+<nav aria-label="Software and calculator">
+<a href="/downloads/Rabbit_Chemistry.exe">Windows Download</a>
+<a href="/downloads/Rabbit_Chemistry.apk">Android Download</a>
+<a href="/rabbitchemistry/calculator.html">Calculator — Open</a>
+</nav>
+<div class="columns"><article class="parts"><h2 id="parts">Rabbit Chemistry — Parts Library</h2>
+<h3>1. Metals</h3>
+<h4>Powders &amp; Liquids</h4>
+<div class="table-scroll"><table>
+<tr><th>Metal</th><th>Formula</th><th>Formula Weight (g/mol)</th></tr>
+<tr><td>Lithium</td><td>Li</td><td>6.94</td></tr>
+<tr><td>Magnesium</td><td>Mg</td><td>24.31</td></tr>
+<tr><td>Magnesium ribbon</td><td>Mg</td><td>24.31</td></tr>
+<tr><td>Aluminum</td><td>Al</td><td>26.98</td></tr>
+<tr><td>Zinc</td><td>Zn</td><td>65.38</td></tr>
+<tr><td>Iron</td><td>Fe</td><td>55.85</td></tr>
+<tr><td>Lead</td><td>Pb</td><td>207.20</td></tr>
+<tr><td>Copper</td><td>Cu</td><td>63.55</td></tr>
+<tr><td>Silver</td><td>Ag</td><td>107.87</td></tr>
+<tr><td>Mercury</td><td>Hg</td><td>200.59</td></tr>
+<tr><td>Gold</td><td>Au</td><td>196.97</td></tr>
+<tr><td>Platinum</td><td>Pt</td><td>195.08</td></tr>
+</table></div>
+<h4>Lumps</h4>
+<div class="table-scroll"><table>
+<tr><th>Metal</th><th>Formula</th><th>Formula Weight (g/mol)</th></tr>
+<tr><td>Potassium</td><td>K</td><td>39.10</td></tr>
+<tr><td>Sodium</td><td>Na</td><td>22.99</td></tr>
+<tr><td>Lithium</td><td>Li</td><td>6.94</td></tr>
+<tr><td>Magnesium ribbon</td><td>Mg</td><td>24.31</td></tr>
+<tr><td>Aluminum</td><td>Al</td><td>26.98</td></tr>
+<tr><td>Zinc</td><td>Zn</td><td>65.38</td></tr>
+<tr><td>Iron</td><td>Fe</td><td>55.85</td></tr>
+<tr><td>Lead</td><td>Pb</td><td>207.20</td></tr>
+<tr><td>Copper</td><td>Cu</td><td>63.55</td></tr>
+<tr><td>Silver</td><td>Ag</td><td>107.87</td></tr>
+<tr><td>Mercury</td><td>Hg</td><td>200.59</td></tr>
+<tr><td>Gold</td><td>Au</td><td>196.97</td></tr>
+<tr><td>Platinum</td><td>Pt</td><td>195.08</td></tr>
+</table></div>
+<h3>2. Acids</h3>
+<div class="table-scroll"><table>
+<tr><th>Acid</th><th>Formula</th><th>Formula Weight (g/mol)</th></tr>
+<tr><td>Sulfuric acid</td><td>H₂SO₄</td><td>98.08</td></tr>
+<tr><td>Hydrochloric acid</td><td>HCl</td><td>36.46</td></tr>
+<tr><td>Nitric acid</td><td>HNO₃</td><td>63.01</td></tr>
+<tr><td>Phosphoric acid</td><td>H₃PO₄</td><td>98.00</td></tr>
+<tr><td>Ethanoic acid (acetic acid)</td><td>CH₃COOH</td><td>60.05</td></tr>
+</table></div>
+<h3>3. Alkalis (Bases)</h3>
+<div class="table-scroll"><table>
+<tr><th>Alkali</th><th>Formula</th><th>Formula Weight (g/mol)</th></tr>
+<tr><td>Potassium hydroxide</td><td>KOH</td><td>56.11</td></tr>
+<tr><td>Barium hydroxide</td><td>Ba(OH)₂</td><td>171.34</td></tr>
+<tr><td>Calcium hydroxide</td><td>Ca(OH)₂</td><td>74.09</td></tr>
+<tr><td>Sodium hydroxide</td><td>NaOH</td><td>40.00</td></tr>
+<tr><td>Ammonia solution (aqueous ammonia)</td><td>NH₃(aq)</td><td>17.03</td></tr>
+</table></div>
+<h3>4. Oxides</h3>
+<div class="table-scroll"><table>
+<tr><th>Oxide</th><th>Formula</th><th>Formula Weight (g/mol)</th></tr>
+<tr><td>Calcium oxide</td><td>CaO</td><td>56.08</td></tr>
+<tr><td>Magnesium oxide</td><td>MgO</td><td>40.30</td></tr>
+<tr><td>Aluminum oxide</td><td>Al₂O₃</td><td>101.96</td></tr>
+<tr><td>Zinc oxide</td><td>ZnO</td><td>81.38</td></tr>
+<tr><td>Lead(II) oxide</td><td>PbO</td><td>223.20</td></tr>
+<tr><td>Iron(III) oxide</td><td>Fe₂O₃</td><td>159.69</td></tr>
+<tr><td>Copper(II) oxide</td><td>CuO</td><td>79.55</td></tr>
+<tr><td>Silver(I) oxide</td><td>Ag₂O</td><td>231.74</td></tr>
+<tr><td>Mercury(II) oxide</td><td>HgO</td><td>216.59</td></tr>
+<tr><td>Manganese(IV) oxide</td><td>MnO₂</td><td>86.94</td></tr>
+<tr><td>Silicon dioxide</td><td>SiO₂</td><td>60.08</td></tr>
+</table></div>
+<h3>5. Halides</h3>
+<h4>Powders</h4>
+<div class="table-scroll"><table>
+<tr><th>Halide</th><th>Formula</th><th>Formula Weight (g/mol)</th></tr>
+<tr><td>Potassium chloride</td><td>KCl</td><td>74.55</td></tr>
+<tr><td>Barium chloride</td><td>BaCl₂</td><td>208.23</td></tr>
+<tr><td>Sodium chloride</td><td>NaCl</td><td>58.44</td></tr>
+<tr><td>Lithium chloride</td><td>LiCl</td><td>42.39</td></tr>
+<tr><td>Cobalt(II) chloride</td><td>CoCl₂</td><td>129.84</td></tr>
+<tr><td>Copper(II) chloride</td><td>CuCl₂</td><td>134.45</td></tr>
+<tr><td>Silver chloride</td><td>AgCl</td><td>143.32</td></tr>
+<tr><td>Ammonium chloride</td><td>NH₄Cl</td><td>53.49</td></tr>
+<tr><td>Potassium iodide</td><td>KI</td><td>166.00</td></tr>
+<tr><td>Copper(I) iodide</td><td>CuI</td><td>190.45</td></tr>
+<tr><td>Lead(II) bromide</td><td>PbBr₂</td><td>367.01</td></tr>
+</table></div>
+<h4>Solutions</h4>
+<div class="table-scroll"><table>
+<tr><th>Halide</th><th>Formula</th><th>Formula Weight (g/mol)</th></tr>
+<tr><td>Potassium chloride</td><td>KCl(aq)</td><td>74.55</td></tr>
+<tr><td>Barium chloride</td><td>BaCl₂(aq)</td><td>208.23</td></tr>
+<tr><td>Sodium chloride</td><td>NaCl(aq)</td><td>58.44</td></tr>
+<tr><td>Lithium chloride</td><td>LiCl(aq)</td><td>42.39</td></tr>
+<tr><td>Cobalt(II) chloride</td><td>CoCl₂(aq)</td><td>129.84</td></tr>
+<tr><td>Copper(II) chloride</td><td>CuCl₂(aq)</td><td>134.45</td></tr>
+<tr><td>Ammonium chloride</td><td>NH₄Cl(aq)</td><td>53.49</td></tr>
+<tr><td>Potassium iodide</td><td>KI(aq)</td><td>166.00</td></tr>
+<tr><td>Sodium iodide</td><td>NaI(aq)</td><td>149.89</td></tr>
+</table></div>
+<h3>6. Sulfides</h3>
+<div class="table-scroll"><table>
+<tr><th>Sulfide</th><th>Formula</th><th>Formula Weight (g/mol)</th></tr>
+<tr><td>Zinc sulfide</td><td>ZnS</td><td>97.44</td></tr>
+<tr><td>Iron(II) sulfide</td><td>FeS</td><td>87.91</td></tr>
+<tr><td>Lead(II) sulfide</td><td>PbS</td><td>239.26</td></tr>
+<tr><td>Mercury(II) sulfide</td><td>HgS</td><td>232.65</td></tr>
+</table></div>
+<h3>7. Carbonates</h3>
+<h4>Powders</h4>
+<div class="table-scroll"><table>
+<tr><th>Carbonate</th><th>Formula</th><th>Formula Weight (g/mol)</th></tr>
+<tr><td>Calcium carbonate</td><td>CaCO₃</td><td>100.09</td></tr>
+<tr><td>Sodium carbonate</td><td>Na₂CO₃</td><td>105.99</td></tr>
+<tr><td>Magnesium carbonate</td><td>MgCO₃</td><td>84.31</td></tr>
+<tr><td>Zinc carbonate</td><td>ZnCO₃</td><td>125.39</td></tr>
+<tr><td>Copper(II) carbonate</td><td>CuCO₃</td><td>123.55</td></tr>
+<tr><td>Sodium hydrogencarbonate</td><td>NaHCO₃</td><td>84.01</td></tr>
+</table></div>
+<h4>Solutions</h4>
+<div class="table-scroll"><table>
+<tr><th>Carbonate</th><th>Formula</th><th>Formula Weight (g/mol)</th></tr>
+<tr><td>Sodium carbonate</td><td>Na₂CO₃(aq)</td><td>105.99</td></tr>
+<tr><td>Sodium hydrogencarbonate</td><td>NaHCO₃(aq)</td><td>84.01</td></tr>
+</table></div>
+<h3>8. Nitrates</h3>
+<h4>Powders</h4>
+<div class="table-scroll"><table>
+<tr><th>Nitrate</th><th>Formula</th><th>Formula Weight (g/mol)</th></tr>
+<tr><td>Potassium nitrate</td><td>KNO₃</td><td>101.10</td></tr>
+<tr><td>Sodium nitrate</td><td>NaNO₃</td><td>84.99</td></tr>
+<tr><td>Lithium nitrate</td><td>LiNO₃</td><td>68.95</td></tr>
+<tr><td>Lead(II) nitrate</td><td>Pb(NO₃)₂</td><td>331.21</td></tr>
+<tr><td>Silver nitrate</td><td>AgNO₃</td><td>169.87</td></tr>
+<tr><td>Ammonium nitrate</td><td>NH₄NO₃</td><td>80.04</td></tr>
+<tr><td>Copper(II) nitrate</td><td>Cu(NO₃)₂</td><td>187.56</td></tr>
+</table></div>
+<h4>Solutions</h4>
+<div class="table-scroll"><table>
+<tr><th>Nitrate</th><th>Formula</th><th>Formula Weight (g/mol)</th></tr>
+<tr><td>Iron(III) nitrate</td><td>Fe(NO₃)₃(aq)</td><td>241.86</td></tr>
+<tr><td>Barium nitrate</td><td>Ba(NO₃)₂(aq)</td><td>261.34</td></tr>
+<tr><td>Lead(II) nitrate</td><td>Pb(NO₃)₂(aq)</td><td>331.21</td></tr>
+<tr><td>Silver nitrate</td><td>AgNO₃(aq)</td><td>169.87</td></tr>
+<tr><td>Potassium nitrate</td><td>KNO₃(aq)</td><td>101.10</td></tr>
+<tr><td>Sodium nitrate</td><td>NaNO₃(aq)</td><td>84.99</td></tr>
+<tr><td>Lithium nitrate</td><td>LiNO₃(aq)</td><td>68.95</td></tr>
+<tr><td>Copper(II) nitrate</td><td>Cu(NO₃)₂(aq)</td><td>187.56</td></tr>
+</table></div>
+<h3>9. Sulfates and Related Salts</h3>
+<h4>Powders</h4>
+<div class="table-scroll"><table>
+<tr><th>Compound</th><th>Formula</th><th>Formula Weight (g/mol)</th></tr>
+<tr><td>Sodium sulfate</td><td>Na₂SO₄</td><td>142.04</td></tr>
+<tr><td>Magnesium sulfate</td><td>MgSO₄</td><td>120.37</td></tr>
+<tr><td>Magnesium sulfate (heptahydrate)</td><td>MgSO₄·7H₂O</td><td>246.47</td></tr>
+<tr><td>Zinc sulfate</td><td>ZnSO₄</td><td>161.44</td></tr>
+<tr><td>Zinc sulfate (heptahydrate)</td><td>ZnSO₄·7H₂O</td><td>287.54</td></tr>
+<tr><td>Copper(II) sulfate</td><td>CuSO₄</td><td>159.61</td></tr>
+<tr><td>Copper(II) sulfate (pentahydrate)</td><td>CuSO₄·5H₂O</td><td>249.68</td></tr>
+<tr><td>Sodium sulfite</td><td>Na₂SO₃</td><td>126.04</td></tr>
+<tr><td>Sodium thiosulfate</td><td>Na₂S₂O₃</td><td>158.11</td></tr>
+<tr><td>Sodium hydrogensulfate</td><td>NaHSO₄</td><td>120.06</td></tr>
+<tr><td>Iron(II) sulfate</td><td>FeSO₄</td><td>151.91</td></tr>
+</table></div>
+<h4>Solutions</h4>
+<div class="table-scroll"><table>
+<tr><th>Compound</th><th>Formula</th><th>Formula Weight (g/mol)</th></tr>
+<tr><td>Sodium sulfate</td><td>Na₂SO₄(aq)</td><td>142.04</td></tr>
+<tr><td>Magnesium sulfate</td><td>MgSO₄(aq)</td><td>120.37</td></tr>
+<tr><td>Zinc sulfate</td><td>ZnSO₄(aq)</td><td>161.44</td></tr>
+<tr><td>Iron(II) sulfate</td><td>FeSO₄(aq)</td><td>151.91</td></tr>
+<tr><td>Copper(II) sulfate</td><td>CuSO₄(aq)</td><td>159.61</td></tr>
+<tr><td>Sodium sulfite</td><td>Na₂SO₃(aq)</td><td>126.04</td></tr>
+<tr><td>Sodium thiosulfate</td><td>Na₂S₂O₃(aq)</td><td>158.11</td></tr>
+<tr><td>Sodium hydrogensulfate</td><td>NaHSO₄(aq)</td><td>120.06</td></tr>
+</table></div>
+<h3>10. Miscellaneous Salts</h3>
+<h4>Powders</h4>
+<div class="table-scroll"><table>
+<tr><th>Compound</th><th>Formula</th><th>Formula Weight (g/mol)</th></tr>
+<tr><td>Sodium phosphate (trisodium phosphate)</td><td>Na₃PO₄</td><td>163.94</td></tr>
+<tr><td>Sodium phosphate (dodecahydrate)</td><td>Na₃PO₄·12H₂O</td><td>380.12</td></tr>
+<tr><td>Potassium permanganate</td><td>KMnO₄</td><td>158.03</td></tr>
+<tr><td>Potassium chromate</td><td>K₂CrO₄</td><td>194.19</td></tr>
+<tr><td>Potassium dichromate</td><td>K₂Cr₂O₇</td><td>294.18</td></tr>
+<tr><td>Ammonium dichromate</td><td>(NH₄)₂Cr₂O₇</td><td>252.06</td></tr>
+<tr><td>Potassium iodate</td><td>KIO₃</td><td>214.00</td></tr>
+</table></div>
+<h4>Solutions</h4>
+<div class="table-scroll"><table>
+<tr><th>Compound</th><th>Formula</th><th>Formula Weight (g/mol)</th></tr>
+<tr><td>Sodium phosphate</td><td>Na₃PO₄(aq)</td><td>163.94</td></tr>
+<tr><td>Potassium permanganate</td><td>KMnO₄(aq)</td><td>158.03</td></tr>
+<tr><td>Potassium chromate</td><td>K₂CrO₄(aq)</td><td>194.19</td></tr>
+<tr><td>Potassium dichromate</td><td>K₂Cr₂O₇(aq)</td><td>294.18</td></tr>
+<tr><td>Potassium iodate</td><td>KIO₃(aq)</td><td>214.00</td></tr>
+<tr><td>Sodium ethanoate (sodium acetate)</td><td>CH₃COONa(aq)</td><td>82.03</td></tr>
+</table></div>
+<h3>11. Miscellaneous</h3>
+<h4>Lumps</h4>
+<div class="table-scroll"><table>
+<tr><th>Substance</th><th>Formula</th><th>Formula Weight (g/mol)</th></tr>
+<tr><td>Rock salt</td><td>NaCl (principal component)</td><td>58.44</td></tr>
+<tr><td>Limestone</td><td>CaCO₃ (principal component)</td><td>100.09</td></tr>
+<tr><td>Ice</td><td>H₂O</td><td>18.02</td></tr>
+<tr><td>Sugar (sucrose)</td><td>C₁₂H₂₂O₁₁</td><td>342.30</td></tr>
+<tr><td>Coal</td><td>Mixture, mainly C</td><td>Variable</td></tr>
+</table></div>
+<h4>Powders</h4>
+<div class="table-scroll"><table>
+<tr><th>Substance</th><th>Formula</th><th>Formula Weight (g/mol)</th></tr>
+<tr><td>Carbon</td><td>C</td><td>12.01</td></tr>
+<tr><td>Glucose</td><td>C₆H₁₂O₆</td><td>180.16</td></tr>
+<tr><td>Sulfur</td><td>S</td><td>32.06</td></tr>
+<tr><td>Gunpowder</td><td>Mixture</td><td>Variable</td></tr>
+<tr><td>Sodium hydroxide</td><td>NaOH</td><td>40.00</td></tr>
+<tr><td>Ice (crushed)</td><td>H₂O</td><td>18.02</td></tr>
+<tr><td>Iodine</td><td>I₂</td><td>253.81</td></tr>
+</table></div>
+<h4>Liquids &amp; Solutions</h4>
+<div class="table-scroll"><table>
+<tr><th>Substance</th><th>Formula</th><th>Formula Weight (g/mol)</th></tr>
+<tr><td>Water</td><td>H₂O</td><td>18.02</td></tr>
+<tr><td>Iodine solution</td><td>I₂ (solute)</td><td>253.81</td></tr>
+<tr><td>Ethanol</td><td>C₂H₅OH</td><td>46.07</td></tr>
+<tr><td>Hydrogen peroxide</td><td>H₂O₂</td><td>34.01</td></tr>
+</table></div>
+<h3>12. Gases</h3>
+<div class="table-scroll"><table>
+<tr><th>Gas</th><th>Formula</th><th>Formula Weight (g/mol)</th></tr>
+<tr><td>Chlorine</td><td>Cl₂</td><td>70.90</td></tr>
+<tr><td>Carbon monoxide</td><td>CO</td><td>28.01</td></tr>
+<tr><td>Carbon dioxide</td><td>CO₂</td><td>44.01</td></tr>
+<tr><td>Hydrogen</td><td>H₂</td><td>2.02</td></tr>
+<tr><td>Hydrogen sulfide</td><td>H₂S</td><td>34.08</td></tr>
+<tr><td>Ammonia</td><td>NH₃</td><td>17.03</td></tr>
+<tr><td>Oxygen</td><td>O₂</td><td>32.00</td></tr>
+<tr><td>Nitrogen</td><td>N₂</td><td>28.02</td></tr>
+</table></div>
+<h3>13. Indicators</h3>
+<h4>Solutions</h4>
+<div class="table-scroll"><table>
+<tr><th>Indicator</th><th>Formula</th><th>Formula Weight (g/mol)</th></tr>
+<tr><td>Universal indicator</td><td>Mixture</td><td>Variable</td></tr>
+<tr><td>Litmus</td><td>Natural dye mixture</td><td>Variable</td></tr>
+<tr><td>Methyl orange</td><td>C₁₄H₁₄N₃NaO₃S</td><td>327.33</td></tr>
+<tr><td>Phenolphthalein</td><td>C₂₀H₁₄O₄</td><td>318.32</td></tr>
+<tr><td>Thymol blue</td><td>C₂₇H₃₀O₅S</td><td>466.59</td></tr>
+<tr><td>Tropaeolin OOO (Orange II)</td><td>C₁₆H₁₁N₂NaO₄S</td><td>350.32</td></tr>
+</table></div>
+<h2>Rabbit Chemistry — Glassware &amp; Equipment</h2>
+<h3>14. Standard Glassware</h3>
+<div class="table-scroll"><table>
+<tr><th>Item</th><th>Capacity / Size</th><th>Category</th></tr>
+<tr><td>Beaker</td><td>50 mL</td><td>Standard</td></tr>
+<tr><td>Beaker</td><td>100 mL</td><td>Standard</td></tr>
+<tr><td>Beaker</td><td>250 mL</td><td>Standard</td></tr>
+<tr><td>Bath</td><td>Variable</td><td>Heating / Cooling</td></tr>
+<tr><td>Erlenmeyer flask</td><td>Variable</td><td>Standard</td></tr>
+<tr><td>Round-bottom flask</td><td>Variable</td><td>Standard</td></tr>
+<tr><td>Evaporating dish</td><td>Variable</td><td>Evaporation</td></tr>
+<tr><td>Test tube</td><td>Variable</td><td>Standard</td></tr>
+<tr><td>Gas tube</td><td>Variable</td><td>Gas handling</td></tr>
+<tr><td>Delivery tube</td><td>Variable</td><td>Gas transfer</td></tr>
+<tr><td>Condenser</td><td>Variable</td><td>Condensation</td></tr>
+<tr><td>Funnel</td><td>Variable</td><td>Transfer / Filtration</td></tr>
+<tr><td>Filter paper</td><td>Variable</td><td>Filtration</td></tr>
+</table></div>
+<h3>15. Measuring Glassware</h3>
+<div class="table-scroll"><table>
+<tr><th>Item</th><th>Capacity / Size</th><th>Category</th></tr>
+<tr><td>Burette</td><td>Variable</td><td>Volumetric</td></tr>
+<tr><td>Pipette</td><td>5 mL</td><td>Volumetric</td></tr>
+<tr><td>Pipette</td><td>10 mL</td><td>Volumetric</td></tr>
+<tr><td>Pipette</td><td>20 mL</td><td>Volumetric</td></tr>
+<tr><td>Pipette</td><td>25 mL</td><td>Volumetric</td></tr>
+<tr><td>Pasteur pipette</td><td>Variable</td><td>Transfer</td></tr>
+<tr><td>Graduated cylinder</td><td>Variable</td><td>Volumetric</td></tr>
+<tr><td>Volumetric flask</td><td>100 mL</td><td>Volumetric</td></tr>
+<tr><td>Volumetric flask</td><td>250 mL</td><td>Volumetric</td></tr>
+<tr><td>Gas collector</td><td>Variable</td><td>Gas measurement</td></tr>
+<tr><td>Gas syringe</td><td>Variable</td><td>Gas measurement</td></tr>
+</table></div>
+<h3>Scientific standardization notes</h3>
+<ul class="notes">
+<li>Hydration: Chemical formula weights differ between anhydrous and hydrated compounds. For example, copper(II) sulfate is 159.61 g/mol, whereas its pentahydrate is 249.68 g/mol.</li>
+<li>Solutions: An aqueous compound retains the solute&#x27;s formula weight, but the total solution has no single molar mass.</li>
+<li>Mixtures: Coal, gunpowder, universal indicator, and litmus do not have one fixed molecular formula or molar mass.</li>
+<li>Naming: Generic names such as iron nitrate, copper carbonate, and sodium phosphate may describe more than one compound. The tables use specified common forms, but the actual reagent should be identified before assigning a definitive formula.</li>
+<li>Physical form: Powder, ribbon, lump, liquid, and gas classifications describe the material&#x27;s form, not a different chemical formula. Some items, such as ice and mercury, are retained under the original headings even where their physical form differs from the heading.</li>
+</ul>
+</article>
+<aside class="calc" id="calculator"><h2>Calculator</h2><p><a href="/rabbitchemistry/calculator.html" target="_blank" rel="noopener">Open calculator in a separate window</a></p>
+<iframe title="Rabbit Chemistry Stoichiometry Calculator" src="/rabbitchemistry/calculator.html"></iframe></aside></div>
+<section id="reactions"><h2>Balanced reactions</h2>
+<p class="small">Rule-guided equations are predictions. Atom-balanced-only entries are mathematical matches, not verified chemical reactions.</p>
+<label for="reactionSearch">Search reactions</label><p><input type="search" id="reactionSearch" placeholder="Chemical formula or reaction family" aria-label="Search reactions"></p>
+<p id="reactionCount" class="small">Loading reactions…</p>
+<h3>Rule-guided</h3><ol id="guidedList"></ol>
+<h3>Atom-balanced only</h3><ol id="formalList"></ol></section>
+</main><script>
+const reactionPacked="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";
+(async function(){
+const status=document.getElementById('reactionCount');
+try {
+const compressed=Uint8Array.from(atob(reactionPacked),c=>c.charCodeAt(0));
+const response=new Response(new Blob([compressed]).stream().pipeThrough(new DecompressionStream('gzip')));
+const all=(await response.text()).split('\n').filter(Boolean).map(line=>{
+const sep1=line.indexOf('|'),sep2=line.indexOf('|',sep1+1);
+return {kind:line.slice(0,sep1),family:line.slice(sep1+1,sep2),eq:line.slice(sep2+1)};
+});
+const input=document.getElementById('reactionSearch');
+function render(){
+const value=input.value.trim().toLowerCase();let count=0;
+for(const kind of ['R','F']){
+const list=document.getElementById(kind==='R'?'guidedList':'formalList');
+const entries=all.filter(x=>x.kind===kind&&(!value||(x.eq+' '+x.family).toLowerCase().includes(value)));
+list.replaceChildren();const fragment=document.createDocumentFragment();
+for(const item of entries){const li=document.createElement('li');const code=document.createElement('code');code.textContent=item.eq;li.appendChild(code);li.title=item.family;fragment.appendChild(li);}
+list.appendChild(fragment);count+=entries.length;
+}
+status.textContent=count+' of '+all.length+' balanced equations';
+}
+input.addEventListener('input',render);render();
+}catch(err){status.textContent='Reaction list could not load in this browser.';console.error(err);}
+})();
+</script></body></html>
