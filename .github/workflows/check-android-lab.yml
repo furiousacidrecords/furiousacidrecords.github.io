@@ -33,7 +33,7 @@ jobs:
           for state,box,encoded in refs:
               target=Image.open(io.BytesIO(base64.b64decode(encoded))).convert('RGB')
               start=time.monotonic()
-              while time.monotonic()-start<460:
+              while time.monotonic()-start<105:
                   im,screen,g=frame()
                   score=sum(ImageStat.Stat(ImageChops.difference(screen.crop(box).resize((64,48)),target)).mean)/3
                   print(state,round(time.monotonic()-start),round(score,2),flush=True)
@@ -44,7 +44,9 @@ jobs:
               im.save(state+'.png')
               if state=='blank':tap(122,136)
               if state=='menu':
-                  adb('shell','input','keyevent','111')
+                  tap(600,420)
+                  time.sleep(1)
+                  tap(600,420)
                   time.sleep(2)
                   tap(184,335)
                   time.sleep(4)
