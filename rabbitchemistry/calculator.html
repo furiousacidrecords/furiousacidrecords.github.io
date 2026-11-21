@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Rabbit Chemistry — Stoichiometry Sidebar</title>
+<style>
+:root{font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;color:#152332;background:#eff4f8;font-synthesis:none}
+*{box-sizing:border-box}body{margin:0;min-height:100vh}button,input,textarea{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid #48a9a5;outline-offset:2px}
+.top{padding:14px clamp(16px,3vw,40px);background:#132c39;color:white;display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}.brand{font-weight:800;letter-spacing:.05em}.brand .rabbit{font-size:23px;margin-right:8px}.top small{color:#b6ccd5}.tag{padding:6px 10px;border:1px solid #54727f;color:#d6e9ea;border-radius:100px;font-size:12px}
+.main{display:grid;grid-template-columns:minmax(300px,1fr) minmax(330px,445px);gap:18px;max-width:1500px;margin:auto;padding:18px}.work{min-width:0}.sidebar{background:#fff;border:1px solid #d5e0e8;border-radius:18px;box-shadow:0 10px 40px rgba(12,52,61,.11);padding:18px;align-self:start;position:sticky;top:12px;min-width:0}.card{background:white;border:1px solid #dce5eb;border-radius:16px;padding:19px;margin-bottom:16px;box-shadow:0 2px 12px #172c3910}.kicker{font-size:11px;color:#3d777b;text-transform:uppercase;letter-spacing:.13em;font-weight:800}.card h2,.sidebar h2{font-size:21px;letter-spacing:-.03em;margin:6px 0 10px}.lead{color:#627482;font-size:14px;line-height:1.6;margin:5px 0 15px}.muted{color:#627482}.eq{padding:20px;background:#f1f7f7;border:1px solid #d6e5e5;border-radius:12px;word-break:break-word;font-size:clamp(17px,2vw,25px);font-weight:750;line-height:1.6;color:#163b45}.ratio{font-size:clamp(20px,2.1vw,31px);font-weight:850;letter-spacing:-.02em;margin:6px 0}.pill{display:inline-block;background:#dcefeb;color:#175c55;border-radius:999px;font-size:12px;font-weight:750;padding:5px 10px}.pill.warm{background:#fdf1d7;color:#765416}.section-title{font-weight:780;margin:4px 0 10px}.flex{display:flex;gap:9px;flex-wrap:wrap;align-items:center}.row-between{display:flex;justify-content:space-between;align-items:center;gap:8px}.field{display:block;width:100%;border:1px solid #b9cdd5;border-radius:9px;padding:11px 12px;line-height:1.35;background:#fff;color:#122d38}.field.mono{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:13px}.field:disabled{background:#e9f0f2;color:#70818a}.label{display:block;color:#566d78;font-size:12px;font-weight:750;margin:10px 0 6px}.button{padding:10px 14px;border:0;border-radius:10px;font-weight:750;background:#157a77;color:white}.button.secondary{background:#e7f1f2;color:#205b61}.button.ghost{border:1px solid #c8d7db;background:white;color:#315968}.button:hover{filter:brightness(.95)}.button:disabled{opacity:.5;cursor:default}
+.tablewrap{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:14px}th,td{border-bottom:1px solid #e4edf1;padding:10px 7px;text-align:left;vertical-align:middle}th{font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:#6c7e85;font-weight:800}td.numeric,th.numeric{text-align:right;font-variant-numeric:tabular-nums}td strong{color:#163e49}.tiny{font-size:12px;color:#637782;line-height:1.5}.error{padding:10px 12px;background:#fff0ec;border:1px solid #f5c8be;border-radius:9px;color:#9c3021;font-size:13px;margin-top:12px;line-height:1.5}.notice{padding:11px 12px;background:#f5f8fa;border:1px solid #dfebef;border-radius:10px;color:#506c78;font-size:12px;line-height:1.6;margin-top:12px}.success{background:#e8f5ee;border-color:#b6dfc8;color:#226045}.reagent{border:1px solid #dbe6e9;border-radius:12px;padding:12px;margin:10px 0;background:#fbfdfd}.reagent-header{display:flex;align-items:center;gap:9px;justify-content:space-between}.reagent h3{font-size:15px;margin:0;overflow-wrap:anywhere}.reagent .mw{color:#5d7a85;font-size:11px}.inputs{display:grid;grid-template-columns:1fr 1fr;gap:10px}.reagent input{width:100%;border-radius:8px;border:1px solid #c7d9df;padding:9px;color:#243742;background:white}.reagent input:disabled{background:#e9f2f3;color:#5e7b83}.reagent .grams{font-variant-numeric:tabular-nums;font-size:19px;font-weight:850;color:#155d68}.side-note{border-top:1px solid #dde9ed;padding-top:12px;margin-top:16px}.sliderline{display:flex;gap:10px;align-items:center}.sliderline input[type=range]{flex:1;accent-color:#18807b;min-width:0}.sliderline input[type=number]{width:85px;padding:8px;border:1px solid #c1d4da;border-radius:8px}.checkboxline{display:flex;align-items:flex-start;gap:8px;padding:8px 0;font-size:13px;font-weight:650;color:#355666}.checkboxline input{accent-color:#18807b;margin-top:3px}.footer{text-align:center;color:#6c7e87;font-size:11px;margin:16px 4px}.empty{padding:20px;color:#8a969b;font-size:13px;text-align:center;border:1px dashed #c2d4d9;border-radius:10px}.nowrap{white-space:nowrap}.data{font-variant-numeric:tabular-nums}.blocky{border-left:3px solid #279e99;padding:6px 10px;margin:10px 0;background:#f3faf9;border-radius:0 7px 7px 0}.warn{color:#91622e}.product-name{font-weight:750;overflow-wrap:anywhere}.format{font-size:12px;color:#5d7981}
+@media(max-width:880px){.main{grid-template-columns:1fr;display:flex;flex-direction:column}.sidebar{order:-1;position:static;width:100%}.work{width:100%}.top small{display:none}}
+@media print{.top,.buttons,.sliderline{display:none}.main{display:block}.sidebar{position:static;box-shadow:none}.card{break-inside:avoid}}
+
+/* v1.1: prevent overflowing number inputs on compact screens */
+input[type=number]{min-width:0;font-variant-numeric:tabular-nums}
+.inputs > div{min-width:0}
+.reagent input{min-width:0}
+.experimental-controls{margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.experimental-controls > label{min-width:0}
+.experimental-controls input{width:100%}
+.choice{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:10px 0}
+.choice label{border:1px solid #c7d9df;border-radius:9px;padding:9px 12px;cursor:pointer;font-weight:700;font-size:13px;color:#285564}
+.choice label:has(input:checked){background:#e6f4f1;border-color:#21857d}
+.choice input{accent-color:#18807b}
+.measure{width:105px;min-width:86px;max-width:120px;padding:7px;border:1px solid #c7d9df;border-radius:7px}
+.fineprint{font-size:12px;line-height:1.5;color:#627482}
+.tablewrap table{table-layout:auto}
+th,td{overflow-wrap:anywhere}
+[hidden]{display:none!important}
+@media(max-width:420px){.main{padding:8px}.sidebar,.card{padding:12px}.experimental-controls{grid-template-columns:1fr}.inputs{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<header class="top"><div class="brand"><span class="rabbit" aria-hidden="true">🐇</span>RABBIT CHEMISTRY <small> / Stoichiometry Side Calculator</small></div><span class="tag">Offline prototype · v1.1</span></header>
+<main class="main">
+<section class="work">
+<div class="card"><div class="kicker">01 · Balanced equation</div><h2>Reaction result</h2><div id="balanced" class="eq" aria-live="polite">—</div><div id="ratio" class="blocky">Enter an equation to calculate the mole ratio.</div><div class="tiny">Coefficients give <strong>mole ratios</strong>. A molarity ratio matches them only when the relevant solution volumes are equal.</div></div>
+<div class="card"><div class="kicker">02 · Limiting reagent</div><h2>Quantities available</h2><div id="limit">—</div><div class="notice" id="assumptionNote">Ideal mode assumes complete conversion with no side reactions. Experimental mode applies user-supplied percentages; neither mode predicts chemical feasibility.</div></div>
+<div class="card"><div class="kicker">03 · Product amounts</div><h2>Predicted &amp; recorded products</h2><div id="products">—</div></div>
+<div class="card"><div class="kicker">Road map</div><h2>From calculator to Rabbit Chemistry</h2><div class="tiny"><strong>Stage 1 — working now:</strong> parse and balance a reaction, compute solution preparation, limiting reagent, theoretical yields, and proportional scaling.<br><br><strong>Stage 2:</strong> load formulas from the Rabbit Chemistry parts library and save calculation presets, with formula/hydrate and phase validation.<br><br><strong>Stage 3:</strong> package as a Windows side panel or floating window alongside Rabbit Chemistry; verify the application's integration surface before attempting automation.<br><br><strong>Stage 4:</strong> let the scene-building automation read a validated setup plan. Automatic physical chemistry simulation requires additional validation and cannot be inferred from a balanced equation.</div></div>
+</section>
+<aside class="sidebar" aria-label="Stoichiometry calculator">
+<div class="row-between"><div><div class="kicker">Interactive side panel</div><h2>Calculate & scale</h2></div><span class="pill">LIVE</span></div>
+<label class="label" for="equation">Reaction equation</label><textarea class="field mono" id="equation" rows="3" spellcheck="false">Ce(NO3)3 + (NH4)2CO3 -> Ce2(CO3)3 + NH4NO3</textarea>
+<div class="flex buttons" style="margin:10px 0 0"><button class="button" id="balanceBtn">Balance reaction</button><button class="button secondary" id="resetBtn">Restore example</button></div>
+<div id="error" class="error" role="alert" hidden></div>
+<div class="side-note"><div class="section-title">Batch scaling</div><label class="label" for="scale">Scale the solution volumes, maintaining the concentrations</label><div class="sliderline"><input id="scale" type="range" min="0.1" max="10" step="0.1" value="1" aria-label="Batch scale"><input id="scaleNum" type="number" min="0.01" max="1000" step="0.1" value="1" aria-label="Batch scale multiplier"><span class="muted">×</span></div><label class="checkboxline"><input id="linkRatio" type="checkbox" checked>Automatically match reagent 2 to the mole ratio</label><p class="tiny" style="margin-top:0">To match the mole ratio, stock concentration and solution volume are both considered. Uncheck to explore excess and limiting reagents.</p></div>
+<div class="side-note">
+  <div class="section-title">Calculation model</div>
+  <div class="choice" role="group" aria-label="Model">
+    <label><input name="model" id="modelIdeal" type="radio" checked> Ideal</label>
+    <label><input name="model" id="modelExperimental" type="radio"> Experimental</label>
+  </div>
+  <div id="experimentalBox" hidden>
+    <p class="tiny">Enter <strong>observed or assumed</strong> percentages. They are not predictions from temperature or reaction identity.</p>
+    <div class="experimental-controls">
+      <label><span class="label" for="conversion">Conversion of limiting reagent (%)</span><input class="field" type="number" id="conversion" min="0" max="100" step="any" value="75"></label>
+      <label><span class="label" for="recovery">Product isolation/recovery (%)</span><input class="field" type="number" id="recovery" min="0" max="100" step="any" value="90"></label>
+    </div>
+    <label class="label" for="experimentNotes">Observed conditions / notebook reference (optional)</label>
+    <textarea class="field" rows="2" id="experimentNotes" placeholder="Measured outcomes, literature source, date, physical observations..."></textarea>
+    <p class="fineprint">Purity is set separately for each reactant below. Product masses can be recorded in the results table. Unidentified side products are not invented.</p>
+  </div>
+</div>
+<div class="side-note"><div class="section-title">Solution preparation</div><p class="tiny" style="margin:4px 0">Each value is the <strong>final prepared solution volume</strong>, not the volume of water added before dissolving a solid.</p><div id="reagents"></div></div>
+<div class="side-note"><div class="flex buttons"><button id="copyBtn" class="button secondary">Copy calculation</button><button id="saveBtn" class="button ghost">Save calculation (.json)</button></div><p class="tiny" id="copyStatus" role="status"></p></div>
+<div class="notice">Formula balancing proves <strong>atom conservation</strong>, not that a reaction happens. This prototype assumes neutral species; charged ions, physical feasibility, and chemical reaction validation require a separate model. Always check the actual hydrate and material data before using calculated masses.</div>
+</aside>
+</main>
+<footer class="footer">Rabbit Chemistry calculator concept · Locally running HTML; no data transmitted</footer>
+<script>
+'use strict';
+// Conventional abridged atomic weights (g/mol). Ce 140.116; H 1.008; C 12.011; N 14.007; O 15.999.
+const ATOMIC = Object.freeze({H:1.008,He:4.002602,Li:6.94,Be:9.0121831,B:10.81,C:12.011,N:14.007,O:15.999,F:18.998403,Ne:20.1797,Na:22.989769,Mg:24.305,Al:26.981538,Si:28.085,P:30.973762,S:32.06,Cl:35.45,Ar:39.948,K:39.0983,Ca:40.078,Sc:44.955908,Ti:47.867,V:50.9415,Cr:51.9961,Mn:54.938044,Fe:55.845,Co:58.933194,Ni:58.6934,Cu:63.546,Zn:65.38,Ga:69.723,Ge:72.630,As:74.921595,Se:78.971,Br:79.904,Kr:83.798,Rb:85.4678,Sr:87.62,Y:88.90584,Zr:91.224,Nb:92.90637,Mo:95.95,Ru:101.07,Rh:102.90550,Pd:106.42,Ag:107.8682,Cd:112.414,In:114.818,Sn:118.710,Sb:121.760,Te:127.60,I:126.90447,Xe:131.293,Cs:132.905452,Ba:137.327,La:138.90547,Ce:140.116,Pr:140.90766,Nd:144.242,Sm:150.36,Eu:151.964,Gd:157.25,Tb:158.92535,Dy:162.500,Ho:164.93033,Er:167.259,Tm:168.93422,Yb:173.045,Lu:174.9668,Hf:178.49,Ta:180.94788,W:183.84,Re:186.207,Os:190.23,Ir:192.217,Pt:195.084,Au:196.966569,Hg:200.592,Tl:204.38,Pb:207.2,Bi:208.98040,Th:232.0377,U:238.02891});
+function addCounts(dest,source,mult=1){for(const [symbol,n] of Object.entries(source))dest[symbol]=(dest[symbol]||0)+n*mult;return dest;}
+function parseUnit(formula){let s=formula, i=0;
+  function parseGroup(close){const out={};let seen=false;
+    while(i<s.length){const c=s[i]; if(close && c===close){i++;if(!seen)throw Error('Empty group in '+formula);return out;}
+      if(c==='('||c==='['||c==='{'){const right=c==='('?')':c==='['?']':'}';i++;const inner=parseGroup(right);const k=parseNumber();addCounts(out,inner,k);seen=true;continue;}
+      if(c===')'||c===']'||c==='}')throw Error('Mismatched closing bracket in '+formula);
+      if(/[A-Z]/.test(c)){const start=i++;while(i<s.length&&/[a-z]/.test(s[i]))i++;const el=s.slice(start,i);if(!(el in ATOMIC))throw Error('Unknown element '+el+' in '+formula);out[el]=(out[el]||0)+parseNumber();seen=true;continue;}
+      throw Error('Unsupported notation in '+formula+' near '+s.slice(i));}
+    if(close)throw Error('Unclosed group in '+formula); if(!seen)throw Error('Empty chemical formula');return out;}
+  function parseNumber(){let start=i;while(i<s.length&&/[0-9]/.test(s[i]))i++;if(start===i)return 1;const n=Number(s.slice(start,i));if(!Number.isSafeInteger(n)||n<=0||n>1e7)throw Error('Invalid subscript in '+formula);return n;}
+  const answer=parseGroup(null);if(i!==s.length)throw Error('Formula not fully parsed: '+formula);return answer;
+}
+function cleanFormula(s){return String(s).replace(/\s+/g,'').replace(/\((?:aq|s|l|g)\)$/i,'');}
+function parseFormula(raw){const formula=cleanFormula(raw);if(!formula)throw Error('Chemical formula is empty');if(/\^/.test(formula))throw Error('Ionic charges are not supported yet');
+  const segments=formula.split(/[·∙.]/);const total={};
+  for(const seg of segments){if(!seg)throw Error('Malformed hydrate notation: '+formula);const match=seg.match(/^(\d+)(.*)$/);const times=match?Number(match[1]):1;const unit=match?match[2]:seg;if(!Number.isSafeInteger(times)||times<=0||times>1e7)throw Error('Invalid hydrate factor in '+formula);addCounts(total,parseUnit(unit),times);}
+  return total;
+}
+function molecularWeight(raw){const atoms=parseFormula(raw);return Object.entries(atoms).reduce((sum,[el,n])=>sum+ATOMIC[el]*n,0)}
+function gcd(a,b){a=a<0n?-a:a;b=b<0n?-b:b;while(b!==0n){const t=a%b;a=b;b=t;}return a;}
+function lcm(a,b){return a/gcd(a,b)*b;}
+function rat(n,d=1n){if(d===0n)throw Error('Math error: denominator zero');if(d<0n){n=-n;d=-d;}if(n===0n)return [0n,1n];const g=gcd(n,d);return[n/g,d/g];}
+const add=(a,b)=>rat(a[0]*b[1]+b[0]*a[1],a[1]*b[1]);const neg=a=>[-a[0],a[1]];const sub=(a,b)=>add(a,neg(b));const mul=(a,b)=>rat(a[0]*b[0],a[1]*b[1]);const div=(a,b)=>rat(a[0]*b[1],a[1]*b[0]);const isZero=a=>a[0]===0n;
+function normalizeRatVector(v){let common=1n;for(const x of v)common=lcm(common,x[1]);let ints=v.map(x=>x[0]*(common/x[1]));let commonFactor=0n;for(const x of ints)commonFactor=gcd(commonFactor,x);if(commonFactor)ints=ints.map(x=>x/commonFactor);if(!ints.every(x=>x>0n))return null; if(ints.some(x=>x>1000000n))return null;return ints.map(Number);}
+function parseReaction(raw){const parts=raw.trim().split(/\s*(?:-->|->|→|=|⇌)\s*/);if(parts.length!==2)throw Error('Use exactly one reaction arrow: ->');
+  function side(s){return s.split(/\s*\+\s*/).map(x=>x.trim()).map(x=>x.replace(/^\d+\s*(?=[A-Z(\[{])/,'')) .map(cleanFormula).filter(Boolean);}
+  const left=side(parts[0]),right=side(parts[1]);if(!left.length||!right.length)throw Error('Add at least one reactant and one product.');if(left.length+right.length>12)throw Error('Limit this version to 12 species per equation.');
+  const all=left.concat(right);const parsed=all.map(parseFormula);return {left,right,all,parsed};
+}
+function balanceReaction(raw){const r=parseReaction(raw);const elems=[...new Set(r.parsed.flatMap(o=>Object.keys(o)))].sort();const n=r.all.length;
+  const mat=elems.map(el=>r.parsed.map((o,j)=>rat(BigInt((o[el]||0)*(j<r.left.length?1:-1)))));let k=0;const pivots=[];
+  for(let col=0;col<n && k<mat.length;col++){let row=k;while(row<mat.length&&isZero(mat[row][col]))row++;if(row===mat.length)continue;[mat[row],mat[k]]=[mat[k],mat[row]];const denom=mat[k][col];for(let j=0;j<n;j++)mat[k][j]=div(mat[k][j],denom);
+    for(let rr=0;rr<mat.length;rr++){if(rr===k||isZero(mat[rr][col]))continue;const factor=mat[rr][col];for(let cc=0;cc<n;cc++)mat[rr][cc]=sub(mat[rr][cc],mul(factor,mat[k][cc]));}pivots.push(col);k++;}
+  const free=[];for(let c=0;c<n;c++)if(!pivots.includes(c))free.push(c);if(free.length===0)throw Error('This equation cannot be balanced with all species as written. Check formulas and products.');if(free.length>3)throw Error('Ambiguous equation: too many independent balancing solutions. Simplify the equation.');
+  let best=null,score=Infinity,found=0;
+  function enumerate(chosen){if(chosen.length===free.length){const vec=Array.from({length:n},()=>rat(0n));free.forEach((col,i)=>vec[col]=rat(BigInt(chosen[i])));
+      for(let row=0;row<pivots.length;row++){let s=rat(0n);for(const f of free)s=add(s,mul(mat[row][f],vec[f]));vec[pivots[row]]=neg(s);}
+      const nums=normalizeRatVector(vec);if(!nums)return;found++;const sc=nums.reduce((s,v)=>s+v,0);if(sc<score||(sc===score&&(!best||nums.join(',')<best.join(',')))){score=sc;best=nums;}return;}
+    for(let v=1;v<=(free.length===1?1:free.length===2?10:5);v++)enumerate([...chosen,v]);}
+  enumerate([]);if(!best)throw Error('No all-positive balancing coefficients were found for this reaction. Check the chemical formulas.');
+  for(const el of elems){const delta=r.parsed.reduce((s,p,j)=>s+(p[el]||0)*best[j]*(j<r.left.length?1:-1),0);if(delta!==0)throw Error('Internal balance check failed for '+el);}
+  return {...r,coeff:best,weights:r.all.map(molecularWeight)};
+}
+function equationText(r){function sides(start,count){return Array.from({length:count},(_,i)=>{const idx=start+i;return(r.coeff[idx]===1?'':r.coeff[idx]+' ')+r.all[idx];}).join(' + ');}return sides(0,r.left.length)+' → '+sides(r.left.length,r.right.length);}
+function fmt(v,max=3){if(!Number.isFinite(v))return '—';return Number(v).toLocaleString('en-US',{maximumFractionDigits:max,minimumFractionDigits:0});}
+function esc(x){return String(x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function elementEqual(a,b){return Object.keys({...a,...b}).every(el=>(a[el]||0)===(b[el]||0));}
+function isCompatibleWeighingFormula(stock,weigh){const a=cleanFormula(stock),b=cleanFormula(weigh);if(a===b)return true;const segment=b.split(/[·∙.]/)[0];return elementEqual(parseFormula(segment),parseFormula(a));}
+const example='Ce(NO3)3 + (NH4)2CO3 -> Ce2(CO3)3 + NH4NO3';
+let reaction=null, values=[], scaleFactor=1, linkRatio=true, model='ideal', observedMasses={};
+const numClean=x=>Number(Number(x).toPrecision(10)).toString();
+function settings(){const conv=Number(document.getElementById('conversion').value),rec=Number(document.getElementById('recovery').value);return {conversion:Number.isFinite(conv)?Math.min(100,Math.max(0,conv))/100:1,recovery:Number.isFinite(rec)?Math.min(100,Math.max(0,rec))/100:1};}
+function validPercentage(id){const el=document.getElementById(id),n=Number(el.value);const okay=el.value.trim()!==''&&Number.isFinite(n)&&n>=0&&n<=100;el.setCustomValidity(okay?'':'Enter a number from 0 to 100');return okay;}
+
+function makeDefaultValues(r){return r.left.map((formula,i)=>({concentration:r.coeff[i],baseVolume:100,weigh:formula,purity:100}));}
+function showError(message){const el=document.getElementById('error');el.hidden=!message;el.textContent=message||'';}
+function getEffectiveValue(i){const v=values[i];const volume=v.baseVolume*scaleFactor;let conc=v.concentration;
+  if(linkRatio&&i===1&&reaction.left.length>=2){const first=values[0];const firstMoles=first.concentration*first.baseVolume*scaleFactor/1000;conc=(firstMoles/reaction.coeff[0])*reaction.coeff[1]/(volume/1000);}
+  return {concentration:conc,volume};}
+function fillReagents(){const root=document.getElementById('reagents');root.innerHTML='';if(!reaction){root.innerHTML='<div class="empty">Balance a reaction to begin.</div>';return;}
+  reaction.left.forEach((formula,i)=>{const v=values[i],ev=getEffectiveValue(i);const weight=molecularWeight(v.weigh);const mass=weight*ev.concentration*ev.volume/1000;const el=document.createElement('section');el.className='reagent';
+    el.innerHTML=`<div class="reagent-header"><h3>${i+1}. ${esc(formula)}</h3><span class="mw">${fmt(reaction.weights[i],3)} g/mol</span></div><div class="inputs"><div><label class="label" for="conc${i}">Concentration (M)</label><input id="conc${i}" type="number" min="0" step="any" inputmode="decimal" value="${numClean(ev.concentration)}" ${i===1&&linkRatio?'disabled':''}></div><div><label class="label" for="vol${i}">Final volume (mL)</label><input id="vol${i}" type="number" min="0.000001" step="any" inputmode="decimal" value="${numClean(ev.volume)}"></div></div><div class="purity-row" ${model==='ideal'?'hidden':''}><label class="label" for="purity${i}">Reagent purity (%)</label><input id="purity${i}" type="number" min="0" max="100" step="any" value="${numClean(v.purity)}"></div><label class="label" for="solid${i}">Solid form / weighing formula (hydrates allowed)</label><input class="field mono" id="solid${i}" value="${esc(v.weigh)}" spellcheck="false"><div class="row-between" style="margin-top:10px"><span class="format">Formula weight: <span id="mw${i}">${fmt(weight,3)}</span> g/mol</span><div class="grams" id="grams${i}">${fmt(mass,4)} g</div></div><div id="rowerr${i}" class="tiny warn" hidden></div>`;
+    root.appendChild(el);
+    el.querySelector(`#conc${i}`).addEventListener('input',e=>{const n=Number(e.target.value);if(Number.isFinite(n)&&n>=0){v.concentration=n;refreshNumbers(true);}});
+    el.querySelector(`#vol${i}`).addEventListener('input',e=>{const n=Number(e.target.value);if(Number.isFinite(n)&&n>0){v.baseVolume=n/scaleFactor;refreshNumbers(true);}});
+    el.querySelector(`#solid${i}`).addEventListener('input',e=>{v.weigh=e.target.value.trim();refreshNumbers(false);});
+    const p=el.querySelector(`#purity${i}`);p.addEventListener('input',e=>{const n=Number(e.target.value);if(e.target.value.trim()!==''&&Number.isFinite(n)&&n>=0&&n<=100){v.purity=n;refreshNumbers(false);}});
+  });refreshNumbers(false);
+}
+function refreshNumbers(updateInputs){
+  if(!reaction)return;
+  let okay=true;const list=[];const currentSettings=settings();
+  if(model==='experimental'){
+    okay=validPercentage('conversion')&&validPercentage('recovery');
+  }
+  reaction.left.forEach((formula,i)=>{
+    const v=values[i],ev=getEffectiveValue(i),concInput=document.getElementById('conc'+i),volInput=document.getElementById('vol'+i);
+    if(!concInput)return;
+    if(updateInputs&&document.activeElement!==concInput)concInput.value=numClean(ev.concentration);
+    if(updateInputs&&document.activeElement!==volInput)volInput.value=numClean(ev.volume);
+    const grams=document.getElementById('grams'+i),mwElement=document.getElementById('mw'+i),err=document.getElementById('rowerr'+i);
+    let molWeight=NaN;
+    try{
+      molWeight=molecularWeight(v.weigh);
+      if(!isCompatibleWeighingFormula(formula,v.weigh))throw Error('Weighing formula must be the same compound, optionally with hydration water.');
+      const grossMass=ev.concentration*ev.volume/1000*molWeight;
+      const corrected=model==='experimental'?grossMass/(v.purity/100):grossMass;
+      if(!Number.isFinite(corrected))throw Error('Purity must exceed 0% for a specified target concentration.');
+      grams.textContent=fmt(corrected,4)+' g';mwElement.textContent=fmt(molWeight,3);
+      err.hidden=true;
+    }catch(e){okay=false;grams.textContent='—';mwElement.textContent='—';err.hidden=false;err.textContent=e.message;}
+    const pureMoles=ev.concentration*ev.volume/1000;
+    list.push({formula,coeff:reaction.coeff[i],M:ev.concentration,volume:ev.volume,moles:pureMoles,weight:molWeight,purity:v.purity});
+  });
+  const extent=Math.min(...list.map(x=>x.moles/x.coeff));
+  const threshold=Math.max(1e-10,extent*1e-8);
+  const limiters=list.filter(x=>Math.abs(x.moles/x.coeff-extent)<=threshold).map(x=>x.formula);
+  const reacted=extent*(model==='experimental'?currentSettings.conversion:1);
+  const percentLabel=model==='experimental'?`<p class="tiny">Modeled conversion: ${fmt(currentSettings.conversion*100,3)}% · Recovered fraction: ${fmt(currentSettings.recovery*100,3)}%</p>`:'';
+  document.getElementById('limit').innerHTML=`<p class="lead" style="margin-top:0">Maximum reaction extent: <strong class="data">${fmt(extent,6)} mol</strong></p><p>Calculated extent: <strong>${fmt(reacted,6)} mol</strong></p>${percentLabel}<p><span class="pill ${limiters.length>1?'':'warm'}">${limiters.length>1?'Stoichiometric balance':'Limiting: '+esc(limiters.join(', '))}</span></p><div class="tablewrap"><table><thead><tr><th>Reactant</th><th class="numeric">Available (mol)</th><th class="numeric">Unreacted (mol)</th></tr></thead><tbody>${list.map(x=>`<tr><td>${esc(x.formula)}</td><td class="numeric">${fmt(x.moles,6)}</td><td class="numeric">${fmt(Math.max(0,x.moles-reacted*x.coeff),6)}</td></tr>`).join('')}</tbody></table></div>`;
+  const allProducts=[];
+  for(let j=reaction.left.length;j<reaction.all.length;j++){
+    allProducts.push({formula:reaction.all[j],coeff:reaction.coeff[j],weight:reaction.weights[j],idealMoles:extent*reaction.coeff[j],modeledMoles:reacted*reaction.coeff[j]});
+  }
+  const header=model==='experimental'?'<th class="numeric">Ideal (g)</th><th class="numeric">Modeled recovered (g)</th><th class="numeric">Measured (g)</th>':'<th class="numeric">Amount (mol)</th><th class="numeric">Ideal yield (g)</th>';
+  document.getElementById('products').innerHTML=`<div class="tablewrap"><table><thead><tr><th>Product</th>${header}</tr></thead><tbody>${allProducts.map((x,i)=>{
+    const ideal=x.idealMoles*x.weight;
+    const modeled=x.modeledMoles*x.weight*currentSettings.recovery;
+    return model==='experimental'
+      ?`<tr><td class="product-name">${esc(x.formula)}</td><td class="numeric">${fmt(ideal,4)}</td><td class="numeric"><strong>${fmt(modeled,4)}</strong></td><td class="numeric"><input class="measure" type="number" min="0" step="any" inputmode="decimal" id="measured${i}" aria-label="Measured mass for ${esc(x.formula)}" value="${observedMasses[i]??''}"></td></tr><tr><td colspan="4" class="tiny">${observedMasses[i]!==undefined?`Measured / ideal: ${fmt(Number(observedMasses[i])/ideal*100,2)}% ${Number(observedMasses[i])>ideal?'· Above theoretical amount; verify measurement, product identity or model.':''}`:'Record a measured mass to compare with ideal yield.'}</td></tr>`
+      :`<tr><td class="product-name">${esc(x.formula)}</td><td class="numeric">${fmt(x.idealMoles,6)}</td><td class="numeric"><strong>${fmt(ideal,4)}</strong></td></tr>`;
+  }).join('')}</tbody></table></div>`;
+  if(model==='experimental')allProducts.forEach((x,i)=>{
+    document.getElementById('measured'+i).addEventListener('change',e=>{
+      if(e.target.value.trim()===''){delete observedMasses[i];refreshNumbers(false);return;}
+      const n=Number(e.target.value);if(Number.isFinite(n)&&n>=0){observedMasses[i]=numClean(n);refreshNumbers(false);}
+    });
+  });
+  document.getElementById('assumptionNote').textContent=model==='experimental'
+    ?'Empirical mode: modeled values use your conversion, purity, and recovery assumptions. Recorded masses are measurements, not stoichiometric balancing inputs. Unidentified side products, solubility and reaction rates are not predicted.'
+    :'Ideal mode assumes complete conversion with no side reactions. No solubility or experimental yield is predicted.';
+  document.getElementById('saveBtn').disabled=!okay;
+}
+function loadReaction(useExample=false){try{const input=useExample?example:document.getElementById('equation').value;const r=balanceReaction(input);reaction=r;values=makeDefaultValues(r);observedMasses={};scaleFactor=1;document.getElementById('scale').value='1';document.getElementById('scaleNum').value='1';
+  if(useExample)document.getElementById('equation').value=example;document.getElementById('balanced').textContent=equationText(r);
+  document.getElementById('ratio').innerHTML='<strong>Mole ratio: </strong>'+esc(r.coeff.slice(0,r.left.length).join(' : '))+' <strong>→</strong> '+esc(r.coeff.slice(r.left.length).join(' : '));showError('');fillReagents();
+  }catch(e){reaction=null;values=[];document.getElementById('balanced').textContent='Equation could not be balanced';document.getElementById('ratio').textContent='Correct the equation and try again.';document.getElementById('limit').textContent='—';document.getElementById('products').textContent='—';fillReagents();showError(e.message);}
+}
+function report(){if(!reaction)return '';const lines=['Rabbit Chemistry — Stoichiometry Calculation',equationText(reaction),'Mole ratio: '+reaction.coeff.join(' : '),'Volume scaling: ×'+scaleFactor,'Model: '+model,''];
+ reaction.left.forEach((s,i)=>{const ev=getEffectiveValue(i);let g='invalid';try{g=fmt(molecularWeight(values[i].weigh)*ev.concentration*ev.volume/1000,5);}catch(e){}lines.push(`${s}: ${fmt(ev.concentration,5)} M × ${fmt(ev.volume,5)} mL (final solution), ${g} g of ${values[i].weigh}`)});
+ const extent=Math.min(...reaction.left.map((_,i)=>{const v=getEffectiveValue(i);return v.concentration*v.volume/1000/reaction.coeff[i];}));lines.push('');reaction.right.forEach((formula,k)=>{const idx=reaction.left.length+k;lines.push(`${formula}: theoretical ${fmt(extent*reaction.coeff[idx],7)} mol / ${fmt(extent*reaction.coeff[idx]*reaction.weights[idx],5)} g`)});
+ if(model==='experimental'){
+   const st=settings();lines.push('Conversion assumed: '+fmt(st.conversion*100)+'%; recovery assumed: '+fmt(st.recovery*100)+'%');
+   const finalExtent=extent*st.conversion;
+   reaction.right.forEach((formula,k)=>{const idx=reaction.left.length+k;const modeled=finalExtent*reaction.coeff[idx]*reaction.weights[idx]*st.recovery;lines.push(`${formula}: modeled recovered ${fmt(modeled,5)} g; measured ${observedMasses[k]??'not recorded'} g`);});
+   lines.push('Experiment notes: '+document.getElementById('experimentNotes').value);
+ }
+ lines.push('Assumptions: neutral formulas; no chemical feasibility, kinetics, equilibrium, solubility, or untracked side-product prediction.');return lines.join('\n');}
+document.getElementById('balanceBtn').addEventListener('click',()=>loadReaction());document.getElementById('resetBtn').addEventListener('click',()=>loadReaction(true));
+document.getElementById('linkRatio').addEventListener('change',e=>{linkRatio=e.target.checked;fillReagents()});
+function changeModel(next){model=next;document.getElementById('modelIdeal').checked=model==='ideal';document.getElementById('modelExperimental').checked=model==='experimental';document.getElementById('experimentalBox').hidden=model!=='experimental';fillReagents();}
+document.getElementById('modelIdeal').addEventListener('change',e=>{if(e.target.checked)changeModel('ideal');});
+document.getElementById('modelExperimental').addEventListener('change',e=>{if(e.target.checked)changeModel('experimental');});
+for(const id of ['conversion','recovery'])document.getElementById(id).addEventListener('input',()=>refreshNumbers(false));
+
+function changeScale(value){const n=Number(value);if(!Number.isFinite(n)||n<0.01||n>1000)return;scaleFactor=n;document.getElementById('scaleNum').value=numClean(n);document.getElementById('scale').value=String(Math.min(10,Math.max(.1,n)));refreshNumbers(true);}
+document.getElementById('scale').addEventListener('input',e=>changeScale(e.target.value));document.getElementById('scaleNum').addEventListener('input',e=>changeScale(e.target.value));
+document.getElementById('copyBtn').addEventListener('click',async()=>{const t=report();try{await navigator.clipboard.writeText(t);document.getElementById('copyStatus').textContent='Calculation copied.';}catch(e){const area=document.createElement('textarea');area.value=t;document.body.appendChild(area);area.select();document.execCommand('copy');area.remove();document.getElementById('copyStatus').textContent='Calculation copied.';}});
+document.getElementById('saveBtn').addEventListener('click',()=>{if(!reaction)return;const data={format:'Rabbit Chemistry stoichiometry',version:2,model,observedMasses,conversionPercent:Number(document.getElementById('conversion').value),recoveryPercent:Number(document.getElementById('recovery').value),notes:document.getElementById('experimentNotes').value,balanced:equationText(reaction),input:document.getElementById('equation').value,coefficients:reaction.coeff,scaleFactor,linkRatio,reactants:values,report:report()};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='rabbit_stoichiometry.json';a.click();URL.revokeObjectURL(url);});
+loadReaction(true);
+</script>
+</body>
+</html>
