@@ -1,0 +1,6 @@
+The Rabbit Chemistry executable, resources, model files and notices are retained from the supplied desktop distribution.
+Boxedwine, GPL-2.0. Source and build files: https://github.com/danoon2/Boxedwine
+Wine 1.7.55, LGPL-2.1-or-later. https://gitlab.winehq.org/wine/wine/-/tree/wine-1.7.55
+The Boxedwine runtime and Wine filesystem used in this build are available at https://github.com/bassdrum4/windowsappplayer/tree/main/runtime and https://github.com/bassdrum4/windowsappplayer/tree/main/fs
+BrowserFS: https://github.com/jvilk/BrowserFS. Copyright notices are preserved in browserfs.boxedwine.js.
+The Android adaptation configures the two SDL display-size queries in boxedwine.js to match the virtual desktop.

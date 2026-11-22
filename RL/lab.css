@@ -1,0 +1,13 @@
+* { box-sizing: border-box; }
+html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: #161421; color: #f7f5fc; font: 14px Roboto, sans-serif; }
+body { display: flex; flex-direction: column; }
+main { flex: 1; min-height: 0; overflow: auto; overscroll-behavior: contain; }
+#surface { min-width: 100%; min-height: 100%; width: max-content; height: max-content; display: flex; align-items: center; justify-content: center; }
+canvas { display: block; flex: none; outline: none; touch-action: none; cursor: default; }
+nav { flex: 0 0 32px; display: flex; justify-content: flex-end; align-items: stretch; padding: 0 6px; gap: 4px; background: #211d30; }
+button { color: #f7f5fc; background: transparent; border: 0; border-radius: 3px; font: 12px Roboto, sans-serif; padding: 0 14px; }
+button:focus-visible { outline: 2px solid #b6a2ea; }
+button:active { background: #484052; }
+#status { position: absolute; top: 44%; left: 12%; width: 76%; text-align: center; line-height: 1.6; pointer-events: none; }
+
+body { user-select: none; -webkit-user-select: none; }
