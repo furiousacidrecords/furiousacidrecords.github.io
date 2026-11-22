@@ -18,14 +18,12 @@ jobs:
           python - <<'PY'
           from pathlib import Path
           from zipfile import ZipFile
-          names = ['index.html', 'lab.css', 'lab.js', 'boxedwine.js', 'boxedwine.wasm', 'browserfs.boxedwine.js', 'desktop.zip', 'simulator.pack', 'licenses/Components.txt', 'licenses/GPL-2.txt', 'licenses/LGPL-2.1.txt']
+          names = ['lab.css', 'lab.js', 'boxedwine.js', 'boxedwine.wasm', 'browserfs.boxedwine.js', 'desktop.zip', 'simulator.pack', 'licenses/Components.txt', 'licenses/GPL-2.txt', 'licenses/LGPL-2.1.txt']
           with ZipFile('downloads/Rabbit_Chemistry.apk') as apk:
               for name in names:
                   path = Path('RL') / name
                   path.parent.mkdir(parents=True, exist_ok=True)
                   path.write_bytes(apk.read('assets/' + name))
-          page = Path('RL/index.html')
-          page.write_text(page.read_text().replace('<title>Rabbit Chemistry</title>', '<title>Rabbit Chemistry Lab | Furious Acid</title>').replace('id="keyboard"', 'hidden id="keyboard"').replace('Opening Rabbit Chemistry…', 'Loading Rabbit Chemistry. The first visit downloads the lab files.'))
           PY
           git add RL/
           if git diff --cached --quiet; then exit 0; fi
