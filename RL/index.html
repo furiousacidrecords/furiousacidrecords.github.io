@@ -3,10 +3,17 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Rabbit Chemistry Lab | Furious Acid</title><link rel="stylesheet" href="lab.css">
-<style>.lab-downloads{margin-right:auto;align-self:center;padding:4px 8px;font-size:12px;line-height:1.4}.lab-downloads a{color:#d6c7ff}nav{flex-basis:auto;min-height:32px}</style></head>
+<style>.lab-downloads{margin-right:auto;align-self:center;padding:4px 8px;font-size:12px;line-height:1.4}.lab-downloads a{color:#d6c7ff}nav{flex-basis:auto;min-height:32px}
+#lab-stage{position:relative;flex:1;min-height:0}
+#viewport{position:absolute;inset:0}
+#lab-loader{position:absolute;inset:0;display:grid;place-items:center;background:#08081b;pointer-events:none}
+#lab-loader img{display:block;width:min(88%,440px);height:82%;object-fit:contain}
+#lab-stage #status{top:auto;bottom:1%;z-index:1;background:#161421;color:white;border-radius:.3em}
+</style></head>
 <body>
-<main id="viewport"><div id="surface"><canvas id="canvas" width="1024" height="768" tabindex="0" aria-label="Rabbit Chemistry desktop"></canvas></div></main>
+<div id="lab-stage"><main id="viewport"><div id="surface"><canvas id="canvas" width="1024" height="768" tabindex="0" aria-label="Rabbit Chemistry desktop"></canvas></div></main><div id="lab-loader"><img src="cosmic-transfer.gif" alt="A file travels from a satellite toward a galaxy" width="309" height="309"></div>
 <div id="status" role="status">Opening Rabbit Chemistry…</div>
+</div>
 <nav aria-label="Touch controls"><span class="lab-downloads">May take up to 1 minute to load. <a href="/rabbitchemistry">Click to download for Windows or Android</a></span><button id="zoom" aria-pressed="false">Zoom in</button><button hidden id="keyboard">Keyboard</button></nav>
 <script src="browserfs.boxedwine.js"></script><script src="lab.js"></script><script src="boxedwine.js"></script>
-<script src="browser-start.js"></script></body></html>
+<script src="browser-start.js?v=relay1"></script></body></html>

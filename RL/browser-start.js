@@ -7,16 +7,24 @@
     const pixels = probe.getContext("2d", {willReadFrequently:true});
     const near = (row, x, color, tolerance = 8) =>
         color.every((value, channel) => Math.abs(row[x * 4 + channel] - value) <= tolerance);
+    const loader = document.getElementById("lab-loader");
     const timer = setInterval(() => {
         if (!statusLabel.hidden || canvas.width !== 1024 || canvas.height !== 768) return;
         function scan(y) {
             pixels.drawImage(canvas, 0, y, 1024, 1, 0, 0, 1024, 1);
             return pixels.getImageData(0, 0, 1024, 1).data;
         }
+        // Expose the interactive desktop once its title or menu, side panel and work area are painted.
+        // This also handles a previously maximized window on a returning visit.
+        if (loader?.isConnected && near(scan(300),550,[255,255,255]) &&
+            (near(scan(130),405,[212,208,200],14) || near(scan(500),950,[255,255,255]))) {
+            loader.remove();
+        }
         // Match the restored title gradient, desktop background and work area together.
         const title = scan(110);
         if (!near(title, 25, [58,110,165]) || !near(title,380,[74,104,161],12) ||
             !near(title,730,[161,196,235],12) || !near(scan(300),550,[255,255,255])) return;
+        loader?.remove();
         clearInterval(timer);
         const bounds=canvas.getBoundingClientRect();
         const x=bounds.left + bounds.width * 776/1024;
@@ -26,5 +34,5 @@
         setTimeout(()=>mouse("mouseup",x,y,0,0),70);
     }, 450);
     setTimeout(()=>clearInterval(timer), 10 * 60 * 1000);
-    window.addEventListener("pagehide",()=>clearInterval(timer),{once:true});
+    window.addEventListener("pagehide",event=>{if (!event.persisted) clearInterval(timer);});
 })();
