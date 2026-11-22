@@ -7,11 +7,14 @@
 #lab-stage{position:relative;flex:1;min-height:0}
 #viewport{position:absolute;inset:0}
 #lab-loader{position:absolute;inset:0;display:grid;place-items:center;background:#08081b;pointer-events:none}
-#lab-loader img{display:block;width:min(88%,440px);height:82%;object-fit:contain}
+#lab-loader{container-type:size}
+.relay-frame{position:relative;overflow:hidden;width:min(88%,440px);width:min(88cqw,82cqh,440px);aspect-ratio:309/308}
+.relay-frame img{position:absolute;left:0;top:0;width:1600%;height:100%;max-width:none;will-change:transform;animation:relay-frames 2.24s steps(16,end) infinite}
+@keyframes relay-frames{from{transform:translate3d(0,0,0)}to{transform:translate3d(-100%,0,0)}}
 #lab-stage #status{top:auto;bottom:1%;z-index:1;background:#161421;color:white;border-radius:.3em}
 </style></head>
 <body>
-<div id="lab-stage"><main id="viewport"><div id="surface"><canvas id="canvas" width="1024" height="768" tabindex="0" aria-label="Rabbit Chemistry desktop"></canvas></div></main><div id="lab-loader"><img src="cosmic-transfer.gif" alt="A file travels from a satellite toward a galaxy" width="309" height="309"></div>
+<div id="lab-stage"><main id="viewport"><div id="surface"><canvas id="canvas" width="1024" height="768" tabindex="0" aria-label="Rabbit Chemistry desktop"></canvas></div></main><div id="lab-loader"><div class="relay-frame" role="img" aria-label="A file travels from a satellite toward a galaxy"><img src="cosmic-transfer-frames.webp" alt="" width="4944" height="308"></div></div>
 <div id="status" role="status">Opening Rabbit Chemistry…</div>
 </div>
 <nav aria-label="Touch controls"><span class="lab-downloads">May take up to 1 minute to load. <a href="/rabbitchemistry">Click to download for Windows or Android</a></span><button id="zoom" aria-pressed="false">Zoom in</button><button hidden id="keyboard">Keyboard</button></nav>
