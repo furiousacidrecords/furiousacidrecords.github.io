@@ -1,0 +1,11 @@
+#lab-reference-link { display: inline-grid; place-items: center; min-width: 44px; padding: 3px 8px; color: #e3d8f1; border-radius: 4px; }
+#lab-reference-link:hover, #lab-reference-link:focus-visible { background: #453b54; outline: 2px solid #b6a2ea; outline-offset: -2px; }
+#lab-reference-link svg, #lab-reference button svg { width: 21px; height: 21px; }
+#lab-reference { position: fixed; inset: auto 0 0; width: min(100%, 1060px); max-width: 100%; height: 85vh; height: 85dvh; max-height: 100%; padding: 0; margin: 0 auto; color: #211831; background: #faf9fc; border: 1px solid #b1a5bf; border-bottom: 0; border-radius: 18px 18px 0 0; box-shadow: 0 -6px 40px #0e0b1866; }
+#lab-reference[open] { display: flex; flex-direction: column; }
+#lab-reference::backdrop { background: #0b071964; }
+.reference-grip { min-height: 46px; position: relative; display: flex; justify-content: flex-end; align-items: center; padding: 2px 8px; border-bottom: 1px solid #d5cce0; background: #eee9f4; cursor: grab; touch-action: none; }
+.reference-grip > span { position: absolute; left: 50%; width: 39px; height: 5px; transform: translateX(-50%); background: #ad9fbb; border-radius: 10px; }
+#lab-reference button { width: 44px; height: 42px; padding: 0; display: grid; place-items: center; color: #3b2c4e; border-radius: 8px; }
+#lab-reference button:hover { background: #e0d7e9; }
+#lab-reference-frame { flex: 1; min-height: 0; width: 100%; border: 0; background: white; }
