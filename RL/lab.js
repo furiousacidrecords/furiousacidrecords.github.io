@@ -174,7 +174,7 @@ async function persistent(name) {
 }
 async function mountDesktop() {
     const [system, application, reagents] = await Promise.all([
-        readAsset("desktop.zip"), readAsset("simulator.pack"), readAsset("reagent-stockroom-22.zip")
+        readAsset("desktop.zip"), readAsset("simulator.pack"), readAsset("reagent-library-31.zip")
     ]);
     console.log("Package bytes",system.length,application.length);
     showMessage("Preparing the simulator…");
