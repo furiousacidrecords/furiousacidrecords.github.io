@@ -3,6 +3,13 @@ const canvas = document.getElementById("canvas");
 const viewport = document.getElementById("viewport");
 const statusLabel = document.getElementById("status");
 const zoomButton = document.getElementById("zoom");
+const openStockroom = new URLSearchParams(location.search).get("scene") === "stockroom";
+if (openStockroom) {
+    const link = document.getElementById("stockroom-link");
+    link.textContent = "Blank lab";
+    link.href = "./";
+    link.title = "Open a blank lab in a new tab";
+}
 let zoomed = false;
 
 function sizeDesktop() {
@@ -120,7 +127,7 @@ function cacheArchive(archive) {
         };
     }
 }
-function createLabDisk(bytes) {
+function createLabDisk(bytes, reagentArchive) {
     const fields=new DataView(bytes.buffer,bytes.byteOffset,bytes.byteLength);
     const names=new TextDecoder('utf-8');
     if (names.decode(bytes.subarray(0,4))!=="RCLB" || fields.getUint32(4,true)!==2101)
@@ -151,6 +158,14 @@ function createLabDisk(bytes) {
     }
     if(off!==bytes.length || paths.statSync("/rabbit.exe").size!==466944)
         throw new Error("Incomplete application drive");
+    for (const path of [
+        "/chemistry.domain/Resources/datafile.xml",
+        "/chemistry.domain/parts/reagents.xml",
+        "/product/Parts/chemistry.xml",
+        "/Stockroom.cxc"
+    ]) {
+        paths.writeFileSync(path, reagentArchive.getCentralDirectoryEntry(path).getData());
+    }
     return mem;
 }
 async function persistent(name) {
@@ -158,7 +173,9 @@ async function persistent(name) {
     return makeFs("AsyncMirror",{sync:new BrowserFS.FileSystem.InMemory(),async:disk});
 }
 async function mountDesktop() {
-    const [system,application]=await Promise.all([readAsset("desktop.zip"),readAsset("simulator.pack")]);
+    const [system, application, reagents] = await Promise.all([
+        readAsset("desktop.zip"), readAsset("simulator.pack"), readAsset("reagent-stockroom-22.zip")
+    ]);
     console.log("Package bytes",system.length,application.length);
     showMessage("Preparing the simulator…");
     step="reading the desktop system";
@@ -166,8 +183,10 @@ async function mountDesktop() {
     const base=await makeFs("ZipFS",{zipData:buffer});
     console.log("System files",base.getNumberOfCentralDirectoryEntries());
     cacheArchive(base);
-    step="installing the original lab files";
-    const lab=createLabDisk(application);
+    step="loading the reagent library";
+    const reagentBuffer=BrowserFS.BFSRequire("buffer").Buffer.from(reagents.buffer,reagents.byteOffset,reagents.byteLength);
+    const reagentArchive=await makeFs("ZipFS",{zipData:reagentBuffer});
+    const lab=createLabDisk(application,reagentArchive);
     step="opening saved work";
     const disk=await persistent("RabbitChemistryDisk");
     const labChanges=await persistent("RabbitChemistryProgramChanges");
@@ -208,7 +227,7 @@ var Module={
     // Keep the original desktop independent of the phone's CSS pixel dimensions.
     guestDisplayWidth:1024,
     guestDisplayHeight:768,
-    arguments:["-root","/root/base","-mount_drive","/root/files/","d","-nozip","-resolution","1024x768","-w","/home/username/.wine/dosdevices/d:","/bin/wine","d:\\rabbit.exe","-nosplash"],
+    arguments:["-root","/root/base","-mount_drive","/root/files/","d","-nozip","-resolution","1024x768","-w","/home/username/.wine/dosdevices/d:","/bin/wine","d:\\rabbit.exe","-nosplash",...(openStockroom ? ["d:\\Stockroom.cxc"] : [])],
     preRun:[function(){
         ENV.SDL_RENDER_DRIVER="software";
         Module.addRunDependency("desktop");

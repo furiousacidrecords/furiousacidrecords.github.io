@@ -4,6 +4,8 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Rabbit Chemistry Lab | Furious Acid</title><link rel="stylesheet" href="lab.css">
 <style>.lab-downloads{margin-right:auto;align-self:center;padding:4px 8px;font-size:12px;line-height:1.4}.lab-downloads a{color:#d6c7ff}nav{flex-basis:auto;min-height:32px}
+#stockroom-link{display:inline-flex;align-items:center;padding:4px 8px;color:#e3d8f1;font-size:13px;white-space:nowrap}
+@media(max-width:620px){nav{flex-wrap:wrap;row-gap:0}.lab-downloads{flex-basis:100%;text-align:center}#stockroom-link{margin-right:auto}}
 #lab-stage{position:relative;flex:1;min-height:0}
 #viewport{position:absolute;inset:0}
 #lab-loader{position:absolute;inset:0;display:grid;place-items:center;background:#08081b;pointer-events:none}
@@ -17,11 +19,11 @@
 <div id="lab-stage"><main id="viewport"><div id="surface"><canvas id="canvas" width="1024" height="768" tabindex="0" aria-label="Rabbit Chemistry desktop"></canvas></div></main><div id="lab-loader"><div class="relay-frame" role="img" aria-label="A file travels from a satellite toward a galaxy"><img src="cosmic-transfer-frames.webp" alt="" width="4944" height="308"></div></div>
 <div id="status" role="status">Opening Rabbit Chemistry…</div>
 </div>
-<nav aria-label="Touch controls"><span class="lab-downloads">May take up to 1 minute to load. <a href="/rabbitchemistry/#downloads" target="_blank" rel="noopener">Click to download for Windows or Android</a></span><a id="lab-reference-link" href="/rabbitchemistry/#flask-chart" target="_blank" rel="noopener" aria-label="Open Rabbit Chemistry reference charts" title="Open charts"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3.5" width="18" height="17" rx="2"/><path d="M3.7 9h16.6M3.7 14.5h16.6M9.5 9v11"/></svg></a><button id="zoom" aria-pressed="false">Zoom in</button><button hidden id="keyboard">Keyboard</button></nav>
+<nav aria-label="Touch controls"><span class="lab-downloads">May take up to 1 minute to load. <a href="/rabbitchemistry/#downloads" target="_blank" rel="noopener">Click to download for Windows or Android</a></span><a id="stockroom-link" href="?scene=stockroom" target="_blank" rel="noopener" title="Open the reagent stockroom in a new tab">Reagent stockroom</a><a id="lab-reference-link" href="/rabbitchemistry/#flask-chart" target="_blank" rel="noopener" aria-label="Open Rabbit Chemistry reference charts" title="Open charts"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3.5" width="18" height="17" rx="2"/><path d="M3.7 9h16.6M3.7 14.5h16.6M9.5 9v11"/></svg></a><button id="zoom" aria-pressed="false">Zoom in</button><button hidden id="keyboard">Keyboard</button></nav>
 <dialog id="lab-reference" aria-label="Rabbit Chemistry reference charts">
   <div class="reference-grip"><span aria-hidden="true"></span><form method="dialog"><button aria-label="Close charts and return to the lab" title="Close charts" autofocus><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M6 18 18 6"/></svg></button></form></div>
   <iframe id="lab-reference-frame" title="Parts, equipment, calculator and reaction charts"></iframe>
 </dialog>
 <script src="/RL/reference.js" defer></script>
-<script src="browserfs.boxedwine.js"></script><script src="lab.js"></script><script src="boxedwine.js"></script>
+<script src="browserfs.boxedwine.js"></script><script src="lab.js?v=stockroom22"></script><script src="boxedwine.js"></script>
 <script src="browser-start.js?v=relay1"></script></body></html>
